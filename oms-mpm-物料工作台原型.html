@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>咸亨国际主数据管理平台 - 物料工作台</title>
+  <style>
+    /* ── AntD V5 Design Token ── */
+    :root {
+      --primary:       #1677ff;
+      --primary-hover: #4096ff;
+      --primary-bg:    #e6f4ff;
+      --success:       #52c41a;
+      --warning:       #faad14;
+      --error:         #ff4d4f;
+      --text-title:    rgba(0,0,0,0.88);
+      --text-body:     rgba(0,0,0,0.65);
+      --text-sub:      rgba(0,0,0,0.45);
+      --border:        #d9d9d9;
+      --border-light:  #f0f0f0;
+      --bg-layout:     #f5f5f5;
+      --bg-container:  #ffffff;
+      --radius-sm:     6px;
+      --radius-md:     8px;
+      --shadow-card:   0 1px 2px rgba(0,0,0,0.06), 0 1px 6px rgba(0,0,0,0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      font-size: 14px;
+      background: var(--bg-layout);
+      color: var(--text-body);
+      line-height: 1.5714;
+    }
+
+    /* ── 顶部导航栏 48px ── */
+    .topbar {
+      height: 48px;
+      background: #001529;
+      color: rgba(255,255,255,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      background: var(--primary);
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      color: #fff;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .switch-btn {
+      border: 1px solid rgba(255,255,255,0.25);
+      background: transparent;
+      color: rgba(255,255,255,0.75);
+      border-radius: var(--radius-sm);
+      padding: 3px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .2s;
+      line-height: 22px;
+    }
+    .switch-btn:hover { border-color: var(--primary); color: #fff; background: rgba(22,119,255,0.2); }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      gap: 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 14px;
+      height: 100%;
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+      cursor: pointer;
+      position: relative;
+      transition: color .2s, background .2s;
+      white-space: nowrap;
+    }
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,0.08); }
+
+    /* 徽标数字 */
+    .badge {
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      background: var(--error);
+      color: #fff;
+      font-size: 10px;
+      line-height: 16px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* 徽标红点 */
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--error);
+      position: absolute;
+      top: 10px;
+      right: 8px;
+      border: 1.5px solid #001529;
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 16px;
+      background: rgba(255,255,255,0.15);
+      margin: 0 4px;
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+    }
+
+    /* ── 多页签栏 ── */
+    .tabs-bar {
+      height: 36px;
+      background: var(--bg-container);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      padding: 0 8px 0 0;
+    }
+
+    .tabs-list {
+      display: flex;
+      align-items: stretch;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-list::-webkit-scrollbar { display: none; }
+
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 14px;
+      font-size: 12px;
+      color: var(--text-sub);
+      cursor: pointer;
+      border-right: 1px solid var(--border-light);
+      white-space: nowrap;
+      transition: color .2s, background .2s;
+      position: relative;
+    }
+    .tab:hover { color: var(--text-body); background: #fafafa; }
+    .tab.active {
+      color: var(--primary);
+      background: var(--primary-bg);
+    }
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 0 0 2px 2px;
+    }
+    .tab .close-icon {
+      font-size: 10px;
+      opacity: 0.5;
+      line-height: 1;
+      padding: 2px;
+      border-radius: 2px;
+    }
+    .tab:hover .close-icon { opacity: 0.85; }
+    .tab .close-icon:hover { background: rgba(0,0,0,0.08); opacity: 1; color: var(--error); }
+
+    .tabs-clear {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 12px;
+      color: var(--text-sub);
+      cursor: pointer;
+      border-left: 1px solid var(--border-light);
+      white-space: nowrap;
+      transition: color .2s;
+    }
+    .tabs-clear:hover { color: var(--primary); }
+
+    /* ── 页面内容区 ── */
+    .page-content {
+      padding: 16px 16px 24px;
+    }
+
+    /* ── 卡片 ── */
+    .card {
+      background: var(--bg-container);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+    }
+
+    /* ── 工作成果统计卡片 ── */
+    .stats-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-title);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title::before {
+      content: '';
+      width: 3px;
+      height: 14px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .card-extra {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: var(--text-sub);
+      font-size: 13px;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      divide-x: 1px solid var(--border-light);
+    }
+
+    .stat-item {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-right: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .stat-item:last-child { border-right: 0; }
+    .stat-item:hover { background: #fafafa; }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .stat-icon.blue   { background: var(--primary-bg); color: var(--primary); }
+    .stat-icon.green  { background: #f6ffed; color: var(--success); }
+    .stat-icon.orange { background: #fff7e6; color: var(--warning); }
+    .stat-icon.gray   { background: #fafafa; color: var(--text-sub); }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-title);
+      line-height: 1.2;
+    }
+    .stat-value .unit {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-sub);
+      margin-left: 2px;
+    }
+
+    /* ── 底部两栏区域 ── */
+    .module-area {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    /* 物料功能模块 */
+    .module-card-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .module-icon-wrap {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: var(--primary-bg);
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      font-size: 16px;
+    }
+    .module-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-title);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      padding: 8px 0;
+    }
+
+    .feature-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--text-body);
+      cursor: pointer;
+      text-decoration: none;
+      transition: color .15s, background .15s;
+      border-radius: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-link:hover { color: var(--primary); background: var(--primary-bg); }
+    .feature-link.active {
+      color: var(--primary);
+      font-weight: 600;
+      background: var(--primary-bg);
+    }
+    .feature-link.guide {
+      animation: guidePulse 1.8s ease-in-out infinite;
+    }
+    .feature-link.guide::before {
+      content: '';
+      position: absolute;
+      inset: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(22,119,255,0.35);
+      animation: guideRing 1.8s ease-out infinite;
+      pointer-events: none;
+    }
+    .feature-link.guide::after {
+      content: '→';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      animation: guideArrow 1.1s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .feature-link .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+      transition: background .15s;
+    }
+    .feature-link:hover .dot,
+    .feature-link.active .dot { background: var(--primary); }
+
+    @keyframes guidePulse {
+      0%, 100% { background: rgba(22,119,255,0.06); }
+      50% { background: rgba(22,119,255,0.14); }
+    }
+    @keyframes guideRing {
+      0% { opacity: .2; transform: scale(1); }
+      50% { opacity: .55; transform: scale(1.01); }
+      100% { opacity: .2; transform: scale(1); }
+    }
+    @keyframes guideArrow {
+      0%, 100% { transform: translateY(-50%) translateX(0); opacity: .7; }
+      50% { transform: translateY(-50%) translateX(4px); opacity: 1; }
+    }
+
+    /* 标签区分不同类型的功能 */
+    .feature-tag {
+      font-size: 10px;
+      padding: 0 4px;
+      border-radius: 3px;
+      line-height: 16px;
+      margin-left: auto;
+    }
+    .feature-tag.warn { background: #fff7e6; color: var(--warning); }
+    .feature-tag.new  { background: var(--primary-bg); color: var(--primary); }
+
+    .module-card-footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-hint {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+    .footer-hint strong { color: var(--primary); }
+
+    /* 主按钮 */
+    .btn-primary {
+      height: 32px;
+      padding: 0 16px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      cursor: pointer;
+      transition: background .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    /* ── 右侧待办卡片 ── */
+    .todo-card-head {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .todo-list {
+      padding: 8px 0;
+    }
+
+    .todo-item {
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background .15s;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .todo-item:last-child { border-bottom: 0; }
+    .todo-item:hover { background: #fafafa; }
+
+    .todo-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .todo-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .todo-dot.blue   { background: var(--primary); }
+    .todo-dot.orange { background: var(--warning); }
+    .todo-dot.red    { background: var(--error); }
+    .todo-dot.gray   { background: var(--text-sub); }
+
+    .todo-label {
+      font-size: 13px;
+      color: var(--text-body);
+    }
+    .todo-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    .todo-count {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 0 8px;
+      height: 20px;
+      line-height: 20px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .todo-count.blue   { background: var(--primary-bg); color: var(--primary); }
+    .todo-count.orange { background: #fff7e6; color: var(--warning); }
+    .todo-count.red    { background: #fff1f0; color: var(--error); }
+    .todo-count.gray   { background: #fafafa; color: var(--text-sub); }
+
+    .todo-arrow {
+      color: var(--text-sub);
+      font-size: 12px;
+      margin-left: 6px;
+    }
+
+    /* ── AntD Message 全局提示（顶部居中）── */
+    .message-wrap {
+      position: fixed;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .message-item {
+      background: var(--bg-container);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12), 0 3px 6px rgba(0,0,0,0.08);
+      padding: 9px 12px;
+      font-size: 14px;
+      color: var(--text-body);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity .25s, transform .25s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .message-item.show { opacity: 1; transform: translateY(0); }
+    .message-item .msg-icon { font-size: 14px; }
+
+    /* ── 响应式 ── */
+    @media (max-width: 1280px) {
+      .module-area { grid-template-columns: 1fr; }
+      .feature-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 960px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .stat-item:nth-child(2) { border-right: 0; }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .page-content { padding: 12px; }
+      .stats-row { grid-template-columns: 1fr; }
+      .stat-item { border-right: 0; border-bottom: 1px solid var(--border-light); }
+      .stat-item:last-child { border-bottom: 0; }
+      .brand-name { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── 顶部导航 48px ── -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">咸</div>
+      <span class="brand-name">咸亨国际主数据管理平台</span>
+      <button class="switch-btn" data-action="switch-system">切换系统</button>
+    </div>
+
+    <nav class="nav-menu" aria-label="顶部功能导航">
+      <div class="nav-item" data-name="消息通知">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        消息通知
+        <span class="badge-dot"></span>
+      </div>
+      <div class="nav-item" data-name="价格审核">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        价格审核
+        <span class="badge-dot"></span>
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-name="版本更新">版本更新</div>
+      <div class="nav-item" data-name="推送ERP">推送ERP</div>
+      <div class="nav-item" data-name="管理模块">管理模块</div>
+      <div class="nav-item" data-name="任务中心">
+        任务中心
+        <span class="badge">9+</span>
+      </div>
+      <div class="nav-item" data-name="清洗任务">
+        清洗任务
+        <span class="badge-dot"></span>
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-name="管理员">
+        <div class="user-avatar">管</div>
+        管理员
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ── 多页签栏 ── -->
+  <div class="tabs-bar">
+    <div class="tabs-list">
+      <div class="tab active" data-tab="工作台">
+        工作台
+        <span class="close-icon" onclick="event.stopPropagation()">×</span>
+      </div>
+      <div class="tab" data-tab="组织管理">
+        组织管理
+        <span class="close-icon" onclick="event.stopPropagation()">×</span>
+      </div>
+      <div class="tab" data-tab="编辑-组织">
+        编辑-组织
+        <span class="close-icon" onclick="event.stopPropagation()">×</span>
+      </div>
+      <div class="tab" data-tab="账号管理">
+        账号管理
+        <span class="close-icon" onclick="event.stopPropagation()">×</span>
+      </div>
+    </div>
+    <div class="tabs-clear" id="clearTabs">清除</div>
+  </div>
+
+  <!-- ── 页面内容 ── -->
+  <main class="page-content">
+
+    <!-- 工作成果统计 -->
+    <div class="card">
+      <div class="stats-card-head">
+        <div class="card-title">工作成果</div>
+        <div class="card-extra">
+          <span>🕒 2026年 剩余 274 天</span>
+          <span>春风春雨花经眼，江北江南水拍天。</span>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-item" data-stat="您已拥有物料">
+          <div class="stat-icon blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          </div>
+          <div>
+            <div class="stat-label">您已拥有物料</div>
+            <div class="stat-value">1,286<span class="unit">条</span></div>
+          </div>
+        </div>
+        <div class="stat-item" data-stat="累计新增物料">
+          <div class="stat-icon green">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </div>
+          <div>
+            <div class="stat-label">累计新增物料</div>
+            <div class="stat-value">348<span class="unit">条</span></div>
+          </div>
+        </div>
+        <div class="stat-item" data-stat="累计去存物料">
+          <div class="stat-icon orange">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </div>
+          <div>
+            <div class="stat-label">累计去存物料</div>
+            <div class="stat-value">52<span class="unit">条</span></div>
+          </div>
+        </div>
+        <div class="stat-item" data-stat="剩余存量物料">
+          <div class="stat-icon gray">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <div>
+            <div class="stat-label">剩余存量物料</div>
+            <div class="stat-value">886<span class="unit">条</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部双栏 -->
+    <div class="module-area">
+
+      <!-- 左：物料功能模块 -->
+      <div class="card">
+        <div class="module-card-head">
+          <div class="module-icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <span class="module-card-title">物料管理</span>
+        </div>
+
+        <div class="feature-grid">
+          <a href="javascript:void(0)" class="feature-link active" data-feature="物料列表">
+            <span class="dot"></span>物料列表
+          </a>
+          <a href="javascript:void(0)" class="feature-link" data-feature="暂存列表">
+            <span class="dot"></span>暂存列表
+          </a>
+          <a href="javascript:void(0)" class="feature-link" data-feature="新增物料">
+            <span class="dot"></span>新增物料
+          </a>
+          <a href="javascript:void(0)" class="feature-link" data-feature="批量新增">
+            <span class="dot"></span>批量新增
+          </a>
+          <a href="javascript:void(0)" class="feature-link guide" data-feature="待我审核">
+            <span class="dot"></span>待我审核
+            <span class="feature-tag new">3</span>
+          </a>
+          <a href="javascript:void(0)" class="feature-link" data-feature="我发起的">
+            <span class="dot"></span>我发起的
+          </a>
+          <a href="javascript:void(0)" class="feature-link guide" data-feature="审核结果">
+            <span class="dot"></span>审核结果
+          </a>
+          <a href="javascript:void(0)" class="feature-link" data-feature="商图打包">
+            <span class="dot"></span>商图打包
+          </a>
+          <a href="javascript:void(0)" class="feature-link" data-feature="待我审核（产业）">
+            <span class="dot"></span>待我审核（产业）
+          </a>
+          <a href="javascript:void(0)" class="feature-link" data-feature="审核结果（产业）">
+            <span class="dot"></span>审核结果（产业）
+          </a>
+          <a href="javascript:void(0)" class="feature-link" data-feature="价格预警">
+            <span class="dot"></span>价格预警
+            <span class="feature-tag warn">5</span>
+          </a>
+          <a href="javascript:void(0)" class="feature-link" data-feature="审核日志">
+            <span class="dot"></span>审核日志
+          </a>
+        </div>
+
+        <div class="module-card-footer">
+          <span class="footer-hint">当前选中：<strong id="currentFeature">物料列表</strong></span>
+          <button class="btn-primary" id="openFeatureBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            进入
+          </button>
+        </div>
+      </div>
+
+      <!-- 右：今日待办 -->
+      <div class="card">
+        <div class="todo-card-head">
+          <div class="card-title">今日待办</div>
+        </div>
+        <div class="todo-list">
+          <div class="todo-item" data-quick="待审核物料">
+            <div class="todo-left">
+              <span class="todo-dot blue"></span>
+              <div>
+                <div class="todo-label">待审核物料</div>
+                <div class="todo-desc">等待你审核确认</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center">
+              <span class="todo-count blue">3</span>
+              <span class="todo-arrow">›</span>
+            </div>
+          </div>
+          <div class="todo-item" data-quick="价格预警">
+            <div class="todo-left">
+              <span class="todo-dot orange"></span>
+              <div>
+                <div class="todo-label">价格预警</div>
+                <div class="todo-desc">协议价超出阈值</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center">
+              <span class="todo-count orange">5</span>
+              <span class="todo-arrow">›</span>
+            </div>
+          </div>
+          <div class="todo-item" data-quick="推送ERP失败">
+            <div class="todo-left">
+              <span class="todo-dot red"></span>
+              <div>
+                <div class="todo-label">推送 ERP 失败</div>
+                <div class="todo-desc">需要重新推送处理</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center">
+              <span class="todo-count red">2</span>
+              <span class="todo-arrow">›</span>
+            </div>
+          </div>
+          <div class="todo-item" data-quick="暂存草稿">
+            <div class="todo-left">
+              <span class="todo-dot gray"></span>
+              <div>
+                <div class="todo-label">暂存草稿</div>
+                <div class="todo-desc">未提交的物料信息</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center">
+              <span class="todo-count gray">8</span>
+              <span class="todo-arrow">›</span>
+            </div>
+          </div>
+          <div class="todo-item" data-quick="消息通知">
+            <div class="todo-left">
+              <span class="todo-dot blue"></span>
+              <div>
+                <div class="todo-label">消息通知</div>
+                <div class="todo-desc">系统及业务最新通知</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center">
+              <span class="todo-count blue">12</span>
+              <span class="todo-arrow">›</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- AntD Message 顶部居中提示 -->
+  <div class="message-wrap" id="messageWrap"></div>
+
+  <script>
+    function showMessage(text, type = 'info') {
+      const wrap = document.getElementById('messageWrap');
+      const icons = { info: '💬', success: '✅', warning: '⚠️', error: '❌' };
+      const el = document.createElement('div');
+      el.className = 'message-item';
+      el.innerHTML = `<span class="msg-icon">${icons[type]}</span>${text}`;
+      wrap.appendChild(el);
+      requestAnimationFrame(() => { el.classList.add('show'); });
+      setTimeout(() => {
+        el.classList.remove('show');
+        setTimeout(() => el.remove(), 280);
+      }, 2200);
+    }
+
+    // 顶部导航点击
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => showMessage(`已点击：${item.dataset.name}`));
+    });
+
+    // 切换系统
+    document.querySelector('[data-action="switch-system"]')
+      .addEventListener('click', () => showMessage('模拟切换系统', 'info'));
+
+    // 页签切换
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        showMessage(`已切换到：${tab.dataset.tab}`);
+      });
+    });
+
+    // 清除页签
+    document.getElementById('clearTabs').addEventListener('click', () => {
+      showMessage('已清除所有标签页');
+    });
+
+    // 统计卡片
+    document.querySelectorAll('.stat-item').forEach(card => {
+      card.addEventListener('click', () => showMessage(`查看统计：${card.dataset.stat}`));
+    });
+
+    // 功能入口
+    let selectedFeature = '物料列表';
+    const featureRoutes = { '待我审核': '待我审核.html', '审核结果': '审核结果.html' };
+
+    document.querySelectorAll('.feature-link').forEach(link => {
+      link.addEventListener('click', () => {
+        document.querySelectorAll('.feature-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        selectedFeature = link.dataset.feature;
+        document.getElementById('currentFeature').textContent = selectedFeature;
+        const target = featureRoutes[selectedFeature];
+        if (target) {
+          showMessage(`正在进入：${selectedFeature}...`, 'success');
+          setTimeout(() => { window.location.href = target; }, 500);
+        } else {
+          showMessage(`已选中：${selectedFeature}`);
+        }
+      });
+    });
+
+    document.getElementById('openFeatureBtn').addEventListener('click', () => {
+      const target = featureRoutes[selectedFeature];
+      if (target) {
+        window.location.href = target;
+      } else {
+        showMessage(`进入：${selectedFeature}`, 'success');
+      }
+    });
+
+    // 待办卡片
+    document.querySelectorAll('.todo-item').forEach(item => {
+      item.addEventListener('click', () => showMessage(`查看待办：${item.dataset.quick}`));
+    });
+  </script>
+</body>
+</html>

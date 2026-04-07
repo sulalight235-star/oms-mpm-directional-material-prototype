@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>审核结果 - 咸亨国际主数据管理平台</title>
+  <style>
+    :root {
+      --primary:      #1677ff;
+      --primary-hover:#4096ff;
+      --primary-bg:   #e6f4ff;
+      --success:      #52c41a;
+      --success-bg:   #f6ffed;
+      --warning:      #faad14;
+      --error:        #ff4d4f;
+      --error-bg:     #fff1f0;
+      --text-title:   rgba(0,0,0,0.88);
+      --text-body:    rgba(0,0,0,0.65);
+      --text-sub:     rgba(0,0,0,0.45);
+      --border:       #d9d9d9;
+      --border-light: #f0f0f0;
+      --bg-layout:    #f5f5f5;
+      --bg-container: #ffffff;
+      --bg-table-head:#fafafa;
+      --radius:       6px;
+      --shadow:       0 1px 2px rgba(0,0,0,0.06),0 1px 6px rgba(0,0,0,0.04);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:-apple-system,"Microsoft YaHei","PingFang SC",Arial,sans-serif;font-size:14px;background:var(--bg-layout);color:var(--text-body);}
+
+    /* ── 顶部导航 ── */
+    .topbar{height:48px;background:#001529;color:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:100;}
+    .brand{display:flex;align-items:center;gap:12px;}
+    .brand-logo{width:28px;height:28px;background:var(--primary);border-radius:6px;display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+    .brand-name{font-size:16px;font-weight:600;color:#fff;white-space:nowrap;}
+    .switch-btn{border:1px solid rgba(255,255,255,0.25);background:transparent;color:rgba(255,255,255,0.75);border-radius:var(--radius);padding:3px 10px;font-size:12px;cursor:pointer;line-height:22px;transition:all .2s;}
+    .switch-btn:hover{border-color:var(--primary);color:#fff;}
+    .nav-menu{display:flex;align-items:center;height:100%;}
+    .nav-item{display:flex;align-items:center;gap:5px;padding:0 13px;height:100%;font-size:13px;color:rgba(255,255,255,0.75);cursor:pointer;position:relative;white-space:nowrap;transition:.2s;}
+    .nav-item:hover{color:#fff;background:rgba(255,255,255,0.08);}
+    .badge{min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--error);color:#fff;font-size:10px;line-height:16px;text-align:center;font-weight:600;}
+    .badge-dot{width:6px;height:6px;border-radius:50%;background:var(--error);position:absolute;top:10px;right:7px;border:1.5px solid #001529;}
+    .nav-divider{width:1px;height:16px;background:rgba(255,255,255,0.15);margin:0 3px;}
+    .user-avatar{width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;font-weight:600;display:grid;place-items:center;}
+
+    /* ── 多页签 ── */
+    .tabs-bar{height:36px;background:var(--bg-container);border-bottom:1px solid var(--border-light);display:flex;align-items:stretch;justify-content:space-between;padding:0 8px 0 0;}
+    .tabs-list{display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none;}
+    .tabs-list::-webkit-scrollbar{display:none;}
+    .tab{display:flex;align-items:center;gap:6px;padding:0 14px;font-size:12px;color:var(--text-sub);cursor:pointer;border-right:1px solid var(--border-light);white-space:nowrap;transition:.2s;position:relative;}
+    .tab:hover{color:var(--text-body);background:#fafafa;}
+    .tab.active{color:var(--primary);background:var(--primary-bg);}
+    .tab.active::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--primary);}
+    .tab .cls{font-size:10px;opacity:.5;padding:2px;border-radius:2px;}
+    .tab:hover .cls{opacity:.85;}
+    .tab .cls:hover{background:rgba(0,0,0,0.08);color:var(--error);}
+    .tabs-clear{display:flex;align-items:center;padding:0 12px;font-size:12px;color:var(--text-sub);cursor:pointer;border-left:1px solid var(--border-light);}
+    .tabs-clear:hover{color:var(--primary);}
+
+    /* ── 主内容 ── */
+    .page{padding:12px 16px 24px;}
+
+    /* ── 筛选栏 ── */
+    .filter-card{background:var(--bg-container);border:1px solid var(--border-light);border-radius:var(--radius);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:var(--shadow);}
+    .filter-label{color:var(--text-sub);font-size:13px;font-weight:500;white-space:nowrap;}
+    .filter-group{display:flex;align-items:center;gap:6px;flex:1;min-width:150px;}
+    .filter-group label{white-space:nowrap;font-size:13px;color:var(--text-body);}
+    .f-input,.f-select{flex:1;height:32px;border:1px solid var(--border);border-radius:var(--radius);padding:0 11px;font-size:13px;outline:none;color:var(--text-body);background:var(--bg-container);min-width:80px;transition:border .2s;}
+    .f-input:focus,.f-select:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1);}
+    .filter-actions{display:flex;gap:8px;flex-shrink:0;}
+
+    /* ── 按钮 ── */
+    .btn{display:inline-flex;align-items:center;gap:4px;height:32px;padding:0 15px;border-radius:var(--radius);font-size:13px;cursor:pointer;transition:.2s;border:1px solid transparent;white-space:nowrap;}
+    .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary);}
+    .btn-primary:hover{background:var(--primary-hover);border-color:var(--primary-hover);}
+    .btn-default{background:var(--bg-container);color:var(--text-body);border-color:var(--border);}
+    .btn-default:hover{color:var(--primary);border-color:var(--primary);}
+    .btn-success{background:var(--success);color:#fff;border-color:var(--success);}
+    .btn-danger{background:var(--error);color:#fff;border-color:var(--error);}
+    .btn-info{background:#1677ff;color:#fff;border-color:#1677ff;}
+    .btn-sm{height:28px;padding:0 11px;font-size:12px;}
+
+    /* ── 操作栏 ── */
+    .action-card{background:var(--bg-container);border:1px solid var(--border-light);border-radius:var(--radius);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;box-shadow:var(--shadow);}
+    .action-label{font-size:12px;color:var(--text-sub);}
+
+    /* ── 子 Tab ── */
+    .sub-tabs{display:flex;align-items:center;background:var(--bg-container);border-bottom:1px solid var(--border-light);padding:0 16px;flex-wrap:wrap;margin-top:8px;}
+    .sub-tab{padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;color:var(--text-sub);transition:.2s;}
+    .sub-tab:hover:not(.active){color:var(--text-body);}
+    .sub-tab.active{border-bottom-color:var(--primary);color:var(--primary);font-weight:600;}
+
+    /* ── 表格 ── */
+    .table-wrap{background:var(--bg-container);border:1px solid var(--border-light);border-top:none;overflow-x:auto;box-shadow:var(--shadow);}
+    table{width:100%;min-width:1500px;border-collapse:collapse;font-size:13px;}    thead tr{background:var(--bg-table-head);}
+    thead th{padding:10px 12px;text-align:left;font-weight:600;color:var(--text-title);border-bottom:2px solid var(--border);white-space:nowrap;background:var(--bg-table-head);}
+    thead th:first-child{padding-left:16px;width:40px;}
+    tbody tr{border-bottom:1px solid var(--border-light);transition:.12s;}
+    tbody tr:hover{background:#fafafa;}
+    tbody tr:last-child{border-bottom:none;}
+    tbody td{padding:10px 12px;vertical-align:middle;color:var(--text-body);white-space:nowrap;}
+    tbody td:first-child{padding-left:16px;}
+    .td-link{color:var(--primary);cursor:pointer;}
+    .td-link:hover{text-decoration:underline;}
+
+    /* ── 标签 ── */
+    .tag{display:inline-flex;align-items:center;padding:1px 7px;border-radius:4px;font-size:12px;white-space:nowrap;border:1px solid;}
+    .tag-no-img{background:var(--error-bg);border-color:#ffa39e;color:var(--error);}
+    .tag-pass{background:var(--success-bg);border-color:#b7eb8f;color:var(--success);}
+    .tag-reject{background:#fff7e6;border-color:#ffd591;color:#d46b08;}
+
+    /* ── 分页 ── */
+    .pagination{display:flex;align-items:center;justify-content:flex-end;gap:6px;padding:12px 16px;border-top:1px solid var(--border-light);flex-wrap:wrap;}
+    .page-info{color:var(--text-sub);font-size:13px;margin-right:4px;}
+    .page-btn{min-width:32px;height:32px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-container);color:var(--text-body);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.2s;font-size:13px;}
+    .page-btn:hover{border-color:var(--primary);color:var(--primary);}
+    .page-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+    .page-jump{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-body);}
+    .page-jump input{width:48px;height:32px;border:1px solid var(--border);border-radius:var(--radius);text-align:center;font-size:13px;outline:none;}
+    .page-jump input:focus{border-color:var(--primary);}
+
+    /* ── Drawer 详情侧滑 ── */
+    .drawer-mask{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;display:none;}
+    .drawer-mask.open{display:block;}
+    .drawer{position:fixed;right:0;top:0;bottom:0;width:560px;max-width:96vw;background:var(--bg-container);box-shadow:-4px 0 24px rgba(0,0,0,0.12);z-index:201;transform:translateX(100%);transition:.28s ease;display:flex;flex-direction:column;}
+    .drawer.open{transform:translateX(0);}
+    .drawer-header{padding:16px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;}
+    .drawer-header-title{font-size:16px;font-weight:600;color:var(--text-title);}
+    .drawer-close{cursor:pointer;font-size:20px;color:var(--text-sub);line-height:1;transition:.2s;}
+    .drawer-close:hover{color:var(--text-title);}
+    .drawer-body{padding:20px 24px;overflow-y:auto;flex:1;}
+    .detail-section{margin-bottom:20px;}
+    .detail-section-title{font-size:13px;font-weight:600;color:var(--text-title);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border-light);}
+    .detail-row{display:flex;padding:8px 0;border-bottom:1px solid var(--border-light);}
+    .detail-row:last-child{border-bottom:none;}
+    .detail-label{width:100px;flex-shrink:0;color:var(--text-sub);font-size:13px;}
+    .detail-value{flex:1;color:var(--text-body);font-size:13px;}
+    .drawer-footer{padding:14px 24px;border-top:1px solid var(--border-light);display:flex;gap:8px;justify-content:flex-end;}
+
+    /* ── AntD Message 顶部居中 ── */
+    .msg-wrap{position:fixed;top:56px;left:50%;transform:translateX(-50%);z-index:999;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:8px;}
+    .msg-item{background:var(--bg-container);border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,0.12),0 3px 6px rgba(0,0,0,0.08);padding:9px 12px;font-size:14px;color:var(--text-body);display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(-8px);transition:.25s;white-space:nowrap;}
+    .msg-item.show{opacity:1;transform:translateY(0);}
+  </style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-logo">咸</div>
+    <span class="brand-name">咸亨国际主数据管理平台</span>
+    <button class="switch-btn">切换系统</button>
+  </div>
+  <nav class="nav-menu">
+    <div class="nav-item">消息通知<span class="badge-dot"></span></div>
+    <div class="nav-item">价格审核<span class="badge-dot"></span></div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">版本更新</div>
+    <div class="nav-item">推送ERP</div>
+    <div class="nav-item">管理模块</div>
+    <div class="nav-item">任务中心<span class="badge">9+</span></div>
+    <div class="nav-item">清洗任务<span class="badge-dot"></span></div>
+    <div class="nav-divider"></div>
+    <div class="nav-item"><div class="user-avatar">管</div>管理员 ▾</div>
+  </nav>
+</header>
+
+<!-- 多页签 -->
+<div class="tabs-bar">
+  <div class="tabs-list">
+    <div class="tab" onclick="go('oms-mpm-物料工作台原型.html')">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    <div class="tab" onclick="go('待我审核.html')">待我审核 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    <div class="tab active">审核结果 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+  </div>
+  <div class="tabs-clear" onclick="showMsg('已清除标签页')">清除</div>
+</div>
+
+<main class="page">
+  <!-- 筛选栏 -->
+  <div class="filter-card">
+    <span class="filter-label">筛选</span>
+    <div class="filter-group">
+      <label>货主</label>
+      <select class="f-select">
+        <option value="">请选择</option>
+        <option>万聚国际（杭州）</option>
+        <option>威亨国际科技</option>
+        <option>浙江威亨创新产</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>型号</label>
+      <input class="f-input" placeholder="请输入" />
+    </div>
+    <div class="filter-group">
+      <label>规格</label>
+      <input class="f-input" placeholder="请输入" />
+    </div>
+    <div class="filter-group">
+      <label>审核状态</label>
+      <select class="f-select">
+        <option value="">请选择</option>
+        <option>通过</option>
+        <option>驳回</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>物料等级</label>
+      <select class="f-select">
+        <option value="">请选择</option>
+        <option>零星</option>
+        <option>常规</option>
+      </select>
+    </div>
+    <div class="filter-actions">
+      <button class="btn btn-primary" onclick="showMsg('查询中...','info')">查询</button>
+      <button class="btn btn-default" onclick="showMsg('已重置筛选条件')">重置</button>
+    </div>
+  </div>
+
+  <!-- 操作栏 -->
+  <div class="action-card">
+    <span class="action-label">操作：</span>
+    <button class="btn btn-default btn-sm" onclick="showMsg('已刷新列表')">刷新</button>
+    <button class="btn btn-info btn-sm" onclick="showMsg('正在导出...')">导出</button>
+  </div>
+
+  <!-- 子 Tab -->
+  <div class="sub-tabs" id="subTabs">
+    <div class="sub-tab active" data-subtab="新增审核">新增审核</div>
+    <div class="sub-tab" data-subtab="修改审核">修改审核</div>
+    <div class="sub-tab" data-subtab="MDM增量审核">MDM增量审核</div>
+    <div class="sub-tab" data-subtab="SRM新增二审">SRM新增二审</div>
+    <div class="sub-tab" data-subtab="SRM修改二审">SRM修改二审</div>
+    <div class="sub-tab" data-subtab="IQS新增审核">IQS新增审核</div>
+    <div class="sub-tab" data-subtab="定向物料新增审核">定向物料新增审核</div>
+    <div class="sub-tab" data-subtab="全部">全部</div>
+  </div>
+
+  <!-- 表格 -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="checkAll" /></th>
+          <th>货主</th><th>编码</th><th>名称</th><th>四级类目</th>
+          <th>型号</th><th>规格</th><th>品牌</th><th>物料等级</th>
+          <th>物料类型</th><th>申请时间</th><th>申请人</th>
+          <th>审核时间</th><th>审核人</th><th>审核说明</th><th>审核状态</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="pagination">
+      <span class="page-info">共 369,792 条</span>
+      <button class="page-btn">‹</button>
+      <button class="page-btn active" data-page="1">1</button>
+      <button class="page-btn" data-page="2">2</button>
+      <button class="page-btn" data-page="3">3</button>
+      <button class="page-btn" data-page="4">4</button>
+      <button class="page-btn" data-page="5">5</button>
+      <span style="color:var(--text-sub)">…</span>
+      <button class="page-btn" data-page="14792">14792</button>
+      <button class="page-btn">›</button>
+      <select class="f-select" style="width:90px;flex:none;">
+        <option>25 条/页</option><option>50 条/页</option><option>100 条/页</option>
+      </select>
+      <div class="page-jump">跳至<input type="number" min="1" value="1" />页
+        <button class="btn btn-default btn-sm" onclick="showMsg('已跳转')">跳转</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Drawer 详情侧滑 -->
+<div class="drawer-mask" id="drawerMask" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <span class="drawer-header-title" id="drawerTitle">物料详情</span>
+    <span class="drawer-close" onclick="closeDrawer()">×</span>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-footer">
+    <button class="btn btn-default" onclick="closeDrawer()">关闭</button>
+  </div>
+</div>
+
+<!-- 消息提示 -->
+<div class="msg-wrap" id="msgWrap"></div>
+
+<script>
+// ── 新增审核数据 ───────────────────────────────────────
+const ROWS = [
+  {owner:'万聚国际（杭州）',code:'A2607001567',name:'草甘膦',cat:'其它化学品',model:'5kg',spec:'-',brand:'牛不粑/NIUBUBA',level:'零星',type:'正常物料',applyTime:'2026-04-01 13:14',applyUser:'郑勤',auditTime:'2026-04-01 14:18',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'万聚国际（杭州）',code:'A0207002781',name:'LCR测试仪',cat:'电容表',model:'4090C',spec:'-',brand:'胜利仪器/VICTOR',level:'零星',type:'正常物料',applyTime:'2026-04-01 13:09',applyUser:'沈灵琪',auditTime:'2026-04-01 14:18',auditor:'沈芳佳',desc:'人工审核类目批改',status:'驳回',batchId:''},
+  {owner:'万聚国际（杭州）',code:'A0301053713',name:'内六角扳手',cat:'通用手动工具套装',model:'E1553',spec:'-',brand:'力易得/ENDURA',level:'常规',type:'正常物料',applyTime:'2026-04-01 11:36',applyUser:'赛梦艳',auditTime:'2026-04-01 14:10',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'威亨国际科技',code:'B2605000604',name:'聚丙烯酰胺',cat:'其它水处理耗材',model:'3000万',spec:'-',brand:'鸿源/HONGYUAN',level:'零星',type:'正常物料',applyTime:'2026-04-01 13:10',applyUser:'金珂',auditTime:'2026-04-01 14:09',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'万聚国际（杭州）',code:'A0201004961',name:'绝缘电阻测试仪',cat:'数显绝缘电阻测…',model:'UT502C',spec:'-',brand:'优利德/UNI-T',level:'零星',type:'正常物料',applyTime:'2026-04-01 11:29',applyUser:'赛梦艳',auditTime:'2026-04-01 14:08',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'威亨国际科技',code:'B0301040804',name:'活动扳手',cat:'通用型扳手',model:'12寸',spec:'-',brand:'绿林/GREENER',level:'零星',type:'正常物料',applyTime:'2026-04-01 11:09',applyUser:'金珂',auditTime:'2026-04-01 14:05',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'威亨国际科技',code:'B2001013785',name:'杆式混浆泵',cat:'汽油动力泥浆泵',model:'NL180-18',spec:'-',brand:'三合力法达/STLD',level:'零星',type:'正常物料',applyTime:'2026-04-01 11:29',applyUser:'金珂',auditTime:'2026-04-01 14:05',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'万聚国际（杭州）',code:'C2606000219',name:'防水包带',cat:'防水材料',model:'/',spec:'-',brand:'国产/MADEINCHI',level:'零星',type:'无图物料',applyTime:'2026-04-01 11:01',applyUser:'赵艺珂',auditTime:'2026-04-01 14:05',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'万聚国际（杭州）',code:'A0301053711',name:'拉铆枪',cat:'手动拉铆枪',model:'KT7007',spec:'-',brand:'锚达/KATA',level:'零星',type:'正常物料',applyTime:'2026-04-01 11:00',applyUser:'王玉红',auditTime:'2026-04-01 14:04',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'万聚国际（杭州）',code:'A0301053710',name:'中分尺',cat:'其它尺类',model:'中分4米',spec:'-',brand:'MOKIN/MOKIN',level:'零星',type:'正常物料',applyTime:'2026-04-01 10:56',applyUser:'王玉红',auditTime:'2026-04-01 14:02',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'万聚国际（杭州）',code:'A0301053705',name:'圆锉',cat:'手动锉类',model:'03972',spec:'-',brand:'世达/SATA',level:'常规',type:'正常物料',applyTime:'2026-04-01 10:01',applyUser:'齐爽',auditTime:'2026-04-01 14:00',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'万聚国际（杭州）',code:'A0701010515',name:'漏电保护器',cat:'其它电料',model:'DK-40L',spec:'-',brand:'上德/D&C',level:'零星',type:'正常物料',applyTime:'2026-04-01 09:08',applyUser:'王光旭',auditTime:'2026-04-01 14:00',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'威亨国际科技',code:'A2204012654',name:'304/A型快拆接头',cat:'其它金属管件',model:'50',spec:'-',brand:'国产/MADEINCHI',level:'零星',type:'无图物料',applyTime:'2026-04-01 13:16',applyUser:'梅贵',auditTime:'2026-04-01 13:43',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'威亨国际科技',code:'A2002042753',name:'不锈钢焊接大小头',cat:'焊接管件',model:'/',spec:'-',brand:'国产/MADEINCHI',level:'零星',type:'无图物料',applyTime:'2026-04-01 13:14',applyUser:'梅贵',auditTime:'2026-04-01 13:43',auditor:'沈芳佳',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'威亨国际科技',code:'A2003010121',name:'丝扣排气阀',cat:'排气阀',model:'/',spec:'-',brand:'国产/MADEINCHI',level:'零星',type:'无图物料',applyTime:'2026-04-01 13:13',applyUser:'梅贵',auditTime:'2026-04-01 13:33',auditor:'王洳玲',desc:'人工审核通过',status:'通过',batchId:''},
+  {owner:'万聚国际（杭州）',code:'A1511018461',name:'抽油烟机',cat:'油烟机',model:'CXW-258-C1910',spec:'-',brand:'海尔/HAIER',level:'零星',type:'正常物料',applyTime:'2026-04-01 13:31',applyUser:'齐爽',auditTime:'2026-04-01 13:32',auditor:'夏莹',desc:'人工审核通过',status:'通过',batchId:''},
+];
+
+// ── 定向物料审核结果数据 ────────────────────────────────
+const DIRECTIONAL_ROWS = [
+  {owner:'万聚国际（杭州）',code:'A1901005067',name:'PVC线槽',cat:'线槽类',model:'30*20mm',spec:'宽30mm 厚0.8mm',brand:'佐佑众工/ZUOYOU',level:'零星',type:'正常物料',applyTime:'2026-04-07 09:10',applyUser:'赵艺珂',auditTime:'2026-04-07 10:35',auditor:'杨晨',desc:'AI建议驳回，规格描述与名称不一致，已修正后通过',status:'通过',batchId:'DX202604070001'},
+  {owner:'万聚国际（杭州）',code:'A1901005068',name:'PVC弯头',cat:'线槽类',model:'30*20mm',spec:'90度',brand:'佐佑众工/ZUOYOU',level:'零星',type:'无图物料',applyTime:'2026-04-07 09:10',applyUser:'赵艺珂',auditTime:'2026-04-07 10:35',auditor:'杨晨',desc:'人工审核通过',status:'通过',batchId:'DX202604070001'},
+  {owner:'万聚国际（杭州）',code:'A1901005069',name:'PVC三通',cat:'线槽类',model:'30*20mm',spec:'-',brand:'佐佑众工/ZUOYOU',level:'零星',type:'无图物料',applyTime:'2026-04-07 09:10',applyUser:'赵艺珂',auditTime:'2026-04-07 10:35',auditor:'杨晨',desc:'人工审核通过',status:'通过',batchId:'DX202604070001'},
+  {owner:'威亨国际科技',code:'B1102003301',name:'304不锈钢螺栓',cat:'紧固件',model:'M8*40',spec:'全牙',brand:'国产/MADEINCHI',level:'零星',type:'无图物料',applyTime:'2026-04-07 10:22',applyUser:'梅贵',auditTime:'2026-04-07 11:08',auditor:'夏宝',desc:'人工审核通过',status:'通过',batchId:'DX202604070002'},
+  {owner:'威亨国际科技',code:'B1102003302',name:'304不锈钢螺母',cat:'紧固件',model:'M8',spec:'-',brand:'国产/MADEINCHI',level:'零星',type:'无图物料',applyTime:'2026-04-07 10:22',applyUser:'梅贵',auditTime:'2026-04-07 11:08',auditor:'夏宝',desc:'品牌信息缺失，已按规则补充国产标识',status:'驳回',batchId:'DX202604070002'},
+];
+
+// ── 状态 ──────────────────────────────────────────────
+let currentTab = '新增审核';
+let isDirectionalTab = false;
+
+// ── 工具函数 ───────────────────────────────────────────
+function statusTag(s){ return s==='通过'?'<span class="tag tag-pass">通过</span>':'<span class="tag tag-reject">驳回</span>'; }
+function typeTag(t){ return t==='无图物料'?'<span class="tag tag-no-img">无图物料</span>':t; }
+
+// ── 渲染表格 ───────────────────────────────────────────
+function renderTable(){
+  const data = isDirectionalTab ? DIRECTIONAL_ROWS : ROWS;
+
+  document.getElementById('tableBody').innerHTML = data.map((r,i)=>`
+    <tr>
+      <td><input type="checkbox"/></td>
+      <td>${r.owner}</td>
+      <td><span class="td-link" onclick="openDrawer(${i})">${r.code}</span></td>
+      <td>${r.name}</td><td>${r.cat}</td><td>${r.model}</td><td>${r.spec}</td>
+      <td>${r.brand}</td><td>${r.level}</td>
+      <td>${typeTag(r.type)}</td>
+      <td>${r.applyTime}</td><td>${r.applyUser}</td>
+      <td>${r.auditTime}</td><td>${r.auditor}</td><td>${r.desc}</td>
+      <td>${statusTag(r.status)}</td>
+    </tr>`).join('');
+}
+
+document.getElementById('checkAll').addEventListener('change',function(){
+  document.querySelectorAll('#tableBody input[type=checkbox]').forEach(c=>c.checked=this.checked);
+});
+
+document.getElementById('subTabs').addEventListener('click',e=>{
+  const t=e.target.closest('.sub-tab'); if(!t) return;
+  document.querySelectorAll('.sub-tab').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  currentTab = t.dataset.subtab;
+  isDirectionalTab = (currentTab === '定向物料新增审核');
+  renderTable();
+  showMsg(`切换至：${currentTab}`);
+});
+
+document.querySelectorAll('.page-btn[data-page]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.page-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    showMsg(`跳转到第 ${b.dataset.page} 页`);
+  });
+});
+
+function openDrawer(idx){
+  const data = isDirectionalTab ? DIRECTIONAL_ROWS : ROWS;
+  const r = data[idx];
+  document.getElementById('drawerTitle').textContent = `物料详情 — ${r.code}`;
+  const batchRow = isDirectionalTab ? `<div class="detail-row"><div class="detail-label">定向函编码</div><div class="detail-value">${r.batchId}</div></div>` : '';
+  document.getElementById('drawerBody').innerHTML = `
+    <div class="detail-section">
+      <div class="detail-section-title">基本信息</div>
+      ${batchRow}
+      ${[['货主',r.owner],['编码',r.code],['名称',r.name],['四级类目',r.cat],
+         ['型号',r.model],['规格',r.spec],['品牌',r.brand],
+         ['物料等级',r.level],['物料类型',typeTag(r.type)]
+        ].map(([k,v])=>`<div class="detail-row"><div class="detail-label">${k}</div><div class="detail-value">${v}</div></div>`).join('')}
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">审核信息</div>
+      ${[['申请时间',r.applyTime],['申请人',r.applyUser],
+         ['审核时间',r.auditTime],['审核人',r.auditor],
+         ['审核说明',r.desc],['审核状态',statusTag(r.status)]
+        ].map(([k,v])=>`<div class="detail-row"><div class="detail-label">${k}</div><div class="detail-value">${v}</div></div>`).join('')}
+    </div>`;
+  document.getElementById('drawerMask').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+function closeDrawer(){
+  document.getElementById('drawerMask').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+function go(url){ window.location.href = url; }
+
+function showMsg(text, type='info'){
+  const wrap = document.getElementById('msgWrap');
+  const icons = {info:'💬',ok:'✅',warn:'⚠️',err:'❌'};
+  const el = document.createElement('div');
+  el.className = 'msg-item';
+  el.innerHTML = `<span>${icons[type]||icons.info}</span>${text}`;
+  wrap.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('show'));
+  setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(),300); }, 2200);
+}
+
+renderTable();
+</script>
+</body>
+</html>

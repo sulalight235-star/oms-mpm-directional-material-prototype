@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>物料审核详情 - A1901005067 - 咸亨国际主数据管理平台</title>
+  <style>
+    :root {
+      --primary:      #1677ff;
+      --primary-hover:#4096ff;
+      --primary-bg:   #e6f4ff;
+      --success:      #52c41a;
+      --success-bg:   #f6ffed;
+      --warning:      #faad14;
+      --error:        #ff4d4f;
+      --error-bg:     #fff1f0;
+      --text-title:   rgba(0,0,0,0.88);
+      --text-body:    rgba(0,0,0,0.65);
+      --text-sub:     rgba(0,0,0,0.45);
+      --border:       #d9d9d9;
+      --border-light: #f0f0f0;
+      --bg-layout:    #f5f5f5;
+      --bg-container: #ffffff;
+      --bg-table-head:#fafafa;
+      --radius:       6px;
+      --shadow:       0 1px 2px rgba(0,0,0,0.06),0 1px 6px rgba(0,0,0,0.04);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:-apple-system,"Microsoft YaHei","PingFang SC",Arial,sans-serif;font-size:14px;background:var(--bg-layout);color:var(--text-body);}
+
+    /* ── 顶部导航 ── */
+    .topbar{height:48px;background:#001529;color:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:fixed;top:0;left:0;right:0;z-index:200;}
+    .brand{display:flex;align-items:center;gap:12px;}
+    .brand-logo{width:28px;height:28px;background:var(--primary);border-radius:6px;display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+    .brand-name{font-size:16px;font-weight:600;color:#fff;white-space:nowrap;}
+    .switch-btn{border:1px solid rgba(255,255,255,0.25);background:transparent;color:rgba(255,255,255,0.75);border-radius:var(--radius);padding:3px 10px;font-size:12px;cursor:pointer;line-height:22px;transition:all .2s;}
+    .switch-btn:hover{border-color:var(--primary);color:#fff;}
+    .nav-menu{display:flex;align-items:center;height:100%;}
+    .nav-item{display:flex;align-items:center;gap:5px;padding:0 13px;height:100%;font-size:13px;color:rgba(255,255,255,0.75);cursor:pointer;position:relative;white-space:nowrap;transition:.2s;}
+    .nav-item:hover{color:#fff;background:rgba(255,255,255,0.08);}
+    .badge{min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--error);color:#fff;font-size:10px;line-height:16px;text-align:center;font-weight:600;}
+    .badge-dot{width:6px;height:6px;border-radius:50%;background:var(--error);position:absolute;top:10px;right:7px;border:1.5px solid #001529;}
+    .nav-divider{width:1px;height:16px;background:rgba(255,255,255,0.15);margin:0 3px;}
+    .user-avatar{width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;font-weight:600;display:grid;place-items:center;}
+
+    /* ── 多页签 ── */
+    .tabs-bar{height:36px;background:var(--bg-container);border-bottom:1px solid var(--border-light);display:flex;align-items:stretch;justify-content:space-between;padding:0 8px 0 0;position:fixed;top:48px;left:0;right:0;z-index:190;}
+    .tabs-list{display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none;}
+    .tabs-list::-webkit-scrollbar{display:none;}
+    .tab{display:flex;align-items:center;gap:6px;padding:0 14px;font-size:12px;color:var(--text-sub);cursor:pointer;border-right:1px solid var(--border-light);white-space:nowrap;transition:.2s;position:relative;}
+    .tab:hover{color:var(--text-body);background:#fafafa;}
+    .tab.active{color:var(--primary);background:var(--primary-bg);}
+    .tab.active::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--primary);}
+    .tab .cls{font-size:10px;opacity:.5;padding:2px;border-radius:2px;}
+    .tab:hover .cls{opacity:.85;}
+    .tab .cls:hover{background:rgba(0,0,0,0.08);color:var(--error);}
+    .tabs-clear{display:flex;align-items:center;padding:0 12px;font-size:12px;color:var(--text-sub);cursor:pointer;border-left:1px solid var(--border-light);}
+    .tabs-clear:hover{color:var(--primary);}
+
+    /* ── 操作栏 ── */
+    .op-bar{height:44px;background:var(--bg-container);border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:fixed;top:84px;left:0;right:0;z-index:180;box-shadow:var(--shadow);}
+    .op-bar-left{display:flex;align-items:center;gap:10px;}
+    .op-bar-right{display:flex;align-items:center;gap:8px;}
+    .breadcrumb{font-size:13px;color:var(--text-sub);}
+    .breadcrumb span{color:var(--primary);cursor:pointer;}
+    .breadcrumb span:hover{text-decoration:underline;}
+
+    /* ── 按钮 ── */
+    .btn{display:inline-flex;align-items:center;gap:4px;height:32px;padding:0 15px;border-radius:var(--radius);font-size:13px;cursor:pointer;transition:.2s;border:1px solid transparent;white-space:nowrap;font-family:inherit;}
+    .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary);}
+    .btn-primary:hover{background:var(--primary-hover);border-color:var(--primary-hover);}
+    .btn-default{background:var(--bg-container);color:var(--text-body);border-color:var(--border);}
+    .btn-default:hover{color:var(--primary);border-color:var(--primary);}
+    .btn-success{background:var(--success);color:#fff;border-color:var(--success);}
+    .btn-success:hover{opacity:.85;}
+    .btn-danger{background:var(--error);color:#fff;border-color:var(--error);}
+    .btn-danger:hover{opacity:.85;}
+    .btn-sm{height:28px;padding:0 11px;font-size:12px;}
+
+    /* ── 主内容 ── */
+    .page{padding:0 16px 80px;margin-top:128px;max-width:1440px;margin-left:auto;margin-right:auto;}
+    .page-inner{padding-top:12px;}
+
+    /* ── AI建议区 ── */
+    .ai-banner{background:#fff2f0;border:1px solid #ffa39e;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;border-left:4px solid var(--error);position:relative;}
+    .ai-banner-title{font-size:13px;font-weight:600;color:var(--text-title);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+    .ai-banner-title-text{display:flex;align-items:center;gap:8px;}
+    .ai-banner-actions{display:flex;align-items:center;gap:8px;}
+    .ai-suggest-tag{display:inline-flex;align-items:center;padding:1px 8px;border-radius:4px;font-size:12px;border:1px solid #ffa39e;background:var(--error-bg);color:var(--error);font-weight:600;}
+    .ai-suggest-link{font-size:12px;color:var(--text-sub);cursor:pointer;text-decoration:underline;}
+    .ai-line{font-size:12px;color:var(--text-body);line-height:1.8;padding-left:4px;}
+    .ai-line-warn{color:var(--error);}
+    .ai-line-pass{color:var(--primary);}
+
+    /* ── 卡片通用 ── */
+    .card{background:var(--bg-container);border:1px solid var(--border-light);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:8px;overflow:hidden;}
+    .card-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border-light);cursor:pointer;user-select:none;}
+    .card-header:hover{background:#fafafa;}
+    .card-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--text-title);}
+    .card-title-bar{width:3px;height:16px;background:var(--primary);border-radius:2px;flex-shrink:0;}
+    .card-header-actions{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-sub);}
+    .card-header-actions .hl{color:var(--primary);cursor:pointer;}
+    .card-header-actions .hl:hover{text-decoration:underline;}
+    .card-body{padding:16px;}
+    .card-collapsed .card-body{display:none;}
+    .collapse-icon{font-size:12px;color:var(--text-sub);transition:.2s;}
+    .card-collapsed .collapse-icon{transform:rotate(-90deg);}
+
+    /* ── 表单网格 ── */
+    .form-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px 16px;}
+    .form-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 16px;}
+    .form-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 16px;}
+    .form-item{display:flex;flex-direction:column;gap:4px;min-width:0;}
+    .form-item.span2{grid-column:span 2;}
+    .form-item.span3{grid-column:span 3;}
+    .form-item.span4{grid-column:span 4;}
+    .form-item.span5{grid-column:span 5;}
+    .form-label{font-size:12px;color:var(--text-sub);display:flex;align-items:center;gap:2px;}
+    .form-label .req{color:var(--error);}
+    .form-value{font-size:13px;color:var(--text-body);}
+    .f-input,.f-select,.f-textarea{width:100%;border:1px solid var(--border);border-radius:var(--radius);padding:0 10px;font-size:13px;outline:none;color:var(--text-body);background:var(--bg-container);transition:border .2s;font-family:inherit;}
+    .f-input{height:30px;}
+    .f-select{height:30px;}
+    .f-textarea{padding:6px 10px;resize:vertical;min-height:64px;}
+    .f-input:focus,.f-select:focus,.f-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1);}
+    .f-input[readonly]{background:#fafafa;color:var(--text-sub);}
+    .f-input[disabled]{background:#fafafa;color:var(--text-sub);cursor:not-allowed;}
+    .f-input.has-ai-hint{border-color:#ffa39e;}
+
+    /* ── 单选组 ── */
+    .radio-group{display:flex;align-items:center;gap:12px;flex-wrap:wrap;height:30px;}
+    .radio-item{display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;color:var(--text-body);}
+    .radio-item input{accent-color:var(--primary);}
+
+    /* ── 复选框 ── */
+    .check-item{display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;color:var(--text-body);}
+    .check-item input{accent-color:var(--primary);}
+
+    /* ── 价格行特殊背景 ── */
+    .price-hint-row{background:#fffbe6;border:1px solid #ffe58f;border-radius:var(--radius);padding:10px 12px;margin:8px 0;}
+
+    /* ── AI建议内联提示 ── */
+    .ai-inline-hint{font-size:11px;color:var(--error);margin-top:2px;line-height:1.4;}
+
+    /* ── 价格输入带后缀 ── */
+    .input-addon{display:flex;align-items:center;gap:4px;}
+    .input-addon .f-input{flex:1;}
+    .input-suffix{font-size:13px;color:var(--text-sub);white-space:nowrap;}
+    .input-link{font-size:12px;color:var(--primary);cursor:pointer;white-space:nowrap;}
+    .input-link:hover{text-decoration:underline;}
+
+    /* ── tag ── */
+    .tag{display:inline-flex;align-items:center;padding:1px 7px;border-radius:4px;font-size:12px;white-space:nowrap;border:1px solid;}
+    .tag-blue{background:#e6f4ff;border-color:#91caff;color:#1677ff;}
+    .tag-green{background:var(--success-bg);border-color:#b7eb8f;color:var(--success);}
+    .tag-red{background:var(--error-bg);border-color:#ffa39e;color:var(--error);}
+    .tag-orange{background:#fff7e6;border-color:#ffd591;color:#d46b08;}
+    .tag-purple{background:#f9f0ff;border-color:#d3adf7;color:#722ed1;}
+    .tag-gray{background:#fafafa;border-color:var(--border);color:var(--text-sub);}
+
+    /* ── 分割线 ── */
+    .divider{height:1px;background:var(--border-light);margin:12px 0;}
+
+    /* ── 图片区 ── */
+    .img-upload-area{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;}
+    .img-thumb{width:80px;height:80px;border:1px solid var(--border);border-radius:var(--radius);background:#fafafa;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;overflow:hidden;}
+    .img-thumb img{width:100%;height:100%;object-fit:cover;}
+    .img-thumb-placeholder{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:22px;color:#ccc;}
+    .img-thumb-del{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,0.45);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+    .img-thumb-del:hover{background:var(--error);}
+    .img-thumb-idx{position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,0.45);color:#fff;font-size:9px;border-radius:2px;padding:0 3px;}
+    .img-add-btn{width:80px;height:80px;border:1px dashed var(--border);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:22px;color:#ccc;background:#fafafa;flex-shrink:0;transition:.2s;}
+    .img-add-btn:hover{border-color:var(--primary);color:var(--primary);}
+    .img-preview-large{width:200px;height:200px;border:1px solid var(--border);border-radius:var(--radius);background:#fafafa;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+    .img-preview-large .img-thumb-placeholder{font-size:40px;}
+    .img-section-row{display:flex;gap:16px;align-items:flex-start;}
+    .img-section-left{flex:1;min-width:0;}
+    .img-row-label{font-size:12px;color:var(--text-sub);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;}
+    .img-clear-btn{font-size:12px;color:var(--text-sub);cursor:pointer;}
+    .img-clear-btn:hover{color:var(--error);}
+
+    /* ── 附件上传 ── */
+    .upload-btn{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 12px;border:1px dashed var(--border);border-radius:var(--radius);font-size:12px;color:var(--text-sub);cursor:pointer;background:#fafafa;transition:.2s;}
+    .upload-btn:hover{border-color:var(--primary);color:var(--primary);}
+
+    /* ── 外链/佐证 ── */
+    .link-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-light);}
+    .link-row:last-child{border-bottom:none;}
+    .ext-link{color:var(--primary);cursor:pointer;font-size:13px;}
+    .ext-link:hover{text-decoration:underline;}
+
+    /* ── 次要信息网格 ── */
+    .form-grid-6{display:grid;grid-template-columns:repeat(6,1fr);gap:10px 14px;}
+
+    /* ── 固定底部操作栏 ── */
+    .footer-bar{position:fixed;bottom:0;left:0;right:0;height:52px;background:var(--bg-container);border-top:1px solid var(--border-light);display:flex;align-items:center;justify-content:flex-end;padding:0 24px;gap:10px;z-index:180;box-shadow:0 -1px 4px rgba(0,0,0,0.06);}
+
+    /* ── AntD Message 顶部居中 ── */
+    .msg-wrap{position:fixed;top:100px;left:50%;transform:translateX(-50%);z-index:999;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:8px;}
+    .msg-item{background:var(--bg-container);border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,0.12),0 3px 6px rgba(0,0,0,0.08);padding:9px 12px;font-size:14px;color:var(--text-body);display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(-8px);transition:.25s;white-space:nowrap;}
+    .msg-item.show{opacity:1;transform:translateY(0);}
+
+    /* ── 审核 Modal ── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;display:none;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:var(--bg-container);border-radius:8px;width:480px;max-width:94vw;box-shadow:0 6px 16px rgba(0,0,0,0.12),0 3px 6px rgba(0,0,0,0.08);animation:popIn .2s ease;}
+    @keyframes popIn{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+    .modal-header{padding:16px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;}
+    .modal-header-title{font-size:16px;font-weight:600;color:var(--text-title);}
+    .modal-close{cursor:pointer;font-size:20px;color:var(--text-sub);line-height:1;transition:.2s;}
+    .modal-close:hover{color:var(--text-title);}
+    .modal-body{padding:24px;}
+    .m-form-row{margin-bottom:16px;}
+    .m-form-label{font-size:13px;color:var(--text-body);margin-bottom:6px;}
+    .m-form-label .req{color:var(--error);}
+    .m-form-control{width:100%;height:32px;border:1px solid var(--border);border-radius:var(--radius);padding:0 11px;font-size:13px;outline:none;font-family:inherit;transition:.2s;color:var(--text-body);}
+    .m-form-control:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1);}
+    textarea.m-form-control{height:auto;padding:7px 11px;resize:vertical;min-height:80px;}
+    .m-form-control:disabled{background:#fafafa;color:var(--text-sub);cursor:not-allowed;}
+    .modal-footer{padding:12px 24px;border-top:1px solid var(--border-light);display:flex;gap:8px;justify-content:flex-end;}
+
+    /* ── 响应式 ── */
+    @media(max-width:1200px){
+      .form-grid{grid-template-columns:repeat(4,1fr);}
+      .form-grid-6{grid-template-columns:repeat(4,1fr);}
+      .form-item.span5{grid-column:span 4;}
+    }
+    @media(max-width:900px){
+      .form-grid,.form-grid-4{grid-template-columns:repeat(2,1fr);}
+      .form-grid-6{grid-template-columns:repeat(3,1fr);}
+      .form-item.span2,.form-item.span3,.form-item.span4,.form-item.span5{grid-column:span 2;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-logo">咸</div>
+    <span class="brand-name">咸亨国际主数据管理平台</span>
+    <button class="switch-btn">切换系统</button>
+  </div>
+  <nav class="nav-menu">
+    <div class="nav-item">消息通知<span class="badge-dot"></span></div>
+    <div class="nav-item">价格审核<span class="badge-dot"></span></div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">版本更新</div>
+    <div class="nav-item">推送ERP</div>
+    <div class="nav-item">管理模块</div>
+    <div class="nav-item">任务中心<span class="badge">9+</span></div>
+    <div class="nav-item">清洗任务<span class="badge-dot"></span></div>
+    <div class="nav-divider"></div>
+    <div class="nav-item"><div class="user-avatar">管</div>管理员 ▾</div>
+  </nav>
+</header>
+
+<!-- 多页签 -->
+<div class="tabs-bar">
+  <div class="tabs-list">
+    <div class="tab" onclick="go('oms-mpm-物料工作台原型.html')">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    <div class="tab" onclick="go('待我审核.html')">待我审核 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    <div class="tab active">物料查看 · 审核-A1901005067 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+  </div>
+  <div class="tabs-clear" onclick="showMsg('已清除标签页')">清除</div>
+</div>
+
+<!-- 操作栏 -->
+<div class="op-bar">
+  <div class="op-bar-left">
+    <button class="btn btn-default btn-sm" onclick="go('待我审核.html')">← 返回列表</button>
+    <div class="breadcrumb">
+      <span onclick="go('待我审核.html')">待我审核</span>
+      <span style="color:var(--text-sub);margin:0 4px;">&gt;</span>
+      <span style="color:var(--text-body);cursor:default;">物料查看·审核</span>
+    </div>
+  </div>
+  <div class="op-bar-right">
+    <button class="btn btn-default btn-sm" onclick="showMsg('已分配归还')">分配归还</button>
+    <button class="btn btn-default btn-sm" onclick="showMsg('已复制物料信息')">复制</button>
+    <button class="btn btn-default btn-sm" onclick="go('待我审核.html')">关闭</button>
+    <button class="btn btn-danger btn-sm" onclick="openRejectModal()">驳回</button>
+    <button class="btn btn-success btn-sm" onclick="passAudit()">通过</button>
+  </div>
+</div>
+
+<!-- 主内容区 -->
+<div class="page">
+<div class="page-inner">
+
+  <!-- AI审核建议区 -->
+  <div class="ai-banner">
+    <div class="ai-banner-title">
+      <div class="ai-banner-title-text">
+        <span>AI审核建议：建议【驳回】</span>
+      </div>
+      <div class="ai-banner-actions">
+        <span class="ai-suggest-tag">建议【驳回】</span>
+        <span class="ai-suggest-link">建议【驳回】</span>
+      </div>
+    </div>
+    <div class="ai-line ai-line-warn">⚠️ 【文本审核】规格：前后逻辑错一致，【规格】与【物料名称】在文本中存在差异，建议【规格】改为30*20mm</div>
+    <div class="ai-line ai-line-warn" style="padding-left:24px;">属性信息：文本前后逻辑错一致，【属性信息】与【描述】在文本中存在差异，建议【属性信息】改为尺寸:30*20mm,材质:PVC</div>
+    <div class="ai-line ai-line-pass">🔵 【图片审核】审核通过</div>
+    <div class="ai-line ai-line-pass">🔵 【类目审核】审核通过</div>
+    <div class="ai-line ai-line-pass">🔵 【图文一致性审核】审核通过</div>
+  </div>
+
+  <!-- 主要信息区 -->
+  <div class="card" id="card-main">
+    <div class="card-header" onclick="toggleCard('card-main')">
+      <div class="card-title">
+        <span class="card-title-bar"></span>
+        <span>§ 主要信息</span>
+      </div>
+      <div class="card-header-actions">
+        <span class="hl">价格已设</span>
+        <span>|</span>
+        <span class="hl">操作已读</span>
+        <span class="collapse-icon">▼</span>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <!-- 第一行：货主 + 物料标签 -->
+      <div class="form-grid-4" style="margin-bottom:12px;">
+        <div class="form-item span2">
+          <div class="form-label">货主</div>
+          <input class="f-input" readonly value="万聚国际（杭州）供应链有限公司" />
+        </div>
+        <div class="form-item span2">
+          <div class="form-label">物料标签</div>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="matTag" checked /> 自营物料</label>
+            <label class="radio-item"><input type="radio" name="matTag" /> 定向物料</label>
+            <label class="radio-item"><input type="radio" name="matTag" /> 电商服务商</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第二行：基础字段 -->
+      <div class="form-grid" style="margin-bottom:12px;">
+        <div class="form-item">
+          <div class="form-label">数据类型</div>
+          <select class="f-select">
+            <option selected>标品物料</option>
+            <option>非标物料</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <div class="form-label"><span class="req">*</span> 编码</div>
+          <input class="f-input" readonly value="A1901005067" />
+        </div>
+        <div class="form-item">
+          <div class="form-label"><span class="req">*</span> 品牌</div>
+          <input class="f-input" value="佐佑众工/ZUOYOU" />
+        </div>
+        <div class="form-item">
+          <div class="form-label"><span class="req">*</span> 名称</div>
+          <input class="f-input" value="PVC线槽" />
+        </div>
+        <div class="form-item">
+          <div class="form-label"><span class="req">*</span> 型号</div>
+          <input class="f-input" value="30*20mm" />
+        </div>
+      </div>
+      <div class="form-grid" style="margin-bottom:12px;">
+        <div class="form-item">
+          <div class="form-label"><span class="req">*</span> 基本单位</div>
+          <input class="f-input" value="米" />
+        </div>
+        <div class="form-item span2">
+          <div class="form-label"><span class="req">*</span> 项目</div>
+          <input class="f-input" value="项目地址" />
+        </div>
+        <div class="form-item span2">
+          <div class="form-label"><span class="req">*</span> 订单执行员</div>
+          <input class="f-input" value="通用/通用工具采购组" />
+        </div>
+      </div>
+      <div class="form-grid" style="margin-bottom:12px;">
+        <div class="form-item span2">
+          <div class="form-label"><span class="req">*</span> 采购部门</div>
+          <input class="f-input" value="通用工具采购组" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">项目服务员</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">产品经理</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 价格行 -->
+      <div class="price-hint-row">
+        <div class="form-grid" style="margin-bottom:0;">
+          <div class="form-item" style="grid-column:span 1;">
+            <div class="form-label">是否做下单</div>
+            <label class="check-item" style="height:30px;"><input type="checkbox" checked /> 是</label>
+          </div>
+          <div class="form-item">
+            <div class="form-label"><span class="req">*</span> 市场价</div>
+            <div class="input-addon">
+              <input class="f-input" value="6.51" style="width:80px;" />
+              <span class="input-suffix">元</span>
+              <span class="input-link">查看</span>
+            </div>
+          </div>
+          <div class="form-item">
+            <div class="form-label"><span class="req">*</span> 商城价</div>
+            <div class="input-addon">
+              <input class="f-input" value="6.51" style="width:80px;" />
+              <label class="check-item" style="flex-shrink:0;"><input type="checkbox" /> 自动计算</label>
+            </div>
+          </div>
+          <div class="form-item">
+            <div class="form-label">结算价</div>
+            <input class="f-input" value="" placeholder="请输入" />
+          </div>
+          <div class="form-item">
+            <div class="form-label">项目端展示参考价</div>
+            <input class="f-input" value="4.50" readonly />
+          </div>
+        </div>
+        <div class="form-grid" style="margin-top:10px;margin-bottom:0;">
+          <div class="form-item">
+            <div class="form-label">参考供货价</div>
+            <input class="f-input" value="" placeholder="请输入" />
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 规格行 -->
+      <div class="form-grid" style="margin-bottom:12px;">
+        <div class="form-item span2">
+          <div class="form-label"><span class="req">*</span> 规格</div>
+          <input class="f-input has-ai-hint" value="PVC线槽，宽30mm，厚0.8mm，2米/根，平整型，带皮纹" />
+          <div class="ai-inline-hint">⚠️ 【文本审核】文本前后逻辑错一致，【规格】与【物料名称】在文本中存在差异，建议【规格】改为30*20mm</div>
+        </div>
+        <div class="form-item">
+          <div class="form-label">外参系高成交价</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">对内最新成本价</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">品牌限价最低价</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+      </div>
+      <div class="form-grid" style="margin-bottom:12px;">
+        <div class="form-item">
+          <div class="form-label">品牌限价最高价</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 描述行 -->
+      <div class="form-grid-4" style="margin-bottom:12px;">
+        <div class="form-item span2">
+          <div class="form-label"><span class="req">*</span> 描述</div>
+          <textarea class="f-textarea">PVC线槽，宽30mm，厚0.8mm，2米/根，平整型，带皮纹</textarea>
+        </div>
+        <div class="form-item span2">
+          <div class="form-label">内部备注</div>
+          <textarea class="f-textarea" placeholder="请输入内部备注"></textarea>
+        </div>
+      </div>
+
+      <div class="form-grid-4" style="margin-bottom:12px;">
+        <div class="form-item span2">
+          <div class="form-label">成本是否含运费</div>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="freight" checked /> 不含</label>
+            <label class="radio-item"><input type="radio" name="freight" /> 含运费</label>
+          </div>
+        </div>
+        <div class="form-item span2">
+          <div class="form-label">检测费</div>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="inspect" checked /> 不含检测费</label>
+            <label class="radio-item"><input type="radio" name="inspect" /> 含三方检测费</label>
+            <label class="radio-item"><input type="radio" name="inspect" /> 含出厂检测费</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-grid-4" style="margin-bottom:0;">
+        <div class="form-item span2">
+          <div class="form-label">安装费</div>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="install" checked /> 含</label>
+            <label class="radio-item"><input type="radio" name="install" /> 不含</label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 次要信息区 -->
+  <div class="card" id="card-second">
+    <div class="card-header" onclick="toggleCard('card-second')">
+      <div class="card-title">
+        <span class="card-title-bar"></span>
+        <span>§ 次要信息</span>
+      </div>
+      <div class="card-header-actions">
+        <span class="collapse-icon">▼</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-grid-6" style="margin-bottom:12px;">
+        <div class="form-item">
+          <div class="form-label">条形码</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">助记码</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">旧料号</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">供应商</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">销售</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">净重(kg)</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+      </div>
+      <div class="form-grid-6" style="margin-bottom:12px;">
+        <div class="form-item">
+          <div class="form-label">长(mm)</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">宽(mm)</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">高(mm)</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">体积(mm³)</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">发货日</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">咨询客服</div>
+          <label class="check-item" style="height:30px;"><input type="checkbox" /> 是</label>
+        </div>
+      </div>
+      <div class="form-grid-6" style="margin-bottom:12px;">
+        <div class="form-item span2">
+          <div class="form-label">收分类名称</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item span2">
+          <div class="form-label">收分类编码</div>
+          <input class="f-input" value="100200300400500600" placeholder="请输入18位编码" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">湖税</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">金属制品</div>
+          <label class="check-item" style="height:30px;"><input type="checkbox" /> 是</label>
+        </div>
+      </div>
+      <div class="form-grid-6" style="margin-bottom:12px;">
+        <div class="form-item">
+          <div class="form-label">报关关税税率(%)</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item span2">
+          <div class="form-label">厂家订货号</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">产品线</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+      </div>
+      <div class="form-grid-6" style="margin-bottom:0;">
+        <div class="form-item">
+          <div class="form-label">是否开票</div>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="invoice" checked /> 是</label>
+            <label class="radio-item"><input type="radio" name="invoice" /> 否</label>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="form-label">商城上下架</div>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="shelf" checked /> 上架</label>
+            <label class="radio-item"><input type="radio" name="shelf" /> 下架</label>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="form-label">对商城隐藏</div>
+          <label class="check-item" style="height:30px;"><input type="checkbox" /> 是</label>
+        </div>
+        <div class="form-item">
+          <div class="form-label">是否库存产</div>
+          <label class="check-item" style="height:30px;"><input type="checkbox" /> 是</label>
+        </div>
+        <div class="form-item">
+          <div class="form-label">是否特销</div>
+          <label class="check-item" style="height:30px;"><input type="checkbox" /> 是</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 商品标签区 -->
+  <div class="card" id="card-tags">
+    <div class="card-header" onclick="toggleCard('card-tags')">
+      <div class="card-title">
+        <span class="card-title-bar"></span>
+        <span>§ 商品标签</span>
+      </div>
+      <div class="card-header-actions">
+        <span class="collapse-icon">▼</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-grid-4" style="margin-bottom:12px;">
+        <div class="form-item span2">
+          <div class="form-label">项目</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item span2">
+          <div class="form-label">品牌</div>
+          <div style="display:flex;align-items:center;gap:8px;height:30px;">
+            <span class="tag tag-orange">非代理品牌</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-grid-4" style="margin-bottom:0;">
+        <div class="form-item">
+          <div class="form-label">行业</div>
+          <input class="f-input" value="" placeholder="请输入" />
+        </div>
+        <div class="form-item">
+          <div class="form-label">动销</div>
+          <div style="display:flex;align-items:center;height:30px;">
+            <span style="font-size:13px;color:var(--text-body);">无边销</span>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="form-label">推荐</div>
+          <div style="display:flex;align-items:center;height:30px;">
+            <span style="font-size:13px;color:var(--text-body);">零售</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 默认信息区（默认折叠） -->
+  <div class="card card-collapsed" id="card-default">
+    <div class="card-header" onclick="toggleCard('card-default')">
+      <div class="card-title">
+        <span class="card-title-bar"></span>
+        <span>§ 默认信息 &gt;&gt;</span>
+      </div>
+      <div class="card-header-actions">
+        <span class="collapse-icon">▼</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div style="color:var(--text-sub);font-size:13px;padding:8px 0;">（默认信息内容区，点击展开查看）</div>
+    </div>
+  </div>
+
+  <!-- 外部链接区 -->
+  <div class="card" id="card-extlink">
+    <div class="card-header" onclick="toggleCard('card-extlink')">
+      <div class="card-title">
+        <span class="card-title-bar"></span>
+        <span>§ 外部链接 ↗</span>
+      </div>
+      <div class="card-header-actions">
+        <button class="btn btn-default btn-sm" onclick="event.stopPropagation();showMsg('新增外链功能')">新增外链</button>
+        <span class="collapse-icon">▼</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="link-row">
+        <span class="ext-link" onclick="showMsg('跳转商看历史记录')">商看历史记录 ↗</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 价格佐证区 -->
+  <div class="card" id="card-price-proof">
+    <div class="card-header" onclick="toggleCard('card-price-proof')">
+      <div class="card-title">
+        <span class="card-title-bar"></span>
+        <span>§ 价格佐证 ↗</span>
+      </div>
+      <div class="card-header-actions">
+        <button class="btn btn-default btn-sm" onclick="event.stopPropagation();showMsg('新增佐证功能')">新增佐证</button>
+        <span class="collapse-icon">▼</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div style="color:var(--text-sub);font-size:13px;text-align:center;padding:20px 0;">暂无价格佐证数据</div>
+    </div>
+  </div>
+
+  <!-- 拓展属性区 -->
+  <div class="card" id="card-ext-attr">
+    <div class="card-header" onclick="toggleCard('card-ext-attr')">
+      <div class="card-title">
+        <span class="card-title-bar"></span>
+        <span>§ 拓展属性</span>
+      </div>
+      <div class="card-header-actions">
+        <span class="collapse-icon">▼</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div style="font-size:12px;color:var(--text-sub);margin-bottom:12px;line-height:1.6;background:#fafafa;border:1px solid var(--border-light);border-radius:var(--radius);padding:8px 12px;">
+        拓展属性是指在平台项目对应此拓展属性有要求，链接跳到拓展属性标签即可查看具体平台信息
+      </div>
+      <div class="form-grid-4" style="margin-bottom:12px;">
+        <div class="form-item span2">
+          <div class="form-label">等级</div>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="attrLevel" checked /> 主品</label>
+            <label class="radio-item"><input type="radio" name="attrLevel" /> 规格</label>
+            <label class="radio-item"><input type="radio" name="attrLevel" /> 辅料</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-grid-4" style="margin-bottom:12px;">
+        <div class="form-item">
+          <div class="form-label">尺寸</div>
+          <input class="f-input has-ai-hint" value="30*20mm" />
+          <div class="ai-inline-hint">⚠️ 【文本审核】文本前后逻辑错一致，【属性信息】与【描述】在文本中存在差异，建议【属性信息】改为尺寸:30*20mm,材质:PVC</div>
+        </div>
+        <div class="form-item">
+          <div class="form-label">材质</div>
+          <input class="f-input has-ai-hint" value="" placeholder="请输入" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 资料附件区 -->
+  <div class="card" id="card-attachment">
+    <div class="card-header" onclick="toggleCard('card-attachment')">
+      <div class="card-title">
+        <span class="card-title-bar"></span>
+        <span>§ 资料附件</span>
+      </div>
+      <div class="card-header-actions">
+        <span class="collapse-icon">▼</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-grid-4" style="margin-bottom:0;">
+        <div class="form-item">
+          <div class="form-label">产品资料</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+            <span class="upload-btn" onclick="showMsg('选择文件上传')">↓ 上传文件</span>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="form-label">检测报告</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+            <span class="upload-btn" onclick="showMsg('选择文件上传')">↓ 上传文件</span>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="form-label">质量证明</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+            <span class="upload-btn" onclick="showMsg('选择文件上传')">↓ 上传文件</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 图片区 -->
+  <div class="card" id="card-images">
+    <div class="card-header" onclick="toggleCard('card-images')">
+      <div class="card-title">
+        <span class="card-title-bar"></span>
+        <span>§ 图片</span>
+      </div>
+      <div class="card-header-actions">
+        <span class="collapse-icon">▼</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div style="font-size:12px;color:var(--text-sub);margin-bottom:12px;background:#fff7e6;border:1px solid #ffe58f;border-radius:var(--radius);padding:8px 12px;line-height:1.6;">
+        注意事项：主图建议上传1:1正方形图片，分辨率不低于800×800px；支持JPG、PNG、WEBP格式；单张不超过5MB；最多上传10张主图，图片顺序可拖拽调整。
+      </div>
+      <div class="img-section-row">
+        <div class="img-section-left">
+
+          <!-- 主图 -->
+          <div class="img-row-label">
+            <span>主图</span>
+            <span class="img-clear-btn" onclick="showMsg('已清空主图')">清空图片</span>
+          </div>
+          <div class="img-upload-area" style="margin-bottom:16px;">
+            <div class="img-add-btn" onclick="showMsg('选择主图上传')">
+              <span>+</span>
+              <span style="font-size:11px;margin-top:4px;">上传</span>
+            </div>
+            <!-- 模拟4张已上传缩略图 -->
+            <div class="img-thumb">
+              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
+              <div class="img-thumb-idx">1</div>
+            </div>
+            <div class="img-thumb">
+              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
+              <div class="img-thumb-idx">2</div>
+            </div>
+            <div class="img-thumb">
+              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
+              <div class="img-thumb-idx">3</div>
+            </div>
+            <div class="img-thumb">
+              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
+              <div class="img-thumb-idx">4</div>
+            </div>
+          </div>
+
+          <!-- 详情图 -->
+          <div class="img-row-label">
+            <span>详情图</span>
+            <span class="img-clear-btn" onclick="showMsg('已清空详情图')">清空图片</span>
+          </div>
+          <div class="img-upload-area" style="margin-bottom:16px;">
+            <div class="img-add-btn" onclick="showMsg('选择详情图上传')">
+              <span>+</span>
+              <span style="font-size:11px;margin-top:4px;">上传</span>
+            </div>
+            <div class="img-thumb">
+              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
+              <div class="img-thumb-idx">1</div>
+            </div>
+            <div class="img-thumb">
+              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
+              <div class="img-thumb-idx">2</div>
+            </div>
+            <div class="img-thumb">
+              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
+              <div class="img-thumb-idx">3</div>
+            </div>
+            <div class="img-thumb">
+              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
+              <div class="img-thumb-idx">4</div>
+            </div>
+          </div>
+
+          <!-- 视频 -->
+          <div class="img-row-label">
+            <span>视频</span>
+          </div>
+          <div class="img-upload-area">
+            <div class="img-add-btn" onclick="showMsg('选择视频上传')">
+              <span>+</span>
+              <span style="font-size:11px;margin-top:4px;">上传</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 大图预览 -->
+        <div>
+          <div style="font-size:12px;color:var(--text-sub);margin-bottom:6px;">大图预览</div>
+          <div class="img-preview-large">
+            <div class="img-thumb-placeholder">🖼</div>
+          </div>
+          <div style="font-size:11px;color:var(--text-sub);margin-top:6px;text-align:center;">主图第1张</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- 固定底部操作栏 -->
+<div class="footer-bar">
+  <button class="btn btn-danger" onclick="openRejectModal()">驳回</button>
+  <button class="btn btn-success" onclick="passAudit()">通过</button>
+</div>
+
+<!-- 驳回确认 Modal -->
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-header-title">驳回确认</span>
+      <span class="modal-close" onclick="closeRejectModal()">×</span>
+    </div>
+    <div class="modal-body">
+      <div class="m-form-row">
+        <div class="m-form-label">物料编码</div>
+        <input class="m-form-control" disabled value="A1901005067" />
+      </div>
+      <div class="m-form-row">
+        <div class="m-form-label">物料名称</div>
+        <input class="m-form-control" disabled value="PVC线槽" />
+      </div>
+      <div class="m-form-row">
+        <div class="m-form-label">审核意见 <span class="req">*</span></div>
+        <textarea class="m-form-control" id="rejectRemark" placeholder="请输入驳回原因（必填）..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeRejectModal()">取消</button>
+      <button class="btn btn-danger" onclick="submitReject()">确认驳回</button>
+    </div>
+  </div>
+</div>
+
+<!-- 消息提示 -->
+<div class="msg-wrap" id="msgWrap"></div>
+
+<script>
+  // 折叠/展开
+  function toggleCard(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('card-collapsed');
+  }
+
+  // 跳转
+  function go(url) { window.location.href = url; }
+
+  // 通过审核
+  function passAudit() {
+    showMsg('审核通过：A1901005067', 'ok');
+  }
+
+  // 驳回弹窗
+  function openRejectModal() {
+    document.getElementById('rejectRemark').value = '';
+    document.getElementById('rejectModal').classList.add('open');
+  }
+  function closeRejectModal() {
+    document.getElementById('rejectModal').classList.remove('open');
+  }
+  function submitReject() {
+    const remark = document.getElementById('rejectRemark').value.trim();
+    if (!remark) { showMsg('请填写驳回原因', 'warn'); return; }
+    closeRejectModal();
+    showMsg('已驳回：A1901005067', 'err');
+  }
+
+  // 点击遮罩关闭
+  document.getElementById('rejectModal').addEventListener('click', function(e) {
+    if (e.target === this) closeRejectModal();
+  });
+
+  // 消息提示
+  function showMsg(text, type = 'info') {
+    const wrap = document.getElementById('msgWrap');
+    const icons = { info: '💬', ok: '✅', warn: '⚠️', err: '❌' };
+    const el = document.createElement('div');
+    el.className = 'msg-item';
+    el.innerHTML = `<span>${icons[type] || icons.info}</span>${text}`;
+    wrap.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('show'));
+    setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 2200);
+  }
+</script>
+</body>
+</html>
