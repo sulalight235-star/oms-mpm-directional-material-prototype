@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我发起的 - 咸亨国际主数据管理平台</title>
+  <style>
+    :root {
+      --primary:      #1677ff;
+      --primary-hover:#4096ff;
+      --primary-bg:   #e6f4ff;
+      --success:      #52c41a;
+      --success-bg:   #f6ffed;
+      --warning:      #faad14;
+      --error:        #ff4d4f;
+      --error-bg:     #fff1f0;
+      --text-title:   rgba(0,0,0,0.88);
+      --text-body:    rgba(0,0,0,0.65);
+      --text-sub:     rgba(0,0,0,0.45);
+      --border:       #d9d9d9;
+      --border-light: #f0f0f0;
+      --bg-layout:    #f5f5f5;
+      --bg-container: #ffffff;
+      --bg-table-head:#fafafa;
+      --radius:       6px;
+      --shadow:       0 1px 2px rgba(0,0,0,0.06),0 1px 6px rgba(0,0,0,0.04);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:-apple-system,"Microsoft YaHei","PingFang SC",Arial,sans-serif;font-size:14px;background:var(--bg-layout);color:var(--text-body);}
+
+    /* ── 顶部导航 ── */
+    .topbar{height:48px;background:#001529;color:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:100;}
+    .brand{display:flex;align-items:center;gap:12px;}
+    .brand-logo{width:28px;height:28px;background:var(--primary);border-radius:6px;display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+    .brand-name{font-size:16px;font-weight:600;color:#fff;white-space:nowrap;}
+    .switch-btn{border:1px solid rgba(255,255,255,0.25);background:transparent;color:rgba(255,255,255,0.75);border-radius:var(--radius);padding:3px 10px;font-size:12px;cursor:pointer;line-height:22px;transition:all .2s;}
+    .switch-btn:hover{border-color:var(--primary);color:#fff;}
+    .nav-menu{display:flex;align-items:center;height:100%;}
+    .nav-item{display:flex;align-items:center;gap:5px;padding:0 13px;height:100%;font-size:13px;color:rgba(255,255,255,0.75);cursor:pointer;position:relative;white-space:nowrap;transition:.2s;}
+    .nav-item:hover{color:#fff;background:rgba(255,255,255,0.08);}
+    .badge{min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--error);color:#fff;font-size:10px;line-height:16px;text-align:center;font-weight:600;}
+    .badge-dot{width:6px;height:6px;border-radius:50%;background:var(--error);position:absolute;top:10px;right:7px;border:1.5px solid #001529;}
+    .nav-divider{width:1px;height:16px;background:rgba(255,255,255,0.15);margin:0 3px;}
+    .user-avatar{width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;font-weight:600;display:grid;place-items:center;}
+
+    /* ── 多页签 ── */
+    .tabs-bar{height:36px;background:var(--bg-container);border-bottom:1px solid var(--border-light);display:flex;align-items:stretch;justify-content:space-between;padding:0 8px 0 0;}
+    .tabs-list{display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none;}
+    .tabs-list::-webkit-scrollbar{display:none;}
+    .tab{display:flex;align-items:center;gap:6px;padding:0 14px;font-size:12px;color:var(--text-sub);cursor:pointer;border-right:1px solid var(--border-light);white-space:nowrap;transition:.2s;position:relative;}
+    .tab:hover{color:var(--text-body);background:#fafafa;}
+    .tab.active{color:var(--primary);background:var(--primary-bg);}
+    .tab.active::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--primary);}
+    .tab .cls{font-size:10px;opacity:.5;padding:2px;border-radius:2px;}
+    .tab:hover .cls{opacity:.85;}
+    .tab .cls:hover{background:rgba(0,0,0,0.08);color:var(--error);}
+    .tabs-clear{display:flex;align-items:center;padding:0 12px;font-size:12px;color:var(--text-sub);cursor:pointer;border-left:1px solid var(--border-light);}
+    .tabs-clear:hover{color:var(--primary);}
+
+    /* ── 主内容 ── */
+    .page{padding:12px 16px 24px;}
+
+    /* ── 筛选栏 ── */
+    .filter-card{background:var(--bg-container);border:1px solid var(--border-light);border-radius:var(--radius);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:var(--shadow);}
+    .filter-label{color:var(--text-sub);font-size:13px;font-weight:500;white-space:nowrap;}
+    .filter-group{display:flex;align-items:center;gap:6px;flex:1;min-width:130px;}
+    .filter-group label{white-space:nowrap;font-size:13px;color:var(--text-body);}
+    .f-input,.f-select{flex:1;height:32px;border:1px solid var(--border);border-radius:var(--radius);padding:0 11px;font-size:13px;outline:none;color:var(--text-body);background:var(--bg-container);min-width:80px;transition:border .2s;}
+    .f-input:focus,.f-select:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1);}
+    .filter-actions{display:flex;gap:8px;flex-shrink:0;}
+
+    /* ── 按钮 ── */
+    .btn{display:inline-flex;align-items:center;gap:4px;height:32px;padding:0 15px;border-radius:var(--radius);font-size:13px;cursor:pointer;transition:.2s;border:1px solid transparent;white-space:nowrap;}
+    .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary);}
+    .btn-primary:hover{background:var(--primary-hover);border-color:var(--primary-hover);}
+    .btn-default{background:var(--bg-container);color:var(--text-body);border-color:var(--border);}
+    .btn-default:hover{color:var(--primary);border-color:var(--primary);}
+    .btn-info{background:#1677ff;color:#fff;border-color:#1677ff;}
+    .btn-warning{background:var(--warning);color:#fff;border-color:var(--warning);}
+    .btn-warning:hover{opacity:.85;}
+    .btn-danger{background:var(--error);color:#fff;border-color:var(--error);}
+    .btn-danger:hover{opacity:.85;}
+    .btn-sm{height:28px;padding:0 11px;font-size:12px;}
+
+    /* ── 操作栏 ── */
+    .action-card{background:var(--bg-container);border:1px solid var(--border-light);border-radius:var(--radius);padding:7px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:8px;box-shadow:var(--shadow);}
+    .action-left{display:flex;align-items:center;gap:8px;}
+    .action-right{display:flex;align-items:center;gap:8px;}
+    .action-label{font-size:12px;color:var(--text-sub);}
+
+    /* ── 子 Tab ── */
+    .sub-tabs{display:flex;align-items:center;background:var(--bg-container);border-bottom:1px solid var(--border-light);padding:0 16px;flex-wrap:wrap;margin-top:8px;}
+    .sub-tab{padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;color:var(--text-sub);transition:.2s;}
+    .sub-tab:hover:not(.active){color:var(--text-body);}
+    .sub-tab.active{border-bottom-color:var(--primary);color:var(--primary);font-weight:600;}
+
+    /* ── 表格 ── */
+    .table-wrap{background:var(--bg-container);border:1px solid var(--border-light);border-top:none;overflow-x:auto;box-shadow:var(--shadow);}
+    table{width:100%;min-width:2400px;border-collapse:collapse;font-size:13px;}
+    thead tr{background:var(--bg-table-head);}
+    thead th{padding:10px 12px;text-align:left;font-weight:600;color:var(--text-title);border-bottom:2px solid var(--border);white-space:nowrap;background:var(--bg-table-head);}
+    thead th:first-child{padding-left:16px;width:40px;}
+    tbody tr{border-bottom:1px solid var(--border-light);transition:.12s;}
+    tbody tr:hover{background:#fafafa;}
+    tbody tr:last-child{border-bottom:none;}
+    tbody td{padding:10px 12px;vertical-align:middle;color:var(--text-body);white-space:nowrap;}
+    tbody td:first-child{padding-left:16px;}
+    .td-link{color:var(--primary);cursor:pointer;}
+    .td-link:hover{text-decoration:underline;}
+
+    /* ── 标签 ── */
+    .tag{display:inline-flex;align-items:center;padding:1px 7px;border-radius:4px;font-size:12px;white-space:nowrap;border:1px solid;}
+    .tag-no-img{background:var(--error-bg);border-color:#ffa39e;color:var(--error);}
+    .tag-normal{background:var(--success-bg);border-color:#b7eb8f;color:var(--success);}
+    .tag-audit-type{background:#f9f0ff;border-color:#d3adf7;color:#722ed1;}
+    .tag-directional{background:#fff0f6;border-color:#ffadd2;color:#c41d7f;}
+    /* 审核状态 */
+    .tag-pending{background:#e6f4ff;border-color:#91caff;color:#1677ff;}
+    .tag-pass{background:var(--success-bg);border-color:#b7eb8f;color:var(--success);}
+    .tag-reject{background:#fff7e6;border-color:#ffd591;color:#d46b08;}
+    .tag-processing{background:#e6fffb;border-color:#87e8de;color:#08979c;}
+
+    /* ── 截断省略 ── */
+    .cell-ellipsis{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle;}
+    .cell-ellipsis-sm{max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle;}
+
+    /* ── 分页 ── */
+    .pagination{display:flex;align-items:center;justify-content:flex-end;gap:6px;padding:12px 16px;border-top:1px solid var(--border-light);flex-wrap:wrap;}
+    .page-info{color:var(--text-sub);font-size:13px;margin-right:4px;}
+    .page-btn{min-width:32px;height:32px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-container);color:var(--text-body);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.2s;font-size:13px;}
+    .page-btn:hover{border-color:var(--primary);color:var(--primary);}
+    .page-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+    .page-jump{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-body);}
+    .page-jump input{width:48px;height:32px;border:1px solid var(--border);border-radius:var(--radius);text-align:center;font-size:13px;outline:none;}
+    .page-jump input:focus{border-color:var(--primary);}
+
+    /* ── 撤回确认弹窗 ── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:300;display:none;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:var(--bg-container);border-radius:8px;width:420px;max-width:94vw;box-shadow:0 6px 16px rgba(0,0,0,0.12),0 3px 6px rgba(0,0,0,0.08);animation:popIn .2s ease;}
+    @keyframes popIn{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+    .modal-header{padding:16px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;}
+    .modal-header-title{font-size:16px;font-weight:600;color:var(--text-title);}
+    .modal-close{cursor:pointer;font-size:20px;color:var(--text-sub);line-height:1;transition:.2s;}
+    .modal-close:hover{color:var(--text-title);}
+    .modal-body{padding:24px;display:flex;gap:14px;align-items:flex-start;}
+    .modal-warn-icon{font-size:22px;color:var(--warning);flex-shrink:0;margin-top:2px;}
+    .modal-warn-text{font-size:14px;color:var(--text-title);line-height:1.7;}
+    .modal-warn-text .highlight{color:var(--primary);font-weight:600;}
+    .modal-footer{padding:12px 24px;border-top:1px solid var(--border-light);display:flex;gap:8px;justify-content:flex-end;}
+
+    /* ── 消息提示 ── */
+    .msg-wrap{position:fixed;top:56px;left:50%;transform:translateX(-50%);z-index:999;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:8px;}
+    .msg-item{background:var(--bg-container);border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,0.12),0 3px 6px rgba(0,0,0,0.08);padding:9px 12px;font-size:14px;color:var(--text-body);display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(-8px);transition:.25s;white-space:nowrap;}
+    .msg-item.show{opacity:1;transform:translateY(0);}
+  </style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-logo">咸</div>
+    <span class="brand-name">咸亨国际主数据管理平台</span>
+    <button class="switch-btn">切换系统</button>
+  </div>
+  <nav class="nav-menu">
+    <div class="nav-item">消息通知<span class="badge-dot"></span></div>
+    <div class="nav-item">价格审核<span class="badge-dot"></span></div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">版本更新</div>
+    <div class="nav-item">推送ERP</div>
+    <div class="nav-item">管理模块</div>
+    <div class="nav-item">任务中心<span class="badge">9+</span></div>
+    <div class="nav-item">清洗任务<span class="badge-dot"></span></div>
+    <div class="nav-divider"></div>
+    <div class="nav-item"><div class="user-avatar">管</div>管理员 ▾</div>
+  </nav>
+</header>
+
+<!-- 多页签 -->
+<div class="tabs-bar">
+  <div class="tabs-list">
+    <div class="tab" onclick="go('oms-mpm-物料工作台原型.html')">工作台 <span class="cls">×</span></div>
+    <div class="tab" onclick="go('待我审核.html')">待我审核 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    <div class="tab active">我发起的 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    <div class="tab" onclick="go('审核结果.html')">审核结果 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+  </div>
+  <div class="tabs-clear" onclick="showMsg('已清除标签页')">清除</div>
+</div>
+
+<main class="page">
+  <!-- 筛选栏 -->
+  <div class="filter-card">
+    <span class="filter-label">筛选</span>
+    <div class="filter-group">
+      <label>货主</label>
+      <select class="f-select">
+        <option value="">请选择</option>
+        <option>万聚国际（杭州）</option>
+        <option>威亨国际科技</option>
+        <option>浙江威亨创新产</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>型号</label>
+      <input class="f-input" placeholder="请输入" />
+    </div>
+    <div class="filter-group">
+      <label>规格</label>
+      <input class="f-input" placeholder="请输入" />
+    </div>
+    <div class="filter-group">
+      <label>物料等级</label>
+      <select class="f-select">
+        <option value="">请选择</option>
+        <option>零星</option>
+        <option>常规</option>
+      </select>
+    </div>
+    <div class="filter-actions">
+      <button class="btn btn-primary" onclick="showMsg('查询中...','info')">查询</button>
+      <button class="btn btn-default" onclick="showMsg('已重置筛选条件')">重置</button>
+    </div>
+  </div>
+
+  <!-- 操作栏 -->
+  <div class="action-card">
+    <div class="action-left">
+      <span class="action-label">操作：</span>
+      <button class="btn btn-default btn-sm" onclick="showMsg('已刷新列表')">刷新</button>
+      <button class="btn btn-warning btn-sm" onclick="batchRevoke()">批量撤回</button>
+      <button class="btn btn-info btn-sm" onclick="showMsg('正在导出...')">批量导出</button>
+      <button class="btn btn-default btn-sm" onclick="showMsg('正在导入批次...')">导入批次</button>
+      <button class="btn btn-default btn-sm" onclick="showMsg('跳转提交页面')">提交</button>
+      <button class="btn btn-danger btn-sm" onclick="showMsg('已废弃所选物料','warn')">废弃</button>
+    </div>
+    <div class="action-right">
+      <button class="btn btn-default btn-sm" onclick="showMsg('正在批量导出...')">批量导出</button>
+    </div>
+  </div>
+
+  <!-- 子 Tab -->
+  <div class="sub-tabs" id="subTabs">
+    <div class="sub-tab active" data-subtab="新增审核">新增审核</div>
+    <div class="sub-tab" data-subtab="修改审核">修改审核</div>
+    <div class="sub-tab" data-subtab="MDM增量审核">MDM增量审核</div>
+    <div class="sub-tab" data-subtab="定向物料新增审核">定向物料新增审核</div>
+  </div>
+
+  <!-- 表格 -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="checkAll" /></th>
+          <th>货主</th><th>编码</th><th>名称</th><th>四级类目</th>
+          <th>型号</th><th>规格</th><th>品牌</th><th>等级</th>
+          <th>物料描述</th><th>助记码</th><th>物料类型</th>
+          <th>申请时间</th><th>申请人</th><th>申请类型</th>
+          <th>审核时间</th><th>审核人</th><th>审核说明</th><th>审核状态</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="pagination">
+      <span class="page-info">共 <span id="totalCount">0</span> 条</span>
+      <button class="page-btn">‹</button>
+      <button class="page-btn active" data-page="1">1</button>
+      <button class="page-btn" data-page="2">2</button>
+      <button class="page-btn" data-page="3">3</button>
+      <button class="page-btn">›</button>
+      <select class="f-select" style="width:90px;flex:none;">
+        <option>25 条/页</option><option>50 条/页</option><option>100 条/页</option>
+      </select>
+      <div class="page-jump">跳至<input type="number" min="1" value="1" />页
+        <button class="btn btn-default btn-sm" onclick="showMsg('已跳转')">跳转</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 撤回确认弹窗 -->
+<div class="modal-overlay" id="revokeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-header-title">撤回确认</span>
+      <span class="modal-close" onclick="closeRevoke()">×</span>
+    </div>
+    <div class="modal-body">
+      <span class="modal-warn-icon">⚠️</span>
+      <div class="modal-warn-text" id="revokeText"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeRevoke()">取消</button>
+      <button class="btn btn-danger" onclick="confirmRevoke()">确认撤回</button>
+    </div>
+  </div>
+</div>
+
+<!-- 消息提示 -->
+<div class="msg-wrap" id="msgWrap"></div>
+
+<script>
+// ── 新增审核数据 ──────────────────────────────────────
+const ROWS_NEW = [
+  {owner:'万聚国际（杭州）',code:'A1004007279',name:'螺栓',cat:'其它道路管示…',model:'M10×120',spec:'-',brand:'上官/SHANGS…',level:'零星',desc:'-',mnemonic:'-',type:'正常物料',applyTime:'2026-04-07 0…',applyUser:'张凯栋',auditType:'新增审核',auditTime:'2026-04-07 1…',auditor:'杨晨',auditDesc:'人工审核驳回…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A1511019472',name:'缸电吸尘器',cat:'吸尘器',model:'MLD-090',spec:'-',brand:'米家德/MILAL…',level:'零星',desc:'缸电吸尘器[1…',mnemonic:'-',type:'正常物料',applyTime:'2026-04-03 1…',applyUser:'洪晶栋',auditType:'新增审核',auditTime:'2026-04-03 1…',auditor:'夏莹',auditDesc:'人工审核驳回…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A0103003713',name:'铝合金挡板',cat:'防洪板',model:'铝合金挡板',spec:'-',brand:'科藁丰/KEEPS…',level:'零星',desc:'-',mnemonic:'-',type:'正常物料',applyTime:'2026-03-31 1…',applyUser:'张文怡',auditType:'新增审核',auditTime:'2026-03-31 1…',auditor:'杨晨',auditDesc:'人工审核驳回…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A1507015919',name:'健身轮胎',cat:'拉力器/臂力器',model:'80公斤',spec:'-',brand:'娱杨格/HEYA…',level:'零星',desc:'-',mnemonic:'-',type:'正常物料',applyTime:'2026-03-09 0…',applyUser:'孙军勇',auditType:'新增审核',auditTime:'2026-03-09 0…',auditor:'夏莹',auditDesc:'人工审核驳回…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A1602001875',name:'风扇',cat:'轴流风机',model:'R2E225-BD92…',spec:'-',brand:'施乐百/ZIEHL…',level:'零星',desc:'135w，230v…',mnemonic:'-',type:'正常物料',applyTime:'2026-03-04 1…',applyUser:'陈金新',auditType:'新增审核',auditTime:'2026-03-04 1…',auditor:'杨晨',auditDesc:'人工审核驳回…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A0210002719',name:'电脑',cat:'振动在线检测…',model:'MateBook14…',spec:'-',brand:'华为/mateboo…',level:'零星',desc:'-',mnemonic:'-',type:'正常物料',applyTime:'2026-01-11 1…',applyUser:'李泽敏',auditType:'新增审核',auditTime:'2026-01-11 1…',auditor:'关婷婷',auditDesc:'人工审核驳回…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A0201004492',name:'钳形功率表',cat:'钳形电流表',model:'S2170',spec:'-',brand:'艾斯米特/SM…',level:'零星',desc:'国铁专属物料',mnemonic:'-',type:'正常物料',applyTime:'2025-12-31 1…',applyUser:'吴家庆',auditType:'新增审核',auditTime:'2025-12-31 1…',auditor:'关婷婷',auditDesc:'人工审核驳回…',status:'驳回'},
+  {owner:'安护电力技术…',code:'A1001007369',name:'三相导线管样杆',cat:'绝缘操作杆',model:'AHIR-SXCG-3…',spec:'-',brand:'安护电力/AN…',level:'零星',desc:'-',mnemonic:'-',type:'正常物料',applyTime:'2025-11-26 1…',applyUser:'赵小妆',auditType:'新增审核',auditTime:'2025-11-26 1…',auditor:'杨晨',auditDesc:'人工审核驳回…',status:'驳回'},
+  {owner:'威亨国际科技',code:'A0102006367',name:'消防卷盘钢枪…',cat:'灭火辅助工具',model:'19mm',spec:'-',brand:'创未/CHUAN…',level:'零星',desc:'-',mnemonic:'-',type:'正常物料',applyTime:'2025-11-24 2…',applyUser:'姚春芹',auditType:'新增审核',auditTime:'2025-11-24 2…',auditor:'姚春芹',auditDesc:'人工审核驳回…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A0801002193',name:'起帆 橡皮绳…',cat:'电缆',model:'-',spec:'-',brand:'起帆/QIFAN',level:'零星',desc:'YZ 3*4+2*2.5',mnemonic:'202506-中节能',type:'正常物料',applyTime:'2025-08-22 1…',applyUser:'程璧',auditType:'新增审核',auditTime:'2025-08-22 1…',auditor:'杨晨',auditDesc:'人工审核备注…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A0501045616',name:'HD11FH系列…',cat:'隔离开关',model:'HS11FH-200/…',spec:'-',brand:'人民电器/PEO…',level:'零星',desc:'-',mnemonic:'-',type:'正常物料',applyTime:'2025-08-01 1…',applyUser:'邱君游',auditType:'新增审核',auditTime:'2025-08-01 1…',auditor:'关婷婷',auditDesc:'主图重复',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A0210001926',name:'防爆电子风速…',cat:'叶轮式风速仪',model:'CFD25（A）',spec:'-',brand:'鑫速明/XINSU…',level:'零星',desc:'-',mnemonic:'-',type:'正常物料',applyTime:'2025-07-30 1…',applyUser:'高珊静',auditType:'新增审核',auditTime:'2025-07-30 1…',auditor:'关婷婷',auditDesc:'图上有其它店…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A0502003949',name:'瓷绝缘子',cat:'瓷绝缘子',model:'M8-40×40',spec:'-',brand:'正泰/CHINT',level:'零星',desc:'-',mnemonic:'-',type:'正常物料',applyTime:'2025-07-29 0…',applyUser:'邱君游',auditType:'新增审核',auditTime:'2025-07-29 0…',auditor:'关婷婷',auditDesc:'型号里的尺寸…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A0210001911',name:'温挂仪',cat:'温湿度变送器',model:'XTD-720W-GI4',spec:'-',brand:'余姚仪表/YYB',level:'零星',desc:'-',mnemonic:'-',type:'正常物料',applyTime:'2025-07-25 0…',applyUser:'高珊静',auditType:'新增审核',auditTime:'2025-07-25 0…',auditor:'张银华',auditDesc:'1、主图与物…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A0501038543',name:'接近开关',cat:'微动开关',model:'LJ30A3-15-Z/…',spec:'-',brand:'沪工/HUGONG',level:'零星',desc:'-',mnemonic:'-',type:'正常物料',applyTime:'2025-07-14 1…',applyUser:'邱君游',auditType:'新增审核',auditTime:'2025-07-14 1…',auditor:'关婷婷',auditDesc:'型号与详情图…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A0210001336',name:'测温贴片',cat:'测温贴片',model:'12MM',spec:'-',brand:'志品堂/LPH',level:'零星',desc:'直径12mm(20…',mnemonic:'-',type:'正常物料',applyTime:'2025-02-25 1…',applyUser:'高珊静',auditType:'新增审核',auditTime:'2025-02-25 1…',auditor:'关婷婷',auditDesc:'图上有专营店…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A0210001335',name:'测温贴片',cat:'测温贴片',model:'10MM',spec:'-',brand:'志品堂/LPH',level:'零星',desc:'直径10mm(20…',mnemonic:'-',type:'正常物料',applyTime:'2025-02-25 1…',applyUser:'高珊静',auditType:'新增审核',auditTime:'2025-02-25 1…',auditor:'关婷婷',auditDesc:'图上有专营店…',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'A1511018472',name:'管道疏通器',cat:'其它清洁设备',model:'GQ-150',spec:'-',brand:'大力大神',level:'零星',desc:'铝合金款',mnemonic:'-',type:'正常物料',applyTime:'2025-02-25…',applyUser:'洪晶栋',auditType:'新增审核',auditTime:'-',auditor:'夏莹',auditDesc:'-',status:'撤回'},
+  {owner:'探维土电气科…',code:'A0202000783',name:'电缆耐压介损…',cat:'电缆介质老化…',model:'VLF-34TD',spec:'-',brand:'探维土/TANB…',level:'零星',desc:'-',mnemonic:'-',type:'无图物料',applyTime:'2026-04-01 1…',applyUser:'蔡静媛',auditType:'新增审核',auditTime:'-',auditor:'沈沐生',auditDesc:'-',status:'审核中'},
+];
+
+// ── 定向物料数据 ──────────────────────────────────────
+const ROWS_DIRECTIONAL = [
+  {owner:'万聚国际（杭州）',code:'A1901005067',name:'PVC线槽',cat:'线槽类',model:'30*20mm',spec:'宽30mm 厚0.8mm',brand:'佐佑众工/ZUOYOU',level:'零星',desc:'PVC线槽',mnemonic:'PVCXC',type:'正常物料',applyTime:'2026-04-07 09:10',applyUser:'赵艺珂',auditType:'定向物料新增审核',auditTime:'2026-04-07 10:35',auditor:'杨晨',auditDesc:'AI建议驳回，规格描述与名称不一致，已修正后通过',status:'通过'},
+  {owner:'万聚国际（杭州）',code:'A1901005068',name:'PVC弯头',cat:'线槽类',model:'30*20mm',spec:'90度',brand:'佐佑众工/ZUOYOU',level:'零星',desc:'PVC弯头',mnemonic:'PVCWT',type:'无图物料',applyTime:'2026-04-07 09:10',applyUser:'赵艺珂',auditType:'定向物料新增审核',auditTime:'2026-04-07 10:35',auditor:'杨晨',auditDesc:'人工审核通过',status:'通过'},
+  {owner:'万聚国际（杭州）',code:'A1901005069',name:'PVC三通',cat:'线槽类',model:'30*20mm',spec:'-',brand:'佐佑众工/ZUOYOU',level:'零星',desc:'PVC三通',mnemonic:'PVCST',type:'无图物料',applyTime:'2026-04-07 09:10',applyUser:'赵艺珂',auditType:'定向物料新增审核',auditTime:'2026-04-07 10:35',auditor:'杨晨',auditDesc:'人工审核通过',status:'通过'},
+  {owner:'威亨国际科技',code:'B1102003301',name:'304不锈钢螺栓',cat:'紧固件',model:'M8*40',spec:'全牙',brand:'国产/MADEINCHI',level:'零星',desc:'304螺栓',mnemonic:'BXGLT',type:'无图物料',applyTime:'2026-04-07 10:22',applyUser:'梅贵',auditType:'定向物料新增审核',auditTime:'2026-04-07 11:08',auditor:'夏宝',auditDesc:'人工审核通过',status:'通过'},
+  {owner:'威亨国际科技',code:'B1102003302',name:'304不锈钢螺母',cat:'紧固件',model:'M8',spec:'-',brand:'国产/MADEINCHI',level:'零星',desc:'304螺母',mnemonic:'BXGLM',type:'无图物料',applyTime:'2026-04-07 10:22',applyUser:'梅贵',auditType:'定向物料新增审核',auditTime:'2026-04-07 11:08',auditor:'夏宝',auditDesc:'品牌信息缺失，已按规则补充国产标识',status:'驳回'},
+  {owner:'万聚国际（杭州）',code:'',name:'定向函待审物料A',cat:'电气配件',model:'DX-MODEL-001',spec:'规格待补充',brand:'国产/MADEINCHI',level:'零星',desc:'OMS定向函物料，待MPM审核',mnemonic:'-',type:'无图物料',applyTime:'2026-04-08 08:30',applyUser:'赵艺珂',auditType:'定向物料新增审核',auditTime:'-',auditor:'-',auditDesc:'-',status:'审核中'},
+];
+
+// ── 状态 ──────────────────────────────────────────────
+let currentTab = '新增审核';
+let revokeTarget = [];
+
+// ── 工具函数 ───────────────────────────────────────────
+function typeTag(t){
+  return t==='无图物料'
+    ? '<span class="tag tag-no-img">无图物料</span>'
+    : '<span class="tag tag-normal">'+t+'</span>';
+}
+function auditTypeTag(t){
+  if(t==='定向物料新增审核') return '<span class="tag tag-directional">'+t+'</span>';
+  return '<span class="tag tag-audit-type">'+t+'</span>';
+}
+function statusTag(s){
+  const map = {
+    '通过':    '<span class="tag tag-pass">通过</span>',
+    '驳回':    '<span class="tag tag-reject">驳回</span>',
+    '审核中':  '<span class="tag tag-pending">审核中</span>',
+    '撤回':    '<span class="tag" style="background:#fafafa;border-color:#d9d9d9;color:var(--text-sub)">已撤回</span>',
+  };
+  return map[s] || s;
+}
+
+// ── 渲染表格 ───────────────────────────────────────────
+function renderTable(){
+  const data = currentTab === '定向物料新增审核' ? ROWS_DIRECTIONAL : ROWS_NEW;
+  document.getElementById('totalCount').textContent = data.length;
+  document.getElementById('tableBody').innerHTML = data.map((r,i) => `
+    <tr>
+      <td><input type="checkbox" data-idx="${i}" data-status="${r.status}" /></td>
+      <td><span class="cell-ellipsis" title="${r.owner}">${r.owner}</span></td>
+      <td><span class="cell-ellipsis td-link" title="${r.code}">${r.code||'-'}</span></td>
+      <td><span class="cell-ellipsis" title="${r.name}">${r.name}</span></td>
+      <td><span class="cell-ellipsis-sm" title="${r.cat}">${r.cat}</span></td>
+      <td>${r.model}</td>
+      <td>${r.spec}</td>
+      <td><span class="cell-ellipsis" title="${r.brand}">${r.brand}</span></td>
+      <td>${r.level}</td>
+      <td><span class="cell-ellipsis-sm" title="${r.desc}">${r.desc}</span></td>
+      <td><span class="cell-ellipsis-sm" title="${r.mnemonic}">${r.mnemonic}</span></td>
+      <td>${typeTag(r.type)}</td>
+      <td>${r.applyTime}</td>
+      <td>${r.applyUser}</td>
+      <td>${auditTypeTag(r.auditType)}</td>
+      <td>${r.auditTime}</td>
+      <td>${r.auditor}</td>
+      <td><span class="cell-ellipsis" title="${r.auditDesc}">${r.auditDesc||'-'}</span></td>
+      <td>${statusTag(r.status)}</td>
+    </tr>`).join('');
+}
+
+// ── 全选 ──────────────────────────────────────────────
+document.getElementById('checkAll').addEventListener('change', function(){
+  document.querySelectorAll('#tableBody input[type=checkbox]').forEach(c => c.checked = this.checked);
+});
+
+// ── 子Tab切换 ─────────────────────────────────────────
+document.getElementById('subTabs').addEventListener('click', e => {
+  const t = e.target.closest('.sub-tab'); if(!t) return;
+  document.querySelectorAll('.sub-tab').forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  currentTab = t.dataset.subtab;
+  renderTable();
+  showMsg(`切换至：${currentTab}`);
+});
+
+// ── 批量撤回 ──────────────────────────────────────────
+function batchRevoke(){
+  const checked = document.querySelectorAll('#tableBody input[type=checkbox]:checked');
+  if(!checked.length){ showMsg('请先勾选物料','warn'); return; }
+
+  const data = currentTab === '定向物料新增审核' ? ROWS_DIRECTIONAL : ROWS_NEW;
+  const revokable = [];
+  const notRevokable = [];
+  checked.forEach(cb => {
+    const r = data[parseInt(cb.dataset.idx)];
+    if(r.status === '审核中') revokable.push(r);
+    else notRevokable.push(r);
+  });
+
+  if(!revokable.length){
+    showMsg('所选物料状态不可撤回（仅"审核中"状态可撤回）','warn'); return;
+  }
+
+  revokeTarget = revokable;
+  const nameList = revokable.map(r => `【${r.name}】`).join('、');
+  const extra = notRevokable.length
+    ? `<br><br><span style="color:var(--text-sub);font-size:13px;">另有 ${notRevokable.length} 条因状态不符将跳过。</span>`
+    : '';
+  document.getElementById('revokeText').innerHTML =
+    `确认撤回以下 <span class="highlight">${revokable.length}</span> 条物料申请？<br><br>${nameList}${extra}<br><br>撤回后物料将回到草稿状态，可重新编辑提交。`;
+  document.getElementById('revokeModal').classList.add('open');
+}
+
+function closeRevoke(){
+  document.getElementById('revokeModal').classList.remove('open');
+}
+
+function confirmRevoke(){
+  closeRevoke();
+  showMsg(`已撤回 ${revokeTarget.length} 条物料`, 'ok');
+}
+
+document.getElementById('revokeModal').addEventListener('click', function(e){
+  if(e.target === this) closeRevoke();
+});
+
+// ── 分页 ──────────────────────────────────────────────
+document.querySelectorAll('.page-btn[data-page]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.page-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    showMsg(`跳转到第 ${b.dataset.page} 页`);
+  });
+});
+
+function go(url){ window.location.href = url; }
+
+function showMsg(text, type='info'){
+  const wrap = document.getElementById('msgWrap');
+  const icons = {info:'💬',ok:'✅',warn:'⚠️',err:'❌'};
+  const el = document.createElement('div');
+  el.className = 'msg-item';
+  el.innerHTML = `<span>${icons[type]||icons.info}</span>${text}`;
+  wrap.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 2200);
+}
+
+renderTable();
+</script>
+</body>
+</html>

@@ -229,13 +229,6 @@
     .unified-input:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1);}
     .unified-input:disabled{background:#fafafa;color:var(--text-sub);cursor:not-allowed;}
 
-    /* ── 整单提示弹窗 ── */
-    .warn-modal{width:440px;max-width:94vw;}
-    .warn-body{padding:24px;display:flex;gap:16px;align-items:flex-start;}
-    .warn-icon{font-size:22px;color:var(--warning);flex-shrink:0;margin-top:2px;}
-    .warn-text{font-size:14px;color:var(--text-title);line-height:1.6;}
-    .warn-text .batch-id{color:var(--primary);font-weight:600;}
-
     /* ── AntD Message 顶部居中 ── */
     .msg-wrap{position:fixed;top:56px;left:50%;transform:translateX(-50%);z-index:999;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:8px;}
     .msg-item{background:var(--bg-container);border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,0.12),0 3px 6px rgba(0,0,0,0.08);padding:9px 12px;font-size:14px;color:var(--text-body);display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(-8px);transition:.25s;white-space:nowrap;}
@@ -304,9 +297,9 @@
         <option>常规</option>
       </select>
     </div>
-    <div class="filter-group" id="filterBatchGroup" style="display:none;">
-      <label>定向函单号</label>
-      <input class="f-input" id="filterBatchId" placeholder="请输入定向函单号" />
+    <div class="filter-group">
+      <label>内部备注</label>
+      <input class="f-input" placeholder="请输入" />
     </div>
     <div class="filter-actions">
       <button class="btn btn-primary" onclick="showMsg('查询中...','info')">查询</button>
@@ -341,7 +334,7 @@
       <thead>
         <tr>
           <th><input type="checkbox" id="checkAll" /></th>
-          <th>货主</th><th>编码</th><th>定向函编码</th><th>名称</th><th>四级类目</th>
+          <th>货主</th><th>咸亨物料编码</th><th>名称</th><th>四级类目</th>
           <th>型号</th><th>规格</th><th>描述</th><th>单位</th><th>品牌</th><th>物料等级</th>
           <th>等级</th><th>订单执行员</th><th>采购部门</th><th>内部备注</th>
           <th>物料类型</th><th>图片类型</th><th>驳回理由</th>
@@ -382,7 +375,7 @@
     </div>
     <div class="modal-body">
       <div class="form-row">
-        <div class="form-label">物料编码</div>
+        <div class="form-label">外部编码</div>
         <input class="form-control" id="modalCode" disabled />
       </div>
       <div class="form-row">
@@ -413,7 +406,7 @@
       <table class="reject-table" id="rejectTable">
         <thead>
           <tr>
-            <th>编码</th><th>名称</th><th>型号</th><th>规格</th><th>驳回原因</th>
+            <th>外部编码</th><th>名称</th><th>型号</th><th>规格</th><th>驳回原因</th>
           </tr>
         </thead>
         <tbody id="rejectTableBody"></tbody>
@@ -429,24 +422,6 @@
     <div class="modal-footer">
       <button class="btn btn-primary" onclick="submitBatchReject()">确定</button>
       <button class="btn btn-default" onclick="closeBatchReject()">取消</button>
-    </div>
-  </div>
-</div>
-
-<!-- 整单提示弹窗 -->
-<div class="modal-overlay" id="warnOverlay">
-  <div class="modal warn-modal">
-    <div class="modal-header">
-      <span class="modal-header-title">驳回提醒</span>
-      <span class="modal-close" onclick="closeWarn()">×</span>
-    </div>
-    <div class="warn-body">
-      <span class="warn-icon">⚠️</span>
-      <div class="warn-text" id="warnText"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-default" onclick="closeWarn()">取消</button>
-      <button class="btn btn-primary" onclick="confirmWarnAndOpenBatchReject()">继续处理整单</button>
     </div>
   </div>
 </div>
@@ -485,22 +460,35 @@ const ROWS = [
 
 // 定向物料专用数据（带batchId）
 const DIRECTIONAL_ROWS = [
-  {owner:'万聚国际（杭州）',code:'LINE_2026040709100001',name:'PVC线槽',cat:'线槽类',model:'30*20mm',spec:'宽30mm 厚0.8mm',brand:'佐佑众工/ZUOYOU',level:'零星',type:'正常物料',applyTime:'2026-04-07 09:10',applyUser:'赵艺珂',
-   desc:'PVC线槽',unit:'米',marketPrice:'¥6.51',grossWeight:'0.3kg',grade:'零星商品',execUser:'胡乾礼',buyDept:'通用工具采购',innerRemark:'-',imgType:'正常物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'PVCXC',project:'202604东方电气',mainImgCnt:4,detailImgCnt:4,materialTag:'定向物料',auditor:'杨晨',aiSuggest:'建议【审核驳回】',aiConclusion:'【文本审核】',batchId:'DX202604070001'},
-  {owner:'万聚国际（杭州）',code:'LINE_2026040709100002',name:'PVC弯头',cat:'线槽类',model:'30*20mm',spec:'90度',brand:'佐佑众工/ZUOYOU',level:'零星',type:'无图物料',applyTime:'2026-04-07 09:10',applyUser:'赵艺珂',
-   desc:'PVC弯头',unit:'个',marketPrice:'¥1.20',grossWeight:'0.05kg',grade:'零星商品',execUser:'胡乾礼',buyDept:'通用工具采购',innerRemark:'-',imgType:'无图物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'PVCWT',project:'202604东方电气',mainImgCnt:0,detailImgCnt:0,materialTag:'定向物料',auditor:'杨晨',aiSuggest:'建议【审核通过】',aiConclusion:'【文本审核】',batchId:'DX202604070001'},
+  {owner:'万聚国际（杭州）',code:'LINE_2026040709100001',xianhengCode:'A2607001789',name:'PVC线槽',cat:'线槽类',model:'30*20mm',spec:'宽30mm 厚0.8mm',brand:'佐佑众工/ZUOYOU',level:'零星',type:'正常物料',applyTime:'2026-04-07 09:10',applyUser:'赵艺珂',
+   desc:'PVC线槽',unit:'米',marketPrice:'¥6.51',grossWeight:'0.3kg',grade:'零星商品',execUser:'胡乾礼',buyDept:'通用工具采购',innerRemark:'定向函编码：DX202604070001',imgType:'正常物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'PVCXC',project:'202604东方电气',mainImgCnt:4,detailImgCnt:4,materialTag:'定向物料',auditor:'杨晨',aiSuggest:'建议【审核驳回】',aiConclusion:'【文本审核】',batchId:'DX202604070001'},
+  {owner:'万聚国际（杭州）',code:'LINE_2026040709100002',xianhengCode:'A2607001788',name:'PVC弯头',cat:'线槽类',model:'30*20mm',spec:'90度',brand:'佐佑众工/ZUOYOU',level:'零星',type:'无图物料',applyTime:'2026-04-07 09:10',applyUser:'赵艺珂',
+   desc:'PVC弯头',unit:'个',marketPrice:'¥1.20',grossWeight:'0.05kg',grade:'零星商品',execUser:'胡乾礼',buyDept:'通用工具采购',innerRemark:'定向函编码：DX202604070001',imgType:'无图物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'PVCWT',project:'202604东方电气',mainImgCnt:0,detailImgCnt:0,materialTag:'定向物料',auditor:'杨晨',aiSuggest:'建议【审核通过】',aiConclusion:'【文本审核】',batchId:'DX202604070001'},
   {owner:'万聚国际（杭州）',code:'LINE_2026040709100003',name:'PVC三通',cat:'线槽类',model:'30*20mm',spec:'-',brand:'佐佑众工/ZUOYOU',level:'零星',type:'无图物料',applyTime:'2026-04-07 09:10',applyUser:'赵艺珂',
-   desc:'PVC三通',unit:'个',marketPrice:'¥1.50',grossWeight:'0.06kg',grade:'零星商品',execUser:'胡乾礼',buyDept:'通用工具采购',innerRemark:'-',imgType:'无图物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'PVCST',project:'202604东方电气',mainImgCnt:0,detailImgCnt:0,materialTag:'定向物料',auditor:'杨晨',aiSuggest:'建议【审核通过】',aiConclusion:'【文本审核】',batchId:'DX202604070001'},
+   desc:'PVC三通',unit:'个',marketPrice:'¥1.50',grossWeight:'0.06kg',grade:'零星商品',execUser:'胡乾礼',buyDept:'通用工具采购',innerRemark:'定向函编码：DX202604070001',imgType:'无图物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'PVCST',project:'202604东方电气',mainImgCnt:0,detailImgCnt:0,materialTag:'定向物料',auditor:'杨晨',aiSuggest:'建议【审核通过】',aiConclusion:'【文本审核】',batchId:'DX202604070001'},
   {owner:'威亨国际科技',code:'LINE_2026040710220001',name:'304不锈钢螺栓',cat:'紧固件',model:'M8*40',spec:'全牙',brand:'国产/MADEINCHI',level:'零星',type:'无图物料',applyTime:'2026-04-07 10:22',applyUser:'梅贵',
-   desc:'304螺栓',unit:'个',marketPrice:'¥0.85',grossWeight:'0.02kg',grade:'零星商品',execUser:'郭佳薰',buyDept:'电商管理部',innerRemark:'-',imgType:'无图物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'BXGLT',project:'-',mainImgCnt:0,detailImgCnt:0,materialTag:'定向物料',auditor:'夏宝',aiSuggest:'建议【审核通过】',aiConclusion:'【文本审核】',batchId:'DX202604070002'},
+   desc:'304螺栓',unit:'个',marketPrice:'¥0.85',grossWeight:'0.02kg',grade:'零星商品',execUser:'郭佳薰',buyDept:'电商管理部',innerRemark:'定向函编码：DX202604070002',imgType:'无图物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'BXGLT',project:'-',mainImgCnt:0,detailImgCnt:0,materialTag:'定向物料',auditor:'夏宝',aiSuggest:'建议【审核通过】',aiConclusion:'【文本审核】',batchId:'DX202604070002'},
   {owner:'威亨国际科技',code:'LINE_2026040710220002',name:'304不锈钢螺母',cat:'紧固件',model:'M8',spec:'-',brand:'国产/MADEINCHI',level:'零星',type:'无图物料',applyTime:'2026-04-07 10:22',applyUser:'梅贵',
-   desc:'304螺母',unit:'个',marketPrice:'¥0.45',grossWeight:'0.01kg',grade:'零星商品',execUser:'郭佳薰',buyDept:'电商管理部',innerRemark:'-',imgType:'无图物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'BXGLM',project:'-',mainImgCnt:0,detailImgCnt:0,materialTag:'定向物料',auditor:'夏宝',aiSuggest:'建议【审核通过】',aiConclusion:'【文本审核】',batchId:'DX202604070002'},
+   desc:'304螺母',unit:'个',marketPrice:'¥0.45',grossWeight:'0.01kg',grade:'零星商品',execUser:'郭佳薰',buyDept:'电商管理部',innerRemark:'定向函编码：DX202604070002',imgType:'无图物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'BXGLM',project:'-',mainImgCnt:0,detailImgCnt:0,materialTag:'定向物料',auditor:'夏宝',aiSuggest:'建议【审核通过】',aiConclusion:'【文本审核】',batchId:'DX202604070002'},
 ];
 
 // ── 状态 ──────────────────────────────────────────────
 let auditIdx = -1;
 let currentTab = '新增审核';
 let isDirectionalTab = false;
+
+// 若工作台通过 ?tab=directional 跳转，自动激活定向tab
+(function checkUrlTab(){
+  if(new URLSearchParams(window.location.search).get('tab') === 'directional'){
+    const tab = document.getElementById('directionalTab');
+    if(tab) {
+      document.querySelectorAll('.sub-tab').forEach(x => x.classList.remove('active'));
+      tab.classList.add('active');
+      currentTab = '定向物料新增审核';
+      isDirectionalTab = true;
+    }
+  }
+})();
 
 // ── 工具函数 ───────────────────────────────────────────
 function typeTag(t){ return t==='无图物料'?'<span class="tag tag-no-img">无图物料</span>':t; }
@@ -525,8 +513,7 @@ function renderTable(){
     <tr>
       <td><input type="checkbox" data-idx="${i}"/></td>
       <td><span class="cell-ellipsis" title="${r.owner}">${r.owner}</span></td>
-      <td><span class="td-link" onclick="goDetail('${r.code}')">${r.code}</span></td>
-      <td><span class="cell-ellipsis" title="${r.batchId||'-'}">${r.batchId||'-'}</span></td>
+      <td><span class="cell-ellipsis" title="${r.code}">${r.code}</span></td>
       <td><span class="cell-ellipsis" title="${r.name}">${r.name}</span></td>
       <td><span class="cell-ellipsis-sm" title="${r.cat}">${r.cat}</span></td>
       <td>${r.model}</td><td>${r.spec}</td>
@@ -567,8 +554,6 @@ document.getElementById('subTabs').addEventListener('click',e=>{
   t.classList.add('active');
   currentTab = t.dataset.subtab;
   isDirectionalTab = (currentTab === '定向物料新增审核');
-  // 显示/隐藏定向函单号筛选
-  document.getElementById('filterBatchGroup').style.display = isDirectionalTab ? '' : 'none';
   renderTable();
   showMsg(`切换至：${currentTab}`);
 });
@@ -604,6 +589,7 @@ function openModal(idx, action){
 function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
 
 function submitAudit(action){
+  if(action === '驳回' && isDirectionalTab){ showMsg('暂不允许驳回','warn'); return; }
   const remark = document.getElementById('modalRemark').value.trim();
   if(!remark){ showMsg('请填写审核意见','warn'); return; }
   const data = isDirectionalTab ? DIRECTIONAL_ROWS : ROWS;
@@ -615,6 +601,7 @@ function submitAudit(action){
 function batchAudit(action){
   const checked = document.querySelectorAll('#tableBody input[type=checkbox]:checked');
   if(!checked.length){ showMsg('请先勾选物料','warn'); return; }
+  if(action === '驳回' && isDirectionalTab){ showMsg('暂不允许驳回','warn'); return; }
   if(action === '通过'){
     showMsg(`批量通过 ${checked.length} 条`, 'ok');
     return;
@@ -634,23 +621,6 @@ function openBatchReject(){
     const idx = parseInt(cb.dataset.idx);
     selectedRows.push(data[idx]);
   });
-
-  // 检查是否有定向函物料
-  if(isDirectionalTab){
-    const batchIds = [...new Set(selectedRows.map(r=>r.batchId).filter(b=>b))];
-    if(batchIds.length > 0){
-      // 弹整单提示
-      const batchList = batchIds.map(b=>`【${b}】`).join('、');
-      document.getElementById('warnText').innerHTML =
-        `所选物料中包含定向函 ${batchList} 的物料。<br><br>` +
-        `根据整单一致性规则，驳回定向函中的单个物料将影响整单回传。` +
-        `<br><br>请对该定向函的<strong>所有物料</strong>进行审核处理后再提交。`;
-      document.getElementById('warnOverlay').classList.add('open');
-      // 存储待驳回数据供后续使用
-      window._pendingRejectRows = selectedRows;
-      return;
-    }
-  }
 
   _openBatchRejectModal(selectedRows);
 }
@@ -705,24 +675,9 @@ function submitBatchReject(){
   showMsg(`已批量驳回 ${inputs.length} 条`, 'err');
 }
 
-// ── 整单提示弹窗 ──────────────────────────────────────
-function closeWarn(){
-  document.getElementById('warnOverlay').classList.remove('open');
-}
-function confirmWarnAndOpenBatchReject(){
-  closeWarn();
-  // 展开整批定向函物料（按batchId找出所有相关物料）
-  if(window._pendingRejectRows){
-    const batchIds = [...new Set(window._pendingRejectRows.map(r=>r.batchId).filter(b=>b))];
-    const allBatchRows = DIRECTIONAL_ROWS.filter(r=>batchIds.includes(r.batchId));
-    _openBatchRejectModal(allBatchRows);
-  }
-}
-
 // ── 遮罩点击关闭 ──────────────────────────────────────
 document.getElementById('modalOverlay').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
 document.getElementById('batchRejectOverlay').addEventListener('click',function(e){ if(e.target===this) closeBatchReject(); });
-document.getElementById('warnOverlay').addEventListener('click',function(e){ if(e.target===this) closeWarn(); });
 
 function go(url){ window.location.href = url; }
 
