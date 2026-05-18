@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>咸亨商城商品详情 · 奖励展示原型</title>
+  <style>
+    :root {
+      --xh-red: #d40000;
+      --xh-red-dark: #b30000;
+      --xh-red-light: #ffe9e9;
+      --text-title: #222;
+      --text-body: #444;
+      --text-sub: #888;
+      --border-light: #eee;
+      --border: #ddd;
+      --bg-page: #fff;
+      --bg-grey: #f6f6f6;
+
+      /* PRD 5.2.2 / 附录 A 奖励配色 */
+      --reward-project: #1677ff;
+      --reward-project-bg: #e6f4ff;
+      --reward-project-border: #91d5ff;
+      --reward-amount: #d46b08;
+      --reward-amount-bg: #fff7e6;
+      --reward-amount-border: #ffd591;
+      --reward-ratio: #52c41a;
+      --reward-ratio-bg: #f6ffed;
+      --reward-ratio-border: #b7eb8f;
+      --reward-warn: #cf1322;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      font-size: 13px;
+      color: var(--text-body);
+      background: var(--bg-page);
+      min-width: 1280px;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: transparent; }
+
+    /* ───── 顶部信息条 ───── */
+    .top-strip { background: #fafafa; border-bottom: 1px solid var(--border-light); font-size: 12px; color: var(--text-sub); height: 32px; line-height: 32px; }
+    .top-strip-inner { max-width: 1280px; margin: 0 auto; padding: 0 16px; display: flex; justify-content: space-between; align-items: center; }
+    .top-strip-left { display: flex; gap: 14px; align-items: center; }
+    .top-strip-right { display: flex; gap: 18px; align-items: center; }
+    .top-strip a:hover { color: var(--xh-red); }
+    .top-strip .sep { color: #ddd; }
+    .top-strip .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #ff7a00; margin-right: 4px; }
+    .top-strip .badge { background: var(--xh-red); color: #fff; border-radius: 8px; padding: 0 5px; font-size: 11px; margin: 0 2px; }
+    .top-strip .phone { color: var(--xh-red); font-weight: 600; font-size: 16px; }
+
+    /* ───── LOGO + 搜索 ───── */
+    .header { max-width: 1280px; margin: 0 auto; padding: 16px; display: flex; align-items: center; gap: 28px; }
+    .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .logo-img { width: 56px; height: 56px; background: var(--xh-red); color: #fff; font-weight: 700; font-size: 14px; display: grid; place-items: center; border-radius: 4px; line-height: 1.2; text-align: center; }
+    .logo-text { color: var(--xh-red); font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+    .logo-en { color: var(--xh-red); font-size: 9px; letter-spacing: 1px; margin-top: 1px; }
+    .search-bar { flex: 1; display: flex; max-width: 560px; height: 40px; border: 2px solid var(--xh-red); border-radius: 2px; }
+    .search-bar input { flex: 1; border: 0; outline: 0; padding: 0 12px; font-size: 13px; }
+    .search-bar button { width: 80px; background: var(--xh-red); color: #fff; font-size: 15px; }
+    .header-slogan { color: var(--xh-red); font-size: 15px; font-weight: 500; }
+
+    /* ───── 主导航 ───── */
+    .main-nav { background: var(--xh-red); color: #fff; height: 42px; }
+    .main-nav-inner { max-width: 1280px; margin: 0 auto; padding: 0 16px; display: flex; align-items: stretch; height: 100%; }
+    .nav-all { background: var(--xh-red-dark); color: #fff; font-weight: 600; padding: 0 20px; display: flex; align-items: center; min-width: 220px; }
+    .nav-list { display: flex; align-items: center; gap: 28px; padding: 0 24px; font-size: 14px; }
+    .nav-list a { padding: 6px 0; position: relative; }
+    .nav-list a:hover { opacity: 0.85; }
+    .nav-tag-new { background: #ff7a00; color: #fff; font-size: 9px; padding: 1px 4px; border-radius: 2px; vertical-align: super; margin-left: 2px; }
+    .nav-tag-hot { background: #fff; color: var(--xh-red); font-size: 9px; padding: 1px 4px; border-radius: 2px; vertical-align: super; margin-left: 2px; font-weight: 600; }
+
+    /* ───── 面包屑 ───── */
+    .crumbs { max-width: 1280px; margin: 16px auto 0; padding: 0 16px; color: var(--text-sub); font-size: 13px; }
+    .crumbs a { margin: 0 6px; }
+    .crumbs a:first-child { margin-left: 0; }
+    .crumbs a:hover { color: var(--xh-red); }
+    .crumbs .sep { color: #ccc; }
+
+    /* ───── 商品主区 ───── */
+    .product-wrap { max-width: 1280px; margin: 16px auto 0; padding: 0 16px; display: grid; grid-template-columns: 460px 1fr; gap: 24px; }
+
+    /* 左：图片区 */
+    .gallery { }
+    .gallery-main { width: 460px; height: 460px; border: 1px solid var(--border-light); display: grid; place-items: center; background: #fafafa; position: relative; overflow: hidden; }
+    .gallery-main img { max-width: 90%; max-height: 90%; }
+    .gallery-watermark { position: absolute; inset: 0; pointer-events: none; opacity: 0.06; transform: rotate(-20deg); display: grid; place-items: center; font-size: 32px; font-weight: 700; color: #000; letter-spacing: 6px; }
+    .gallery-thumbs { margin-top: 12px; display: flex; align-items: center; gap: 10px; }
+    .gallery-arrow { width: 22px; height: 60px; background: #f4f4f4; display: grid; place-items: center; cursor: pointer; color: #888; }
+    .thumb-list { flex: 1; display: flex; gap: 8px; overflow: hidden; }
+    .thumb { width: 80px; height: 80px; border: 1px solid var(--border); cursor: pointer; display: grid; place-items: center; background: #fafafa; }
+    .thumb.active { border-color: var(--xh-red); }
+    .thumb img { max-width: 80%; max-height: 80%; }
+    .gallery-actions { margin-top: 16px; display: flex; gap: 18px; align-items: center; color: var(--text-sub); font-size: 13px; }
+    .icon-circle { width: 24px; height: 24px; border-radius: 50%; display: inline-grid; place-items: center; color: #fff; font-size: 12px; }
+    .ic-star { background: #faad14; }
+    .ic-weibo { background: #e6162d; }
+    .ic-wechat { background: #07c160; }
+
+    /* 右：商品信息区 */
+    .info { display: flex; flex-direction: column; }
+    .title { font-size: 18px; font-weight: 600; color: var(--text-title); line-height: 1.4; }
+    .title-meta { color: var(--text-sub); font-size: 13px; margin-top: 6px; display: flex; align-items: center; justify-content: space-between; }
+    .feedback-link { color: var(--xh-red); font-weight: 600; cursor: pointer; font-size: 14px; }
+
+    /* ───── 奖励 Banner（新增）───── */
+    .reward-banner {
+      margin-top: 14px;
+      border-radius: 6px;
+      padding: 14px 18px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-height: 64px;
+    }
+    /* 三类奖励配色 */
+    .reward-banner.type-AMOUNT { background: linear-gradient(90deg, var(--reward-amount-bg), #fffbf3); border: 1px solid var(--reward-amount-border); }
+    .reward-banner.type-PROJECT { background: linear-gradient(90deg, var(--reward-project-bg), #f3faff); border: 1px solid var(--reward-project-border); }
+    .reward-banner.type-RATIO { background: linear-gradient(90deg, var(--reward-ratio-bg), #f7fff0); border: 1px solid var(--reward-ratio-border); }
+    .reward-icon { font-size: 30px; flex-shrink: 0; }
+    .reward-main { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .reward-row1 { display: flex; align-items: center; gap: 10px; }
+    .reward-type-tag {
+      display: inline-flex; align-items: center; height: 22px; padding: 0 8px;
+      border-radius: 4px; font-size: 12px; font-weight: 600; color: #fff;
+    }
+    .type-AMOUNT .reward-type-tag { background: var(--reward-amount); }
+    .type-PROJECT .reward-type-tag { background: var(--reward-project); }
+    .type-RATIO .reward-type-tag { background: var(--reward-ratio); }
+    .reward-main-info { font-size: 18px; font-weight: 700; }
+    .type-AMOUNT .reward-main-info { color: var(--reward-amount); }
+    .type-PROJECT .reward-main-info { color: var(--reward-project); }
+    .type-RATIO .reward-main-info { color: var(--reward-ratio); }
+    .reward-desc { font-size: 13px; color: var(--text-body); }
+    .reward-period { font-size: 12px; color: var(--text-sub); display: flex; align-items: center; gap: 6px; }
+    .reward-period .config-id { color: #bbb; font-family: Consolas, monospace; font-size: 11px; }
+    .badge-expire {
+      position: absolute; top: 8px; right: 8px;
+      background: var(--reward-warn); color: #fff;
+      font-size: 12px; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+    }
+
+    /* 奖励调试面板（PRD 5.2.2 推送报文，便于产品/技术核验）*/
+    .reward-debug {
+      margin-top: 8px; padding: 10px 14px;
+      background: #fafafa; border: 1px dashed #ddd; border-radius: 4px;
+      font-family: Consolas, monospace; font-size: 11px; color: #666;
+      line-height: 1.7; cursor: pointer;
+    }
+    .reward-debug-header { font-family: -apple-system, "Microsoft YaHei", sans-serif; color: var(--text-sub); font-size: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .reward-debug-body { display: none; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ddd; }
+    .reward-debug.open .reward-debug-body { display: block; }
+    .reward-debug-table { width: 100%; border-collapse: collapse; font-family: Consolas, monospace; font-size: 11px; }
+    .reward-debug-table td { padding: 2px 8px 2px 0; vertical-align: top; }
+    .reward-debug-table td:first-child { color: #999; width: 160px; }
+    .reward-debug-table td:nth-child(2) { color: #1677ff; }
+
+    /* ───── 价格区 ───── */
+    .price-box {
+      margin-top: 14px; background: var(--bg-grey); padding: 16px 18px;
+      position: relative;
+    }
+    .price-row { display: flex; align-items: baseline; gap: 12px; line-height: 2; }
+    .price-row .label { color: var(--text-sub); width: 78px; text-align: right; flex-shrink: 0; font-size: 13px; }
+    .price-row .value { color: var(--text-body); font-size: 13px; }
+    .price-row .value.old { color: var(--text-sub); text-decoration: line-through; }
+    .price-row .value.mall { color: var(--xh-red); font-size: 18px; font-weight: 600; }
+    .price-row .value.settle { color: #ff7a00; }
+    .meta-row { display: flex; gap: 12px; line-height: 2; }
+    .meta-row .label { color: var(--text-sub); width: 78px; text-align: right; flex-shrink: 0; font-size: 13px; }
+    .meta-row .value { font-size: 13px; }
+    .price-box .stat-box {
+      position: absolute; top: 16px; right: 18px;
+      display: flex; gap: 24px; padding-left: 16px; border-left: 1px solid #ddd;
+    }
+    .stat-item { text-align: center; font-size: 12px; color: var(--text-sub); }
+    .stat-num { font-size: 18px; color: var(--text-title); font-weight: 600; }
+    .eye-icon { color: var(--text-sub); cursor: pointer; margin-left: 8px; }
+
+    /* 服务承诺 */
+    .service-row { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; padding: 0 18px; }
+    .service-row .label { color: var(--text-sub); width: 78px; text-align: right; flex-shrink: 0; font-size: 13px; }
+    .service-item-row { display: flex; align-items: center; gap: 14px; }
+    .service-tag { color: var(--xh-red); font-size: 13px; }
+
+    .divider { border-top: 1px dashed var(--border); margin: 14px 0; }
+
+    /* 型号选择 */
+    .spec-row { display: flex; gap: 12px; padding: 0 18px; }
+    .spec-row .label { color: var(--text-sub); width: 78px; text-align: right; padding-top: 6px; flex-shrink: 0; font-size: 13px; }
+    .spec-list { display: flex; flex-wrap: wrap; gap: 8px 10px; flex: 1; }
+    .spec-item { padding: 4px 12px; border: 1px solid var(--border); font-size: 12px; cursor: pointer; min-width: 80px; text-align: center; }
+    .spec-item:hover { border-color: var(--xh-red); }
+    .spec-item.active { border: 2px solid var(--xh-red); color: var(--xh-red); padding: 3px 11px; }
+
+    /* 数量 */
+    .qty-row { margin-top: 18px; padding: 0 18px; display: flex; align-items: center; gap: 12px; }
+    .qty-row .label { color: var(--text-sub); width: 78px; text-align: right; font-size: 13px; }
+    .qty-stepper { display: flex; align-items: center; border: 1px solid var(--border); height: 32px; }
+    .qty-stepper button { width: 30px; height: 30px; font-size: 16px; color: #555; }
+    .qty-stepper input { width: 60px; height: 30px; border: 0; text-align: center; outline: 0; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+    .qty-info { color: var(--text-sub); font-size: 12px; }
+
+    /* CTA */
+    .cta-row { margin-top: 22px; padding: 0 18px; }
+    .btn-cart { border: 2px solid var(--xh-red); color: var(--xh-red); font-size: 16px; font-weight: 600; padding: 10px 60px; background: #fff; border-radius: 2px; }
+    .btn-cart:hover { background: var(--xh-red); color: #fff; }
+
+    /* ───── tab 区 ───── */
+    .tab-wrap { max-width: 1280px; margin: 24px auto 0; padding: 0 16px; display: grid; grid-template-columns: 230px 1fr; gap: 16px; align-items: start; }
+    .side-card { border: 1px solid var(--border-light); }
+    .side-card-head { background: #fafafa; padding: 10px 14px; font-size: 14px; font-weight: 600; }
+    .side-card-body { padding: 12px; text-align: center; }
+    .side-card-body img { width: 100%; max-width: 180px; }
+    .side-card-body .ph { width: 180px; height: 180px; margin: 0 auto; background: #f4f4f4; display: grid; place-items: center; font-size: 80px; color: #ddd; }
+
+    .tab-card { border: 1px solid var(--border-light); }
+    .tab-head { display: flex; border-bottom: 2px solid var(--xh-red); background: #fafafa; }
+    .tab-item { padding: 10px 24px; cursor: pointer; font-size: 14px; color: var(--text-body); }
+    .tab-item.active { background: var(--xh-red); color: #fff; font-weight: 600; }
+    .tab-body { padding: 18px; }
+    .param-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px 24px; font-size: 13px; }
+    .param-cell { display: flex; align-items: baseline; gap: 6px; }
+    .param-cell .k { color: var(--text-sub); flex-shrink: 0; }
+    .param-cell .v { color: var(--text-body); }
+    .param-cell .more { color: var(--xh-red); cursor: pointer; }
+
+    /* ───── 浮动消息 ───── */
+    .message-wrap { position: fixed; top: 56px; left: 50%; transform: translateX(-50%); z-index: 999; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .message-item { background: #fff; border-radius: 6px; box-shadow: 0 6px 16px rgba(0,0,0,0.12); padding: 9px 14px; font-size: 13px; color: var(--text-body); opacity: 0; transform: translateY(-8px); transition: .25s; white-space: nowrap; border-left: 3px solid var(--xh-red); }
+    .message-item.show { opacity: 1; transform: translateY(0); }
+
+    /* ───── 顶部返回工作台 ───── */
+    .back-bar { background: #f0f4ff; border-bottom: 1px solid #d6e4ff; padding: 8px 16px; font-size: 12px; color: #1677ff; text-align: center; }
+    .back-bar a { color: #1677ff; font-weight: 600; cursor: pointer; }
+    .back-bar a:hover { text-decoration: underline; }
+    .back-bar .tag { background: #1677ff; color: #fff; padding: 1px 6px; border-radius: 3px; margin-right: 6px; font-size: 11px; }
+
+    /* 切换奖励类型工具条（原型用） */
+    .reward-switch {
+      max-width: 1280px; margin: 8px auto 0; padding: 6px 16px;
+      display: flex; gap: 10px; align-items: center; font-size: 12px;
+      color: var(--text-sub); background: #fffbe6; border: 1px dashed #ffd591;
+    }
+    .reward-switch strong { color: #d46b08; }
+    .reward-switch button { padding: 2px 10px; border: 1px solid #ddd; background: #fff; color: var(--text-body); font-size: 12px; }
+    .reward-switch button.active { background: var(--xh-red); color: #fff; border-color: var(--xh-red); }
+  </style>
+</head>
+<body>
+  <!-- 返回工作台条 -->
+  <div class="back-bar">
+    <span class="tag">原型预览</span>
+    咸亨商城商品详情页 · 奖励信息展示（依据 PRD 5.2.2 推送报文字段）
+    <span style="margin: 0 10px; color: #aaa;">|</span>
+    <a onclick="window.location.href='index.html'">← 返回工作台</a>
+  </div>
+
+  <!-- 原型工具条：切换奖励类型 -->
+  <div class="reward-switch">
+    <strong>原型工具：</strong>切换奖励数据演示
+    <button class="active" data-demo="amount">金额奖励（默认）</button>
+    <button data-demo="project">项目奖励</button>
+    <button data-demo="ratio">比例奖励</button>
+    <button data-demo="expire">即将到期（≤7 天）</button>
+    <button data-demo="none">无奖励</button>
+  </div>
+
+  <!-- 顶部信息条 -->
+  <div class="top-strip">
+    <div class="top-strip-inner">
+      <div class="top-strip-left">
+        <span>欢迎光临咸亨国际商城!</span>
+        <span>您好! 王云龙</span>
+        <a>退出</a>
+        <span class="sep">|</span>
+        <span><span class="dot"></span>系统消息</span>
+      </div>
+      <div class="top-strip-right">
+        <a>我的订单中心</a>
+        <a>切换系统</a>
+        <a>🛒 购物车 <span class="badge">0</span> 件 ▾</a>
+        <a>❓ 帮助中心</a>
+        <a>📱 手机逛咸亨</a>
+        <span class="phone">📞 400-600-6605</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGO + 搜索 -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-img">国际<br/>咸亨</div>
+      <div>
+        <div class="logo-text">咸亨国际</div>
+        <div class="logo-en">XIAN HENG INTERNATIONAL</div>
+      </div>
+    </div>
+    <div class="search-bar">
+      <input placeholder="请输入商品名称  品牌  订货编码  厂家型号" />
+      <button>搜 索</button>
+    </div>
+    <div class="header-slogan">致力于能源、交通、应急领域MRO集约化服务</div>
+  </div>
+
+  <!-- 主导航 -->
+  <nav class="main-nav">
+    <div class="main-nav-inner">
+      <div class="nav-all">≡ 全部商品分类</div>
+      <div class="nav-list">
+        <a>网站首页</a>
+        <a>赛孚城<span class="nav-tag-new">NEW</span></a>
+        <a>油气管网<span class="nav-tag-hot">HOT</span></a>
+        <a>品牌专区</a>
+        <a>服务网点</a>
+        <a>技术中心</a>
+        <a>定制专区</a>
+        <a>关于咸亨国际</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 面包屑 -->
+  <div class="crumbs">
+    <a>个人防护</a><span class="sep">›</span>
+    <a>躯体防护</a><span class="sep">›</span>
+    <a>消防抢险服</a><span class="sep">›</span>
+    <a>抢险救援服</a><span class="sep">›</span>
+    <a>奥赛孚/ALLSAFE-应急救援服  MTYJJY-001</a>
+  </div>
+
+  <!-- 商品主区 -->
+  <div class="product-wrap">
+    <!-- 左：图片 -->
+    <div class="gallery">
+      <div class="gallery-main">
+        <div class="gallery-watermark">咸亨国际 XIAN HENG INTERNATIONAL</div>
+        <div style="font-size: 220px; color: #ff5722;">👨‍🚒</div>
+      </div>
+      <div class="gallery-thumbs">
+        <div class="gallery-arrow">‹</div>
+        <div class="thumb-list">
+          <div class="thumb active"><div style="font-size: 50px;">👨‍🚒</div></div>
+          <div class="thumb"><div style="font-size: 50px;">👖</div></div>
+          <div class="thumb"><div style="font-size: 50px;">🥽</div></div>
+        </div>
+        <div class="gallery-arrow">›</div>
+      </div>
+      <div class="gallery-actions">
+        <span>★ 收藏</span>
+        <span style="margin-left: 18px;">分享至:</span>
+        <span class="icon-circle ic-star">⭐</span>
+        <span class="icon-circle ic-weibo">微</span>
+        <span class="icon-circle ic-wechat">微</span>
+      </div>
+    </div>
+
+    <!-- 右：信息 -->
+    <div class="info">
+      <div class="title">奥赛孚/ALLSAFE-应急救援服  MTYJJY-001</div>
+      <div class="title-meta">
+        <span>S/165，实际计价单位为：套</span>
+        <span class="feedback-link">商品问题反馈</span>
+      </div>
+
+      <!-- ═══════ 奖励 Banner（PRD 附录 A 商城展示规范）═══════ -->
+      <div class="reward-banner type-AMOUNT" id="rewardBanner">
+        <div class="reward-icon" id="rewardIcon">🎁</div>
+        <div class="reward-main">
+          <div class="reward-row1">
+            <span class="reward-type-tag" id="rewardTypeTag">金额奖励</span>
+            <span class="reward-main-info" id="rewardMainInfo">¥ 30.00 / 套</span>
+          </div>
+          <div class="reward-desc" id="rewardDesc">应急救援服专项促销，满 50 套即享</div>
+          <div class="reward-period">
+            有效期至 <strong id="rewardEndDate">2026-09-30</strong>
+            <span class="config-id">· rewardConfigId: <span id="rewardConfigId">RWD-202605110002</span></span>
+          </div>
+        </div>
+        <span class="badge-expire" id="badgeExpire" style="display: none;">仅剩 6 天</span>
+      </div>
+
+      <!-- 奖励调试面板：PRD 5.2.2 推送报文（点击展开核验接口字段） -->
+      <div class="reward-debug" id="rewardDebug">
+        <div class="reward-debug-header">
+          <span>🔍 接口报文核验（PRD 5.2.2：MPM → 商城 奖励数据下发字段）</span>
+          <span style="color: #1677ff;">点击展开 ▾</span>
+        </div>
+        <div class="reward-debug-body">
+          <table class="reward-debug-table" id="rewardDebugTable"></table>
+        </div>
+      </div>
+
+      <!-- 价格区 -->
+      <div class="price-box">
+        <div class="stat-box">
+          <div class="stat-item"><div class="stat-num">2,529</div>累计浏览</div>
+          <div class="stat-item"><div class="stat-num">73</div>累计销售</div>
+        </div>
+        <div class="price-row"><span class="label">市场价：</span><span class="value old">¥502.00</span></div>
+        <div class="price-row"><span class="label">商城价：</span><span class="value mall">¥497.50</span></div>
+        <div class="price-row">
+          <span class="label">固定结算价：</span>
+          <span class="value settle">¥248.4 （不含运费）</span>
+          <span class="eye-icon">👁</span>
+        </div>
+        <div class="meta-row"><span class="label">货主：</span><span class="value">万聚国际（杭州）供应链有限公司</span></div>
+        <div class="meta-row"><span class="label">项目报价员：</span><span class="value">严羽-15640398192</span></div>
+        <div class="meta-row"><span class="label">订单执行人：</span><span class="value">张以凤</span></div>
+        <div class="meta-row"><span class="label">产品经理：</span><span class="value">-</span></div>
+        <div class="meta-row"><span class="label">订货编码：</span><span class="value">AB060032</span></div>
+        <div class="meta-row"><span class="label">订货单位：</span><span class="value">套</span></div>
+      </div>
+
+      <!-- 服务承诺 -->
+      <div class="service-row">
+        <div class="service-item-row">
+          <span class="label">服务承诺：</span>
+          <span class="service-tag">正品保障</span>
+          <span class="service-tag">售后无忧</span>
+        </div>
+        <div class="service-item-row">
+          <span class="label">支付方式：</span>
+          <span class="service-tag">在线支付</span>
+          <span class="service-tag">银行转账</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 选择型号 -->
+      <div class="spec-row">
+        <span class="label">选择型号：</span>
+        <div class="spec-list">
+          <div class="spec-item">MTYJJY-001（仅上衣）</div>
+          <div class="spec-item">MTYJJY-001</div>
+          <div class="spec-item">MTYJJY-001</div>
+          <div class="spec-item active">MTYJJY-001</div>
+          <div class="spec-item">MTYJJY-001</div>
+          <div class="spec-item">MTYJJY-001</div>
+          <div class="spec-item">MTYJJY-001</div>
+          <div class="spec-item">红十字专用</div>
+          <div class="spec-item">红十字专用</div>
+          <div class="spec-item">MTYJJY-001夏</div>
+          <div class="spec-item">MTYJJY-001夏</div>
+          <div class="spec-item">MTYJJY-DZ001</div>
+          <div class="spec-item">MTYJJY-001</div>
+          <div class="spec-item">MTYJJY-001</div>
+          <div class="spec-item">YJJY-X001（春秋）</div>
+          <div class="spec-item">MTYJJY-001</div>
+          <div class="spec-item">MTYJJY-001</div>
+          <div class="spec-item">MTYJJY-001</div>
+        </div>
+      </div>
+
+      <!-- 数量 -->
+      <div class="qty-row">
+        <span class="label">数量：</span>
+        <div class="qty-stepper">
+          <button>−</button>
+          <input value="1" />
+          <button>+</button>
+        </div>
+        <span class="qty-info">件 （库存 14.0 件，起订量:1.0）</span>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-row">
+        <button class="btn-cart" id="addCartBtn">放 入 购 物 车</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- tab 区 -->
+  <div class="tab-wrap">
+    <div class="side-card">
+      <div class="side-card-head">推荐商品</div>
+      <div class="side-card-body">
+        <div class="ph">👨‍🚒</div>
+      </div>
+    </div>
+    <div class="tab-card">
+      <div class="tab-head">
+        <div class="tab-item active">商品介绍</div>
+        <div class="tab-item">资料下载</div>
+        <div class="tab-item">商品评价</div>
+        <div class="tab-item">联系我们</div>
+      </div>
+      <div class="tab-body">
+        <div class="param-grid">
+          <div class="param-cell"><span class="k">订货编码：</span><span class="v">AB060032</span></div>
+          <div class="param-cell"><span class="k">品牌：</span><span class="v">奥赛孚/ALLSAFE</span></div>
+          <div class="param-cell"><span class="k">厂家型号：</span><span class="v">MTYJJY-001</span></div>
+          <div class="param-cell"><span class="k">物料描述：</span><span class="v">S/165，实际计价...</span></div>
+          <div class="param-cell"><span class="v"></span></div>
+          <div class="param-cell"><span class="k">发货日：</span><span class="v">当日</span></div>
+          <div class="param-cell"><span class="k">单位：</span><span class="v">套</span></div>
+          <div class="param-cell"><span class="k">超长：</span><span class="v">否</span></div>
+          <div class="param-cell"><span class="k">重量：</span><span class="v">0.60</span></div>
+          <div class="param-cell"><span class="more">更多参数</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height: 60px;"></div>
+
+  <div class="message-wrap" id="messageWrap"></div>
+
+  <script>
+    /* ─────────────── 工具 ─────────────── */
+    function showMessage(text) {
+      const wrap = document.getElementById('messageWrap');
+      const el = document.createElement('div');
+      el.className = 'message-item';
+      el.textContent = text;
+      wrap.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('show'));
+      setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 250); }, 2000);
+    }
+
+    /* ──────────────── 奖励数据 mock（按 PRD 5.2.2 字段定义） ──────────────── */
+    const REWARD_MOCKS = {
+      amount: {
+        messageId:          'MSG-20260518-000123',
+        eventType:          'UPSERT',
+        eventTime:          '2026-05-18T09:21:00+08:00',
+        rewardConfigId:     'RWD-202605110002',
+        materialCode:       'AB060032',
+        rewardType:         'AMOUNT',
+        projectCode:        null,
+        rewardAmount:       30.00,
+        rewardRatio:        null,
+        effectiveStartDate: '2026-06-01',
+        effectiveEndDate:   '2026-09-30',
+        rewardDescription:  '应急救援服专项促销，满 50 套即享',
+        configStatus:       'EFFECTIVE',
+        voidFlag:           'N',
+        updateTime:         '2026-05-18T09:21:00+08:00',
+        updater:            '张敏/0012'
+      },
+      project: {
+        messageId:          'MSG-20260518-000124',
+        eventType:          'UPSERT',
+        eventTime:          '2026-05-18T10:00:00+08:00',
+        rewardConfigId:     'RWD-202605110003',
+        materialCode:       'AB060032',
+        rewardType:         'PROJECT',
+        projectCode:        'PRJ-2026-008',
+        rewardAmount:       null,
+        rewardRatio:        null,
+        effectiveStartDate: '2026-06-01',
+        effectiveEndDate:   '2026-12-31',
+        rewardDescription:  '应急救援服参与年度项目即享',
+        configStatus:       'EFFECTIVE',
+        voidFlag:           'N',
+        updateTime:         '2026-05-18T10:00:00+08:00',
+        updater:            '李航/0027'
+      },
+      ratio: {
+        messageId:          'MSG-20260518-000125',
+        eventType:          'UPSERT',
+        eventTime:          '2026-05-18T11:00:00+08:00',
+        rewardConfigId:     'RWD-202605110004',
+        materialCode:       'AB060032',
+        rewardType:         'RATIO',
+        projectCode:        null,
+        rewardAmount:       null,
+        rewardRatio:        5.0000,
+        effectiveStartDate: '2026-06-01',
+        effectiveEndDate:   '2026-12-31',
+        rewardDescription:  '按调拨价 5% 返利',
+        configStatus:       'EFFECTIVE',
+        voidFlag:           'N',
+        updateTime:         '2026-05-18T11:00:00+08:00',
+        updater:            '王雪/0033'
+      },
+      // 即将到期场景（≤7 天）
+      expire: {
+        messageId:          'MSG-20260518-000126',
+        eventType:          'UPSERT',
+        eventTime:          '2026-05-12T09:00:00+08:00',
+        rewardConfigId:     'RWD-202605110005',
+        materialCode:       'AB060032',
+        rewardType:         'AMOUNT',
+        projectCode:        null,
+        rewardAmount:       80.00,
+        rewardRatio:        null,
+        effectiveStartDate: '2026-03-01',
+        effectiveEndDate:   '2026-05-24',   // 距 2026-05-18 仅 6 天
+        rewardDescription:  '春季促销最后冲刺',
+        configStatus:       'EFFECTIVE',
+        voidFlag:           'N',
+        updateTime:         '2026-05-12T09:00:00+08:00',
+        updater:            '陈骋/0058'
+      },
+      // 无奖励：附录 A.5 边界 - 不展示任何奖励元素
+      none: null
+    };
+
+    /* ──────────────── 奖励展示逻辑 ──────────────── */
+    const banner = document.getElementById('rewardBanner');
+    const debug = document.getElementById('rewardDebug');
+    const debugTable = document.getElementById('rewardDebugTable');
+    const TYPE_META = {
+      AMOUNT:  { tag: '金额奖励', icon: '💰', cls: 'type-AMOUNT' },
+      PROJECT: { tag: '项目奖励', icon: '🎯', cls: 'type-PROJECT' },
+      RATIO:   { tag: '比例奖励', icon: '🎁', cls: 'type-RATIO' }
+    };
+
+    function daysUntil(dateStr) {
+      const now = new Date('2026-05-18');   // 演示用：固定 today，使"即将到期"场景稳定
+      const end = new Date(dateStr);
+      return Math.ceil((end - now) / (24 * 3600 * 1000));
+    }
+
+    function mainInfoOf(data) {
+      // 附录 A.3.2 类型差异：金额=¥/件、比例=%返利、项目=说明文案+项目编码
+      if (data.rewardType === 'AMOUNT') return `¥ ${Number(data.rewardAmount).toFixed(2)} / 套`;
+      if (data.rewardType === 'RATIO')  return `${Number(data.rewardRatio).toFixed(1)}% 返利`;
+      if (data.rewardType === 'PROJECT') return data.rewardDescription || '参与项目即享';
+      return '';
+    }
+    function descOf(data) {
+      if (data.rewardType === 'PROJECT') return `项目编码：${data.projectCode || '-'}`;
+      return data.rewardDescription || '';
+    }
+
+    function renderReward(data) {
+      // 无奖励：附录 A.5 边界规则 - 完全不展示
+      if (!data || data.voidFlag === 'Y' || ['VOIDED', 'EXPIRED'].includes(data.configStatus)) {
+        banner.style.display = 'none';
+        debug.style.display = 'none';
+        return;
+      }
+      banner.style.display = 'flex';
+      debug.style.display = 'block';
+
+      // 类型切换：清掉旧 class 再加新 class
+      banner.classList.remove('type-AMOUNT', 'type-PROJECT', 'type-RATIO');
+      const meta = TYPE_META[data.rewardType] || TYPE_META.AMOUNT;
+      banner.classList.add(meta.cls);
+
+      document.getElementById('rewardIcon').textContent = meta.icon;
+      document.getElementById('rewardTypeTag').textContent = meta.tag;
+      document.getElementById('rewardMainInfo').textContent = mainInfoOf(data);
+      document.getElementById('rewardDesc').textContent = descOf(data);
+      document.getElementById('rewardEndDate').textContent = data.effectiveEndDate;
+      document.getElementById('rewardConfigId').textContent = data.rewardConfigId;
+
+      // 即将到期 ≤7 天 → Banner 右上角红色标签
+      const remain = daysUntil(data.effectiveEndDate);
+      const expireBadge = document.getElementById('badgeExpire');
+      if (remain >= 0 && remain <= 7) {
+        expireBadge.style.display = 'inline-block';
+        expireBadge.textContent = remain === 0 ? '今日到期' : `仅剩 ${remain} 天`;
+      } else {
+        expireBadge.style.display = 'none';
+      }
+
+      // 调试面板：把整个 PRD 报文渲染出来
+      debugTable.innerHTML = '';
+      Object.entries(data).forEach(([k, v]) => {
+        const tr = document.createElement('tr');
+        const valDisplay = v === null ? '<span style="color: #ccc;">null</span>' : `"${v}"`;
+        tr.innerHTML = `<td>${k}</td><td>${valDisplay}</td>`;
+        debugTable.appendChild(tr);
+      });
+    }
+
+    // 默认展示金额奖励
+    renderReward(REWARD_MOCKS.amount);
+
+    // 演示工具：切换奖励类型
+    document.querySelectorAll('.reward-switch button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.reward-switch button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const demo = btn.dataset.demo;
+        renderReward(REWARD_MOCKS[demo]);
+        const label = { amount: '金额奖励', project: '项目奖励', ratio: '比例奖励', expire: '即将到期（金额奖励）', none: '无奖励/已删除' };
+        showMessage(`已切换到：${label[demo]}`);
+      });
+    });
+
+    // 调试面板展开/收起
+    debug.addEventListener('click', () => {
+      debug.classList.toggle('open');
+    });
+
+    // 放入购物车
+    document.getElementById('addCartBtn').addEventListener('click', () => {
+      showMessage('已加入购物车（示例）');
+    });
+
+    // 顶栏快捷点击
+    document.querySelectorAll('.top-strip a, .main-nav a, .crumbs a').forEach(a => {
+      a.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        showMessage('原型示例点击');
+      });
+    });
+  </script>
+</body>
+</html>

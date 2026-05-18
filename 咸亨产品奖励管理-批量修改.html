@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>产业产品奖励管理 - 批量修改</title>
+  <title>咸亨产品奖励管理 - 批量修改</title>
   <style>
     :root {
       --primary: #1677ff;
@@ -587,7 +587,7 @@
   <div class="tabs-bar">
     <div class="tabs-list">
       <div class="tab" onclick="goPage('oms-mpm-物料工作台原型.html')">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
-      <div class="tab" onclick="goPage('产业产品奖励管理列表.html')">产业产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="goPage('咸亨产品奖励管理列表.html')">咸亨产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
       <div class="tab active">批量修改 <span class="cls" onclick="event.stopPropagation()">×</span></div>
     </div>
     <div class="tabs-clear" id="clearTabs">清除</div>
@@ -609,7 +609,7 @@
       <div class="crumb">
         <span class="link-btn" onclick="goPage('oms-mpm-物料工作台原型.html')">工作台</span>
         <span class="sep">/</span>
-        <span class="link-btn" onclick="goPage('产业产品奖励管理列表.html')">产业产品奖励管理</span>
+        <span class="link-btn" onclick="goPage('咸亨产品奖励管理列表.html')">咸亨产品奖励管理</span>
         <span class="sep">/</span>
         <span class="cur">批量修改</span>
       </div>
@@ -621,7 +621,7 @@
 
   <!-- 页面头部 -->
   <section class="page-shell">
-    <div class="page-title">产业产品奖励管理 · 批量修改</div>
+    <div class="page-title">咸亨产品奖励管理 · 批量修改</div>
     <div class="page-desc">基于当前选中配置统一调整奖励类型、金额/比例、时间和说明文案，未勾选字段保持不变</div>
   </section>
 
@@ -784,7 +784,7 @@
     /* 防御：未携带有效 count 时提示并跳回列表 */
     if (!Number.isFinite(rawCount) || rawCount <= 0) {
       showMessage('未选择任何配置，已返回列表', 'error');
-      setTimeout(() => goPage('产业产品奖励管理列表.html'), 900);
+      setTimeout(() => goPage('咸亨产品奖励管理列表.html'), 900);
     }
     const selectedCount = Number.isFinite(rawCount) && rawCount > 0 ? rawCount : 2;
     const BULK_THRESHOLD = 100;
@@ -1120,7 +1120,7 @@
     document.getElementById('voidModalOkBtn').addEventListener('click', () => {
       hideModal(voidConfirmModal);
       showMessage(`已批量作废 ${selectedCount} 条：商城不再展示，历史记录保留`, 'warning');
-      setTimeout(() => goPage('产业产品奖励管理列表.html'), 900);
+      setTimeout(() => goPage('咸亨产品奖励管理列表.html'), 900);
     });
     document.getElementById('bulkModalOkBtn').addEventListener('click', () => {
       hideModal(bulkConfirmModal);
@@ -1130,7 +1130,7 @@
     /* ------ 提交批量修改 ------ */
     function doSubmitBatch() {
       showMessage(`批量修改成功：${selectedCount} 条奖励配置已更新`, 'success');
-      setTimeout(() => goPage('产业产品奖励管理列表.html'), 900);
+      setTimeout(() => goPage('咸亨产品奖励管理列表.html'), 900);
     }
 
     submitBatchBtn.addEventListener('click', () => {
@@ -1175,10 +1175,10 @@
     });
 
     document.getElementById('cancelBatchBtn').addEventListener('click', () => {
-      goPage('产业产品奖励管理列表.html');
+      goPage('咸亨产品奖励管理列表.html');
     });
     document.getElementById('backLinkBtn').addEventListener('click', () => {
-      goPage('产业产品奖励管理列表.html');
+      goPage('咸亨产品奖励管理列表.html');
     });
 
     /* ------ 顶部提示条关闭 ------ */

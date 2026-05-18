@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>产业产品奖励管理 - 列表页</title>
+  <title>咸亨产品奖励管理 - 列表页</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     :root {
@@ -611,7 +611,7 @@
   <div class="tabs-bar">
     <div class="tabs-list">
       <div class="tab" onclick="goPage('oms-mpm-物料工作台原型.html')">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
-      <div class="tab active">产业产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab active">咸亨产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
     </div>
     <div class="tabs-clear" id="clearTabs">清除</div>
   </div>
@@ -701,7 +701,7 @@
       <!-- summary-bar 标题与主操作 -->
       <div class="summary-bar">
         <div class="summary-main">
-          <div class="summary-title">产业产品奖励管理</div>
+          <div class="summary-title">咸亨产品奖励管理</div>
           <div class="summary-desc">用于维护项目奖励、金额奖励、比例奖励</div>
         </div>
         <div class="toolbar-actions">
@@ -1381,7 +1381,7 @@
       }
       const wb = buildExportWorkbook(rows, mode);
       const today = new Date().toISOString().slice(0, 10);
-      const fileName = `产业奖励-${filenameHint || (mode === 'all' ? '导出全部' : '导出当前查询')}_${today}.xlsx`;
+      const fileName = `咸亨奖励-${filenameHint || (mode === 'all' ? '导出全部' : '导出当前查询')}_${today}.xlsx`;
       XLSX.writeFile(wb, fileName);
       showMessage(`已下载：${fileName}（共 ${rows.length} 行）`, 'success');
     }
@@ -1418,7 +1418,7 @@
 
     // 操作历史按钮
     document.getElementById('historyEntryBtn').addEventListener('click', () => {
-      window.location.href = '产业产品奖励管理操作历史.html';
+      window.location.href = '咸亨产品奖励管理操作历史.html';
     });
 
     // 我的导出任务 mock 数据
@@ -1623,7 +1623,7 @@
       readmeWs['!cols'] = [{ wch: 22 }, { wch: 18 }, { wch: 8 }, { wch: 60 }];
       XLSX.utils.book_append_sheet(wb, readmeWs, '字段说明');
 
-      const fileName = `产业奖励-${name}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      const fileName = `咸亨奖励-${name}_${new Date().toISOString().slice(0, 10)}.xlsx`;
       XLSX.writeFile(wb, fileName);
       showMessage(`已下载：${fileName}`, 'success');
     }
@@ -1752,7 +1752,7 @@
       if (action === 'retry') {
         showMessage(`已触发 ${code} 同步重试，稍后查看结果`, 'success');
       } else if (action === 'history') {
-        window.location.href = `产业产品奖励管理操作历史.html?code=${encodeURIComponent(code)}`;
+        window.location.href = `咸亨产品奖励管理操作历史.html?code=${encodeURIComponent(code)}`;
       }
     });
 

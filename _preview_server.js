@@ -59,7 +59,7 @@ const server = http.createServer((req, res) => {
 
     if (stat.isDirectory()) {
       // 优先找 index.html / 列表页html
-      const candidates = ['index.html', '产业产品奖励管理列表.html'];
+      const candidates = ['index.html', '咸亨产品奖励管理列表.html'];
       for (const c of candidates) {
         const cp = path.join(filePath, c);
         if (fs.existsSync(cp)) { filePath = cp; break; }
@@ -92,9 +92,9 @@ server.listen(PORT, '0.0.0.0', () => {
     });
   });
   console.log(`\n========== 预览服务已启动 ==========`);
-  console.log(`本机访问:  http://localhost:${PORT}/产业产品奖励管理列表.html`);
+  console.log(`本机访问:  http://localhost:${PORT}/咸亨产品奖励管理列表.html`);
   lanIPs.forEach(ip => {
-    console.log(`局域网分享: http://${ip}:${PORT}/产业产品奖励管理列表.html`);
+    console.log(`局域网分享: http://${ip}:${PORT}/咸亨产品奖励管理列表.html`);
   });
   console.log(`\n服务目录: ${ROOT}`);
   console.log(`Ctrl+C 停止\n`);

@@ -470,7 +470,7 @@
     }
     .btn-primary:hover { background: var(--primary-hover); }
 
-    /* ── 产业产品奖励管理：上方双卡 + 下方待办 ── */
+    /* ── 咸亨产品奖励管理：上方双卡 + 下方待办 ── */
     .module-stack {
       display: grid;
       gap: 16px;
@@ -824,11 +824,11 @@
           <a href="javascript:void(0)" class="feature-link" data-feature="商图打包">
             <span class="dot"></span>商图打包
           </a>
-          <a href="javascript:void(0)" class="feature-link" data-feature="待我审核（产业）">
-            <span class="dot"></span>待我审核（产业）
+          <a href="javascript:void(0)" class="feature-link" data-feature="待我审核（咸亨）">
+            <span class="dot"></span>待我审核（咸亨）
           </a>
-          <a href="javascript:void(0)" class="feature-link" data-feature="审核结果（产业）">
-            <span class="dot"></span>审核结果（产业）
+          <a href="javascript:void(0)" class="feature-link" data-feature="审核结果（咸亨）">
+            <span class="dot"></span>审核结果（咸亨）
           </a>
           <a href="javascript:void(0)" class="feature-link" data-feature="价格预警">
             <span class="dot"></span>价格预警
@@ -848,11 +848,11 @@
         </div>
       </div>
 
-      <!-- 右：产业产品奖励管理（入口） -->
+      <!-- 右：咸亨产品奖励管理（入口） -->
       <div class="card">
         <div class="module-card-head">
           <div class="module-icon-wrap">🎁</div>
-          <span class="module-card-title">产业产品奖励管理</span>
+          <span class="module-card-title">咸亨产品奖励管理</span>
         </div>
         <div class="reward-entry">
           <div class="reward-entry-desc">维护项目奖励、金额奖励、比例奖励，数据汇总已迁移到奖励管理列表页。</div>
@@ -1024,12 +1024,12 @@
       });
     });
 
-    // 产业产品奖励管理：概览指标 / 入口按钮跳转
+    // 咸亨产品奖励管理：概览指标 / 入口按钮跳转
     const rewardRoutes = {
-      '全部': '产业产品奖励管理列表.html',
-      '生效中': '产业产品奖励管理列表.html?tab=生效中',
-      '即将到期': '产业产品奖励管理列表.html?tab=即将到期',
-      '异常': '产业产品奖励管理列表.html?tab=异常'
+      '全部': '咸亨产品奖励管理列表.html',
+      '生效中': '咸亨产品奖励管理列表.html?tab=生效中',
+      '即将到期': '咸亨产品奖励管理列表.html?tab=即将到期',
+      '异常': '咸亨产品奖励管理列表.html?tab=异常'
     };
 
     document.querySelectorAll('[data-reward-filter]').forEach(card => {
@@ -1041,7 +1041,7 @@
     });
 
     document.getElementById('openRewardModuleBtn').addEventListener('click', () => {
-      window.location.href = '产业产品奖励管理列表.html';
+      window.location.href = '咸亨产品奖励管理列表.html';
     });
   </script>
 </body>

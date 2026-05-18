@@ -1,0 +1,10 @@
+# Netlify 站点配置（纯静态原型，无需构建）
+[build]
+  publish = "."
+  command = ""
+
+# 默认页 404 回退到首页索引
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404

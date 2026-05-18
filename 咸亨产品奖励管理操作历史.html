@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>产业产品奖励管理 - 操作历史</title>
+  <title>咸亨产品奖励管理 - 操作历史</title>
   <style>
     :root {
       --primary: #1677ff;
@@ -190,7 +190,7 @@
       <div class="nav-item">工作台</div>
       <div class="nav-divider"></div>
       <div class="nav-item">物料管理</div>
-      <div class="nav-item">产业产品奖励管理</div>
+      <div class="nav-item">咸亨产品奖励管理</div>
       <div class="nav-divider"></div>
       <div class="nav-item">版本更新</div>
       <div class="nav-item">推送ERP</div>
@@ -205,7 +205,7 @@
   <div class="tabs-bar">
     <div class="tabs-list">
       <div class="tab" onclick="goPage('oms-mpm-物料工作台原型.html')">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
-      <div class="tab" onclick="goPage('产业产品奖励管理列表.html')">产业产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="goPage('咸亨产品奖励管理列表.html')">咸亨产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
       <div class="tab active">操作历史 <span class="cls" onclick="event.stopPropagation()">×</span></div>
     </div>
     <div class="tabs-clear" id="clearTabs">清除</div>
@@ -215,7 +215,7 @@
     <!-- 页头 -->
     <section class="page-head">
       <div class="page-head-left">
-        <span class="back-btn" onclick="goPage('产业产品奖励管理列表.html')">← 返回奖励管理列表</span>
+        <span class="back-btn" onclick="goPage('咸亨产品奖励管理列表.html')">← 返回奖励管理列表</span>
         <span class="page-title">操作历史</span>
         <span class="page-subtitle">记录所有奖励配置变更（新增 / 修改 / 删除），可按物料、操作人、时间、操作类型筛选查阅</span>
       </div>
@@ -279,7 +279,7 @@
         <div class="filter-actions" style="grid-column: span 4;">
           <button class="btn btn-primary" type="button" id="searchBtn">查询</button>
           <button class="btn btn-default" type="button" id="resetBtn">重置</button>
-          <button class="btn btn-default" type="button" id="exportBtn">导出审计文件</button>
+          <button class="btn btn-default" type="button" id="exportBtn">导出记录</button>
         </div>
       </form>
     </section>
@@ -615,8 +615,58 @@
       showMessage('已重置筛选条件');
     });
     document.getElementById('exportBtn').addEventListener('click', () => {
-      showMessage('已提交导出任务（异步），可在「我的导出任务」查看进度', 'success');
+      if (!currentList.length) {
+        showMessage('当前列表无数据，无法导出', 'warning');
+        return;
+      }
+      exportCurrentListAsCsv();
     });
+
+    /* ===== 导出当前列表为 CSV（按表头展示字段，浏览器下载） ===== */
+    function stripHtml(s) {
+      return String(s ?? '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+    }
+    function csvEscape(v) {
+      const s = String(v ?? '');
+      return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }
+    function exportCurrentListAsCsv() {
+      // 列定义：与列表表头一致（不含尾列「操作」）
+      const columns = [
+        { key: 'time',          label: '操作时间' },
+        { key: 'operator',      label: '操作人' },
+        { key: 'opType',        label: '操作类型' },
+        { key: 'opSource',      label: '操作来源' },
+        { key: 'code',          label: '物料编码' },
+        { key: 'name',          label: '物料名称' },
+        { key: 'rewardType',    label: '奖励类型' },
+        { key: 'amountOrRatio', label: '奖励金额/比例' },
+        { key: 'period',        label: '奖励有效期' },
+      ];
+      const header = columns.map(c => csvEscape(c.label)).join(',');
+      const lines = currentList.map(r =>
+        columns.map(c => csvEscape(stripHtml(r[c.key]))).join(',')
+      );
+      const csv = [header, ...lines].join('\r\n');
+
+      // UTF-8 BOM 让 Excel 打开中文不乱码
+      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+
+      const ts = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const stamp = `${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}-${pad(ts.getHours())}${pad(ts.getMinutes())}${pad(ts.getSeconds())}`;
+      const filename = `导出记录-${stamp}.csv`;
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 0);
+
+      showMessage(`已导出 ${currentList.length} 条记录：${filename}`, 'success');
+    }
     document.getElementById('clearTabs').addEventListener('click', () => {
       showMessage('已清除其他页签（示例）');
     });

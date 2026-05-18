@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>产业产品奖励管理 - 配置详情</title>
+  <title>咸亨产品奖励管理 - 配置详情</title>
   <style>
     :root {
       --primary: #1677ff;
@@ -554,7 +554,7 @@
   <div class="tabs-bar">
     <div class="tabs-list">
       <div class="tab" onclick="goPage('oms-mpm-物料工作台原型.html')">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
-      <div class="tab" onclick="goPage('产业产品奖励管理列表.html')">产业产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="goPage('咸亨产品奖励管理列表.html')">咸亨产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
       <div class="tab active">奖励配置详情 <span class="cls" onclick="event.stopPropagation()">×</span></div>
     </div>
     <div class="tabs-clear" id="clearTabs">清除</div>
@@ -565,7 +565,7 @@
     <div class="left">
       <span class="link-btn" id="backToListBtn">← 返回列表</span>
       <div class="crumb">
-        <span>产业产品奖励管理</span>
+        <span>咸亨产品奖励管理</span>
         <span class="sep">/</span>
         <span class="cur" id="crumbCurrent">新增奖励配置</span>
       </div>
@@ -745,7 +745,7 @@
       const tag = document.getElementById('modeTag');
       tag.textContent = meta.tag;
       tag.className = 'mode-tag ' + meta.tagClass;
-      document.title = '产业产品奖励管理 - ' + meta.title;
+      document.title = '咸亨产品奖励管理 - ' + meta.title;
     }
 
     /* ------ 根据 mode 设置字段只读/禁用 ------ */
@@ -971,7 +971,7 @@
         return;
       }
       setTimeout(() => {
-        window.location.href = '产业产品奖励管理列表.html';
+        window.location.href = '咸亨产品奖励管理列表.html';
       }, 500);
     }
 
@@ -985,7 +985,7 @@
       closeVoidModal();
       showMessage('已作废该奖励配置，商城不再展示，BI 不再汇总，历史记录保留', 'warning');
       setTimeout(() => {
-        window.location.href = '产业产品奖励管理列表.html';
+        window.location.href = '咸亨产品奖励管理列表.html';
       }, 700);
     }
 
@@ -997,7 +997,7 @@
       if (id === 'saveBtn') { handleSave(false); return; }
       if (id === 'saveAndCreateBtn') { handleSave(true); return; }
       if (id === 'cancelBtn' || id === 'topCancelBtn' || id === 'backToListBtn') {
-        window.location.href = '产业产品奖励管理列表.html';
+        window.location.href = '咸亨产品奖励管理列表.html';
         return;
       }
       if (id === 'voidBtn' || id === 'topVoidBtn') {
@@ -1007,7 +1007,7 @@
       if (id === 'voidCancelBtn') { closeVoidModal(); return; }
       if (id === 'voidConfirmBtn') { confirmVoid(); return; }
       if (id === 'goEditBtn' || id === 'topEditBtn') {
-        window.location.href = '产业产品奖励管理详情.html?mode=edit&type=' + encodeURIComponent(currentRewardType) + '&code=' + encodeURIComponent(rewardCodeFromQuery);
+        window.location.href = '咸亨产品奖励管理详情.html?mode=edit&type=' + encodeURIComponent(currentRewardType) + '&code=' + encodeURIComponent(rewardCodeFromQuery);
         return;
       }
       if (id === 'clearTabs') {

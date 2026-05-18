@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>产业产品奖励管理 - 批量导入</title>
+  <title>咸亨产品奖励管理 - 批量导入</title>
   <style>
     :root {
       --primary: #1677ff;
@@ -570,7 +570,7 @@
   <div class="tabs-bar">
     <div class="tabs-list">
       <div class="tab" onclick="goPage('oms-mpm-物料工作台原型.html')">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
-      <div class="tab" onclick="goPage('产业产品奖励管理列表.html')">产业产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="goPage('咸亨产品奖励管理列表.html')">咸亨产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
       <div class="tab active">批量导入 <span class="cls" onclick="event.stopPropagation()">×</span></div>
     </div>
     <div class="tabs-clear" id="clearTabs">清除</div>
@@ -591,7 +591,7 @@
     <div class="left">
       <span class="link-btn" id="backLinkBtn">← 返回列表</span>
       <div class="crumb">
-        <span>产业产品奖励管理</span>
+        <span>咸亨产品奖励管理</span>
         <span class="sep">/</span>
         <span class="cur">批量导入</span>
       </div>
@@ -603,7 +603,7 @@
 
   <!-- 页面头部 -->
   <section class="page-shell">
-    <div class="page-title">产业产品奖励管理 · 批量导入</div>
+    <div class="page-title">咸亨产品奖励管理 · 批量导入</div>
     <div class="page-desc">按统一模板上传 .xlsx 文件，支持新增 / 修改 / 作废三种导入操作类型</div>
   </section>
 
@@ -1020,10 +1020,10 @@
       showMessage(`已下载失败明细（共 ${mockFail} 行）`, 'success');
     });
     document.getElementById('backToListBtn').addEventListener('click', () => {
-      goPage('产业产品奖励管理列表.html');
+      goPage('咸亨产品奖励管理列表.html');
     });
     document.getElementById('backLinkBtn').addEventListener('click', () => {
-      goPage('产业产品奖励管理列表.html');
+      goPage('咸亨产品奖励管理列表.html');
     });
     continueImportBtn.addEventListener('click', () => {
       if (continueImportBtn.disabled) return;
