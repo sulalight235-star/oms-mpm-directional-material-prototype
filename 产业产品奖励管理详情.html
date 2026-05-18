@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>产业产品奖励管理 - 配置详情</title>
+  <style>
+    :root {
+      --primary: #1677ff;
+      --primary-hover: #4096ff;
+      --primary-bg: #e6f4ff;
+      --success: #52c41a;
+      --warning: #faad14;
+      --error: #ff4d4f;
+      --danger: #ff4d4f;
+      --text-title: rgba(0,0,0,0.88);
+      --text-body: rgba(0,0,0,0.65);
+      --text-sub: rgba(0,0,0,0.45);
+      --border: #d9d9d9;
+      --border-light: #f0f0f0;
+      --bg-layout: #f5f5f5;
+      --bg-container: #ffffff;
+      --bg-table-head: #fafafa;
+      --radius: 6px;
+      --radius-sm: 4px;
+      --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 1px 6px rgba(0,0,0,0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      font-size: 14px;
+      background: var(--bg-layout);
+      color: var(--text-body);
+      min-width: 1280px;
+      padding-bottom: 72px;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; }
+
+    /* ── 顶栏 ── */
+    .topbar {
+      height: 48px;
+      background: #001529;
+      color: rgba(255,255,255,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      position: sticky;
+      top: 0;
+      z-index: 120;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      background: var(--primary);
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .brand-name { font-size: 16px; font-weight: 600; color: #fff; white-space: nowrap; }
+    .switch-btn {
+      border: 1px solid rgba(255,255,255,0.25);
+      background: transparent;
+      color: rgba(255,255,255,0.75);
+      border-radius: var(--radius);
+      padding: 3px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      line-height: 22px;
+      transition: all .2s;
+    }
+    .switch-btn:hover { border-color: var(--primary); color: #fff; }
+    .nav-menu { display: flex; align-items: center; height: 100%; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 13px;
+      height: 100%;
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      cursor: pointer;
+      position: relative;
+      white-space: nowrap;
+      transition: .2s;
+    }
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--error); position: absolute; top: 10px; right: 7px; border: 1.5px solid #001529; }
+    .nav-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); margin: 0 3px; }
+    .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+
+    /* ── 页签 ── */
+    .tabs-bar {
+      height: 36px;
+      background: var(--bg-container);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      padding: 0 8px 0 0;
+      position: sticky;
+      top: 48px;
+      z-index: 110;
+    }
+    .tabs-list { display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
+    .tabs-list::-webkit-scrollbar { display: none; }
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 14px;
+      font-size: 12px;
+      color: var(--text-sub);
+      cursor: pointer;
+      border-right: 1px solid var(--border-light);
+      white-space: nowrap;
+      transition: .2s;
+      position: relative;
+    }
+    .tab:hover { color: var(--text-body); background: #fafafa; }
+    .tab.active { color: var(--primary); background: var(--primary-bg); }
+    .tab.active::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--primary); }
+    .tab .cls { font-size: 10px; opacity: .5; padding: 2px; border-radius: 2px; }
+    .tab:hover .cls { opacity: .85; }
+    .tab .cls:hover { background: rgba(0,0,0,0.08); color: var(--error); }
+    .tabs-clear { display: flex; align-items: center; padding: 0 12px; font-size: 12px; color: var(--text-sub); cursor: pointer; border-left: 1px solid var(--border-light); }
+    .tabs-clear:hover { color: var(--primary); }
+
+    /* ── action-bar 与面包屑 ── */
+    .action-bar {
+      background: var(--bg-container);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .action-bar .left, .action-bar .right { display: flex; align-items: center; gap: 12px; }
+    .action-bar .right { margin-left: auto; }
+    .link-btn { color: var(--primary); cursor: pointer; font-size: 13px; }
+    .link-btn:hover { text-decoration: underline; }
+    .crumb { color: var(--text-sub); font-size: 12px; }
+    .crumb .sep { margin: 0 6px; color: var(--border); }
+    .crumb .cur { color: var(--text-body); }
+    .mode-tag {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 11px;
+      font-size: 12px;
+      border: 1px solid;
+      font-weight: 500;
+    }
+    .mode-tag.create { color: var(--primary); border-color: #91caff; background: var(--primary-bg); }
+    .mode-tag.edit { color: #d46b08; border-color: #ffd591; background: #fff7e6; }
+    .mode-tag.view { color: var(--text-sub); border-color: var(--border); background: #fafafa; }
+
+    /* ── 页面头部 ── */
+    .page-shell {
+      padding: 16px 16px 8px;
+    }
+    .page-title { font-size: 18px; color: var(--text-title); font-weight: 600; }
+    .page-desc { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
+
+    /* ── 主体 ── */
+    .page { padding: 4px 16px 24px; }
+
+    /* ── 详情卡片 ── */
+    .detail-card {
+      background: var(--bg-container);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 12px;
+    }
+    .detail-card-head {
+      padding: 12px 16px;
+      font-size: 14px;
+      color: var(--text-title);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .detail-card-head::before {
+      content: '';
+      width: 3px;
+      height: 14px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+    .detail-card-head .head-sub {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-sub);
+      font-weight: normal;
+    }
+    .detail-form-grid {
+      padding: 16px 16px 8px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(260px, 1fr));
+      gap: 12px 20px;
+    }
+    .form-item { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .form-item.full { grid-column: 1 / -1; }
+    .form-item.half { grid-column: span 2; }
+    .form-item label {
+      font-size: 13px;
+      color: var(--text-body);
+    }
+    .form-item label .req {
+      color: var(--error);
+      margin-right: 2px;
+    }
+    .form-item .hint {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    .f-input, .f-select, .f-textarea {
+      width: 100%;
+      height: 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0 11px;
+      font-size: 13px;
+      outline: none;
+      color: var(--text-body);
+      background: var(--bg-container);
+      transition: border .2s, box-shadow .2s;
+    }
+    .f-textarea {
+      min-height: 76px;
+      padding: 8px 11px;
+      resize: vertical;
+      height: auto;
+    }
+    .f-input:focus, .f-select:focus, .f-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(22,119,255,.1);
+    }
+    .f-input[readonly], .f-input:disabled,
+    .f-select:disabled, .f-textarea:disabled {
+      background: #fafafa;
+      color: var(--text-sub);
+      cursor: not-allowed;
+    }
+    .input-suffix-wrap {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      height: 34px;
+      background: var(--bg-container);
+      transition: border .2s, box-shadow .2s;
+    }
+    .input-suffix-wrap:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(22,119,255,.1);
+    }
+    .input-suffix-wrap .f-input {
+      border: none;
+      height: 32px;
+      flex: 1;
+      min-width: 0;
+    }
+    .input-suffix-wrap .f-input:focus { box-shadow: none; }
+    .input-suffix-wrap .suffix {
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      background: var(--bg-table-head);
+      color: var(--text-sub);
+      font-size: 13px;
+      border-left: 1px solid var(--border-light);
+    }
+    .input-suffix-wrap.is-disabled {
+      background: #fafafa;
+      color: var(--text-sub);
+    }
+    .input-suffix-wrap.is-disabled .f-input { background: #fafafa; color: var(--text-sub); }
+
+    /* ── segmented 奖励类型切换 ── */
+    .segmented {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg-container);
+      width: fit-content;
+    }
+    .seg-item {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--text-body);
+      padding: 0 18px;
+      height: 34px;
+      min-width: 110px;
+      font-size: 13px;
+      cursor: pointer;
+      border-right: 1px solid var(--border);
+      transition: .2s;
+    }
+    .seg-item:last-child { border-right: none; }
+    .seg-item:hover { color: var(--primary); }
+    .seg-item.active {
+      background: var(--primary-bg);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .seg-item:disabled { cursor: not-allowed; color: var(--text-sub); background: #fafafa; }
+    .seg-item.active:disabled { background: var(--primary-bg); color: var(--primary); opacity: .7; }
+
+    /* ── 提示条 ── */
+    .inline-tip {
+      grid-column: 1 / -1;
+      margin: 4px 0 4px;
+      padding: 8px 12px;
+      background: #fffbe6;
+      border: 1px solid #ffe58f;
+      color: #ad6800;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .inline-tip::before {
+      content: 'i';
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--warning);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .inline-tip.error {
+      background: #fff2f0;
+      border-color: #ffccc7;
+      color: #cf1322;
+    }
+    .inline-tip.error::before { background: var(--error); content: '!'; }
+
+    /* ── 状态卡 ── */
+    .detail-status-grid {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 12px 20px;
+    }
+    .status-box {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .status-box span { font-size: 12px; color: var(--text-sub); }
+    .status-box strong {
+      font-size: 14px;
+      color: var(--text-title);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-box .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-sub);
+    }
+    .status-box .dot.green { background: var(--success); }
+    .status-box .dot.red { background: var(--error); }
+    .status-box .dot.orange { background: var(--warning); }
+
+    /* ── 按钮 ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 32px;
+      padding: 0 15px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      cursor: pointer;
+      transition: .2s;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      background: var(--bg-container);
+    }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+    .btn-default { color: var(--text-body); border-color: var(--border); }
+    .btn-default:hover { color: var(--primary); border-color: var(--primary); }
+    .btn-danger { background: #fff; color: var(--danger); border-color: var(--danger); }
+    .btn-danger:hover { background: #fff1f0; border-color: var(--danger); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── 固定底部操作 ── */
+    .sticky-actions {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-container);
+      border-top: 1px solid var(--border-light);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+      z-index: 90;
+      min-width: 1280px;
+    }
+
+    /* ── 消息条 ── */
+    .message-wrap {
+      position: fixed;
+      top: 56px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .message-item {
+      background: var(--bg-container);
+      border-radius: var(--radius);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12), 0 3px 6px rgba(0,0,0,0.08);
+      padding: 9px 12px;
+      font-size: 14px;
+      color: var(--text-body);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: .25s;
+      white-space: nowrap;
+      border-left: 3px solid var(--primary);
+    }
+    .message-item.show { opacity: 1; transform: translateY(0); }
+    .message-item.success { border-left-color: var(--success); }
+    .message-item.warning { border-left-color: var(--warning); }
+    .message-item.error { border-left-color: var(--error); }
+
+    /* ── 二次确认弹窗 ── */
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-mask.show { display: flex; }
+    .modal {
+      width: 460px;
+      background: var(--bg-container);
+      border-radius: var(--radius);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+    .modal-head {
+      padding: 14px 18px;
+      font-size: 15px;
+      color: var(--text-title);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-head .warn-icon {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--warning); color: #fff;
+      display: grid; place-items: center;
+      font-size: 13px; font-weight: 700;
+    }
+    .modal-body {
+      padding: 16px 18px 18px;
+      font-size: 13px;
+      color: var(--text-body);
+      line-height: 1.6;
+    }
+    .modal-body ul {
+      margin: 10px 0 0 20px;
+      color: var(--text-sub);
+      font-size: 12px;
+    }
+    .modal-foot {
+      padding: 10px 18px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: var(--bg-table-head);
+    }
+
+    /* ── 响应式小调整 ── */
+    @media (max-width: 1500px) {
+      .detail-form-grid { grid-template-columns: repeat(2, minmax(260px, 1fr)); }
+      .detail-status-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶栏 -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">咸</div>
+      <span class="brand-name">咸亨国际主数据管理平台</span>
+      <button class="switch-btn" type="button" data-action="switch-system">切换系统</button>
+    </div>
+    <nav class="nav-menu">
+      <div class="nav-item" data-name="消息通知">消息通知<span class="badge-dot"></span></div>
+      <div class="nav-item" data-name="价格审核">价格审核<span class="badge-dot"></span></div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-name="版本更新">版本更新</div>
+      <div class="nav-item" data-name="推送ERP">推送ERP</div>
+      <div class="nav-item" data-name="管理模块">管理模块</div>
+      <div class="nav-item" data-name="任务中心">任务中心</div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-name="管理员"><div class="user-avatar">管</div>管理员 ▾</div>
+    </nav>
+  </header>
+
+  <!-- 页签 -->
+  <div class="tabs-bar">
+    <div class="tabs-list">
+      <div class="tab" onclick="goPage('oms-mpm-物料工作台原型.html')">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="goPage('产业产品奖励管理列表.html')">产业产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab active">奖励配置详情 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    </div>
+    <div class="tabs-clear" id="clearTabs">清除</div>
+  </div>
+
+  <!-- action-bar -->
+  <div class="action-bar">
+    <div class="left">
+      <span class="link-btn" id="backToListBtn">← 返回列表</span>
+      <div class="crumb">
+        <span>产业产品奖励管理</span>
+        <span class="sep">/</span>
+        <span class="cur" id="crumbCurrent">新增奖励配置</span>
+      </div>
+      <span class="mode-tag" id="modeTag">新增</span>
+    </div>
+    <div class="right" id="detailActionGroup"></div>
+  </div>
+
+  <!-- 页面头部 -->
+  <section class="page-shell">
+    <div class="page-title" id="detailTitle">新增奖励配置</div>
+    <div class="page-desc" id="detailDesc">按物料编码维护项目奖励、金额奖励、比例奖励</div>
+  </section>
+
+  <!-- 主体 -->
+  <main class="page">
+    <!-- 基础信息 -->
+    <section class="detail-card">
+      <div class="detail-card-head">
+        基础信息
+        <span class="head-sub">物料与奖励类型是必填项</span>
+      </div>
+      <div class="detail-form-grid">
+        <div class="form-item">
+          <label><span class="req">*</span>物料编码</label>
+          <input id="detailMaterialCode" class="f-input" value="SKU-10001" placeholder="请输入物料编码" />
+          <div class="hint">支持英文 / 数字 / 短横线，长度不超过 32</div>
+        </div>
+        <div class="form-item">
+          <label>物料名称</label>
+          <input id="detailMaterialName" class="f-input" value="PVC 管材" readonly />
+          <div class="hint">根据物料编码自动带出，不可修改</div>
+        </div>
+        <div class="form-item full">
+          <label><span class="req">*</span>奖励类型</label>
+          <div class="segmented" id="rewardTypeSegment">
+            <button type="button" class="seg-item active" data-type="项目奖励">项目奖励</button>
+            <button type="button" class="seg-item" data-type="金额奖励">金额奖励</button>
+            <button type="button" class="seg-item" data-type="比例奖励">比例奖励</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 奖励规则信息 -->
+    <section class="detail-card">
+      <div class="detail-card-head">
+        奖励规则信息
+        <span class="head-sub" id="rewardRuleHead">当前类型：项目奖励</span>
+      </div>
+      <div class="detail-form-grid" id="rewardRuleFields"></div>
+    </section>
+
+    <!-- 时间与展示规则 -->
+    <section class="detail-card">
+      <div class="detail-card-head">
+        时间与展示规则
+        <span class="head-sub">奖励有效期控制后台生效范围，商城展示时间控制商城可见范围</span>
+      </div>
+      <div class="detail-form-grid">
+        <div class="form-item">
+          <label><span class="req">*</span>奖励有效期开始</label>
+          <input id="validStart" class="f-input" type="datetime-local" value="2026-05-01T00:00" />
+        </div>
+        <div class="form-item">
+          <label><span class="req">*</span>奖励有效期结束</label>
+          <input id="validEnd" class="f-input" type="datetime-local" value="2026-12-31T23:59" />
+        </div>
+        <div class="form-item">
+          <!-- 占位保持三列对齐 -->
+          <label>&nbsp;</label>
+          <div class="hint">奖励有效期是后台判断生效/失效的唯一时间窗</div>
+        </div>
+        <div class="form-item">
+          <label><span class="req">*</span>商城展示开始</label>
+          <input id="showStart" class="f-input" type="datetime-local" value="2026-05-15T00:00" />
+        </div>
+        <div class="form-item">
+          <label><span class="req">*</span>商城展示结束</label>
+          <input id="showEnd" class="f-input" type="datetime-local" value="2026-11-30T23:59" />
+        </div>
+        <div class="form-item">
+          <label>&nbsp;</label>
+          <div class="hint">商城展示时间必须完全落在奖励有效期内</div>
+        </div>
+        <div class="inline-tip" id="timeRangeTip">
+          商城展示时间必须完全落在奖励有效期内；超出范围将无法保存。
+        </div>
+      </div>
+    </section>
+
+    <!-- 状态与操作信息 -->
+    <section class="detail-card" id="statusCard">
+      <div class="detail-card-head">
+        状态与操作信息
+        <span class="head-sub" id="statusHeadSub">当前配置的系统状态与操作留痕</span>
+      </div>
+      <div class="detail-status-grid" id="detailStatusGrid">
+        <div class="status-box"><span>配置状态</span><strong><span class="dot green"></span>生效中</strong></div>
+        <div class="status-box"><span>商城同步状态</span><strong><span class="dot green"></span>成功</strong></div>
+        <div class="status-box"><span>BI 同步状态</span><strong><span class="dot red"></span>失败</strong></div>
+        <div class="status-box"><span>创建人 / 创建时间</span><strong>王小明 · 2026-04-28 09:12</strong></div>
+        <div class="status-box"><span>更新人 / 更新时间</span><strong>李小红 · 2026-05-11 10:20</strong></div>
+        <div class="status-box"><span>最近同步时间</span><strong>2026-05-11 10:22</strong></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 固定底部操作 -->
+  <div class="sticky-actions" id="detailBottomActions"></div>
+
+  <!-- 全局消息条 -->
+  <div class="message-wrap" id="messageWrap"></div>
+
+  <!-- 作废二次确认弹窗 -->
+  <div class="modal-mask" id="voidModal">
+    <div class="modal">
+      <div class="modal-head">
+        <span class="warn-icon">!</span>
+        <span>确认作废该奖励配置？</span>
+      </div>
+      <div class="modal-body">
+        作废后：
+        <ul>
+          <li>作废后商城不再展示该奖励配置</li>
+          <li>BI 不再汇总该条配置的奖励数据</li>
+          <li>历史订单与奖励记录保留，不受影响</li>
+        </ul>
+        作废操作不可撤销，请确认是否继续。
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-default" type="button" id="voidCancelBtn">取消</button>
+        <button class="btn btn-danger" type="button" id="voidConfirmBtn">确认作废</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ------ 全局工具 ------ */
+    function goPage(path) {
+      window.location.href = path;
+    }
+
+    function showMessage(text, type) {
+      type = type || 'info';
+      const wrap = document.getElementById('messageWrap');
+      const icons = { info: '提示', success: '成功', warning: '注意', error: '错误' };
+      const el = document.createElement('div');
+      el.className = 'message-item ' + type;
+      el.innerHTML = '<span>' + (icons[type] || '提示') + '</span><span>' + text + '</span>';
+      wrap.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('show'));
+      setTimeout(() => {
+        el.classList.remove('show');
+        setTimeout(() => el.remove(), 260);
+      }, 2400);
+    }
+
+    /* ------ URL 参数 ------ */
+    const detailParams = new URLSearchParams(window.location.search);
+    const mode = detailParams.get('mode') || 'create';
+    const rewardTypeFromQuery = detailParams.get('type') || '项目奖励';
+    const rewardCodeFromQuery = detailParams.get('code') || 'SKU-10001';
+
+    const MODE_META = {
+      create: { title: '新增奖励配置', desc: '填写完整的奖励配置，保存后将进入商城展示及 BI 汇总流程。', tag: '新增', tagClass: 'create', crumb: '新增奖励配置' },
+      edit:   { title: '编辑奖励配置', desc: '修改已有奖励配置内容；修改保存后会触发商城与 BI 再次同步。', tag: '编辑', tagClass: 'edit', crumb: '编辑奖励配置 · ' + rewardCodeFromQuery },
+      view:   { title: '查看奖励配置', desc: '仅查看奖励配置详情；如需修改请切换到编辑模式。', tag: '查看', tagClass: 'view', crumb: '查看奖励配置 · ' + rewardCodeFromQuery }
+    };
+
+    /* ------ 渲染顶部 / 面包屑 / 模式标识 ------ */
+    function renderHeader() {
+      const meta = MODE_META[mode] || MODE_META.create;
+      document.getElementById('detailTitle').textContent = meta.title;
+      document.getElementById('detailDesc').textContent = meta.desc;
+      document.getElementById('crumbCurrent').textContent = meta.crumb;
+      const tag = document.getElementById('modeTag');
+      tag.textContent = meta.tag;
+      tag.className = 'mode-tag ' + meta.tagClass;
+      document.title = '产业产品奖励管理 - ' + meta.title;
+    }
+
+    /* ------ 根据 mode 设置字段只读/禁用 ------ */
+    function applyReadonlyState() {
+      const isView = mode === 'view';
+      const editable = !isView;
+      // 物料编码 create 可填，edit/view 只读（已落库不允许改物料编码）
+      const mc = document.getElementById('detailMaterialCode');
+      if (mode === 'create') {
+        mc.removeAttribute('readonly');
+      } else {
+        mc.setAttribute('readonly', 'readonly');
+        if (mode === 'edit') mc.value = rewardCodeFromQuery;
+      }
+
+      // 奖励类型 segmented：view 模式全部禁用
+      document.querySelectorAll('#rewardTypeSegment .seg-item').forEach(btn => {
+        btn.disabled = isView;
+      });
+
+      // 时间字段
+      ['validStart', 'validEnd', 'showStart', 'showEnd'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = !editable;
+      });
+
+      // 规则字段 - 在渲染规则字段时根据 editable 再处理
+    }
+
+    /* ------ segmented 初始化 ------ */
+    function initSegmented() {
+      let found = false;
+      document.querySelectorAll('#rewardTypeSegment .seg-item').forEach(btn => {
+        const active = btn.dataset.type === rewardTypeFromQuery;
+        btn.classList.toggle('active', active);
+        if (active) found = true;
+      });
+      if (!found) {
+        const first = document.querySelector('#rewardTypeSegment .seg-item');
+        if (first) first.classList.add('active');
+      }
+    }
+
+    /* ------ 奖励规则字段渲染 ------ */
+    let currentRewardType = rewardTypeFromQuery;
+
+    function renderRuleFields(type) {
+      const container = document.getElementById('rewardRuleFields');
+      document.getElementById('rewardRuleHead').textContent = '当前类型：' + type;
+      if (type === '项目奖励') {
+        container.innerHTML =
+          '<div class="form-item">' +
+            '<label>项目编码</label>' +
+            '<input id="fieldProjectCode" class="f-input" value="PRJ-2026-001" placeholder="可为空，建议与项目中心保持一致" />' +
+            '<div class="hint">项目编码为可选项，留空时表示未关联具体项目</div>' +
+          '</div>' +
+          '<div class="form-item half">' +
+            '<label>奖励说明文案</label>' +
+            '<textarea id="fieldRewardDesc" class="f-textarea" placeholder="例如：具体奖励办法请查看内部奖励办法文件">具体奖励办法请查看内部奖励办法文件</textarea>' +
+          '</div>';
+      } else if (type === '金额奖励') {
+        container.innerHTML =
+          '<div class="form-item">' +
+            '<label><span class="req">*</span>奖励金额</label>' +
+            '<div class="input-suffix-wrap">' +
+              '<input id="fieldRewardAmount" class="f-input" type="number" min="0" step="0.01" value="120" placeholder="请输入金额，保留两位小数" />' +
+              '<span class="suffix">元</span>' +
+            '</div>' +
+            '<div class="hint">金额奖励按单物料单位金额配置，实际结算在外部系统完成</div>' +
+          '</div>' +
+          '<div class="form-item half">' +
+            '<label>奖励说明文案</label>' +
+            '<textarea id="fieldRewardDesc" class="f-textarea" placeholder="可不填"></textarea>' +
+          '</div>';
+      } else {
+        container.innerHTML =
+          '<div class="form-item">' +
+            '<label><span class="req">*</span>奖励比例</label>' +
+            '<div class="input-suffix-wrap">' +
+              '<input id="fieldRewardRatio" class="f-input" type="number" min="0" max="100" step="0.01" value="3" placeholder="请输入 0-100 的比例数值" />' +
+              '<span class="suffix">%</span>' +
+            '</div>' +
+            '<div class="hint">仅维护比例值，实际金额由外部结算流程计算</div>' +
+          '</div>' +
+          '<div class="form-item half">' +
+            '<label>奖励说明文案</label>' +
+            '<textarea id="fieldRewardDesc" class="f-textarea" placeholder="可不填"></textarea>' +
+          '</div>' +
+          '<div class="inline-tip">比例奖励与项目调拨价相关，MPM 本期仅维护比例值，不参与结算计算。</div>';
+      }
+      // 根据 mode 应用只读
+      const isView = mode === 'view';
+      container.querySelectorAll('input, textarea').forEach(el => {
+        if (isView) el.setAttribute('readonly', 'readonly');
+        else el.removeAttribute('readonly');
+      });
+      if (isView) {
+        container.querySelectorAll('.input-suffix-wrap').forEach(wrap => wrap.classList.add('is-disabled'));
+      }
+    }
+
+    /* ------ 状态卡显示策略 ------ */
+    function renderStatusCard() {
+      const card = document.getElementById('statusCard');
+      const grid = document.getElementById('detailStatusGrid');
+      const subHead = document.getElementById('statusHeadSub');
+      if (mode === 'create') {
+        // 新增时配置尚未保存，状态都处于默认/待生成
+        grid.innerHTML =
+          '<div class="status-box"><span>配置状态</span><strong><span class="dot"></span>保存后生成</strong></div>' +
+          '<div class="status-box"><span>商城同步状态</span><strong><span class="dot"></span>保存后触发</strong></div>' +
+          '<div class="status-box"><span>BI 同步状态</span><strong><span class="dot"></span>保存后触发</strong></div>';
+        subHead.textContent = '新增保存后，系统会自动生成配置状态并触发商城、BI 同步';
+      } else {
+        subHead.textContent = '当前配置的系统状态与操作留痕';
+      }
+    }
+
+    /* ------ 底部按钮组渲染 ------ */
+    function renderBottomActions(currentMode) {
+      const actions = document.getElementById('detailBottomActions');
+      const topActions = document.getElementById('detailActionGroup');
+      if (currentMode === 'create') {
+        actions.innerHTML =
+          '<button class="btn btn-default" type="button" id="cancelBtn">取消</button>' +
+          '<button class="btn btn-default" type="button" id="saveAndCreateBtn">保存并继续新增</button>' +
+          '<button class="btn btn-primary" type="button" id="saveBtn">保存</button>';
+        topActions.innerHTML = '<span class="link-btn" id="topCancelBtn">取消</span>';
+      } else if (currentMode === 'edit') {
+        actions.innerHTML =
+          '<button class="btn btn-default" type="button" id="cancelBtn">取消</button>' +
+          '<button class="btn btn-danger" type="button" id="voidBtn">作废</button>' +
+          '<button class="btn btn-primary" type="button" id="saveBtn">保存</button>';
+        topActions.innerHTML =
+          '<span class="link-btn" id="topVoidBtn" style="color: var(--danger);">作废</span>' +
+          '<span class="link-btn" id="topCancelBtn">取消</span>';
+      } else {
+        actions.innerHTML =
+          '<button class="btn btn-default" type="button" id="cancelBtn">返回</button>' +
+          '<button class="btn btn-primary" type="button" id="goEditBtn">编辑</button>';
+        topActions.innerHTML = '<span class="link-btn" id="topEditBtn">切换到编辑</span>';
+      }
+    }
+
+    /* ------ 校验：时间范围 ------ */
+    function toTime(val) {
+      if (!val) return NaN;
+      return new Date(val.replace('T', ' ')).getTime();
+    }
+
+    function validateTimeRange() {
+      const vs = toTime(document.getElementById('validStart').value);
+      const ve = toTime(document.getElementById('validEnd').value);
+      const ss = toTime(document.getElementById('showStart').value);
+      const se = toTime(document.getElementById('showEnd').value);
+      const tip = document.getElementById('timeRangeTip');
+      if ([vs, ve, ss, se].some(isNaN)) {
+        tip.classList.add('error');
+        tip.textContent = '请完整填写奖励有效期和商城展示时间。';
+        return false;
+      }
+      if (vs >= ve) {
+        tip.classList.add('error');
+        tip.textContent = '奖励有效期开始时间必须早于结束时间。';
+        return false;
+      }
+      if (ss >= se) {
+        tip.classList.add('error');
+        tip.textContent = '商城展示开始时间必须早于结束时间。';
+        return false;
+      }
+      if (ss < vs || se > ve) {
+        tip.classList.add('error');
+        tip.textContent = '商城展示时间必须完全落在奖励有效期内。';
+        return false;
+      }
+      tip.classList.remove('error');
+      tip.textContent = '商城展示时间必须完全落在奖励有效期内；超出范围将无法保存。';
+      return true;
+    }
+
+    /* ------ 校验：规则字段 ------ */
+    function validateRuleFields() {
+      if (currentRewardType === '金额奖励') {
+        const amt = document.getElementById('fieldRewardAmount');
+        if (!amt || amt.value === '' || Number(amt.value) < 0) {
+          showMessage('金额奖励需填写大于等于 0 的奖励金额', 'error');
+          return false;
+        }
+      }
+      if (currentRewardType === '比例奖励') {
+        const ratio = document.getElementById('fieldRewardRatio');
+        const v = Number(ratio ? ratio.value : NaN);
+        if (ratio == null || ratio.value === '' || isNaN(v) || v < 0 || v > 100) {
+          showMessage('比例奖励需填写 0-100 之间的比例值', 'error');
+          return false;
+        }
+      }
+      const mc = document.getElementById('detailMaterialCode');
+      if (!mc.value.trim()) {
+        showMessage('请填写物料编码', 'error');
+        return false;
+      }
+      return true;
+    }
+
+    /* ------ 保存 / 作废 / 取消 等交互 ------ */
+    function handleSave(continueCreate) {
+      if (mode === 'view') return;
+      if (!validateRuleFields()) return;
+      if (!validateTimeRange()) {
+        showMessage('商城展示时间必须完全落在奖励有效期内', 'error');
+        return;
+      }
+      showMessage('保存成功', 'success');
+      if (continueCreate && mode === 'create') {
+        setTimeout(() => {
+          // 模拟清空物料编码并保留其它字段
+          document.getElementById('detailMaterialCode').value = '';
+          document.getElementById('detailMaterialCode').focus();
+          showMessage('已清空物料编码，可继续新增下一条', 'info');
+        }, 400);
+        return;
+      }
+      setTimeout(() => {
+        window.location.href = '产业产品奖励管理列表.html';
+      }, 500);
+    }
+
+    function openVoidModal() {
+      document.getElementById('voidModal').classList.add('show');
+    }
+    function closeVoidModal() {
+      document.getElementById('voidModal').classList.remove('show');
+    }
+    function confirmVoid() {
+      closeVoidModal();
+      showMessage('已作废该奖励配置，商城不再展示，BI 不再汇总，历史记录保留', 'warning');
+      setTimeout(() => {
+        window.location.href = '产业产品奖励管理列表.html';
+      }, 700);
+    }
+
+    /* ------ 事件委托 ------ */
+    document.addEventListener('click', event => {
+      const target = event.target;
+      if (!target) return;
+      const id = target.id;
+      if (id === 'saveBtn') { handleSave(false); return; }
+      if (id === 'saveAndCreateBtn') { handleSave(true); return; }
+      if (id === 'cancelBtn' || id === 'topCancelBtn' || id === 'backToListBtn') {
+        window.location.href = '产业产品奖励管理列表.html';
+        return;
+      }
+      if (id === 'voidBtn' || id === 'topVoidBtn') {
+        openVoidModal();
+        return;
+      }
+      if (id === 'voidCancelBtn') { closeVoidModal(); return; }
+      if (id === 'voidConfirmBtn') { confirmVoid(); return; }
+      if (id === 'goEditBtn' || id === 'topEditBtn') {
+        window.location.href = '产业产品奖励管理详情.html?mode=edit&type=' + encodeURIComponent(currentRewardType) + '&code=' + encodeURIComponent(rewardCodeFromQuery);
+        return;
+      }
+      if (id === 'clearTabs') {
+        window.location.href = 'oms-mpm-物料工作台原型.html';
+        return;
+      }
+    });
+
+    /* ------ segmented 切换事件 ------ */
+    document.querySelectorAll('#rewardTypeSegment .seg-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (mode === 'view') return;
+        if (btn.disabled) return;
+        if (btn.classList.contains('active')) return;
+        document.querySelectorAll('#rewardTypeSegment .seg-item').forEach(item => {
+          item.classList.toggle('active', item === btn);
+        });
+        currentRewardType = btn.dataset.type;
+        renderRuleFields(currentRewardType);
+        showMessage('已切换奖励类型，系统已清空与当前类型无关的字段', 'warning');
+      });
+    });
+
+    /* ------ 时间字段联动校验 ------ */
+    ['validStart', 'validEnd', 'showStart', 'showEnd'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', () => validateTimeRange());
+    });
+
+    /* ------ 遮罩点击关闭 ------ */
+    document.getElementById('voidModal').addEventListener('click', event => {
+      if (event.target.id === 'voidModal') closeVoidModal();
+    });
+
+    /* ------ 初始化 ------ */
+    (function init() {
+      renderHeader();
+      initSegmented();
+      renderRuleFields(currentRewardType);
+      applyReadonlyState();
+      renderStatusCard();
+      renderBottomActions(mode);
+      // 首次进入做一次轻校验
+      validateTimeRange();
+      // edit 模式下用 code 回填物料编码
+      if (mode === 'edit') {
+        document.getElementById('detailMaterialCode').value = rewardCodeFromQuery;
+      }
+    })();
+  </script>
+</body>
+</html>

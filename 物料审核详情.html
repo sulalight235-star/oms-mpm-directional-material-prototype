@@ -107,7 +107,7 @@
     .card-collapsed .collapse-icon{transform:rotate(-90deg);}
 
     /* ── 表单网格 ── */
-    .form-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px 16px;}
+    .form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 16px;}
     .form-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 16px;}
     .form-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 16px;}
     .form-item{display:flex;flex-direction:column;gap:4px;min-width:0;}
@@ -219,6 +219,133 @@
     .m-form-control:disabled{background:#fafafa;color:var(--text-sub);cursor:not-allowed;}
     .modal-footer{padding:12px 24px;border-top:1px solid var(--border-light);display:flex;gap:8px;justify-content:flex-end;}
 
+    /* ── 类目选择弹窗 ── */
+    .cat-modal{width:880px;max-width:96vw;}
+    .cat-modal .modal-body{padding:0;}
+    .cat-search-bar{padding:12px 16px;border-bottom:1px solid var(--border-light);display:flex;gap:8px;align-items:center;}
+    .cat-search-input{flex:1;height:32px;border:1px solid var(--border);border-radius:var(--radius);padding:0 11px;font-size:13px;outline:none;color:var(--text-body);transition:.2s;}
+    .cat-search-input:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1);}
+    .cat-search-btn{width:32px;height:32px;border:none;border-radius:var(--radius);background:var(--primary);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;}
+    .cat-search-btn:hover{background:var(--primary-hover);}
+
+    /* 左右两栏 */
+    .cat-body{display:flex;height:440px;}
+    .cat-left{flex:1;min-width:0;border-right:1px solid var(--border-light);display:flex;flex-direction:column;}
+    .cat-right{width:340px;flex-shrink:0;background:#fafafa;display:flex;flex-direction:column;}
+    .cat-pane-title{padding:10px 14px;font-size:12px;color:var(--text-sub);background:var(--bg-table-head);border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;}
+    .cat-pane-title-l{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--text-title);font-size:13px;}
+
+    /* AI 建议区(右侧栏) */
+    .cat-ai-zone{flex:1;overflow-y:auto;padding:10px 12px;}
+    .cat-ai-retry{font-size:12px;color:var(--primary);cursor:pointer;display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border:1px solid #91caff;border-radius:11px;background:#fff;}
+    .cat-ai-retry:hover{background:var(--primary-bg);}
+    .cat-ai-list{display:flex;flex-direction:column;gap:8px;}
+    .cat-ai-item{display:flex;flex-direction:column;background:#fff;padding:10px 12px;border:1px solid var(--border-light);border-radius:var(--radius);transition:.15s;cursor:pointer;}
+    .cat-ai-item:hover{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,0.06);}
+    .cat-ai-info{flex:1;min-width:0;}
+    .cat-ai-name{font-size:13px;color:var(--text-title);font-weight:500;}
+    .cat-ai-name .ai-rank{display:inline-block;width:18px;height:18px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;line-height:18px;text-align:center;margin-right:6px;}
+    .cat-ai-name .ai-rank.r1{background:#1677ff;}
+    .cat-ai-name .ai-rank.r2{background:#4096ff;}
+    .cat-ai-name .ai-rank.r3{background:#bfbfbf;}
+    .cat-ai-meta{font-size:11px;color:var(--text-sub);margin-top:4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .cat-ai-conf{display:inline-flex;align-items:center;gap:4px;}
+    .cat-ai-bar{width:80px;height:4px;background:#e8e8e8;border-radius:2px;overflow:hidden;}
+    .cat-ai-bar-fill{height:100%;background:linear-gradient(to right,#1677ff,#4096ff);border-radius:2px;transition:width .3s;}
+    .cat-ai-bar-fill.mid{background:linear-gradient(to right,#1677ff,#4096ff);}
+    .cat-ai-bar-fill.low{background:linear-gradient(to right,#faad14,#ffc53d);}
+    .cat-ai-reason{font-size:11px;color:var(--text-sub);line-height:1.5;margin-top:6px;background:#fafafa;padding:4px 8px;border-radius:3px;border-left:2px solid #d9d9d9;}
+
+    /* AI 加载中状态 */
+    .cat-ai-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;font-size:13px;color:var(--text-sub);gap:12px;text-align:center;}
+    .cat-ai-spinner{width:32px;height:32px;border:3px solid var(--border-light);border-top-color:var(--primary);border-radius:50%;animation:catSpin .8s linear infinite;}
+    .cat-ai-loading-tip{font-size:11px;color:var(--text-sub);}
+    @keyframes catSpin{to{transform:rotate(360deg);}}
+
+    /* 树形 */
+    .cat-tree-wrap{flex:1;padding:10px 0;overflow-y:auto;}
+    .cat-node{padding:4px 16px;font-size:13px;color:var(--text-body);cursor:pointer;display:flex;align-items:center;gap:4px;user-select:none;line-height:1.6;}
+    .cat-node:hover{background:#f0f7ff;}
+    .cat-node.selected{background:var(--primary-bg);color:var(--primary);font-weight:500;}
+    .cat-node.l1{padding-left:16px;}
+    .cat-node.l2{padding-left:36px;}
+    .cat-node.l3{padding-left:56px;}
+    .cat-node.l4{padding-left:76px;color:var(--text-sub);}
+    .cat-node.l4.selected{color:var(--primary);}
+    .cat-toggle{display:inline-flex;width:16px;height:16px;align-items:center;justify-content:center;border:1px solid var(--border);font-size:10px;color:var(--text-sub);background:#fff;flex-shrink:0;}
+    .cat-toggle.leaf{visibility:hidden;}
+    .cat-code{color:var(--text-sub);font-size:12px;margin-right:4px;}
+    .cat-empty-tip{padding:30px 16px;text-align:center;font-size:12px;color:var(--text-sub);}
+
+    /* ── 类目字段引导动画（首次进入提示） ── */
+    @keyframes catPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(250,140,22,0.45); border-color:#fa8c16; }
+      50%  { box-shadow: 0 0 0 8px rgba(250,140,22,0.05); border-color:#ffa940; }
+      100% { box-shadow: 0 0 0 0 rgba(250,140,22,0); border-color:#fa8c16; }
+    }
+    @keyframes catArrowBounce {
+      0%,100% { transform:translateY(0); }
+      50%     { transform:translateY(-8px); }
+    }
+    @keyframes catGuideFadeIn {
+      from { opacity:0; transform:translateY(-4px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .form-item.cat-guide-active{position:relative;}
+    .form-item.cat-guide-active input{
+      animation: catPulse 1.4s ease-in-out infinite;
+      background:#fff7e6 !important;
+      border-color:#fa8c16 !important;
+    }
+    .cat-guide-bubble{
+      position:absolute;
+      top:-58px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:50;
+      animation: catGuideFadeIn .35s ease;
+      pointer-events:auto;
+      white-space:nowrap;
+    }
+    .cat-guide-bubble-inner{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      background:linear-gradient(135deg,#fa8c16 0%,#ffa940 100%);
+      color:#fff;
+      font-size:12px;
+      font-weight:600;
+      padding:8px 14px 8px 12px;
+      border-radius:18px;
+      box-shadow:0 4px 14px rgba(250,140,22,0.4),0 0 0 4px rgba(250,140,22,0.08);
+      animation: catArrowBounce 1s ease-in-out infinite;
+    }
+    .cat-guide-bubble-icon{
+      width:20px;height:20px;border-radius:50%;
+      background:#fff;color:#fa8c16;font-size:13px;
+      display:inline-flex;align-items:center;justify-content:center;
+      flex-shrink:0;
+    }
+    .cat-guide-bubble-text{display:inline-flex;align-items:center;gap:4px;}
+    .cat-guide-close{
+      width:16px;height:16px;border-radius:50%;
+      background:rgba(255,255,255,0.25);color:#fff;
+      font-size:11px;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;
+      margin-left:2px;transition:.15s;
+    }
+    .cat-guide-close:hover{background:rgba(255,255,255,0.45);}
+    .cat-guide-bubble::after{
+      content:'';
+      position:absolute;
+      bottom:-6px;
+      left:50%;
+      transform:translateX(-50%) rotate(45deg);
+      width:12px;height:12px;
+      background:#ffa940;
+      box-shadow:2px 2px 4px rgba(250,140,22,0.2);
+    }
+
     /* ── 响应式 ── */
     @media(max-width:1200px){
       .form-grid{grid-template-columns:repeat(4,1fr);}
@@ -230,6 +357,111 @@
       .form-grid-6{grid-template-columns:repeat(3,1fr);}
       .form-item.span2,.form-item.span3,.form-item.span4,.form-item.span5{grid-column:span 2;}
     }
+
+    /* ===== 本次修改动态引导 ===== */
+    .change-badge{
+      display:inline-flex;align-items:center;gap:4px;
+      height:18px;padding:0 6px;margin-right:6px;
+      font-size:11px;line-height:18px;color:#fff;
+      background:linear-gradient(90deg,#ff7a45,#ff4d4f);
+      border-radius:9px;cursor:help;position:relative;
+      animation:changePulse 1.8s ease-in-out infinite;
+      box-shadow:0 0 0 0 rgba(255,77,79,.55);
+    }
+    .change-badge::before{content:"●";font-size:8px;}
+    @keyframes changePulse{
+      0%   {box-shadow:0 0 0 0 rgba(255,77,79,.55);}
+      70%  {box-shadow:0 0 0 6px rgba(255,77,79,0);}
+      100% {box-shadow:0 0 0 0 rgba(255,77,79,0);}
+    }
+    .change-badge .change-tip{
+      visibility:hidden;opacity:0;transition:all .18s;
+      position:absolute;left:0;top:24px;z-index:20;
+      width:260px;padding:10px 12px;
+      background:#1f1f1f;color:#fff;border-radius:6px;
+      font-size:12px;line-height:1.65;text-align:left;
+      box-shadow:0 6px 18px rgba(0,0,0,.18);
+      pointer-events:none;
+    }
+    .change-badge .change-tip::before{
+      content:"";position:absolute;left:14px;top:-5px;
+      border:5px solid transparent;border-bottom-color:#1f1f1f;
+    }
+    .change-badge .change-tip b{color:#ffd666;font-weight:500;}
+    .change-badge .change-tip s{color:#bbb;text-decoration:line-through;}
+    .change-badge:hover .change-tip{visibility:visible;opacity:1;}
+
+    /* ===== 价格记录弹窗 ===== */
+    .price-modal{width:880px;max-width:96vw;}
+    .price-modal .modal-body{padding:0;}
+    .price-layout{display:flex;min-height:420px;}
+    .price-side{
+      width:150px;flex:0 0 150px;border-right:1px solid var(--border-light);
+      padding:16px 0;background:#fafafa;
+    }
+    .price-side .tab-item{
+      position:relative;padding:10px 20px;font-size:13px;color:var(--text-main);
+      cursor:pointer;transition:.15s;
+    }
+    .price-side .tab-item:hover{color:var(--primary);}
+    .price-side .tab-item.active{color:var(--primary);font-weight:500;background:#fff;}
+    .price-side .tab-item.active::before{
+      content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;
+      background:var(--primary);border-radius:0 2px 2px 0;
+    }
+    .price-content{flex:1;padding:16px 20px 12px;display:flex;flex-direction:column;min-width:0;}
+    .price-toolbar{
+      display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;
+    }
+    .price-toolbar .price-title{font-size:13px;color:var(--text-sub);}
+    .price-mode-switch{
+      display:inline-flex;border:1px solid var(--border-light);border-radius:4px;overflow:hidden;
+      font-size:12px;
+    }
+    .price-mode-switch button{
+      padding:4px 12px;background:#fff;border:none;color:var(--text-main);cursor:pointer;
+      border-right:1px solid var(--border-light);
+    }
+    .price-mode-switch button:last-child{border-right:none;}
+    .price-mode-switch button.active{background:var(--primary);color:#fff;}
+    .price-table{width:100%;border-collapse:collapse;font-size:12px;}
+    .price-table thead th{
+      background:#fafafa;color:var(--text-sub);font-weight:500;text-align:left;
+      padding:8px 12px;border-bottom:1px solid var(--border-light);
+    }
+    .price-table tbody td{
+      padding:10px 12px;border-bottom:1px solid var(--border-light);color:var(--text-main);
+    }
+    .price-pagination{
+      display:flex;align-items:center;justify-content:flex-end;gap:8px;
+      padding:10px 0 2px;font-size:12px;color:var(--text-sub);
+    }
+    .price-pagination .page-btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-width:26px;height:26px;padding:0 6px;border:1px solid var(--border-light);
+      border-radius:3px;background:#fff;color:var(--text-main);cursor:pointer;
+    }
+    .price-pagination .page-btn.active{border-color:var(--primary);color:var(--primary);}
+    .price-pagination select{
+      height:26px;border:1px solid var(--border-light);border-radius:3px;padding:0 4px;
+      font-size:12px;background:#fff;
+    }
+    .price-chart-wrap{flex:1;border:1px solid var(--border-light);border-radius:4px;background:#fff;padding:12px;}
+    .price-chart{width:100%;height:320px;display:block;}
+    .price-chart .grid line{stroke:#f0f0f0;stroke-width:1;}
+    .price-chart .axis text{fill:#999;font-size:11px;}
+    .price-chart .line{fill:none;stroke:var(--primary);stroke-width:2;}
+    .price-chart .area{fill:rgba(22,119,255,.08);stroke:none;}
+    .price-chart .dot{fill:#fff;stroke:var(--primary);stroke-width:2;cursor:pointer;}
+    .price-chart .dot:hover{fill:var(--primary);}
+    .price-chart .label{fill:var(--text-main);font-size:11px;}
+    .price-tooltip{
+      position:absolute;pointer-events:none;padding:8px 10px;background:#1f1f1f;color:#fff;
+      font-size:11px;border-radius:4px;line-height:1.6;display:none;z-index:20;white-space:nowrap;
+      box-shadow:0 4px 12px rgba(0,0,0,.18);
+    }
+    .price-tooltip b{color:#ffd666;font-weight:500;}
+    .price-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-sub);font-size:13px;}
   </style>
 </head>
 <body>
@@ -288,24 +520,6 @@
 <div class="page">
 <div class="page-inner">
 
-  <!-- AI审核建议区 -->
-  <div class="ai-banner">
-    <div class="ai-banner-title">
-      <div class="ai-banner-title-text">
-        <span>AI审核建议：建议【驳回】</span>
-      </div>
-      <div class="ai-banner-actions">
-        <span class="ai-suggest-tag">建议【驳回】</span>
-        <span class="ai-suggest-link">建议【驳回】</span>
-      </div>
-    </div>
-    <div class="ai-line ai-line-warn">⚠️ 【文本审核】规格：前后逻辑错一致，【规格】与【物料名称】在文本中存在差异，建议【规格】改为30*20mm</div>
-    <div class="ai-line ai-line-warn" style="padding-left:24px;">属性信息：文本前后逻辑错一致，【属性信息】与【描述】在文本中存在差异，建议【属性信息】改为尺寸:30*20mm,材质:PVC</div>
-    <div class="ai-line ai-line-pass">🔵 【图片审核】审核通过</div>
-    <div class="ai-line ai-line-pass">🔵 【类目审核】审核通过</div>
-    <div class="ai-line ai-line-pass">🔵 【图文一致性审核】审核通过</div>
-  </div>
-
   <!-- 主要信息区 -->
   <div class="card" id="card-main">
     <div class="card-header" onclick="toggleCard('card-main')">
@@ -314,7 +528,7 @@
         <span>§ 主要信息</span>
       </div>
       <div class="card-header-actions">
-        <span class="hl">价格已设</span>
+        <span class="hl" onclick="event.stopPropagation();openPriceRecord('B0401025924')">价格记录</span>
         <span>|</span>
         <span class="hl">操作已读</span>
         <span class="collapse-icon">▼</span>
@@ -329,68 +543,99 @@
           <input class="f-input" readonly value="万聚国际（杭州）供应链有限公司" />
         </div>
         <div class="form-item span2">
-          <div class="form-label">物料标签</div>
+          <div class="form-label"><span class="req">*</span> 物料标签</div>
           <div class="radio-group">
-            <label class="radio-item"><input type="radio" name="matTag" checked /> 自营物料</label>
-            <label class="radio-item"><input type="radio" name="matTag" /> 定向物料</label>
+            <label class="radio-item"><input type="radio" name="matTag" /> 自营物料</label>
+            <label class="radio-item"><input type="radio" name="matTag" checked /> 定向物料</label>
             <label class="radio-item"><input type="radio" name="matTag" /> 电商服务商</label>
           </div>
         </div>
       </div>
 
-      <!-- 第二行：基础字段 -->
+      <!-- 第二行：编码 / 品牌 / 名称 / 型号 -->
       <div class="form-grid" style="margin-bottom:12px;">
         <div class="form-item">
-          <div class="form-label">数据类型</div>
-          <select class="f-select">
-            <option selected>标品物料</option>
-            <option>非标物料</option>
-          </select>
-        </div>
-        <div class="form-item">
-          <div class="form-label"><span class="req">*</span> 编码</div>
-          <input class="f-input" readonly value="A1901005067" />
+          <div class="form-label">编码</div>
+          <input class="f-input" readonly placeholder="提交后自动生成" />
         </div>
         <div class="form-item">
           <div class="form-label"><span class="req">*</span> 品牌</div>
-          <input class="f-input" value="佐佑众工/ZUOYOU" />
+          <input class="f-input" value="钢炬/GANGJU" />
         </div>
         <div class="form-item">
           <div class="form-label"><span class="req">*</span> 名称</div>
-          <input class="f-input" value="PVC线槽" />
+          <input class="f-input" value="PVC管" />
         </div>
         <div class="form-item">
           <div class="form-label"><span class="req">*</span> 型号</div>
-          <input class="f-input" value="30*20mm" />
+          <input class="f-input" value="DN110*4m" />
         </div>
       </div>
+
+      <!-- 第三行：基本单位(带红字) / 类目 / 订单执行员 / 采购部门 -->
       <div class="form-grid" style="margin-bottom:12px;">
-        <div class="form-item">
-          <div class="form-label"><span class="req">*</span> 基本单位</div>
+        <div class="form-item" style="position:relative;">
+          <div class="form-label" style="display:flex;align-items:center;justify-content:space-between;">
+            <span><span class="req">*</span> 基本单位</span>
+            <span style="color:var(--error);font-size:11px;font-weight:normal;">⚠ 审核后无法修改</span>
+          </div>
           <input class="f-input" value="米" />
         </div>
-        <div class="form-item span2">
-          <div class="form-label"><span class="req">*</span> 项目</div>
-          <input class="f-input" value="项目地址" />
-        </div>
-        <div class="form-item span2">
-          <div class="form-label"><span class="req">*</span> 订单执行员</div>
-          <input class="f-input" value="通用/通用工具采购组" />
-        </div>
-      </div>
-      <div class="form-grid" style="margin-bottom:12px;">
-        <div class="form-item span2">
-          <div class="form-label"><span class="req">*</span> 采购部门</div>
-          <input class="f-input" value="通用工具采购组" />
+        <div class="form-item" id="categoryFormItem">
+          <div class="form-label"><span class="req">*</span> 类目</div>
+          <input class="f-input" id="categoryInput" readonly value="消费类无人机（01010101）" style="cursor:pointer;" onclick="openCategoryModal()" title="点击选择四级类目" />
         </div>
         <div class="form-item">
-          <div class="form-label">项目服务员</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <div class="form-label">订单执行员</div>
+          <select class="f-select"><option value="">请选择</option><option selected>胡乾礼-通用工具采购组</option></select>
+        </div>
+        <div class="form-item">
+          <div class="form-label"><span class="req">*</span> 采购部门</div>
+          <select class="f-select"><option value="">请选择</option><option selected>通用工具采购组</option></select>
+        </div>
+      </div>
+
+      <!-- 第四行：项目报价员 / 产品经理 / 加价系数 / 物料税率 -->
+      <div class="form-grid" style="margin-bottom:12px;">
+        <div class="form-item">
+          <div class="form-label">项目报价员</div>
+          <select class="f-select"><option value="">请选择</option><option>赵艺珂</option></select>
         </div>
         <div class="form-item">
           <div class="form-label">产品经理</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <select class="f-select"><option value="">请选择</option></select>
         </div>
+        <div class="form-item">
+          <div class="form-label"><span class="req">*</span> 加价系数(%)</div>
+          <input class="f-input" value="0.00" placeholder="0.00" />
+        </div>
+        <div class="form-item">
+          <div class="form-label"><span class="req">*</span> 物料税率</div>
+          <select class="f-select"><option selected>13%增值税</option><option>9%增值税</option><option>6%增值税</option><option>0%</option></select>
+        </div>
+      </div>
+
+      <!-- 第五行：起订量 / 毛重 / 别名 -->
+      <div class="form-grid" style="margin-bottom:12px;">
+        <div class="form-item">
+          <div class="form-label">起订量</div>
+          <div class="input-addon">
+            <input class="f-input" value="1" style="flex:1;" />
+            <label class="check-item" style="flex-shrink:0;font-size:12px;"><input type="checkbox" /> 是否倍数下单</label>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="form-label"><span class="req">*</span> 毛重</div>
+          <div class="input-addon">
+            <input class="f-input" value="1" style="flex:1;" />
+            <span class="input-suffix">kg</span>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="form-label">别名</div>
+          <input class="f-input" placeholder="请输入" />
+        </div>
+        <div class="form-item"></div>
       </div>
 
       <div class="divider"></div>
@@ -398,38 +643,46 @@
       <!-- 价格行 -->
       <div class="price-hint-row">
         <div class="form-grid" style="margin-bottom:0;">
-          <div class="form-item" style="grid-column:span 1;">
-            <div class="form-label">是否做下单</div>
-            <label class="check-item" style="height:30px;"><input type="checkbox" checked /> 是</label>
-          </div>
           <div class="form-item">
             <div class="form-label"><span class="req">*</span> 市场价</div>
             <div class="input-addon">
-              <input class="f-input" value="6.51" style="width:80px;" />
+              <input class="f-input" value="21.00" style="flex:1;" />
               <span class="input-suffix">元</span>
-              <span class="input-link">查看</span>
             </div>
           </div>
           <div class="form-item">
             <div class="form-label"><span class="req">*</span> 商城价</div>
             <div class="input-addon">
-              <input class="f-input" value="6.51" style="width:80px;" />
-              <label class="check-item" style="flex-shrink:0;"><input type="checkbox" /> 自动计算</label>
+              <input class="f-input" placeholder="点击查询自动计算" style="flex:1;" />
+              <span class="input-suffix">元</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+              <span class="input-link">查询</span>
+              <label class="check-item" style="font-size:12px;"><input type="checkbox" checked /> 自动计算</label>
             </div>
           </div>
           <div class="form-item">
-            <div class="form-label">结算价</div>
-            <input class="f-input" value="" placeholder="请输入" />
+            <div class="form-label"><span class="change-badge">本次修改<span class="change-tip"><b>字段改名</b><br/><s>结算价</s> → <b>固定结算价</b><br/>来源：PRD V1.4（2026-05-11）</span></span><span style="color:var(--text-sub);" title="未询价时显示&quot;待询价&quot;">ⓘ</span> 固定结算价</div>
+            <div class="input-addon">
+              <input class="f-input" readonly placeholder="待询价" style="flex:1;color:var(--text-sub);" />
+              <span class="input-suffix">元</span>
+            </div>
           </div>
           <div class="form-item">
-            <div class="form-label">项目端展示参考价</div>
-            <input class="f-input" value="4.50" readonly />
+            <div class="form-label"><span style="color:var(--text-sub);" title="未询价时显示"待询价"">ⓘ</span> 项目调拨参考价</div>
+            <div class="input-addon">
+              <input class="f-input" readonly placeholder="待询价" style="flex:1;color:var(--text-sub);" />
+              <span class="input-suffix">元</span>
+            </div>
           </div>
         </div>
         <div class="form-grid" style="margin-top:10px;margin-bottom:0;">
           <div class="form-item">
-            <div class="form-label">参考供货价</div>
-            <input class="f-input" value="" placeholder="请输入" />
+            <div class="form-label"><span style="color:var(--text-sub);" title="未询价时显示"待询价"">ⓘ</span> 参考供货价</div>
+            <div class="input-addon">
+              <input class="f-input" readonly placeholder="待询价" style="flex:1;color:var(--text-sub);" />
+              <span class="input-suffix">元</span>
+            </div>
           </div>
         </div>
       </div>
@@ -438,48 +691,60 @@
 
       <!-- 规格行 -->
       <div class="form-grid" style="margin-bottom:12px;">
-        <div class="form-item span2">
-          <div class="form-label"><span class="req">*</span> 规格</div>
-          <input class="f-input has-ai-hint" value="PVC线槽，宽30mm，厚0.8mm，2米/根，平整型，带皮纹" />
-          <div class="ai-inline-hint">⚠️ 【文本审核】文本前后逻辑错一致，【规格】与【物料名称】在文本中存在差异，建议【规格】改为30*20mm</div>
+        <div class="form-item">
+          <div class="form-label">规格</div>
+          <input class="f-input" placeholder="请输入" />
         </div>
         <div class="form-item">
-          <div class="form-label">外参系高成交价</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <div class="form-label">对外最高成交价</div>
+          <div class="input-addon">
+            <input class="f-input" placeholder="请输入" style="flex:1;" />
+            <span class="input-suffix">元</span>
+          </div>
         </div>
         <div class="form-item">
-          <div class="form-label">对内最新成本价</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <div class="form-label"><span class="change-badge">本次修改<span class="change-tip"><b>字段改名</b><br/><s>对内最新成本价</s> → <b>对内最新成本价（组织间开票价）</b><br/>来源：SAP 接口每月结账之后凌晨批次同步<br/>变更依据：PRD V1.5（2026-05-13）</span></span>对内最新成本价（组织间开票价）</div>
+          <div class="input-addon">
+            <input class="f-input" placeholder="请输入" style="flex:1;" />
+            <span class="input-suffix">元</span>
+          </div>
         </div>
         <div class="form-item">
           <div class="form-label">品牌限价最低价</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <div class="input-addon">
+            <input class="f-input" placeholder="请输入" style="flex:1;" />
+            <span class="input-suffix">元</span>
+          </div>
         </div>
       </div>
       <div class="form-grid" style="margin-bottom:12px;">
         <div class="form-item">
           <div class="form-label">品牌限价最高价</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <div class="input-addon">
+            <input class="f-input" placeholder="请输入" style="flex:1;" />
+            <span class="input-suffix">元</span>
+          </div>
         </div>
       </div>
 
       <div class="divider"></div>
 
-      <!-- 描述行 -->
+      <!-- 描述 + 内部备注 -->
       <div class="form-grid-4" style="margin-bottom:12px;">
         <div class="form-item span2">
-          <div class="form-label"><span class="req">*</span> 描述</div>
-          <textarea class="f-textarea">PVC线槽，宽30mm，厚0.8mm，2米/根，平整型，带皮纹</textarea>
+          <div class="form-label">描述</div>
+          <textarea class="f-textarea">4米/根</textarea>
         </div>
         <div class="form-item span2">
           <div class="form-label">内部备注</div>
-          <textarea class="f-textarea" placeholder="请输入内部备注"></textarea>
+          <textarea class="f-textarea">复制生成物料（源物料编码B2002079386）</textarea>
         </div>
       </div>
 
+      <!-- 成本运费 + 检测费 -->
       <div class="form-grid-4" style="margin-bottom:12px;">
         <div class="form-item span2">
-          <div class="form-label">成本是否含运费</div>
+          <div class="form-label"><span class="req">*</span> 成本是否含运费</div>
           <div class="radio-group">
             <label class="radio-item"><input type="radio" name="freight" checked /> 不含</label>
             <label class="radio-item"><input type="radio" name="freight" /> 含运费</label>
@@ -488,19 +753,20 @@
         <div class="form-item span2">
           <div class="form-label">检测费</div>
           <div class="radio-group">
-            <label class="radio-item"><input type="radio" name="inspect" checked /> 不含检测费</label>
-            <label class="radio-item"><input type="radio" name="inspect" /> 含三方检测费</label>
-            <label class="radio-item"><input type="radio" name="inspect" /> 含出厂检测费</label>
+            <label class="radio-item"><input type="checkbox" /> 不含检测费</label>
+            <label class="radio-item"><input type="checkbox" /> 含第三方检测费</label>
+            <label class="radio-item"><input type="checkbox" /> 含出厂检测费</label>
           </div>
         </div>
       </div>
 
+      <!-- 安装费 -->
       <div class="form-grid-4" style="margin-bottom:0;">
         <div class="form-item span2">
           <div class="form-label">安装费</div>
           <div class="radio-group">
-            <label class="radio-item"><input type="radio" name="install" checked /> 含</label>
-            <label class="radio-item"><input type="radio" name="install" /> 不含</label>
+            <label class="radio-item"><input type="checkbox" /> 含</label>
+            <label class="radio-item"><input type="checkbox" /> 不含</label>
           </div>
         </div>
       </div>
@@ -951,6 +1217,77 @@
   </div>
 </div>
 
+<!-- 类目选择弹窗 -->
+<div class="modal-overlay" id="categoryModal">
+  <div class="modal cat-modal">
+    <div class="modal-header">
+      <span class="modal-header-title">类目</span>
+      <span class="modal-close" onclick="closeCategoryModal()">×</span>
+    </div>
+    <div class="modal-body">
+      <!-- 顶部搜索框 -->
+      <div class="cat-search-bar">
+        <input class="cat-search-input" id="catSearchInput" placeholder="请输入名称或编码" oninput="filterCategoryTree()" />
+        <button class="cat-search-btn" onclick="filterCategoryTree()">🔍</button>
+      </div>
+
+      <!-- 左右两栏 -->
+      <div class="cat-body">
+        <!-- 左：类目树 -->
+        <div class="cat-left">
+          <div class="cat-pane-title">
+            <span class="cat-pane-title-l">📂 类目层级</span>
+            <span style="font-size:11px;color:var(--text-sub);">必须选到四级</span>
+          </div>
+          <div class="cat-tree-wrap" id="catTreeWrap">
+            <!-- 树节点由 JS 渲染 -->
+          </div>
+        </div>
+
+        <!-- 右：AI 建议 -->
+        <div class="cat-right">
+          <div class="cat-pane-title">
+            <span class="cat-pane-title-l">🤖 四级类目（AI建议）</span>
+            <span class="cat-ai-retry" onclick="retryAiCategory()">🔄 重试</span>
+          </div>
+          <div class="cat-ai-zone">
+            <div class="cat-ai-list" id="catAiList">
+              <!-- AI 建议项由 JS 渲染 -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 价格记录弹窗 -->
+<div class="modal-overlay" id="priceRecordModal">
+  <div class="modal price-modal">
+    <div class="modal-header">
+      <span class="modal-header-title" id="priceRecordTitle">B0401025924 修改记录</span>
+      <span class="modal-close" onclick="closePriceRecord()">×</span>
+    </div>
+    <div class="modal-body">
+      <div class="price-layout">
+        <div class="price-side" id="priceSideTabs"></div>
+        <div class="price-content" style="position:relative;">
+          <div class="price-toolbar">
+            <span class="price-title" id="priceRecordSubTitle">商城价 历史记录</span>
+            <div class="price-mode-switch" role="tablist">
+              <button class="active" data-mode="list" onclick="switchPriceMode('list')">📋 列表</button>
+              <button data-mode="chart" onclick="switchPriceMode('chart')">📈 折线</button>
+            </div>
+          </div>
+          <div id="priceRecordView" style="flex:1;display:flex;flex-direction:column;min-height:0;"></div>
+          <div class="price-pagination" id="priceRecordPagination"></div>
+          <div class="price-tooltip" id="priceChartTooltip"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- 消息提示 -->
 <div class="msg-wrap" id="msgWrap"></div>
 
@@ -999,6 +1336,511 @@
     wrap.appendChild(el);
     requestAnimationFrame(() => el.classList.add('show'));
     setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 2200);
+  }
+
+  // ════════════════════════════════════════════════════════
+  //                  类目选择弹窗
+  // ════════════════════════════════════════════════════════
+
+  // 模拟类目树数据(参考截图结构)
+  const CATEGORY_TREE = [
+    { code: '01', name: '应急装备', children: [
+      { code: '0101', name: '无人机', children: [
+        { code: '010101', name: '多旋翼飞行平台', children: [
+          { code: '01010101', name: '消费类无人机' },
+          { code: '01010102', name: '教育类无人机' },
+          { code: '01010103', name: '行业类无人机' },
+          { code: '01010104', name: '其它多旋翼飞行平台' },
+        ]},
+        { code: '010102', name: '复合翼飞行平台', children: [
+          { code: '01010201', name: '复合翼无人机' },
+        ]},
+        { code: '010103', name: '任务载荷', children: [
+          { code: '01010301', name: '光电载荷' },
+        ]},
+        { code: '010104', name: '无人值守平台', children: [
+          { code: '01010401', name: '无人值守站' },
+        ]},
+        { code: '010105', name: '无人机软件', children: [
+          { code: '01010501', name: '飞控软件' },
+        ]},
+        { code: '010106', name: '无人机服务', children: [
+          { code: '01010601', name: '飞行培训' },
+        ]},
+        { code: '010107', name: '无人机配件', children: [
+          { code: '01010701', name: '螺旋桨' },
+          { code: '01010702', name: '电池' },
+        ]},
+      ]},
+      { code: '0102', name: '消防装备', children: [
+        { code: '010201', name: '灭火器', children: [
+          { code: '01020101', name: '干粉灭火器' },
+        ]},
+      ]},
+    ]},
+    { code: '02', name: '管材管件', children: [
+      { code: '0201', name: '塑料管材', children: [
+        { code: '020101', name: 'PVC类', children: [
+          { code: '02010101', name: 'PVC给排水管' },
+          { code: '02010202', name: 'PVC管道' },
+          { code: '02010203', name: '塑料管材' },
+          { code: '02010204', name: 'PVC型材' },
+        ]},
+      ]},
+    ]},
+  ];
+
+  // AI 建议(模拟接口4返回的前3个候选)
+  const AI_SUGGESTIONS_DEFAULT = [
+    { code: '02010202', name: 'PVC管道', confidence: 0.95, reason: '商品名称为"PVC线槽"，与"PVC管道"在材质、规格描述上高度一致' },
+    { code: '02010203', name: '塑料管材', confidence: 0.78, reason: '"PVC"属于塑料类材料，可归为塑料管材' },
+    { code: '02010204', name: 'PVC型材', confidence: 0.62, reason: '宽30mm厚0.8mm属于型材规格特征' },
+  ];
+
+  let currentSelectedCategory = { code: '02010202', name: 'PVC管道' };
+  let tempSelectedCategory = null;
+  let aiSuggestions = [...AI_SUGGESTIONS_DEFAULT];
+  let expandedNodes = new Set(['01', '0101', '010101', '02', '0201', '020101']);
+
+  function openCategoryModal() {
+    tempSelectedCategory = { ...currentSelectedCategory };
+    renderCategoryTree();
+    document.getElementById('catSearchInput').value = '';
+    document.getElementById('categoryModal').classList.add('open');
+    // 每次打开弹窗都重新调用 AI 接口，3 秒后展示结果
+    loadAiSuggestions();
+  }
+
+  function closeCategoryModal() {
+    document.getElementById('categoryModal').classList.remove('open');
+  }
+
+  // 模拟调用接口4：四级类目（AI建议），加载中 → 3 秒后展示结果
+  function loadAiSuggestions() {
+    const wrap = document.getElementById('catAiList');
+    wrap.innerHTML = `
+      <div class="cat-ai-loading">
+        <div class="cat-ai-spinner"></div>
+        <div>正在调用 AI 类目接口...</div>
+        <div class="cat-ai-loading-tip">请稍候，通常需要 1~3 秒</div>
+      </div>`;
+    setTimeout(() => {
+      aiSuggestions = [...AI_SUGGESTIONS_DEFAULT];
+      renderAiSuggestions();
+    }, 3000);
+  }
+
+  // 渲染 AI 建议（整项可点击：点击直接选中并关闭弹窗）
+  function renderAiSuggestions() {
+    const wrap = document.getElementById('catAiList');
+    if (!aiSuggestions || aiSuggestions.length === 0) {
+      wrap.innerHTML = '<div style="font-size:12px;color:var(--text-sub);padding:6px;">AI 暂无建议，请在左侧手动选择类目</div>';
+      return;
+    }
+    wrap.innerHTML = aiSuggestions.slice(0, 3).map((s, i) => {
+      const conf = (s.confidence * 100).toFixed(0);
+      const barCls = s.confidence >= 0.9 ? '' : (s.confidence >= 0.7 ? 'mid' : 'low');
+      const confColor = s.confidence >= 0.7 ? '#1677ff' : '#faad14';
+      const reasonHtml = s.reason ? `<div class="cat-ai-reason">💡 ${s.reason}</div>` : '';
+      return `
+        <div class="cat-ai-item" onclick="useAiSuggestion(${i})" title="点击采用此类目">
+          <div class="cat-ai-info">
+            <div class="cat-ai-name">
+              <span class="ai-rank r${i + 1}">${i + 1}</span>
+              ${s.name} <span class="cat-code">(${s.code})</span>
+            </div>
+            <div class="cat-ai-meta">
+              <span class="cat-ai-conf">
+                置信度 <b style="color:${confColor};">${conf}%</b>
+                <span class="cat-ai-bar"><span class="cat-ai-bar-fill ${barCls}" style="width:${conf}%;"></span></span>
+              </span>
+            </div>
+            ${reasonHtml}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function useAiSuggestion(idx) {
+    const s = aiSuggestions[idx];
+    if (!s) return;
+    currentSelectedCategory = { code: s.code, name: s.name };
+    tempSelectedCategory = { ...currentSelectedCategory };
+    document.getElementById('categoryInput').value = `${s.name}（${s.code}）`;
+    closeCategoryModal();
+    showMsg(`已选择类目：${s.name}`, 'ok');
+  }
+
+  function retryAiCategory() {
+    const wrap = document.getElementById('catAiList');
+    wrap.innerHTML = `
+      <div class="cat-ai-loading">
+        <div class="cat-ai-spinner"></div>
+        <div>正在重新获取 AI 建议...</div>
+        <div class="cat-ai-loading-tip">请稍候，通常需要 1~3 秒</div>
+      </div>`;
+    setTimeout(() => {
+      aiSuggestions = [
+        { code: '02010202', name: 'PVC管道', confidence: 0.97, reason: '重试后置信度上升' },
+        { code: '02010101', name: 'PVC给排水管', confidence: 0.81, reason: '名称含"PVC"特征' },
+        { code: '02010203', name: '塑料管材', confidence: 0.65, reason: '材质归类' },
+      ];
+      renderAiSuggestions();
+      showMsg('AI 类目建议已刷新', 'ok');
+    }, 3000);
+  }
+
+  // 渲染类目树
+  function renderCategoryTree(filterText) {
+    const wrap = document.getElementById('catTreeWrap');
+    const html = CATEGORY_TREE.map(n => renderNode(n, 1, filterText)).filter(Boolean).join('');
+    wrap.innerHTML = html || '<div class="cat-empty-tip">未找到匹配的类目</div>';
+  }
+
+  function renderNode(node, level, filter) {
+    const hasChildren = node.children && node.children.length > 0;
+    const isExpanded = expandedNodes.has(node.code) || !!filter;
+    const isSelected = tempSelectedCategory && tempSelectedCategory.code === node.code;
+    const matched = !filter || node.name.includes(filter) || node.code.includes(filter);
+
+    let childrenHtml = '';
+    let anyChildMatch = false;
+    if (hasChildren && isExpanded) {
+      const childResults = node.children.map(c => {
+        const r = renderNode(c, level + 1, filter);
+        if (r) anyChildMatch = true;
+        return r;
+      }).filter(Boolean);
+      childrenHtml = childResults.join('');
+    }
+
+    if (filter && !matched && !anyChildMatch) return '';
+
+    const toggleSym = hasChildren ? (isExpanded ? '−' : '+') : '';
+    const toggleCls = hasChildren ? '' : 'leaf';
+    const onclickFn = hasChildren
+      ? `event.stopPropagation();toggleCategoryNode('${node.code}')`
+      : `selectCategoryLeaf('${node.code}','${node.name}')`;
+    const nodeCls = `cat-node l${level}${isSelected ? ' selected' : ''}`;
+
+    const self = `<div class="${nodeCls}" onclick="${onclickFn}">
+      <span class="cat-toggle ${toggleCls}" ${hasChildren ? `onclick="event.stopPropagation();toggleCategoryNode('${node.code}')"` : ''}>${toggleSym}</span>
+      <span class="cat-code">|${node.code}|</span>
+      ${node.name}
+    </div>`;
+
+    return self + childrenHtml;
+  }
+
+  function toggleCategoryNode(code) {
+    if (expandedNodes.has(code)) expandedNodes.delete(code);
+    else expandedNodes.add(code);
+    renderCategoryTree(document.getElementById('catSearchInput').value.trim());
+  }
+
+  function selectCategoryLeaf(code, name) {
+    // 点击四级叶子节点：直接选中并关闭弹窗（不再需要确定按钮）
+    currentSelectedCategory = { code, name };
+    tempSelectedCategory = { ...currentSelectedCategory };
+    document.getElementById('categoryInput').value = `${name}（${code}）`;
+    closeCategoryModal();
+    showMsg(`已选择类目：${name}`, 'ok');
+  }
+
+  function filterCategoryTree() {
+    const v = document.getElementById('catSearchInput').value.trim();
+    renderCategoryTree(v);
+  }
+
+  // 点击遮罩关闭
+  document.getElementById('categoryModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCategoryModal();
+  });
+
+  // ════════════════════════════════════════════════════════
+  //         首次进入引导：呼吸高亮 + 浮动气泡指向类目
+  // ════════════════════════════════════════════════════════
+  const CATEGORY_GUIDE_KEY = 'mpm_category_guide_shown_v1';
+
+  function showCategoryGuide() {
+    // 已展示过则不再触发
+    if (localStorage.getItem(CATEGORY_GUIDE_KEY) === '1') return;
+
+    const item = document.getElementById('categoryFormItem');
+    const input = document.getElementById('categoryInput');
+    if (!item || !input) return;
+
+    // 加呼吸高亮
+    item.classList.add('cat-guide-active');
+
+    // 创建气泡
+    const bubble = document.createElement('div');
+    bubble.className = 'cat-guide-bubble';
+    bubble.id = 'categoryGuideBubble';
+    bubble.innerHTML = `
+      <div class="cat-guide-bubble-inner">
+        <span class="cat-guide-bubble-icon">👆</span>
+        <span class="cat-guide-bubble-text">点击此处选择四级类目</span>
+        <span class="cat-guide-close" onclick="event.stopPropagation();dismissCategoryGuide(true);" title="不再提示">×</span>
+      </div>`;
+    item.appendChild(bubble);
+
+    // 平滑滚动到类目字段位置(避免引导被顶部固定栏遮挡)
+    setTimeout(() => {
+      const rect = input.getBoundingClientRect();
+      const headerOffset = 200; // topbar+tabs+op-bar 合计
+      if (rect.top < headerOffset || rect.top > window.innerHeight - 120) {
+        window.scrollTo({
+          top: window.scrollY + rect.top - headerOffset - 20,
+          behavior: 'smooth'
+        });
+      }
+    }, 200);
+
+    // 用户点击类目字段后自动结束引导
+    input.addEventListener('click', () => dismissCategoryGuide(true), { once: true });
+
+    // 30 秒后自动消失(本次不记忆,下次进入仍会再提示)
+    setTimeout(() => {
+      if (document.getElementById('categoryGuideBubble')) {
+        dismissCategoryGuide(false);
+      }
+    }, 30000);
+  }
+
+  function dismissCategoryGuide(persist) {
+    const item = document.getElementById('categoryFormItem');
+    if (item) item.classList.remove('cat-guide-active');
+    const bubble = document.getElementById('categoryGuideBubble');
+    if (bubble) bubble.remove();
+    if (persist) {
+      localStorage.setItem(CATEGORY_GUIDE_KEY, '1');
+    }
+  }
+
+  // 调试用：URL 加 ?reset=1 可重置首次引导(测试方便)
+  if (new URLSearchParams(location.search).get('reset') === '1') {
+    localStorage.removeItem(CATEGORY_GUIDE_KEY);
+  }
+
+  // 页面加载后延迟 600ms 启动引导,等其他元素就位
+  window.addEventListener('load', () => {
+    setTimeout(showCategoryGuide, 600);
+  });
+
+  // ===== 价格记录弹窗 =====
+  const PRICE_TABS = [
+    { key:'mall',    name:'商城价',        valueLabel:'历史商城价格&毛利率', unit:'元' },
+    { key:'fixed',   name:'固定结算价',    valueLabel:'历史固定结算价',      unit:'元' },
+    { key:'market',  name:'市场价',        valueLabel:'历史市场价',          unit:'元' },
+    { key:'outMax',  name:'对外最高成交价',valueLabel:'历史对外最高成交价',  unit:'元' },
+    { key:'inCost',  name:'对内最新成本价（组织间开票价）',valueLabel:'历史对内最新成本价（组织间开票价）', unit:'元' },
+    { key:'transfer',name:'项目调拨参考价',valueLabel:'历史项目调拨参考价',  unit:'元' },
+  ];
+
+  const PRICE_RECORDS = {
+    mall: [
+      { value:'32.00/0%', user:'肖发菊', jobNo:'xhgj003810', time:'2026-05-11 16:17', way:'市场计价' },
+    ],
+    fixed: [
+      { value:'待询价',   user:'系统',   jobNo:'root',       time:'2026-05-09 00:03', way:'IQS 同步' },
+    ],
+    market: [
+      { value:'35.80',    user:'肖发菊', jobNo:'xhgj003810', time:'2026-05-10 10:22', way:'手工录入' },
+      { value:'33.50',    user:'王云龙', jobNo:'xhgj002358', time:'2026-04-26 14:05', way:'手工录入' },
+      { value:'30.00',    user:'王云龙', jobNo:'xhgj002358', time:'2026-04-12 09:40', way:'手工录入' },
+    ],
+    outMax: [
+      { value:'29.80',    user:'张丽',   jobNo:'xhgj004521', time:'2026-05-06 11:02', way:'ERP 同步' },
+    ],
+    inCost: [
+      { value:'23.40',    user:'系统',   jobNo:'root',       time:'2026-05-10 00:12', way:'SAP 月同步' },
+      { value:'23.05',    user:'系统',   jobNo:'root',       time:'2026-04-10 00:12', way:'SAP 月同步' },
+      { value:'22.80',    user:'系统',   jobNo:'root',       time:'2026-03-10 00:12', way:'SAP 月同步' },
+    ],
+    transfer: [
+      { value:'21.60',    user:'系统',   jobNo:'root',       time:'2026-05-11 00:06', way:'IQS 每日同步' },
+      { value:'21.40',    user:'系统',   jobNo:'root',       time:'2026-05-10 00:06', way:'IQS 每日同步' },
+      { value:'21.00',    user:'系统',   jobNo:'root',       time:'2026-05-09 00:06', way:'IQS 每日同步' },
+    ],
+  };
+
+  const priceState = { tab:'mall', mode:'list', page:1, pageSize:10 };
+
+  function openPriceRecord(code){
+    document.getElementById('priceRecordTitle').textContent = (code || 'B0401025924') + ' 修改记录';
+    renderPriceSide();
+    switchPriceTab('mall', true);
+    document.getElementById('priceRecordModal').classList.add('open');
+  }
+  function closePriceRecord(){
+    document.getElementById('priceRecordModal').classList.remove('open');
+    document.getElementById('priceChartTooltip').style.display = 'none';
+  }
+  document.addEventListener('click', e => {
+    if (e.target && e.target.id === 'priceRecordModal') closePriceRecord();
+  });
+
+  function renderPriceSide(){
+    const box = document.getElementById('priceSideTabs');
+    box.innerHTML = PRICE_TABS.map(t => `
+      <div class="tab-item ${t.key===priceState.tab?'active':''}" onclick="switchPriceTab('${t.key}')">${t.name}</div>
+    `).join('');
+  }
+
+  function switchPriceTab(key, skipSideRerender){
+    priceState.tab = key;
+    priceState.page = 1;
+    if (!skipSideRerender) renderPriceSide();
+    const tab = PRICE_TABS.find(t => t.key === key);
+    document.getElementById('priceRecordSubTitle').textContent = `${tab.name} 历史记录`;
+    renderPriceView();
+  }
+
+  function switchPriceMode(mode){
+    priceState.mode = mode;
+    document.querySelectorAll('.price-mode-switch button').forEach(b => {
+      b.classList.toggle('active', b.dataset.mode === mode);
+    });
+    renderPriceView();
+  }
+
+  function renderPriceView(){
+    const view = document.getElementById('priceRecordView');
+    const pager = document.getElementById('priceRecordPagination');
+    const list = PRICE_RECORDS[priceState.tab] || [];
+    const tab = PRICE_TABS.find(t => t.key === priceState.tab);
+
+    if (priceState.mode === 'list'){
+      if (!list.length){
+        view.innerHTML = `<div class="price-empty">暂无记录</div>`;
+        pager.innerHTML = '';
+        return;
+      }
+      const total = list.length;
+      const size = priceState.pageSize;
+      const maxPage = Math.max(1, Math.ceil(total / size));
+      if (priceState.page > maxPage) priceState.page = maxPage;
+      const start = (priceState.page - 1) * size;
+      const rows = list.slice(start, start + size).map(r => `
+        <tr>
+          <td>${r.value}</td>
+          <td>${r.user}</td>
+          <td>${r.jobNo}</td>
+          <td>${r.time}</td>
+          <td>${r.way}</td>
+        </tr>`).join('');
+      view.innerHTML = `
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th style="width:22%;">${tab.valueLabel}</th>
+              <th style="width:14%;">用户</th>
+              <th style="width:18%;">工号</th>
+              <th style="width:26%;">时间</th>
+              <th>计价方式</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+      pager.innerHTML = `
+        <span>共 ${total} 条</span>
+        <button class="page-btn" ${priceState.page===1?'disabled':''} onclick="pricePageChange(-1)">&lt;</button>
+        <span class="page-btn active">${priceState.page}</span>
+        <button class="page-btn" ${priceState.page===maxPage?'disabled':''} onclick="pricePageChange(1)">&gt;</button>
+        <select onchange="pricePageSizeChange(this.value)">
+          <option value="10" ${size===10?'selected':''}>10 条/页</option>
+          <option value="20" ${size===20?'selected':''}>20 条/页</option>
+          <option value="50" ${size===50?'selected':''}>50 条/页</option>
+        </select>`;
+    } else {
+      pager.innerHTML = '';
+      const points = list.map(r => ({
+        ...r,
+        num: parseFloat(String(r.value).split('/')[0]) || null,
+      })).filter(p => p.num !== null);
+      if (!points.length){
+        view.innerHTML = `<div class="price-empty">暂无可绘制的数值记录（仅"待询价"等文本记录）</div>`;
+        return;
+      }
+      // 按时间升序（折线以时间节点展开）
+      points.sort((a,b) => new Date(a.time) - new Date(b.time));
+      view.innerHTML = `<div class="price-chart-wrap">${buildPriceChartSvg(points, tab)}</div>`;
+      bindChartHover(points, tab);
+    }
+  }
+
+  function buildPriceChartSvg(points, tab){
+    const w = 820, h = 300, padL = 50, padR = 20, padT = 20, padB = 40;
+    const innerW = w - padL - padR, innerH = h - padT - padB;
+    const values = points.map(p => p.num);
+    const maxV = Math.max(...values), minV = Math.min(...values);
+    const span = maxV - minV || 1;
+    const yMax = maxV + span * 0.2, yMin = Math.max(0, minV - span * 0.2);
+    const xOf = i => points.length === 1 ? padL + innerW/2 : padL + (innerW * i) / (points.length - 1);
+    const yOf = v => padT + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
+
+    const gridLines = [0,1,2,3,4].map(k => {
+      const y = padT + (innerH * k) / 4;
+      const v = (yMax - (yMax - yMin) * k / 4).toFixed(2);
+      return `<line x1="${padL}" x2="${padL+innerW}" y1="${y}" y2="${y}" />
+              <text class="axis-text" x="${padL-8}" y="${y+4}" text-anchor="end" fill="#999" font-size="11">${v}</text>`;
+    }).join('');
+
+    const xLabels = points.map((p,i) => {
+      const x = xOf(i);
+      const short = p.time.slice(5,16);
+      return `<text x="${x}" y="${h - padB + 16}" text-anchor="middle" fill="#999" font-size="11">${short}</text>`;
+    }).join('');
+
+    const linePath = points.map((p,i) => `${i?'L':'M'}${xOf(i)},${yOf(p.num)}`).join(' ');
+    const areaPath = `${linePath} L${xOf(points.length-1)},${padT+innerH} L${xOf(0)},${padT+innerH} Z`;
+
+    const dots = points.map((p,i) =>
+      `<circle class="dot" cx="${xOf(i)}" cy="${yOf(p.num)}" r="4" data-idx="${i}"></circle>
+       <text class="label" x="${xOf(i)}" y="${yOf(p.num)-10}" text-anchor="middle">${p.num.toFixed(2)}</text>`
+    ).join('');
+
+    return `<svg class="price-chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
+      <g class="grid">${gridLines}</g>
+      <g class="axis">${xLabels}</g>
+      <path class="area" d="${areaPath}"/>
+      <path class="line" d="${linePath}"/>
+      ${dots}
+    </svg>`;
+  }
+
+  function bindChartHover(points, tab){
+    const tip = document.getElementById('priceChartTooltip');
+    const svg = document.querySelector('#priceRecordView .price-chart');
+    if (!svg) return;
+    const wrap = svg.closest('.price-content');
+    svg.querySelectorAll('.dot').forEach(dot => {
+      dot.addEventListener('mousemove', e => {
+        const idx = +dot.dataset.idx;
+        const p = points[idx];
+        const rect = wrap.getBoundingClientRect();
+        tip.style.display = 'block';
+        tip.style.left = (e.clientX - rect.left + 12) + 'px';
+        tip.style.top  = (e.clientY - rect.top  + 12) + 'px';
+        tip.innerHTML = `
+          <div><b>${tab.name}</b>：${p.value}${tab.unit||''}</div>
+          <div>时间：${p.time}</div>
+          <div>用户：${p.user}（${p.jobNo}）</div>
+          <div>计价方式：${p.way}</div>`;
+      });
+      dot.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+    });
+  }
+
+  function pricePageChange(delta){
+    priceState.page = Math.max(1, priceState.page + delta);
+    renderPriceView();
+  }
+  function pricePageSizeChange(v){
+    priceState.pageSize = +v;
+    priceState.page = 1;
+    renderPriceView();
   }
 </script>
 </body>

@@ -312,7 +312,7 @@
     <span class="action-label">操作：</span>
     <button class="btn btn-default btn-sm" onclick="showMsg('已刷新列表')">刷新</button>
     <button class="btn btn-success btn-sm" onclick="batchAudit('通过')">批量通过</button>
-    <button class="btn btn-danger btn-sm" onclick="batchAudit('驳回')">批量驳回</button>
+    <button class="btn btn-danger btn-sm" id="batchRejectBtn" onclick="batchAudit('驳回')">批量驳回</button>
     <button class="btn btn-info btn-sm" onclick="showMsg('正在导出...')">导出</button>
   </div>
 
@@ -470,6 +470,8 @@ const DIRECTIONAL_ROWS = [
    desc:'304螺栓',unit:'个',marketPrice:'¥0.85',grossWeight:'0.02kg',grade:'零星商品',execUser:'郭佳薰',buyDept:'电商管理部',innerRemark:'定向函编码：DX202604070002',imgType:'无图物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'BXGLT',project:'-',mainImgCnt:0,detailImgCnt:0,materialTag:'定向物料',auditor:'夏宝',aiSuggest:'建议【审核通过】',aiConclusion:'【文本审核】',batchId:'DX202604070002'},
   {owner:'威亨国际科技',code:'LINE_2026040710220002',name:'304不锈钢螺母',cat:'紧固件',model:'M8',spec:'-',brand:'国产/MADEINCHI',level:'零星',type:'无图物料',applyTime:'2026-04-07 10:22',applyUser:'梅贵',
    desc:'304螺母',unit:'个',marketPrice:'¥0.45',grossWeight:'0.01kg',grade:'零星商品',execUser:'郭佳薰',buyDept:'电商管理部',innerRemark:'定向函编码：DX202604070002',imgType:'无图物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'BXGLM',project:'-',mainImgCnt:0,detailImgCnt:0,materialTag:'定向物料',auditor:'夏宝',aiSuggest:'建议【审核通过】',aiConclusion:'【文本审核】',batchId:'DX202604070002'},
+  {owner:'威亨国际科技',code:'LINE_2026040711300001',name:'非标密封圈',cat:'',model:'定制-DN25',spec:'耐高温',brand:'定制/CUSTOM',level:'零星',type:'无图物料',applyTime:'2026-04-07 11:30',applyUser:'梅贵',
+   desc:'耐高温密封圈',unit:'个',marketPrice:'¥12.00',grossWeight:'0.05kg',grade:'零星商品',execUser:'郭佳薰',buyDept:'电商管理部',innerRemark:'定向函编码：DX202604070003，AI未匹配到四级类目，需人工指定',imgType:'无图物料',rejectReason:'-',auditType:'定向物料新增审核',mnemonic:'-',project:'-',mainImgCnt:0,detailImgCnt:0,materialTag:'定向物料',auditor:'夏宝',aiSuggest:'',aiConclusion:'',batchId:'DX202604070003'},
 ];
 
 // ── 状态 ──────────────────────────────────────────────
@@ -513,9 +515,11 @@ function renderTable(){
     <tr>
       <td><input type="checkbox" data-idx="${i}"/></td>
       <td><span class="cell-ellipsis" title="${r.owner}">${r.owner}</span></td>
-      <td><span class="cell-ellipsis" title="${r.code}">${r.code}</span></td>
+      <td>${r.auditType === '定向物料新增审核'
+        ? `<span class="cell-ellipsis td-link" title="${r.code}" onclick="goDetail('${r.code}')">${r.code}</span>`
+        : `<span class="cell-ellipsis" title="${r.code}">${r.code}</span>`}</td>
       <td><span class="cell-ellipsis" title="${r.name}">${r.name}</span></td>
-      <td><span class="cell-ellipsis-sm" title="${r.cat}">${r.cat}</span></td>
+      <td>${r.cat ? `<span class="cell-ellipsis-sm" title="${r.cat}">${r.cat}</span>` : '<span class="tag tag-ai-reject">AI未匹配</span>'}</td>
       <td>${r.model}</td><td>${r.spec}</td>
       <td><span class="cell-ellipsis-sm" title="${r.desc}">${r.desc}</span></td>
       <td>${r.unit}</td>
@@ -537,8 +541,8 @@ function renderTable(){
       <td>${r.detailImgCnt}</td>
       <td><span class="cell-ellipsis-sm" title="${r.materialTag}">${r.materialTag}</span></td>
       <td>${r.auditor}</td>
-      <td>${aiSuggestTag(r.aiSuggest)}</td>
-      <td>${aiConclusionTag(r.aiConclusion)}</td>
+      <td>${r.auditType === '定向物料新增审核' ? '-' : aiSuggestTag(r.aiSuggest)}</td>
+      <td>${r.auditType === '定向物料新增审核' ? '-' : aiConclusionTag(r.aiConclusion)}</td>
     </tr>`).join('');
 }
 
@@ -554,9 +558,16 @@ document.getElementById('subTabs').addEventListener('click',e=>{
   t.classList.add('active');
   currentTab = t.dataset.subtab;
   isDirectionalTab = (currentTab === '定向物料新增审核');
+  syncRejectVisibility();
   renderTable();
   showMsg(`切换至：${currentTab}`);
 });
+
+// ── 驳回按钮可见性 ─────────────────────────────────────
+function syncRejectVisibility(){
+  const btn = document.getElementById('batchRejectBtn');
+  if(btn) btn.style.display = isDirectionalTab ? 'none' : '';
+}
 
 // ── 分页 ──────────────────────────────────────────────
 document.querySelectorAll('.page-btn[data-page]').forEach(b=>{
@@ -584,6 +595,7 @@ function openModal(idx, action){
   document.getElementById('passBtn').style.display   = action==='驳回'?'none':'';
   document.getElementById('rejectBtn').style.display = action==='通过'?'none':'';
   if(action==='查看'){ document.getElementById('passBtn').style.display=''; document.getElementById('rejectBtn').style.display=''; }
+  if(isDirectionalTab){ document.getElementById('rejectBtn').style.display='none'; }
   document.getElementById('modalOverlay').classList.add('open');
 }
 function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
@@ -716,6 +728,7 @@ function showMsg(text, type='info'){
 })();
 
 renderTable();
+syncRejectVisibility();
 </script>
 </body>
 </html>
