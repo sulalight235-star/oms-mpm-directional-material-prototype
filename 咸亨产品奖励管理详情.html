@@ -577,7 +577,7 @@
   <!-- 页面头部 -->
   <section class="page-shell">
     <div class="page-title" id="detailTitle">新增奖励配置</div>
-    <div class="page-desc" id="detailDesc">按物料编码维护项目奖励、金额奖励、比例奖励</div>
+    <div class="page-desc" id="detailDesc">按物料编码维护项目奖励、定额奖励、比例奖励</div>
   </section>
 
   <!-- 主体 -->
@@ -603,7 +603,7 @@
           <label><span class="req">*</span>奖励类型</label>
           <div class="segmented" id="rewardTypeSegment">
             <button type="button" class="seg-item active" data-type="项目奖励">项目奖励</button>
-            <button type="button" class="seg-item" data-type="金额奖励">金额奖励</button>
+            <button type="button" class="seg-item" data-type="定额奖励">定额奖励</button>
             <button type="button" class="seg-item" data-type="比例奖励">比例奖励</button>
           </div>
         </div>
@@ -798,15 +798,14 @@
       if (type === '项目奖励') {
         container.innerHTML =
           '<div class="form-item">' +
-            '<label>项目编码</label>' +
-            '<input id="fieldProjectCode" class="f-input" value="PRJ-2026-001" placeholder="可为空，建议与项目中心保持一致" />' +
-            '<div class="hint">项目编码为可选项，留空时表示未关联具体项目</div>' +
+            '<label>项目说明</label>' +
+            '<div class="hint">V1.8 变更：已移除「项目编码」字段。项目归属请在下方"奖励说明文案"中自由描述，可附详情链接。</div>' +
           '</div>' +
           '<div class="form-item half">' +
-            '<label>奖励说明文案</label>' +
+            '<label>奖励说明文案（最大 500 字，支持 http/https 链接）</label>' +
             '<textarea id="fieldRewardDesc" class="f-textarea" placeholder="例如：具体奖励办法请查看内部奖励办法文件">具体奖励办法请查看内部奖励办法文件</textarea>' +
           '</div>';
-      } else if (type === '金额奖励') {
+      } else if (type === '定额奖励') {
         container.innerHTML =
           '<div class="form-item">' +
             '<label><span class="req">*</span>奖励金额</label>' +
@@ -814,7 +813,7 @@
               '<input id="fieldRewardAmount" class="f-input" type="number" min="0" step="0.01" value="120" placeholder="请输入金额，保留两位小数" />' +
               '<span class="suffix">元</span>' +
             '</div>' +
-            '<div class="hint">金额奖励按单物料单位金额配置，实际结算在外部系统完成</div>' +
+            '<div class="hint">定额奖励按单物料单位金额配置，实际结算在外部系统完成</div>' +
           '</div>' +
           '<div class="form-item half">' +
             '<label>奖励说明文案</label>' +
@@ -929,10 +928,10 @@
 
     /* ------ 校验：规则字段 ------ */
     function validateRuleFields() {
-      if (currentRewardType === '金额奖励') {
+      if (currentRewardType === '定额奖励') {
         const amt = document.getElementById('fieldRewardAmount');
         if (!amt || amt.value === '' || Number(amt.value) < 0) {
-          showMessage('金额奖励需填写大于等于 0 的奖励金额', 'error');
+          showMessage('定额奖励需填写大于等于 0 的奖励金额', 'error');
           return false;
         }
       }

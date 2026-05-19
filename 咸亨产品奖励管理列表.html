@@ -670,7 +670,7 @@
           <select id="rewardType" class="f-select">
             <option value="">全部</option>
             <option>项目奖励</option>
-            <option>金额奖励</option>
+            <option>定额奖励</option>
             <option>比例奖励</option>
           </select>
         </div>
@@ -702,7 +702,7 @@
       <div class="summary-bar">
         <div class="summary-main">
           <div class="summary-title">咸亨产品奖励管理</div>
-          <div class="summary-desc">用于维护项目奖励、金额奖励、比例奖励</div>
+          <div class="summary-desc">用于维护项目奖励、定额奖励、比例奖励</div>
         </div>
         <div class="toolbar-actions">
           <button class="btn btn-default" type="button" id="importRewardBtn">批量导入</button>
@@ -747,8 +747,10 @@
               <th style="width: 38px;"><input type="checkbox" id="selectAllRows" /></th>
               <th>物料编码</th>
               <th>物料名称</th>
+              <th>物料货主编码</th>
+              <th>物料货主名称</th>
+              <th>品牌名称</th>
               <th>奖励类型</th>
-              <th>项目编码</th>
               <th>奖励金额</th>
               <th>奖励比例</th>
               <th>奖励有效期</th>
@@ -809,6 +811,7 @@
         <div class="bulk-tip" style="background:#fffbe6;border:1px solid #ffe58f;color:#874d00;padding:8px 12px;border-radius:4px;margin-bottom:12px;line-height:1.7;font-size:12px;">
           💡 本期提供 <strong>3 个独立 Excel 模板</strong>：批量新增 / 批量修改 / 批量删除。修改与删除模板均使用「<strong>物料编码 + 奖励有效期开始时间</strong>」作为业务键定位记录。<br/>
           ⚠ 业务键请勿手工修改；如需调整开始时间，请用"删除原记录 + 新增新记录"两步完成。修改类操作建议先在列表「导出当前查询/导出全部」获取数据，再回传至「批量修改模板」。<br/>
+          🔒 <strong>V1.9 审核流程：</strong>点击"执行"后任务<strong>不会直接入库</strong>，会进入两级审核（① 陆雅静 · 产业管理部门 → ② 汪李琼 · 考核部门）。两节点全部通过后系统自动入库；任意节点驳回则全单失败。审核进度与结果通过钉钉通知。详见 <a href="批量任务审核流程图.html" target="_blank" class="bulk-link">查看审核业务流程图</a>。<br/>
           <span style="display:inline-block;margin-top:4px;">
             🔗 一键跳转：
             <a href="javascript:void(0)" class="bulk-link" data-jump-export="当前查询" style="margin-right:12px;">去导出当前查询</a>
@@ -830,7 +833,7 @@
             <tr>
               <td>
                 <div><strong>批量新增模板</strong></div>
-                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码 / 奖励类型 / 项目编码 / 奖励金额 / 奖励比例 / 有效期开始时间 / 有效期结束时间 / 说明文案。同一文件可混合多种奖励类型。</div>
+                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码 / 奖励类型 / 奖励金额 / 奖励比例 / 有效期开始时间 / 有效期结束时间 / 说明文案（≤500字，支持 http/https 链接）。同一文件可混合多种奖励类型。物料货主、品牌由系统按物料编码自动联查带出，无需填写。</div>
               </td>
               <td><span class="bulk-link" data-tpl="批量新增模板">下载</span></td>
               <td>
@@ -843,7 +846,7 @@
             <tr>
               <td>
                 <div><strong>批量修改模板</strong></div>
-                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码（业务键）/ 有效期开始时间（业务键）/ 奖励类型 / 项目编码 / 金额 / 比例 / 有效期结束时间 / 说明文案。留空 = 不改；填写 = 覆盖；支持跨类型切换。</div>
+                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码（业务键）/ 有效期开始时间（业务键）/ 奖励类型 / 金额 / 比例 / 有效期结束时间 / 说明文案（≤500字，支持 http/https 链接）。留空 = 不改；填写 = 覆盖；支持跨类型切换。</div>
               </td>
               <td><span class="bulk-link" data-tpl="批量修改模板">下载</span></td>
               <td>
@@ -884,8 +887,9 @@
           已选 <strong id="deleteSelectedCount" style="color:#cf1322;">0</strong> 条奖励配置准备执行<strong>逻辑删除</strong>。
         </div>
         <div style="background:#fff1f0;border:1px solid #ffa39e;color:#820014;padding:10px 12px;border-radius:4px;line-height:1.7;font-size:12px;margin-bottom:12px;">
-          <div style="font-weight:600;margin-bottom:4px;">⚠ 删除后将立即生效，影响范围：</div>
-          • 商城前台<strong>不再展示</strong>对应奖励标签与文案；<br/>
+          <div style="font-weight:600;margin-bottom:4px;">⚠ 删除将走两级审核，审核通过后立即生效，影响范围：</div>
+          • <strong>V1.9 审核流程：</strong>① 陆雅静（产业管理部门）→ ② 汪李琼（考核部门）；两节点通过自动入库，任意驳回则全单失败；<br/>
+          • 商城前台<strong>立即隐藏</strong>对应奖励 Banner（已删除是商城唯一隐藏触发）；<br/>
           • BI 不再将其计入"当前生效"汇总；<br/>
           • <strong>历史记录会完整保留</strong>（操作历史中可追溯，含删除前的全部字段值）；<br/>
           • 如需恢复，请通过批量新增模板重新创建一条新的奖励配置。
@@ -966,7 +970,8 @@
       {
         id: 'RWD-202604280001',
         code: 'SKU-10001', name: 'PVC 管材', type: '项目奖励', typeTag: 'tag-blue',
-        project: 'PRJ-2026-001', amount: '-', ratio: '-',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
         amountNum: '', ratioNum: '',
         startDate: '2026-05-01', endDate: '2026-12-31',
         description: '项目奖励-参与项目即享',
@@ -978,8 +983,9 @@
       },
       {
         id: 'RWD-202605110002',
-        code: 'SKU-10002', name: '配电箱', type: '金额奖励', typeTag: 'tag-orange',
-        project: '-', amount: '¥ 120.00', ratio: '-',
+        code: 'SKU-10002', name: '配电箱', type: '定额奖励', typeTag: 'tag-orange',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
         amountNum: 120, ratioNum: '',
         startDate: '2026-06-01', endDate: '2026-09-30',
         description: '满 X 件即享',
@@ -992,7 +998,8 @@
       {
         id: 'RWD-202605100003',
         code: 'SKU-10003', name: '电线电缆 2.5mm²', type: '比例奖励', typeTag: 'tag-green',
-        project: '-', amount: '-', ratio: '3.5%',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
         amountNum: '', ratioNum: 3.5,
         startDate: '2026-05-10', endDate: '2026-08-31',
         description: '按调拨价 3.5% 返利',
@@ -1005,7 +1012,8 @@
       {
         id: 'RWD-202605110004',
         code: 'SKU-10004', name: '防爆照明灯', type: '项目奖励', typeTag: 'tag-blue',
-        project: 'PRJ-2026-007', amount: '-', ratio: '-',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
         amountNum: '', ratioNum: '',
         startDate: '2026-07-01', endDate: '2026-12-31',
         description: '7 月起项目套餐',
@@ -1017,8 +1025,9 @@
       },
       {
         id: 'RWD-202604010005',
-        code: 'SKU-10005', name: '工业风机 380V', type: '金额奖励', typeTag: 'tag-orange',
-        project: '-', amount: '¥ 260.00', ratio: '-',
+        code: 'SKU-10005', name: '工业风机 380V', type: '定额奖励', typeTag: 'tag-orange',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
         amountNum: 260, ratioNum: '',
         startDate: '2026-04-01', endDate: '2026-07-31',
         description: '满 100 件返 ¥ 260',
@@ -1031,7 +1040,8 @@
       {
         id: 'RWD-202603010006',
         code: 'SKU-10006', name: '工业手套 XL', type: '比例奖励', typeTag: 'tag-green',
-        project: '-', amount: '-', ratio: '2.0%',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
         amountNum: '', ratioNum: 2.0,
         startDate: '2026-03-01', endDate: '2026-04-30',
         description: '春季返利 2%',
@@ -1045,7 +1055,8 @@
       {
         id: 'RWD-202605120007',
         code: 'SKU-10007', name: '消防应急灯', type: '比例奖励', typeTag: 'tag-green',
-        project: '-', amount: '-', ratio: '4.0%',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
         amountNum: '', ratioNum: 4.0,
         startDate: '2026-08-01', endDate: '2026-10-31',
         description: '8 月起 4% 返利',
@@ -1058,7 +1069,8 @@
       {
         id: 'RWD-202601010008',
         code: 'SKU-10008', name: '钢制管夹（旧规格）', type: '比例奖励', typeTag: 'tag-green',
-        project: '-', amount: '-', ratio: '3.0%',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
         amountNum: '', ratioNum: 3.0,
         startDate: '2026-01-01', endDate: '2026-02-28',
         description: '一季度返利（已结束）',
@@ -1070,8 +1082,9 @@
       },
       {
         id: 'RWD-202603010009',
-        code: 'SKU-10009', name: '电缆桥架 200×100', type: '金额奖励', typeTag: 'tag-orange',
-        project: '-', amount: '¥ 80.00', ratio: '-',
+        code: 'SKU-10009', name: '电缆桥架 200×100', type: '定额奖励', typeTag: 'tag-orange',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
         amountNum: 80, ratioNum: '',
         startDate: '2026-03-01', endDate: '2026-05-31',
         description: '配置错误后撤回',
@@ -1084,7 +1097,8 @@
       {
         id: 'RWD-202602010010',
         code: 'SKU-10010', name: '插座面板（停产）', type: '项目奖励', typeTag: 'tag-blue',
-        project: 'PRJ-2026-099', amount: '-', ratio: '-',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
         amountNum: '', ratioNum: '',
         startDate: '2026-02-01', endDate: '2026-12-31',
         description: '物料已停产，奖励同步撤销',
@@ -1149,8 +1163,10 @@
           <td><input type="checkbox" class="reward-row-check" data-code="${row.code}" ${state.selected.has(row.code) ? 'checked' : ''} /></td>
           <td>${row.code}</td>
           <td>${row.name}</td>
+          <td>${row.ownerCode || '<span class="muted">-</span>'}</td>
+          <td>${row.ownerName || '<span class="muted">-</span>'}</td>
+          <td>${row.brandName || '<span class="muted">-</span>'}</td>
           <td>${tagHtml(row.type, row.typeTag)}</td>
-          <td>${row.project === '-' ? '<span class="muted">-</span>' : row.project}</td>
           <td class="price">${row.amount}</td>
           <td class="price">${row.ratio}</td>
           <td>${row.period}</td>
@@ -1256,7 +1272,7 @@
       }
       const mask = document.getElementById('modalDelete');
       closeModal(mask);
-      showMessage(`已提交 ${count} 条奖励配置的删除请求，结果稍后查看`, 'success');
+      showMessage(`已提交 ${count} 条删除请求，任务已进入审核流程：陆雅静（产业管理）→ 汪李琼（考核），两节点通过后将自动入库；审核通过/驳回会通过钉钉通知`, 'success');
     });
 
     /* ------ 导出按钮 / 我的导出任务 ------ */
@@ -1267,35 +1283,41 @@
     function openExportDropdown() { exportDropdown.style.display = 'block'; }
 
     /* ----- 真实导出：生成 xlsx 并触发下载 -----
-       列结构与 PRD V1.5 + 用户确认对齐：
-       - 当前查询导出：12 列（修改模板 8 列 + 物料名称 + 配置状态 + 最近更新人 + 最近更新时间）
-       - 全量导出：14 列（12 列 + 奖励配置 ID + 作废标记）
+       列结构与 PRD V1.8 对齐：
+       - 当前查询导出：14 列（修改模板 7 列 + 物料名称 + 物料货主编码 + 物料货主名称 + 品牌名称 + 配置状态 + 最近更新人 + 最近更新时间）
+       - 全量导出：16 列（14 列 + 奖励配置 ID + 作废标记）
     */
     const EXPORT_HEADERS_CURRENT = [
-      '*物料编码', '物料名称', '奖励有效期开始时间',
-      '奖励类型\n（1.项目奖励；2金额奖励；3比例奖励）',
-      '项目编码', '奖励金额', '奖励比例(%)',
+      '*物料编码', '物料名称', '物料货主编码', '物料货主名称', '品牌名称',
+      '奖励有效期开始时间',
+      '*奖励类型\n（1.项目奖励；2定额奖励；3比例奖励）',
+      '奖励金额', '奖励比例(%)',
       '奖励有效期结束时间', '奖励说明文案',
       '配置状态', '最近更新人', '最近更新时间'
     ];
     const EXPORT_HEADERS_ALL = [
-      '*物料编码', '物料名称', '奖励有效期开始时间',
-      '奖励类型\n（1.项目奖励；2金额奖励；3比例奖励）',
-      '项目编码', '奖励金额', '奖励比例(%)',
+      '*物料编码', '物料名称', '物料货主编码', '物料货主名称', '品牌名称',
+      '奖励有效期开始时间',
+      '*奖励类型\n（1.项目奖励；2定额奖励；3比例奖励）',
+      '奖励金额', '奖励比例(%)',
       '奖励有效期结束时间', '奖励说明文案',
       '配置状态', '最近更新人', '最近更新时间',
       '奖励配置 ID', '作废标记'
     ];
-    const EXPORT_WIDTHS_CURRENT = [14, 22, 22, 28, 16, 12, 12, 22, 28, 12, 12, 20];
-    const EXPORT_WIDTHS_ALL     = [14, 22, 22, 28, 16, 12, 12, 22, 28, 12, 12, 20, 22, 12];
+    const EXPORT_WIDTHS_CURRENT = [14, 22, 14, 28, 18, 22, 28, 12, 12, 22, 32, 12, 12, 20];
+    const EXPORT_WIDTHS_ALL     = [14, 22, 14, 28, 18, 22, 28, 12, 12, 22, 32, 12, 12, 20, 22, 12];
+
+    const REWARD_TYPE_TO_CODE = { '项目奖励': 1, '定额奖励': 2, '比例奖励': 3 };
 
     function rowToCurrentArray(r) {
       return [
         r.code,
         r.name,
+        r.ownerCode || '',
+        r.ownerName || '',
+        r.brandName || '',
         r.startDate,
-        r.type,
-        r.project === '-' ? '' : r.project,
+        REWARD_TYPE_TO_CODE[r.type] ?? r.type,
         r.amountNum === '' ? '' : r.amountNum,
         r.ratioNum === '' ? '' : r.ratioNum,
         r.endDate,
@@ -1342,13 +1364,15 @@
         ['字段', '类型', '是否回传识别', '说明'],
         ['*物料编码', 'String(32)', 'Y', '业务键-定位用，回传到批量修改模板时不可修改'],
         ['物料名称', 'String(200)', 'N', '辅助阅读；回传时系统忽略此列'],
+        ['物料货主编码', 'String(32)', 'N', '系统按物料编码联查带出；回传时被忽略'],
+        ['物料货主名称', 'String(200)', 'N', '系统按物料编码联查带出；回传时被忽略'],
+        ['品牌名称', 'String(200)', 'N', '系统按物料编码联查带出，含中/英；回传时被忽略'],
         ['奖励有效期开始时间', 'Date(yyyy-MM-dd)', 'Y', '业务键-定位用，回传到批量修改模板时不可修改'],
-        ['奖励类型', 'Enum(8)', 'Y', '项目奖励 / 金额奖励 / 比例奖励'],
-        ['项目编码', 'String(32)', '条件', '仅项目奖励填写'],
-        ['奖励金额', 'Decimal(18,2)', '条件', '仅金额奖励填写'],
+        ['*奖励类型', 'Enum(1/2/3)', 'Y', '枚举数字：1=项目奖励；2=定额奖励；3=比例奖励；回传时与批量修改模板枚举一致'],
+        ['奖励金额', 'Decimal(18,2)', '条件', '仅定额奖励填写'],
         ['奖励比例(%)', 'Decimal(8,4)', '条件', '仅比例奖励填写'],
-        ['奖励有效期结束时间', 'Date(yyyy-MM-dd)', 'Y', '不得早于开始时间'],
-        ['奖励说明文案', 'String(200)', 'N', ''],
+        ['奖励有效期结束时间', 'Date(yyyy-MM-dd)', 'N', '回传批量修改模板时留空 = 不改'],
+        ['奖励说明文案', 'String(500)', 'N', '最大 500 字；支持 http/https 链接地址，商城前台自动渲染为可点击超链接'],
         ['配置状态', 'Enum', 'N', '系统计算列；回传时被忽略'],
         ['最近更新人', 'String', 'N', '系统列；回传时被忽略'],
         ['最近更新时间', 'DateTime', 'N', '系统列；回传时被忽略'],
@@ -1360,7 +1384,8 @@
         ['回传说明', '', '', ''],
         ['1', '', '', '此导出文件可直接补/改可改字段后，通过【批量导入 → 批量修改模板】回传'],
         ['2', '', '', '业务键（物料编码 + 奖励有效期开始时间）请勿改动，否则将无法定位记录'],
-        ['3', '', '', '如需将其中部分行执行删除：复制业务键到批量删除模板再回传'],
+        ['3', '', '', '奖励类型必填，导出值为枚举数字 1/2/3，回传时保持一致即可（即使不切换类型也需填写当前类型）'],
+        ['4', '', '', '如需将其中部分行执行删除：复制业务键到批量删除模板再回传'],
       ];
       const readmeWs = XLSX.utils.aoa_to_sheet(readme);
       readmeWs['!cols'] = [{ wch: 22 }, { wch: 18 }, { wch: 14 }, { wch: 60 }];
@@ -1511,59 +1536,62 @@
     const hiddenFile = document.getElementById('hiddenFileInput');
     let activePickTarget = null;
 
-    /* ------ Excel 模板定义（与 PRD V1.5 4.3 字段清单完全对齐） ------ */
-    const REWARD_TYPE_HEADER = '奖励类型\n（1.项目奖励；2金额奖励；3比例奖励）';
+    /* ------ Excel 模板定义（与 PRD V1.8 4.3 字段清单完全对齐：已删除项目编码列、奖励说明文案 200→500；V1.10：必填标记与示例值同步更新） ------ */
+    const REWARD_TYPE_HEADER = '奖励类型\n（1.项目奖励；2定额奖励；3比例奖励）';
+    const REWARD_TYPE_HEADER_REQ = '*奖励类型\n（1.项目奖励；2定额奖励；3比例奖励）';
     const TEMPLATE_DEFS = {
       '批量新增模板': {
         sheet: '批量新增',
-        headers: ['*物料编码', '物料名称', REWARD_TYPE_HEADER, '项目编码', '奖励金额', '奖励比例(%)', '奖励有效期开始时间', '奖励有效期结束时间', '奖励说明文案'],
+        headers: ['*物料编码', '物料名称', REWARD_TYPE_HEADER_REQ, '奖励金额', '奖励比例(%)', '*奖励有效期开始时间', '*奖励有效期结束时间', '奖励说明文案（≤500字，支持 http/https 链接）'],
         examples: [
-          ['SKU-10001', 'PVC 管材', '项目奖励', 'PRJ-2026-001', '', '', '2026-06-01', '2026-12-31', '项目奖励-参与项目即享'],
-          ['SKU-10002', '配电箱', '金额奖励', '', 100.00, '', '2026-06-01', '2026-12-31', '满 X 件即享'],
-          ['SKU-10003', 'LED 灯具', '比例奖励', '', '', 5.0000, '2026-06-01', '2026-12-31', '按调拨价 5% 返利']
+          ['SKU-10001', 'PVC 管材', 1, '', '', '2026-06-01', '2026-12-31', '参与年度项目即享，方案详情：https://example.com/promo/PRJ-2026-001'],
+          ['SKU-10002', '配电箱', 2, 100.00, '', '2026-06-01', '2026-12-31', '满 X 件即享'],
+          ['SKU-10003', 'LED 灯具', 3, '', 5.0000, '2026-06-01', '2026-12-31', '按调拨价 5% 返利']
         ],
-        widths: [14, 18, 26, 16, 12, 12, 22, 22, 28],
+        widths: [14, 18, 26, 12, 12, 22, 22, 36],
         readme: [
           ['字段', '类型', '必填', '说明'],
-          ['物料编码', 'String(32)', 'Y', '必须存在于 MPM 物料主数据'],
+          ['物料编码', 'String(32)', 'Y', '必须存在于 MPM 物料主数据；导入后系统自动联查物料货主编码、物料货主名称、品牌名称三字段'],
           ['物料名称', 'String(200)', 'N', '仅参考，导入时按物料编码自动带出，不参与写入'],
-          ['奖励类型', 'Enum(8)', 'Y', '枚举：项目奖励 / 金额奖励 / 比例奖励'],
-          ['项目编码', 'String(32)', '条件', '仅"项目奖励"可填；其他奖励类型必须为空'],
-          ['奖励金额', 'Decimal(18,2)', '条件', '仅"金额奖励"必填且必须 > 0；最多 2 位小数'],
+          ['奖励类型', 'Enum(1/2/3)', 'Y', '枚举值：1=项目奖励；2=定额奖励；3=比例奖励'],
+          ['奖励金额', 'Decimal(18,2)', '条件', '仅"定额奖励"必填且必须 > 0；最多 2 位小数'],
           ['奖励比例(%)', 'Decimal(8,4)', '条件', '仅"比例奖励"必填，> 0 且 ≤ 100；最多 4 位小数'],
           ['奖励有效期开始时间', 'Date(yyyy-MM-dd)', 'Y', '与同物料已有有效记录不得在时间区间上冲突'],
           ['奖励有效期结束时间', 'Date(yyyy-MM-dd)', 'Y', '不得早于开始时间'],
-          ['奖励说明文案', 'String(200)', 'N', '项目奖励建议填写'],
+          ['奖励说明文案', 'String(500)', 'N', '最大 500 字；支持 http/https 链接地址，商城前台自动渲染为可点击超链接（target="_blank"）；项目奖励建议填写'],
           [],
           ['注意事项', '', '', ''],
-          ['1', '', '', '同一文件内可混合多种奖励类型，按行独立校验'],
+          ['1', '', '', '同一文件内可混合多种奖励类型（1/2/3 任意组合），按行独立校验'],
           ['2', '', '', '业务键 = 物料编码 + 奖励有效期开始时间，新增时若业务键已存在将报错'],
           ['3', '', '', '同一物料同一时间段内仅允许一种奖励类型生效'],
+          ['4', '', '', 'V1.8 变更：已移除项目编码列，项目奖励的项目归属请在"奖励说明文案"中自由描述并可附详情链接'],
+          ['5', '', '', 'V1.10 变更：奖励类型 / 开始时间 / 结束时间均为必填，表头加 * 前缀；奖励类型填写枚举数字 1/2/3'],
         ]
       },
       '批量修改模板': {
         sheet: '批量修改',
-        headers: ['*物料编码', '*奖励有效期开始时间', REWARD_TYPE_HEADER, '项目编码', '奖励金额', '奖励比例(%)', '奖励有效期结束时间', '奖励说明文案'],
+        headers: ['*物料编码', '奖励有效期开始时间', REWARD_TYPE_HEADER_REQ, '奖励金额', '奖励比例(%)', '奖励有效期结束时间', '奖励说明文案（≤500字，支持 http/https 链接）'],
         examples: [
-          ['SKU-10002', '2026-06-01', '金额奖励', '', 120.00, '', '2026-12-31', ''],
-          ['SKU-10003', '2026-06-01', '比例奖励', '', '', 6.0000, '', '提升至 6% 返利']
+          ['SKU-10002', '2026-06-01', 2, 120.00, '', '2026-12-31', ''],
+          ['SKU-10003', '2026-06-01', 3, '', 6.0000, '', '提升至 6% 返利，详情见 https://example.com/promo/RATIO-6']
         ],
-        widths: [14, 22, 26, 16, 12, 12, 22, 28],
+        widths: [14, 22, 26, 12, 12, 22, 36],
         readme: [
           ['字段', '类型', '必填', '说明'],
           ['物料编码', 'String(32)', 'Y', '【业务键-定位用】不可被修改'],
-          ['奖励有效期开始时间', 'Date(yyyy-MM-dd)', 'Y', '【业务键-定位用】不可被修改；如需调整请走"删除原记录 + 新增新记录"'],
-          ['奖励类型', 'Enum(8)', 'N', '留空 = 不改；填写 = 覆盖；支持跨类型切换（系统自动清空旧字段）'],
-          ['项目编码', 'String(32)', '条件', '仅当目标奖励类型为"项目奖励"时可填'],
-          ['奖励金额', 'Decimal(18,2)', '条件', '仅当目标奖励类型为"金额奖励"时可填'],
+          ['奖励有效期开始时间', 'Date(yyyy-MM-dd)', 'Y', '【业务键-定位用】不可被修改；沿用导出文件原值即可；如需调整开始时间请走"删除原记录 + 新增新记录"'],
+          ['奖励类型', 'Enum(1/2/3)', 'Y', '必填：1=项目奖励；2=定额奖励；3=比例奖励；即使不切换类型也需填写当前类型，避免歧义；支持跨类型切换（系统自动清空旧字段）'],
+          ['奖励金额', 'Decimal(18,2)', '条件', '仅当目标奖励类型为"定额奖励"时可填'],
           ['奖励比例(%)', 'Decimal(8,4)', '条件', '仅当目标奖励类型为"比例奖励"时可填'],
           ['奖励有效期结束时间', 'Date(yyyy-MM-dd)', 'N', '留空 = 不改；填写不得早于开始时间'],
-          ['奖励说明文案', 'String(200)', 'N', '留空 = 不改；填写 = 覆盖'],
+          ['奖励说明文案', 'String(500)', 'N', '留空 = 不改；填写 = 覆盖；最大 500 字；支持 http/https 链接，前台自动渲染为可点击超链接'],
           [],
           ['修改语义', '', '', ''],
-          ['1', '', '', '可空字段留空 = 不修改；填写 = 覆盖'],
+          ['1', '', '', '业务键（物料编码 + 开始时间）+ 奖励类型 必填；其余可空字段留空 = 不修改，填写 = 覆盖'],
           ['2', '', '', '不支持"主动清空"语义；跨类型修改时由系统自动清空旧类型字段'],
           ['3', '', '', '推荐工作流：先在列表"导出当前查询/导出全部"获取数据，回传到此模板'],
+          ['4', '', '', 'V1.8 变更：已移除项目编码列；物料货主、品牌信息由系统按物料编码自动带出，无需在模板中维护'],
+          ['5', '', '', 'V1.10 变更：奖励类型由"留空=不改"调整为必填，加 * 前缀；奖励类型填写枚举数字 1/2/3'],
         ]
       },
       '批量删除模板': {
@@ -1649,7 +1677,7 @@
             showMessage('请先选择待上传的文件', 'warning');
             return;
           }
-          showMessage(`已提交：${t.dataset.exec}，导入结果稍后查看`, 'success');
+          showMessage(`已提交：${t.dataset.exec}，任务已进入审核流程（陆雅静 → 汪李琼），两节点通过后自动入库；审核结果将通过钉钉通知`, 'success');
         }
       });
     });

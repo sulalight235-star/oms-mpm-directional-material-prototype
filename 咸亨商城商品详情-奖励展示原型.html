@@ -118,9 +118,15 @@
       min-height: 64px;
     }
     /* 三类奖励配色 */
-    .reward-banner.type-AMOUNT { background: linear-gradient(90deg, var(--reward-amount-bg), #fffbf3); border: 1px solid var(--reward-amount-border); }
+    .reward-banner.type-FIXED { background: linear-gradient(90deg, var(--reward-amount-bg), #fffbf3); border: 1px solid var(--reward-amount-border); }
     .reward-banner.type-PROJECT { background: linear-gradient(90deg, var(--reward-project-bg), #f3faff); border: 1px solid var(--reward-project-border); }
     .reward-banner.type-RATIO { background: linear-gradient(90deg, var(--reward-ratio-bg), #f7fff0); border: 1px solid var(--reward-ratio-border); }
+
+    /* V1.9 灰色态：未生效 / 已失效（Banner 保留可见但置灰；不展示悬浮提示文案）*/
+    .reward-banner.is-greyed {
+      filter: grayscale(0.85) opacity(0.65);
+      pointer-events: none;
+    }
     .reward-icon { font-size: 30px; flex-shrink: 0; }
     .reward-main { display: flex; flex-direction: column; gap: 4px; flex: 1; }
     .reward-row1 { display: flex; align-items: center; gap: 10px; }
@@ -128,11 +134,11 @@
       display: inline-flex; align-items: center; height: 22px; padding: 0 8px;
       border-radius: 4px; font-size: 12px; font-weight: 600; color: #fff;
     }
-    .type-AMOUNT .reward-type-tag { background: var(--reward-amount); }
+    .type-FIXED .reward-type-tag { background: var(--reward-amount); }
     .type-PROJECT .reward-type-tag { background: var(--reward-project); }
     .type-RATIO .reward-type-tag { background: var(--reward-ratio); }
     .reward-main-info { font-size: 18px; font-weight: 700; }
-    .type-AMOUNT .reward-main-info { color: var(--reward-amount); }
+    .type-FIXED .reward-main-info { color: var(--reward-amount); }
     .type-PROJECT .reward-main-info { color: var(--reward-project); }
     .type-RATIO .reward-main-info { color: var(--reward-ratio); }
     .reward-desc { font-size: 13px; color: var(--text-body); }
@@ -260,14 +266,16 @@
     <a onclick="window.location.href='index.html'">← 返回工作台</a>
   </div>
 
-  <!-- 原型工具条：切换奖励类型 -->
+  <!-- 原型工具条：切换奖励数据演示（PRD V1.9 商城展示三态规则） -->
   <div class="reward-switch">
-    <strong>原型工具：</strong>切换奖励数据演示
-    <button class="active" data-demo="amount">金额奖励（默认）</button>
-    <button data-demo="project">项目奖励</button>
-    <button data-demo="ratio">比例奖励</button>
-    <button data-demo="expire">即将到期（≤7 天）</button>
-    <button data-demo="none">无奖励</button>
+    <strong>原型工具：</strong>切换奖励展示状态
+    <button class="active" data-demo="fixed">生效中-定额奖励（默认）</button>
+    <button data-demo="project">生效中-项目奖励</button>
+    <button data-demo="ratio">生效中-比例奖励</button>
+    <button data-demo="expire">生效中-即将到期（≤7 天）</button>
+    <button data-demo="pending">未生效（灰色态预告）</button>
+    <button data-demo="expired">已失效（灰色态保留）</button>
+    <button data-demo="none">已删除 voidFlag=Y（完全不展示）</button>
   </div>
 
   <!-- 顶部信息条 -->
@@ -368,12 +376,11 @@
       </div>
 
       <!-- ═══════ 奖励 Banner（PRD 附录 A 商城展示规范）═══════ -->
-      <div class="reward-banner type-AMOUNT" id="rewardBanner">
-        <div class="reward-icon" id="rewardIcon">🎁</div>
+      <div class="reward-banner type-FIXED" id="rewardBanner">
         <div class="reward-main">
           <div class="reward-row1">
-            <span class="reward-type-tag" id="rewardTypeTag">金额奖励</span>
-            <span class="reward-main-info" id="rewardMainInfo">¥ 30.00 / 套</span>
+            <span class="reward-type-tag" id="rewardTypeTag">定额奖励</span>
+            <span class="reward-main-info" id="rewardMainInfo">¥ 30.00</span>
           </div>
           <div class="reward-desc" id="rewardDesc">应急救援服专项促销，满 50 套即享</div>
           <div class="reward-period">
@@ -525,19 +532,21 @@
 
     /* ──────────────── 奖励数据 mock（按 PRD 5.2.2 字段定义） ──────────────── */
     const REWARD_MOCKS = {
-      amount: {
+      fixed: {
         messageId:          'MSG-20260518-000123',
         eventType:          'UPSERT',
         eventTime:          '2026-05-18T09:21:00+08:00',
         rewardConfigId:     'RWD-202605110002',
         materialCode:       'AB060032',
-        rewardType:         'AMOUNT',
-        projectCode:        null,
+        ownerCode:          '1025',
+        ownerName:          '万聚供应链科技有限公司',
+        brandName:          '范沃克/fanwoke',
+        rewardType:         'FIXED',
         rewardAmount:       30.00,
         rewardRatio:        null,
         effectiveStartDate: '2026-06-01',
         effectiveEndDate:   '2026-09-30',
-        rewardDescription:  '应急救援服专项促销，满 50 套即享',
+        rewardDescription:  '应急救援服专项促销，满 50 套即享。活动细则与 FAQ：https://example.com/promo/MTYJJY-001',
         configStatus:       'EFFECTIVE',
         voidFlag:           'N',
         updateTime:         '2026-05-18T09:21:00+08:00',
@@ -549,13 +558,15 @@
         eventTime:          '2026-05-18T10:00:00+08:00',
         rewardConfigId:     'RWD-202605110003',
         materialCode:       'AB060032',
+        ownerCode:          '1025',
+        ownerName:          '万聚供应链科技有限公司',
+        brandName:          '范沃克/fanwoke',
         rewardType:         'PROJECT',
-        projectCode:        'PRJ-2026-008',
         rewardAmount:       null,
         rewardRatio:        null,
         effectiveStartDate: '2026-06-01',
         effectiveEndDate:   '2026-12-31',
-        rewardDescription:  '应急救援服参与年度项目即享',
+        rewardDescription:  '参与 2026 年度应急救援装备保供项目即享。项目背景、奖励规则与申报方式见专项页面：https://example.com/projects/2026-emergency',
         configStatus:       'EFFECTIVE',
         voidFlag:           'N',
         updateTime:         '2026-05-18T10:00:00+08:00',
@@ -567,13 +578,15 @@
         eventTime:          '2026-05-18T11:00:00+08:00',
         rewardConfigId:     'RWD-202605110004',
         materialCode:       'AB060032',
+        ownerCode:          '1025',
+        ownerName:          '万聚供应链科技有限公司',
+        brandName:          '范沃克/fanwoke',
         rewardType:         'RATIO',
-        projectCode:        null,
         rewardAmount:       null,
         rewardRatio:        5.0000,
         effectiveStartDate: '2026-06-01',
         effectiveEndDate:   '2026-12-31',
-        rewardDescription:  '按调拨价 5% 返利',
+        rewardDescription:  '按调拨价 5% 返利，结算口径详见 https://example.com/policy/ratio-5',
         configStatus:       'EFFECTIVE',
         voidFlag:           'N',
         updateTime:         '2026-05-18T11:00:00+08:00',
@@ -586,19 +599,63 @@
         eventTime:          '2026-05-12T09:00:00+08:00',
         rewardConfigId:     'RWD-202605110005',
         materialCode:       'AB060032',
-        rewardType:         'AMOUNT',
-        projectCode:        null,
+        ownerCode:          '1025',
+        ownerName:          '万聚供应链科技有限公司',
+        brandName:          '范沃克/fanwoke',
+        rewardType:         'FIXED',
         rewardAmount:       80.00,
         rewardRatio:        null,
         effectiveStartDate: '2026-03-01',
         effectiveEndDate:   '2026-05-24',   // 距 2026-05-18 仅 6 天
-        rewardDescription:  '春季促销最后冲刺',
+        rewardDescription:  '春季促销最后冲刺，库存有限',
         configStatus:       'EFFECTIVE',
         voidFlag:           'N',
         updateTime:         '2026-05-12T09:00:00+08:00',
         updater:            '陈骋/0058'
       },
-      // 无奖励：附录 A.5 边界 - 不展示任何奖励元素
+      // V1.9 新增：未生效（PENDING）- today < startDate，商城灰色态预告展示
+      pending: {
+        messageId:          'MSG-20260518-000127',
+        eventType:          'UPSERT',
+        eventTime:          '2026-05-18T15:00:00+08:00',
+        rewardConfigId:     'RWD-202605110007',
+        materialCode:       'AB060032',
+        ownerCode:          '1025',
+        ownerName:          '万聚供应链科技有限公司',
+        brandName:          '范沃克/fanwoke',
+        rewardType:         'FIXED',
+        rewardAmount:       50.00,
+        rewardRatio:        null,
+        effectiveStartDate: '2026-08-01',   // 距 2026-05-18 还有 75 天
+        effectiveEndDate:   '2026-12-31',
+        rewardDescription:  '应急救援服 Q3 季度促销，详情见 https://example.com/promo/Q3',
+        configStatus:       'PENDING',
+        voidFlag:           'N',
+        updateTime:         '2026-05-18T15:00:00+08:00',
+        updater:            '李航/0027'
+      },
+      // V1.9 新增：已失效（EXPIRED）- today > endDate，商城灰色态保留展示
+      expired: {
+        messageId:          'MSG-20260518-000128',
+        eventType:          'EXPIRE',
+        eventTime:          '2026-05-15T00:05:00+08:00',
+        rewardConfigId:     'RWD-202604010008',
+        materialCode:       'AB060032',
+        ownerCode:          '1025',
+        ownerName:          '万聚供应链科技有限公司',
+        brandName:          '范沃克/fanwoke',
+        rewardType:         'RATIO',
+        rewardAmount:       null,
+        rewardRatio:        3.0000,
+        effectiveStartDate: '2026-01-01',
+        effectiveEndDate:   '2026-04-30',   // 已过期
+        rewardDescription:  '一季度返利活动，已结束',
+        configStatus:       'EXPIRED',
+        voidFlag:           'N',
+        updateTime:         '2026-05-15T00:05:00+08:00',
+        updater:            '系统/自动'
+      },
+      // 已删除（voidFlag=Y）：附录 A.5 边界 - 商城完全不展示
       none: null
     };
 
@@ -607,7 +664,7 @@
     const debug = document.getElementById('rewardDebug');
     const debugTable = document.getElementById('rewardDebugTable');
     const TYPE_META = {
-      AMOUNT:  { tag: '金额奖励', icon: '💰', cls: 'type-AMOUNT' },
+      FIXED:  { tag: '定额奖励', icon: '💰', cls: 'type-FIXED' },
       PROJECT: { tag: '项目奖励', icon: '🎯', cls: 'type-PROJECT' },
       RATIO:   { tag: '比例奖励', icon: '🎁', cls: 'type-RATIO' }
     };
@@ -618,44 +675,75 @@
       return Math.ceil((end - now) / (24 * 3600 * 1000));
     }
 
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+    // PRD V1.8：奖励说明文案支持 http/https 链接自动渲染为可点击超链接（target="_blank"）
+    function autolink(text) {
+      const safe = escapeHtml(text);
+      return safe.replace(/(https?:\/\/[^\s<>"']+)/g, (url) => `<a href="${url}" target="_blank" rel="noopener" style="color: var(--reward-amount); text-decoration: underline;">${url}</a>`);
+    }
+
     function mainInfoOf(data) {
-      // 附录 A.3.2 类型差异：金额=¥/件、比例=%返利、项目=说明文案+项目编码
-      if (data.rewardType === 'AMOUNT') return `¥ ${Number(data.rewardAmount).toFixed(2)} / 套`;
-      if (data.rewardType === 'RATIO')  return `${Number(data.rewardRatio).toFixed(1)}% 返利`;
-      if (data.rewardType === 'PROJECT') return data.rewardDescription || '参与项目即享';
+      // 附录 A.3.2 类型差异：金额=纯金额（不带单位）、比例=百分数（不带"返利"）、项目=说明文案首段
+      if (data.rewardType === 'FIXED')   return `¥ ${Number(data.rewardAmount).toFixed(2)}`;
+      if (data.rewardType === 'RATIO')   return `${Number(data.rewardRatio).toFixed(1)}%`;
+      if (data.rewardType === 'PROJECT') {
+        // V1.8：项目奖励主信息取说明文案首段（按句号/换行切分）
+        const desc = String(data.rewardDescription || '参与项目即享');
+        const firstSeg = desc.split(/[。\n]/)[0] || desc;
+        return firstSeg;
+      }
       return '';
     }
     function descOf(data) {
-      if (data.rewardType === 'PROJECT') return `项目编码：${data.projectCode || '-'}`;
+      // V1.8：所有类型副信息统一为奖励说明文案（含 autolink）；项目编码字段已删除
       return data.rewardDescription || '';
     }
 
     function renderReward(data) {
-      // 无奖励：附录 A.5 边界规则 - 完全不展示
-      if (!data || data.voidFlag === 'Y' || ['VOIDED', 'EXPIRED'].includes(data.configStatus)) {
+      // V1.9 商城展示三态规则：
+      //   - voidFlag=Y 或 configStatus=VOIDED → 商城完全不展示
+      //   - configStatus=PENDING（未生效）/ EXPIRED（已失效）→ 灰色态保留展示（is-greyed）
+      //   - configStatus=EFFECTIVE → 正常彩色展示
+      if (!data || data.voidFlag === 'Y' || data.configStatus === 'VOIDED') {
         banner.style.display = 'none';
-        debug.style.display = 'none';
+        debug.style.display = 'block'; // 调试面板仍展示，便于核验
+        debugTable.innerHTML = `<tr><td style="color:#999;width:160px;">商城展示效果</td><td style="color:#cf1322;">❌ 完全不展示（voidFlag=Y / 已删除）</td></tr>`;
+        if (data) {
+          Object.entries(data).forEach(([k, v]) => {
+            const tr = document.createElement('tr');
+            const valDisplay = v === null ? '<span style="color: #ccc;">null</span>' : `"${v}"`;
+            tr.innerHTML = `<td>${k}</td><td>${valDisplay}</td>`;
+            debugTable.appendChild(tr);
+          });
+        }
         return;
       }
+
       banner.style.display = 'flex';
       debug.style.display = 'block';
 
       // 类型切换：清掉旧 class 再加新 class
-      banner.classList.remove('type-AMOUNT', 'type-PROJECT', 'type-RATIO');
-      const meta = TYPE_META[data.rewardType] || TYPE_META.AMOUNT;
+      banner.classList.remove('type-FIXED', 'type-PROJECT', 'type-RATIO', 'is-greyed');
+      const meta = TYPE_META[data.rewardType] || TYPE_META.FIXED;
       banner.classList.add(meta.cls);
 
-      document.getElementById('rewardIcon').textContent = meta.icon;
+      // V1.9：未生效 / 已失效 → 灰色置灰（不再叠加悬浮提示文案）
+      if (data.configStatus === 'PENDING' || data.configStatus === 'EXPIRED') {
+        banner.classList.add('is-greyed');
+      }
+
       document.getElementById('rewardTypeTag').textContent = meta.tag;
       document.getElementById('rewardMainInfo').textContent = mainInfoOf(data);
-      document.getElementById('rewardDesc').textContent = descOf(data);
+      document.getElementById('rewardDesc').innerHTML = autolink(descOf(data));
       document.getElementById('rewardEndDate').textContent = data.effectiveEndDate;
       document.getElementById('rewardConfigId').textContent = data.rewardConfigId;
 
-      // 即将到期 ≤7 天 → Banner 右上角红色标签
+      // 即将到期 ≤7 天 → Banner 右上角红色标签（仅生效中场景）
       const remain = daysUntil(data.effectiveEndDate);
       const expireBadge = document.getElementById('badgeExpire');
-      if (remain >= 0 && remain <= 7) {
+      if (data.configStatus === 'EFFECTIVE' && remain >= 0 && remain <= 7) {
         expireBadge.style.display = 'inline-block';
         expireBadge.textContent = remain === 0 ? '今日到期' : `仅剩 ${remain} 天`;
       } else {
@@ -672,8 +760,8 @@
       });
     }
 
-    // 默认展示金额奖励
-    renderReward(REWARD_MOCKS.amount);
+    // 默认展示定额奖励
+    renderReward(REWARD_MOCKS.fixed);
 
     // 演示工具：切换奖励类型
     document.querySelectorAll('.reward-switch button').forEach(btn => {
@@ -682,7 +770,15 @@
         btn.classList.add('active');
         const demo = btn.dataset.demo;
         renderReward(REWARD_MOCKS[demo]);
-        const label = { amount: '金额奖励', project: '项目奖励', ratio: '比例奖励', expire: '即将到期（金额奖励）', none: '无奖励/已删除' };
+        const label = {
+          fixed: '生效中-定额奖励',
+          project: '生效中-项目奖励',
+          ratio: '生效中-比例奖励',
+          expire: '生效中-即将到期（定额奖励）',
+          pending: '未生效（灰色态预告）',
+          expired: '已失效（灰色态保留）',
+          none: '已删除 voidFlag=Y（完全不展示）'
+        };
         showMessage(`已切换到：${label[demo]}`);
       });
     });

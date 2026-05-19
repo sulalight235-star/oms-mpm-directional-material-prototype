@@ -823,7 +823,7 @@
       ];
       if (expired > 0) statusParts.push(`已过期 ${expired}`);
       return {
-        typeDist: `项目奖励 ${project} / 金额奖励 ${amount} / 比例奖励 ${rate}`,
+        typeDist: `项目奖励 ${project} / 定额奖励 ${amount} / 比例奖励 ${rate}`,
         statusDist: statusParts.join(' / '),
         cross: true
       };
@@ -924,11 +924,11 @@
             <label><span class="req">*</span>奖励类型</label>
             <select class="f-select" id="batchRewardType">
               <option value="项目奖励">项目奖励</option>
-              <option value="金额奖励">金额奖励</option>
+              <option value="定额奖励">定额奖励</option>
               <option value="比例奖励">比例奖励</option>
             </select>
           </div>
-          <div class="inline-tip warning">修改后将清空与新奖励类型不匹配的字段（例如改为「比例奖励」时，原有的项目编码/奖励金额会被清空）。</div>
+          <div class="inline-tip warning">修改后将清空与新奖励类型不匹配的字段（例如改为「比例奖励」时，原有的奖励金额会被清空）。</div>
         `);
       }
 

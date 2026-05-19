@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>批量任务审核流程图 · 咸亨产品奖励管理</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --primary: #1677ff;
+      --primary-bg: #e6f4ff;
+      --warning: #faad14;
+      --success: #52c41a;
+      --error: #ff4d4f;
+      --text-title: rgba(0,0,0,0.88);
+      --text-body: rgba(0,0,0,0.65);
+      --text-sub: rgba(0,0,0,0.45);
+      --border: #d9d9d9;
+      --border-light: #f0f0f0;
+      --bg: #f5f7fa;
+      --bg-card: #fff;
+      --radius: 8px;
+      --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      font-size: 14px;
+      color: var(--text-body);
+      background: var(--bg);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .back-bar { background: #f0f4ff; border-bottom: 1px solid #d6e4ff; padding: 8px 16px; font-size: 12px; color: var(--primary); text-align: center; }
+    .back-bar a { color: var(--primary); font-weight: 600; cursor: pointer; }
+    .back-bar a:hover { text-decoration: underline; }
+    .back-bar .tag { background: var(--primary); color: #fff; padding: 1px 6px; border-radius: 3px; margin-right: 6px; font-size: 11px; }
+
+    .container { max-width: 1280px; margin: 0 auto; padding: 24px 20px 60px; }
+    h1 { font-size: 22px; color: var(--text-title); font-weight: 700; margin-bottom: 6px; }
+    .subtitle { font-size: 13px; color: var(--text-sub); margin-bottom: 20px; }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-title);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    /* 流程图容器 */
+    .mermaid-wrap {
+      background: #fafbfc;
+      border: 1px dashed #ddd;
+      border-radius: var(--radius);
+      padding: 20px;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+    }
+    .mermaid { font-family: -apple-system, "Microsoft YaHei", sans-serif !important; }
+
+    /* 节点说明卡 */
+    .node-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .node-card {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      background: #fafafa;
+    }
+    .node-card.applicant   { border-top: 4px solid var(--primary); }
+    .node-card.approver-1  { border-top: 4px solid var(--warning); }
+    .node-card.approver-2  { border-top: 4px solid var(--warning); }
+    .node-card.system      { border-top: 4px solid var(--success); }
+    .node-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-title);
+      margin-bottom: 4px;
+    }
+    .node-card-role {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+    .node-card-desc {
+      font-size: 12px;
+      color: var(--text-body);
+      line-height: 1.7;
+    }
+
+    /* 表格 */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+    thead th { padding: 9px 12px; text-align: left; font-weight: 600; color: var(--text-title); background: #fafafa; border-bottom: 1px solid var(--border); }
+    tbody td { padding: 9px 12px; vertical-align: top; border-bottom: 1px solid var(--border-light); }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: #fafafa; }
+    .tag {
+      display: inline-flex; align-items: center; height: 22px; padding: 0 8px;
+      border-radius: 4px; font-size: 12px; border: 1px solid;
+    }
+    .tag-blue   { color: #096dd9; border-color: #91d5ff; background: #e6f7ff; }
+    .tag-green  { color: var(--success); border-color: #b7eb8f; background: #f6ffed; }
+    .tag-orange { color: #d46b08; border-color: #ffd591; background: #fff7e6; }
+    .tag-red    { color: var(--error); border-color: #ffa39e; background: #fff1f0; }
+    .tag-grey   { color: var(--text-sub); border-color: #d9d9d9; background: #fafafa; }
+
+    /* 通知模板模拟 */
+    .notify-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .notify-card {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      background: #fffbe6;
+    }
+    .notify-head { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #874d00; margin-bottom: 6px; }
+    .notify-body { font-size: 12px; color: var(--text-body); background: #fff; padding: 8px 10px; border-radius: 4px; border-left: 3px solid #ffd591; }
+    .notify-body code { background: #f6f6f6; padding: 0 4px; border-radius: 2px; font-size: 11px; color: #d46b08; }
+
+    .legend {
+      display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px;
+      font-size: 12px; color: var(--text-sub);
+    }
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+    /* 演示工具条 */
+    .demo-toolbar {
+      background: #fffbe6; border: 1px dashed #ffd591;
+      padding: 8px 14px; border-radius: var(--radius);
+      font-size: 12px; color: #874d00;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .demo-toolbar strong { color: #874d00; }
+    .demo-toolbar button {
+      padding: 3px 10px; border: 1px solid #ffd591; background: #fff;
+      border-radius: 3px; cursor: pointer; font-size: 12px; color: var(--text-body);
+    }
+    .demo-toolbar button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .demo-toolbar button:hover { border-color: var(--primary); color: var(--primary); }
+    .demo-toolbar button.active:hover { color: #fff; }
+  </style>
+</head>
+<body>
+  <!-- 返回工作台 -->
+  <div class="back-bar">
+    <span class="tag">原型预览</span>
+    咸亨产品奖励管理 · 批量任务审核业务流程图（PRD V1.9 · 附录 B）
+    <span style="margin: 0 10px; color: #aaa;">|</span>
+    <a onclick="window.location.href='index.html'">← 返回工作台</a>
+  </div>
+
+  <div class="container">
+    <h1>批量任务审核业务流程图</h1>
+    <div class="subtitle">对应 PRD 3.2.7「批量任务审核流程」+ 5.5「MPM ↔ H0 审核平台集成接口」</div>
+
+    <!-- 演示工具条 -->
+    <div class="demo-toolbar">
+      <strong>演示工具：</strong>
+      点击下方节点选择"假设当前正在哪一步"，流程图会用红框高亮该节点：
+      <button data-step="A" class="active">① 业务人员发起</button>
+      <button data-step="C">② 待审核</button>
+      <button data-step="F">③ 一审中（陆雅静）</button>
+      <button data-step="H">④ 二审中（汪李琼）</button>
+      <button data-step="J">⑤ 执行入库</button>
+      <button data-step="Z1">驳回</button>
+    </div>
+
+    <!-- 主流程图 -->
+    <div class="card">
+      <div class="card-title">主流程图</div>
+      <div class="mermaid-wrap">
+        <pre class="mermaid" id="mermaidChart">
+flowchart TD
+    A["① 业务人员<br/>发起批量新增 / 修改 / 删除"]:::applicant
+    B{"MPM 后端预校验<br/>（按 4.4 规则行级校验）"}:::system
+    B1["失败行直接返回失败明细<br/>不进入审核"]:::failpath
+
+    C["② 通过行进入待审核区<br/>MPM 生成批量任务<br/>state=PENDING_APPROVAL"]:::system
+    D["调 H0 平台<br/>POST /h0/approval/start<br/>含任务摘要 + 明细数组"]:::h0
+    E["③ H0 钉钉通知<br/>第一审核人 陆雅静"]:::dingtalk
+
+    F{"③ 陆雅静 审核<br/>产业管理部门<br/>→ 审核奖励明细本身的合理性"}:::approver1
+
+    G["H0 进入第二节点<br/>钉钉通知 汪李琼"]:::dingtalk
+    H{"④ 汪李琼 审核<br/>考核部门<br/>→ 审核奖励的合规性 / 考核口径"}:::approver2
+
+    I["H0 回调 MPM<br/>POST /api/h0/callback<br/>FLOW_COMPLETE + 完整审核轨迹"]:::h0
+    J["⑤ MPM 待审核明细入库<br/>新增 / 修改 / 作废生效"]:::system
+    K["同步触发<br/>5.2 商城下发<br/>5.3 BI 取数"]:::system
+    L["写操作历史<br/>关联 flowId 审核轨迹"]:::system
+    M["钉钉通知发起人<br/>'已审核通过并执行成功'"]:::dingtalk
+
+    Z1["任意节点驳回<br/>MPM 任务=REJECTED<br/>明细不入库<br/>钉钉通知发起人 + 驳回原因"]:::failpath
+
+    A --> B
+    B -->|失败行| B1
+    B -->|通过行| C
+    C --> D
+    D --> E
+    E --> F
+    F -->|驳回| Z1
+    F -->|通过| G
+    G --> H
+    H -->|驳回| Z1
+    H -->|通过| I
+    I --> J
+    J --> K
+    J --> L
+    J --> M
+
+    classDef applicant fill:#1677ff,stroke:#0958d9,color:#fff,stroke-width:2px;
+    classDef approver1 fill:#faad14,stroke:#d48806,color:#fff,stroke-width:2px;
+    classDef approver2 fill:#fa8c16,stroke:#d46b08,color:#fff,stroke-width:2px;
+    classDef system    fill:#52c41a,stroke:#389e0d,color:#fff,stroke-width:2px;
+    classDef h0        fill:#722ed1,stroke:#531dab,color:#fff,stroke-width:2px;
+    classDef dingtalk  fill:#13c2c2,stroke:#08979c,color:#fff,stroke-width:2px;
+    classDef failpath  fill:#ff4d4f,stroke:#cf1322,color:#fff,stroke-width:2px;
+        </pre>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:#1677ff;"></span>业务人员（发起人）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#faad14;"></span>第一审核人（陆雅静）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#fa8c16;"></span>第二审核人（汪李琼）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#722ed1;"></span>H0 审核平台</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#13c2c2;"></span>钉钉通知</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#52c41a;"></span>MPM 系统执行</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#ff4d4f;"></span>失败 / 驳回</div>
+      </div>
+    </div>
+
+    <!-- 节点责任人 -->
+    <div class="card">
+      <div class="card-title">节点责任人 / 操作清单</div>
+      <div class="node-grid">
+        <div class="node-card applicant">
+          <div class="node-card-title">① 发起人</div>
+          <div class="node-card-role">业务人员（运营 / 销售助理）</div>
+          <div class="node-card-desc">在 MPM 列表页选择物料 → 填写或上传 Excel → 点击"执行"触发任务。预校验失败行直接返还，不送审。</div>
+        </div>
+        <div class="node-card approver-1">
+          <div class="node-card-title">③ 第一审核</div>
+          <div class="node-card-role">陆雅静｜产业管理部门</div>
+          <div class="node-card-desc">审核奖励明细本身的合理性：奖励金额 / 比例是否在合理区间、奖励有效期是否符合业务节奏、说明文案是否规范。</div>
+        </div>
+        <div class="node-card approver-2">
+          <div class="node-card-title">④ 第二审核</div>
+          <div class="node-card-role">汪李琼｜考核部门</div>
+          <div class="node-card-desc">审核奖励明细的合规性：是否触发考核口径变化、是否符合奖励办法、是否影响 KPI 结算。</div>
+        </div>
+        <div class="node-card system">
+          <div class="node-card-title">⑤ 执行</div>
+          <div class="node-card-role">MPM 系统自动</div>
+          <div class="node-card-desc">两节点全部通过后：明细入库 → 推送商城 / BI → 写操作历史（关联 flowId）→ 钉钉通知发起人成功。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 哪些动作需审核 -->
+    <div class="card">
+      <div class="card-title">哪些动作需要审核（动作清单）</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:36%;">动作</th>
+            <th style="width:18%;">是否走审核</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>批量新增</strong>（Excel 导入 / 列表批量）</td><td><span class="tag tag-orange">✅ 两级审核</span></td><td>全部明细整体审核，任意行驳回 → 全单失败</td></tr>
+          <tr><td><strong>批量修改</strong>（Excel 导入）</td><td><span class="tag tag-orange">✅ 两级审核</span></td><td>同上</td></tr>
+          <tr><td><strong>批量删除</strong>（Excel 导入 / 列表多选）</td><td><span class="tag tag-orange">✅ 两级审核</span></td><td>同上</td></tr>
+          <tr><td>列表筛选 / 查询</td><td><span class="tag tag-green">❌ 不需要</span></td><td>不修改数据</td></tr>
+          <tr><td>导出当前查询 / 导出全部 / 我的导出任务下载</td><td><span class="tag tag-green">❌ 不需要</span></td><td>不修改数据</td></tr>
+          <tr><td>操作历史查询 / 历史导出</td><td><span class="tag tag-green">❌ 不需要</span></td><td>不修改数据</td></tr>
+          <tr><td>行内"重试同步"</td><td><span class="tag tag-green">❌ 不需要</span></td><td>只重发推送消息，不改业务数据</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 任务状态机 -->
+    <div class="card">
+      <div class="card-title">批量任务状态机</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:22%;">状态</th>
+            <th style="width:30%;">触发</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="tag tag-grey">PENDING_APPROVAL</span></td><td>发起任务，预校验通过</td><td>已送 H0，等待 / 流转中</td></tr>
+          <tr><td><span class="tag tag-blue">APPROVING</span></td><td>H0 NODE_PASS 推进</td><td>当前在某一审核节点，可在 H0 后台查看</td></tr>
+          <tr><td><span class="tag tag-red">REJECTED</span></td><td>任意节点驳回</td><td>明细不入库；钉钉通知发起人含驳回原因</td></tr>
+          <tr><td><span class="tag tag-red">TIMEOUT_REJECTED</span></td><td>H0 超时（默认 5 个工作日）</td><td>同 REJECT；钉钉提示重新发起</td></tr>
+          <tr><td><span class="tag tag-orange">EXECUTING</span></td><td>H0 FLOW_COMPLETE</td><td>MPM 正在写库 + 推送商城/BI</td></tr>
+          <tr><td><span class="tag tag-green">EXECUTED</span></td><td>入库成功</td><td>钉钉通知发起人"已通过审核并执行成功"</td></tr>
+          <tr><td><span class="tag tag-red">EXECUTE_FAILED</span></td><td>入库失败</td><td>钉钉同时通知发起人 + 运维</td></tr>
+          <tr><td><span class="tag tag-grey">H0_UNREACHABLE</span></td><td>H0 多次重试无响应</td><td>钉钉告警发起人 + 运维</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 钉钉通知模板 -->
+    <div class="card">
+      <div class="card-title">钉钉通知模板（H0 平台统一发出）</div>
+      <div class="notify-list">
+        <div class="notify-card">
+          <div class="notify-head">📋 任务发起 → 通知第一审核人</div>
+          <div class="notify-body">您有一条《MPM 批量奖励任务》待审，发起人：<code>{applicantName}</code>，明细数：<code>{count}</code>，请于 3 个工作日内处理</div>
+        </div>
+        <div class="notify-card">
+          <div class="notify-head">✅ 节点通过 → 通知发起人</div>
+          <div class="notify-body">您发起的《批量任务 <code>{bizTaskId}</code>》已通过 <code>{approverName}</code> 审核，进入下一节点</div>
+        </div>
+        <div class="notify-card">
+          <div class="notify-head">➡️ 第一节点通过 → 通知第二审核人</div>
+          <div class="notify-body">您有一条《MPM 批量奖励任务》待审，发起人：<code>{applicantName}</code>，明细数：<code>{count}</code>，请于 3 个工作日内处理</div>
+        </div>
+        <div class="notify-card">
+          <div class="notify-head">❌ 任意节点驳回 → 通知发起人</div>
+          <div class="notify-body">您发起的《批量任务 <code>{bizTaskId}</code>》被 <code>{approverName}</code> 驳回，原因：<code>{decisionComment}</code>，请修改后重新发起</div>
+        </div>
+        <div class="notify-card">
+          <div class="notify-head">🎉 全部审核通过 + 执行成功</div>
+          <div class="notify-body">您发起的《批量任务 <code>{bizTaskId}</code>》已全部审核通过并执行成功（影响 <code>{count}</code> 条奖励配置）</div>
+        </div>
+        <div class="notify-card">
+          <div class="notify-head">⚠️ 审核通过但 MPM 执行失败</div>
+          <div class="notify-body">您发起的《批量任务 <code>{bizTaskId}</code>》审核已通过但 MPM 入库失败，请联系运维</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 接口字段速览 -->
+    <div class="card">
+      <div class="card-title">MPM ↔ H0 接口字段速览</div>
+      <table>
+        <thead>
+          <tr>
+            <th>方向</th>
+            <th>接口 / 事件</th>
+            <th>关键字段</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-blue">MPM → H0</span></td>
+            <td><code>POST /h0/approval/start</code><br/>（发起审核）</td>
+            <td>bizSystem=MPM / bizTemplate / bizTaskId / bizTaskType / applicant / summary / details[] / callbackUrl</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-blue">MPM → H0</span></td>
+            <td>同步返回</td>
+            <td>code / flowId / currentNode / currentApprover</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-orange">H0 → MPM</span></td>
+            <td><code>POST {callbackUrl}</code><br/>（节点通过 / 驳回 / 完成 / 超时）</td>
+            <td>flowId / bizTaskId / eventType / currentNode / approverName / decision / decisionComment / track[]</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-green">H0 → 钉钉</span></td>
+            <td>通知（由 H0 内部封装，MPM 不直接调）</td>
+            <td>6 类通知模板（见上）</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="font-size:12px; color: var(--text-sub); margin-top: 10px;">
+        💡 完整接口字段定义见 PRD V1.9 §5.5 章节。
+      </div>
+    </div>
+
+    <div style="text-align:center; color: var(--text-sub); font-size:12px; margin-top: 24px;">
+      PRD V1.9 · 附录 B · 业务流程图 · 仅供内部评审
+    </div>
+  </div>
+
+  <script>
+    // 初始化 mermaid
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis',
+        nodeSpacing: 35,
+        rankSpacing: 50
+      },
+      themeVariables: {
+        fontFamily: '-apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif',
+        fontSize: '13px'
+      }
+    });
+
+    // 节点高亮交互
+    const STEP_NODES = {
+      'A': '业务人员',
+      'C': '待审核',
+      'F': '陆雅静',
+      'H': '汪李琼',
+      'J': '入库',
+      'Z1': '驳回'
+    };
+
+    document.querySelectorAll('.demo-toolbar button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.demo-toolbar button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        // 给所有节点取消高亮
+        document.querySelectorAll('#mermaidChart svg .node').forEach(n => {
+          n.style.outline = '';
+          n.style.outlineOffset = '';
+        });
+        // 找到对应节点用红色高亮
+        const targetKeyword = STEP_NODES[btn.dataset.step];
+        if (!targetKeyword) return;
+        // 等待 mermaid 渲染完成
+        setTimeout(() => {
+          document.querySelectorAll('#mermaidChart svg .node').forEach(n => {
+            const text = n.textContent || '';
+            if (text.includes(targetKeyword)) {
+              n.style.outline = '3px solid #ff4d4f';
+              n.style.outlineOffset = '4px';
+              // 滚动到该节点
+              n.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          });
+        }, 100);
+      });
+    });
+  </script>
+</body>
+</html>
