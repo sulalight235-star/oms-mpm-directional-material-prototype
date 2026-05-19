@@ -272,7 +272,6 @@
     <button class="active" data-demo="fixed">生效中-定额奖励（默认）</button>
     <button data-demo="project">生效中-项目奖励</button>
     <button data-demo="ratio">生效中-比例奖励</button>
-    <button data-demo="expire">生效中-即将到期（≤7 天）</button>
     <button data-demo="pending">未生效（灰色态预告）</button>
     <button data-demo="expired">已失效（灰色态保留）</button>
     <button data-demo="none">已删除 voidFlag=Y（完全不展示）</button>
@@ -592,27 +591,7 @@
         updateTime:         '2026-05-18T11:00:00+08:00',
         updater:            '王雪/0033'
       },
-      // 即将到期场景（≤7 天）
-      expire: {
-        messageId:          'MSG-20260518-000126',
-        eventType:          'UPSERT',
-        eventTime:          '2026-05-12T09:00:00+08:00',
-        rewardConfigId:     'RWD-202605110005',
-        materialCode:       'AB060032',
-        ownerCode:          '1025',
-        ownerName:          '万聚供应链科技有限公司',
-        brandName:          '范沃克/fanwoke',
-        rewardType:         'FIXED',
-        rewardAmount:       80.00,
-        rewardRatio:        null,
-        effectiveStartDate: '2026-03-01',
-        effectiveEndDate:   '2026-05-24',   // 距 2026-05-18 仅 6 天
-        rewardDescription:  '春季促销最后冲刺，库存有限',
-        configStatus:       'EFFECTIVE',
-        voidFlag:           'N',
-        updateTime:         '2026-05-12T09:00:00+08:00',
-        updater:            '陈骋/0058'
-      },
+      // 即将到期场景（≤7 天）—— 已移除演示项，但 Banner ≤7 天角标逻辑保留
       // V1.9 新增：未生效（PENDING）- today < startDate，商城灰色态预告展示
       pending: {
         messageId:          'MSG-20260518-000127',
@@ -774,7 +753,6 @@
           fixed: '生效中-定额奖励',
           project: '生效中-项目奖励',
           ratio: '生效中-比例奖励',
-          expire: '生效中-即将到期（定额奖励）',
           pending: '未生效（灰色态预告）',
           expired: '已失效（灰色态保留）',
           none: '已删除 voidFlag=Y（完全不展示）'
