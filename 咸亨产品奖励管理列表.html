@@ -1167,8 +1167,8 @@
           <td>${row.ownerName || '<span class="muted">-</span>'}</td>
           <td>${row.brandName || '<span class="muted">-</span>'}</td>
           <td>${tagHtml(row.type, row.typeTag)}</td>
-          <td class="price">${row.amount}</td>
-          <td class="price">${row.ratio}</td>
+          <td class="price">${row.amountNum === '' || row.amountNum == null ? '<span class="muted">-</span>' : `¥${Number(row.amountNum).toFixed(2)}`}</td>
+          <td class="price">${row.ratioNum === '' || row.ratioNum == null ? '<span class="muted">-</span>' : `${Number(row.ratioNum).toFixed(2)}%`}</td>
           <td>${row.period}</td>
           <td>${tagHtml(row.status, row.statusTag)}</td>
           <td>${row.updated}</td>
