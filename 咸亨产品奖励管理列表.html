@@ -144,7 +144,7 @@
       margin-bottom: 12px;
       padding: 6px 0;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
     }
     .reward-stat-item {
       padding: 14px 20px;
@@ -634,13 +634,6 @@
           <div class="reward-stat-value">124</div>
         </div>
       </div>
-      <div class="reward-stat-item" data-reward-filter="即将到期">
-        <div class="reward-stat-icon orange">⏰</div>
-        <div>
-          <div class="reward-stat-label">即将到期</div>
-          <div class="reward-stat-value">17</div>
-        </div>
-      </div>
       <div class="reward-stat-item" data-reward-filter="异常">
         <div class="reward-stat-icon red">!</div>
         <div>
@@ -712,7 +705,6 @@
             <div class="dropdown-menu" id="exportDropdown" style="display:none;position:absolute;right:0;top:calc(100% + 4px);min-width:160px;background:#fff;border:1px solid #d9d9d9;border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,0.08);z-index:50;overflow:hidden;">
               <div class="dropdown-item" data-export-type="当前查询" style="padding:8px 12px;font-size:13px;cursor:pointer;">导出当前查询</div>
               <div class="dropdown-item" data-export-type="全部" style="padding:8px 12px;font-size:13px;cursor:pointer;border-top:1px solid #f0f0f0;">导出全部（含已失效/已删除）</div>
-              <div class="dropdown-item" data-export-type="任务" style="padding:8px 12px;font-size:13px;cursor:pointer;border-top:1px solid #f0f0f0;color:#1677ff;">📋 我的导出任务</div>
             </div>
           </div>
           <button class="btn btn-default" type="button" id="historyEntryBtn">操作历史</button>
@@ -753,6 +745,7 @@
               <th>奖励类型</th>
               <th>奖励金额</th>
               <th>奖励比例</th>
+              <th>项目奖励标题</th>
               <th>奖励有效期</th>
               <th>配置状态</th>
               <th>更新时间</th>
@@ -909,37 +902,7 @@
     </div>
   </div>
 
-  <!-- 我的导出任务弹窗 -->
-  <div class="modal-mask" id="modalExportTasks" data-modal>
-    <div class="bulk-modal" style="max-width:760px;">
-      <div class="bulk-modal-header">
-        我的导出任务
-        <span class="modal-close" data-modal-close>×</span>
-      </div>
-      <div class="bulk-modal-body">
-        <div style="margin-bottom:10px;font-size:12px;color:#595959;">
-          异步导出文件保留 7 天，过期请重新发起；同步导出（≤5000 行）会直接触发浏览器下载，不进此列表。
-        </div>
-        <table class="bulk-table" style="width:100%;">
-          <colgroup>
-            <col style="width:38%;"><col style="width:14%;"><col style="width:14%;"><col style="width:14%;"><col style="width:20%;">
-          </colgroup>
-          <thead>
-            <tr>
-              <th>任务名 / 提交时间</th>
-              <th>类型</th>
-              <th>状态</th>
-              <th>进度</th>
-              <th>操作 / 过期</th>
-            </tr>
-          </thead>
-          <tbody id="exportTasksBody">
-            <!-- JS 渲染 -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+  <!-- 我的导出任务已迁移至「任务中心」全局页面 -->
 
   <input type="file" id="hiddenFileInput" hidden />
 
@@ -974,6 +937,7 @@
         brandName: '范沃克/fanwoke',
         amountNum: '', ratioNum: '',
         startDate: '2026-05-01', endDate: '2026-12-31',
+        rewardTitle: '2026 年度 PVC 管材专项工程奖励',
         description: '项目奖励-参与项目即享',
         period: '2026-05-01 ~ 2026-12-31', mall: '2026-05-15 ~ 2026-11-30',
         status: '生效中', statusTag: 'tag-green', voidFlag: 'N',
@@ -1016,6 +980,7 @@
         brandName: '范沃克/fanwoke',
         amountNum: '', ratioNum: '',
         startDate: '2026-07-01', endDate: '2026-12-31',
+        rewardTitle: '2026 H2 防爆照明项目套餐',
         description: '7 月起项目套餐',
         period: '2026-07-01 ~ 2026-12-31', mall: '2026-07-01 ~ 2026-11-30',
         status: '未生效', statusTag: 'tag-grey', voidFlag: 'N',
@@ -1101,6 +1066,7 @@
         brandName: '范沃克/fanwoke',
         amountNum: '', ratioNum: '',
         startDate: '2026-02-01', endDate: '2026-12-31',
+        rewardTitle: '插座面板停产撤回项目',
         description: '物料已停产，奖励同步撤销',
         period: '2026-02-01 ~ 2026-12-31', mall: '2026-02-01 ~ 2026-12-25',
         status: '已删除', statusTag: 'tag-red', voidFlag: 'Y',
@@ -1169,6 +1135,7 @@
           <td>${tagHtml(row.type, row.typeTag)}</td>
           <td class="price">${row.amountNum === '' || row.amountNum == null ? '<span class="muted">-</span>' : `¥${Number(row.amountNum).toFixed(2)}`}</td>
           <td class="price">${row.ratioNum === '' || row.ratioNum == null ? '<span class="muted">-</span>' : `${Number(row.ratioNum).toFixed(2)}%`}</td>
+          <td>${row.rewardTitle ? row.rewardTitle : '<span class="muted">-</span>'}</td>
           <td>${row.period}</td>
           <td>${tagHtml(row.status, row.statusTag)}</td>
           <td>${row.updated}</td>
@@ -1275,7 +1242,7 @@
       showMessage(`已提交 ${count} 条删除请求，任务已进入审核流程：陆雅静（产业管理）→ 汪李琼（考核），两节点通过后将自动入库；审核通过/驳回会通过钉钉通知`, 'success');
     });
 
-    /* ------ 导出按钮 / 我的导出任务 ------ */
+    /* ------ 导出按钮 ------ */
     const exportBtn = document.getElementById('exportRewardBtn');
     const exportDropdown = document.getElementById('exportDropdown');
 
@@ -1283,16 +1250,18 @@
     function openExportDropdown() { exportDropdown.style.display = 'block'; }
 
     /* ----- 真实导出：生成 xlsx 并触发下载 -----
-       列结构与 PRD V1.8 对齐：
-       - 当前查询导出：14 列（修改模板 7 列 + 物料名称 + 物料货主编码 + 物料货主名称 + 品牌名称 + 配置状态 + 最近更新人 + 最近更新时间）
-       - 全量导出：16 列（14 列 + 奖励配置 ID + 作废标记）
+       列结构与 PRD V2.5 对齐：
+       - 当前查询导出：15 列（修改模板 8 列 + 物料名称 + 物料货主编码 + 物料货主名称 + 品牌名称 + 配置状态 + 最近更新人 + 最近更新时间）
+       - 全量导出：17 列（15 列 + 奖励配置 ID + 作废标记）
     */
     const EXPORT_HEADERS_CURRENT = [
       '*物料编码', '物料名称', '物料货主编码', '物料货主名称', '品牌名称',
       '奖励有效期开始时间',
       '*奖励类型\n（1.项目奖励；2定额奖励；3比例奖励）',
       '奖励金额', '奖励比例(%)',
-      '奖励有效期结束时间', '奖励说明文案',
+      '奖励有效期结束时间',
+      '项目奖励标题',
+      '奖励说明文案',
       '配置状态', '最近更新人', '最近更新时间'
     ];
     const EXPORT_HEADERS_ALL = [
@@ -1300,12 +1269,14 @@
       '奖励有效期开始时间',
       '*奖励类型\n（1.项目奖励；2定额奖励；3比例奖励）',
       '奖励金额', '奖励比例(%)',
-      '奖励有效期结束时间', '奖励说明文案',
+      '奖励有效期结束时间',
+      '项目奖励标题',
+      '奖励说明文案',
       '配置状态', '最近更新人', '最近更新时间',
       '奖励配置 ID', '作废标记'
     ];
-    const EXPORT_WIDTHS_CURRENT = [14, 22, 14, 28, 18, 22, 28, 12, 12, 22, 32, 12, 12, 20];
-    const EXPORT_WIDTHS_ALL     = [14, 22, 14, 28, 18, 22, 28, 12, 12, 22, 32, 12, 12, 20, 22, 12];
+    const EXPORT_WIDTHS_CURRENT = [14, 22, 14, 28, 18, 22, 28, 12, 12, 22, 28, 32, 12, 12, 20];
+    const EXPORT_WIDTHS_ALL     = [14, 22, 14, 28, 18, 22, 28, 12, 12, 22, 28, 32, 12, 12, 20, 22, 12];
 
     const REWARD_TYPE_TO_CODE = { '项目奖励': 1, '定额奖励': 2, '比例奖励': 3 };
 
@@ -1321,6 +1292,7 @@
         r.amountNum === '' ? '' : r.amountNum,
         r.ratioNum === '' ? '' : r.ratioNum,
         r.endDate,
+        r.rewardTitle || '',
         r.description || '',
         r.status,
         r.updater,
@@ -1372,6 +1344,7 @@
         ['奖励金额', 'Decimal(18,2)', '条件', '仅定额奖励填写'],
         ['奖励比例(%)', 'Decimal(8,4)', '条件', '仅比例奖励填写'],
         ['奖励有效期结束时间', 'Date(yyyy-MM-dd)', 'N', '回传批量修改模板时留空 = 不改'],
+        ['项目奖励标题', 'String(50)', '条件', '仅"项目奖励"必填且 1~50 字；不限文本类型；商城前台紧跟「项目奖励」标签展示'],
         ['奖励说明文案', 'String(500)', 'N', '最大 500 字；支持 http/https 链接地址，商城前台自动渲染为可点击超链接'],
         ['配置状态', 'Enum', 'N', '系统计算列；回传时被忽略'],
         ['最近更新人', 'String', 'N', '系统列；回传时被忽略'],
@@ -1427,17 +1400,12 @@
       if (!item) return;
       const type = item.dataset.exportType;
       closeExportDropdown();
-      if (type === '任务') {
-        renderExportTasks();
-        openModal('modalExportTasks');
-      } else if (type === '当前查询') {
+      if (type === '当前查询') {
         // ≤5000 行走同步导出 → 立即生成 xlsx
         doExport('current');
       } else if (type === '全部') {
         // 全量同步生成 xlsx（mock 数据量 10 行远小于 5000 阈值）
-        // 同时模拟一条"我的导出任务"成功记录便于演示
         doExport('all');
-        addExportTask('导出全部（含已失效/已删除）', '成功');
       }
     });
 
@@ -1446,60 +1414,11 @@
       window.location.href = '咸亨产品奖励管理操作历史.html';
     });
 
-    // 我的导出任务 mock 数据
-    const exportTasksMock = [
-      { name: '导出全部（含已失效/已删除）', mode: 'all', type: '异步', status: '处理中', progress: 38, submitted: '2026-05-18 09:12', expire: '-' },
-      { name: '导出当前查询（筛选: 生效中）', mode: 'current', type: '异步', status: '成功', progress: 100, submitted: '2026-05-17 17:20', expire: '2026-05-24' },
-      { name: '导出全部（含已失效/已删除）', mode: 'all', type: '异步', status: '失败', progress: 0, submitted: '2026-05-16 11:05', expire: '-', error: '导出服务超时，请重试' },
-    ];
-
-    function addExportTask(name, status='处理中') {
-      const now = new Date();
-      const pad = n => String(n).padStart(2, '0');
-      const time = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-      const expire = status === '成功' ? `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate() + 7)}` : '-';
-      const mode = name.includes('全部') ? 'all' : 'current';
-      exportTasksMock.unshift({ name, mode, type: '异步', status, progress: status === '成功' ? 100 : 12, submitted: time, expire });
-    }
-
-    function renderExportTasks() {
-      const tbody = document.getElementById('exportTasksBody');
-      tbody.innerHTML = exportTasksMock.map((t, idx) => {
-        let statusTag = '';
-        if (t.status === '成功') statusTag = '<span class="tag tag-green">成功</span>';
-        else if (t.status === '失败') statusTag = '<span class="tag tag-red" title="' + (t.error || '') + '">失败</span>';
-        else statusTag = '<span class="tag tag-blue">处理中</span>';
-
-        let action = '';
-        if (t.status === '成功') action = `<a class="td-link" href="javascript:void(0)" data-task-action="download" data-task-idx="${idx}">下载</a><div class="muted" style="font-size:11px;">过期：${t.expire}</div>`;
-        else if (t.status === '失败') action = `<a class="td-link" href="javascript:void(0)" data-task-action="retry" data-task-idx="${idx}">重新发起</a>`;
-        else action = '<span class="muted">等待结果</span>';
-
-        return `<tr>
-          <td><div>${t.name}</div><div class="muted" style="font-size:11px;">${t.submitted}</div></td>
-          <td>${t.type}</td>
-          <td>${statusTag}</td>
-          <td>${t.status === '成功' ? '100%' : (t.status === '失败' ? '-' : t.progress + '%')}</td>
-          <td>${action}</td>
-        </tr>`;
-      }).join('');
-    }
-
-    document.getElementById('exportTasksBody').addEventListener('click', (ev) => {
-      const target = ev.target.closest('[data-task-action]');
-      if (!target) return;
-      const idx = Number(target.dataset.taskIdx);
-      const task = exportTasksMock[idx];
-      if (!task) return;
-      const action = target.dataset.taskAction;
-      if (action === 'download') {
-        // 真实下载：调用导出函数
-        doExport(task.mode, task.mode === 'all' ? '导出全部' : '导出当前查询');
-      } else if (action === 'retry') {
-        showMessage(`已重新发起：${task.name}`, 'success');
-        task.status = '处理中';
-        task.progress = 12;
-        renderExportTasks();
+    // 顶部导航「任务中心」入口（替代原"我的导出任务"弹窗）
+    document.querySelectorAll('.nav-item').forEach(nav => {
+      if (nav.dataset.name === '任务中心') {
+        nav.style.cursor = 'pointer';
+        nav.addEventListener('click', () => { window.location.href = '任务中心.html'; });
       }
     });
 
@@ -1512,7 +1431,6 @@
           doExport('current');
         } else if (jumpType === '全部') {
           doExport('all');
-          addExportTask('导出全部（含已失效/已删除）', '成功');
         }
       });
     });
@@ -1542,13 +1460,13 @@
     const TEMPLATE_DEFS = {
       '批量新增模板': {
         sheet: '批量新增',
-        headers: ['*物料编码', '物料名称', REWARD_TYPE_HEADER_REQ, '奖励金额', '奖励比例(%)', '*奖励有效期开始时间', '*奖励有效期结束时间', '奖励说明文案（≤500字，支持 http/https 链接）'],
+        headers: ['*物料编码', '物料名称', REWARD_TYPE_HEADER_REQ, '奖励金额', '奖励比例(%)', '*奖励有效期开始时间', '*奖励有效期结束时间', '项目奖励标题（≤50字，仅项目奖励必填）', '奖励说明文案（≤500字，支持 http/https 链接）'],
         examples: [
-          ['SKU-10001', 'PVC 管材', 1, '', '', '2026-06-01', '2026-12-31', '参与年度项目即享，方案详情：https://example.com/promo/PRJ-2026-001'],
-          ['SKU-10002', '配电箱', 2, 100.00, '', '2026-06-01', '2026-12-31', '满 X 件即享'],
-          ['SKU-10003', 'LED 灯具', 3, '', 5.0000, '2026-06-01', '2026-12-31', '按调拨价 5% 返利']
+          ['SKU-10001', 'PVC 管材', 1, '', '', '2026-06-01', '2026-12-31', '2026 年度装修工程项目奖励', '参与年度项目即享，方案详情：https://example.com/promo/PRJ-2026-001'],
+          ['SKU-10002', '配电箱', 2, 100.00, '', '2026-06-01', '2026-12-31', '', '满 X 件即享'],
+          ['SKU-10003', 'LED 灯具', 3, '', 5.0000, '2026-06-01', '2026-12-31', '', '按调拨价 5% 返利']
         ],
-        widths: [14, 18, 26, 12, 12, 22, 22, 36],
+        widths: [14, 18, 26, 12, 12, 22, 22, 28, 36],
         readme: [
           ['字段', '类型', '必填', '说明'],
           ['物料编码', 'String(32)', 'Y', '必须存在于 MPM 物料主数据；导入后系统自动联查物料货主编码、物料货主名称、品牌名称三字段'],
@@ -1558,24 +1476,26 @@
           ['奖励比例(%)', 'Decimal(8,4)', '条件', '仅"比例奖励"必填，> 0 且 ≤ 100；最多 4 位小数'],
           ['奖励有效期开始时间', 'Date(yyyy-MM-dd)', 'Y', '与同物料已有有效记录不得在时间区间上冲突'],
           ['奖励有效期结束时间', 'Date(yyyy-MM-dd)', 'Y', '不得早于开始时间'],
+          ['项目奖励标题', 'String(50)', '条件', '仅"项目奖励"必填且 1~50 字；不限文本类型（中英文/数字/符号/emoji 均可）；定额/比例奖励填写会被系统忽略并清空；商城前台紧跟「项目奖励」标签展示'],
           ['奖励说明文案', 'String(500)', 'N', '最大 500 字；支持 http/https 链接地址，商城前台自动渲染为可点击超链接（target="_blank"）；项目奖励建议填写'],
           [],
           ['注意事项', '', '', ''],
           ['1', '', '', '同一文件内可混合多种奖励类型（1/2/3 任意组合），按行独立校验'],
           ['2', '', '', '业务键 = 物料编码 + 奖励有效期开始时间，新增时若业务键已存在将报错'],
-          ['3', '', '', '同一物料同一时间段内仅允许一种奖励类型生效'],
+          ['3', '', '', '一个物料系统中有且仅有一条未删除奖励配置（一个类型 + 一段有效期）；如需调整请走"批量删除 + 批量新增"'],
           ['4', '', '', 'V1.8 变更：已移除项目编码列，项目奖励的项目归属请在"奖励说明文案"中自由描述并可附详情链接'],
           ['5', '', '', 'V1.10 变更：奖励类型 / 开始时间 / 结束时间均为必填，表头加 * 前缀；奖励类型填写枚举数字 1/2/3'],
+          ['6', '', '', 'V2.5 变更：新增「项目奖励标题」列（≤50字，仅项目奖励必填）；单批上限由 1000 行调整为 50000 行'],
         ]
       },
       '批量修改模板': {
         sheet: '批量修改',
-        headers: ['*物料编码', '奖励有效期开始时间', REWARD_TYPE_HEADER_REQ, '奖励金额', '奖励比例(%)', '奖励有效期结束时间', '奖励说明文案（≤500字，支持 http/https 链接）'],
+        headers: ['*物料编码', '奖励有效期开始时间', REWARD_TYPE_HEADER_REQ, '奖励金额', '奖励比例(%)', '奖励有效期结束时间', '项目奖励标题（≤50字）', '奖励说明文案（≤500字，支持 http/https 链接）'],
         examples: [
-          ['SKU-10002', '2026-06-01', 2, 120.00, '', '2026-12-31', ''],
-          ['SKU-10003', '2026-06-01', 3, '', 6.0000, '', '提升至 6% 返利，详情见 https://example.com/promo/RATIO-6']
+          ['SKU-10002', '2026-06-01', 2, 120.00, '', '2026-12-31', '', ''],
+          ['SKU-10003', '2026-06-01', 3, '', 6.0000, '', '', '提升至 6% 返利，详情见 https://example.com/promo/RATIO-6']
         ],
-        widths: [14, 22, 26, 12, 12, 22, 36],
+        widths: [14, 22, 26, 12, 12, 22, 28, 36],
         readme: [
           ['字段', '类型', '必填', '说明'],
           ['物料编码', 'String(32)', 'Y', '【业务键-定位用】不可被修改'],
@@ -1584,6 +1504,7 @@
           ['奖励金额', 'Decimal(18,2)', '条件', '仅当目标奖励类型为"定额奖励"时可填'],
           ['奖励比例(%)', 'Decimal(8,4)', '条件', '仅当目标奖励类型为"比例奖励"时可填'],
           ['奖励有效期结束时间', 'Date(yyyy-MM-dd)', 'N', '留空 = 不改；填写不得早于开始时间'],
+          ['项目奖励标题', 'String(50)', 'N', '留空 = 不改；填写 = 覆盖；最大 50 字；不限文本类型；目标奖励类型 = 项目奖励时本字段需有值；定额/比例奖励本字段值会被系统清空'],
           ['奖励说明文案', 'String(500)', 'N', '留空 = 不改；填写 = 覆盖；最大 500 字；支持 http/https 链接，前台自动渲染为可点击超链接'],
           [],
           ['修改语义', '', '', ''],
@@ -1592,6 +1513,7 @@
           ['3', '', '', '推荐工作流：先在列表"导出当前查询/导出全部"获取数据，回传到此模板'],
           ['4', '', '', 'V1.8 变更：已移除项目编码列；物料货主、品牌信息由系统按物料编码自动带出，无需在模板中维护'],
           ['5', '', '', 'V1.10 变更：奖励类型由"留空=不改"调整为必填，加 * 前缀；奖励类型填写枚举数字 1/2/3'],
+          ['6', '', '', 'V2.5 变更：新增「项目奖励标题」列（≤50字）；单批上限由 1000 行调整为 50000 行'],
         ]
       },
       '批量删除模板': {
@@ -1611,7 +1533,7 @@
           ['执行说明', '', '', ''],
           ['1', '', '', '系统执行逻辑作废，不做物理删除；历史记录完整保留'],
           ['2', '', '', '已处于"已删除"状态的记录再次执行删除会被忽略，不计入失败'],
-          ['3', '', '', '一次最大删除条数建议 ≤ 1000 行，超出请分批'],
+          ['3', '', '', '一次最大删除条数 ≤ 50000 行/批，超出请分批'],
         ]
       }
     };
@@ -1740,9 +1662,6 @@
         const allowedTabs = ['全部', '生效中', '异常'];
         if (allowedTabs.includes(target)) {
           syncStatusTab(target);
-        } else if (target === '即将到期') {
-          // 文档约定：即将到期仅作信息聚焦提示，不切换列表过滤
-          showMessage('即将到期仅作指标提示；如需查看具体到期物料，请使用筛选区"奖励有效期"范围条件', 'info');
         } else {
           showMessage(`已聚焦"${target}"指标（示例）`);
         }
