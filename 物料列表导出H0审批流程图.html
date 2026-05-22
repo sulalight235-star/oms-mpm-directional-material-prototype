@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>物料列表导出 H0 审批流程图 · MPM 4.7.0</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --primary: #1677ff;
+      --primary-bg: #e6f4ff;
+      --warning: #faad14;
+      --success: #52c41a;
+      --error: #ff4d4f;
+      --text-title: rgba(0,0,0,0.88);
+      --text-body: rgba(0,0,0,0.65);
+      --text-sub: rgba(0,0,0,0.45);
+      --border: #d9d9d9;
+      --border-light: #f0f0f0;
+      --bg: #f5f7fa;
+      --bg-card: #fff;
+      --radius: 8px;
+      --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      font-size: 14px;
+      color: var(--text-body);
+      background: var(--bg);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .back-bar {
+      background: #f0f4ff;
+      border-bottom: 1px solid #d6e4ff;
+      padding: 8px 16px;
+      font-size: 12px;
+      color: var(--primary);
+      text-align: center;
+    }
+    .back-bar a { color: var(--primary); font-weight: 600; cursor: pointer; }
+    .back-bar a:hover { text-decoration: underline; }
+    .top-tag {
+      background: var(--primary);
+      color: #fff;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin-right: 6px;
+      font-size: 11px;
+    }
+    .container { max-width: 1280px; margin: 0 auto; padding: 24px 20px 60px; }
+    h1 { font-size: 22px; color: var(--text-title); font-weight: 700; margin-bottom: 6px; }
+    .subtitle { font-size: 13px; color: var(--text-sub); margin-bottom: 20px; }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-title);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title::before {
+      content: "";
+      width: 3px;
+      height: 16px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+    .demo-toolbar {
+      background: #fffbe6;
+      border: 1px dashed #ffd591;
+      padding: 8px 14px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: #874d00;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .demo-toolbar strong { color: #874d00; }
+    .demo-toolbar button {
+      padding: 3px 10px;
+      border: 1px solid #ffd591;
+      background: #fff;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-body);
+    }
+    .demo-toolbar button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .demo-toolbar button:hover { border-color: var(--primary); color: var(--primary); }
+    .demo-toolbar button.active:hover { color: #fff; }
+    .mermaid-wrap {
+      background: #fafbfc;
+      border: 1px dashed #ddd;
+      border-radius: var(--radius);
+      padding: 20px;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+    }
+    .mermaid { font-family: -apple-system, "Microsoft YaHei", sans-serif !important; }
+    .node-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .node-card {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: #fafafa;
+    }
+    .node-card.applicant { border-top: 4px solid var(--primary); }
+    .node-card.manager { border-top: 4px solid var(--warning); }
+    .node-card.extra { border-top: 4px solid #722ed1; }
+    .node-card.system { border-top: 4px solid var(--success); }
+    .node-card.fail { border-top: 4px solid var(--error); }
+    .node-card-title { font-size: 14px; font-weight: 600; color: var(--text-title); margin-bottom: 4px; }
+    .node-card-role { font-size: 12px; color: var(--text-sub); margin-bottom: 8px; }
+    .node-card-desc { font-size: 12px; color: var(--text-body); line-height: 1.7; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+    thead th {
+      padding: 9px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-title);
+      background: #fafafa;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody td { padding: 9px 12px; vertical-align: top; border-bottom: 1px solid var(--border-light); }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: #fafafa; }
+    code {
+      background: #f6f6f6;
+      padding: 0 4px;
+      border-radius: 2px;
+      font-size: 12px;
+      color: #d46b08;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+    .tag-blue { color: #096dd9; border-color: #91d5ff; background: #e6f7ff; }
+    .tag-green { color: var(--success); border-color: #b7eb8f; background: #f6ffed; }
+    .tag-orange { color: #d46b08; border-color: #ffd591; background: #fff7e6; }
+    .tag-red { color: var(--error); border-color: #ffa39e; background: #fff1f0; }
+    .tag-purple { color: #531dab; border-color: #d3adf7; background: #f9f0ff; }
+    .tag-grey { color: var(--text-sub); border-color: #d9d9d9; background: #fafafa; }
+    .notify-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .notify-card {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      background: #fffbe6;
+    }
+    .notify-head { font-size: 13px; font-weight: 600; color: #874d00; margin-bottom: 6px; }
+    .notify-body {
+      font-size: 12px;
+      color: var(--text-body);
+      background: #fff;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border-left: 3px solid #ffd591;
+    }
+    .legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+    .footer { text-align: center; color: var(--text-sub); font-size: 12px; margin-top: 24px; }
+    @media (max-width: 980px) {
+      .node-grid, .notify-list { grid-template-columns: repeat(2, 1fr); }
+      .container { padding-left: 14px; padding-right: 14px; }
+    }
+    @media (max-width: 640px) {
+      .node-grid, .notify-list { grid-template-columns: 1fr; }
+      .card { padding: 16px; }
+      h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="back-bar">
+    <span class="top-tag">原型预览</span>
+    MPM 4.7.0 · 物料列表导出 H0 审批流程（PRD V1.12 · §5.10）
+    <span style="margin: 0 10px; color: #aaa;">|</span>
+    <a onclick="history.back()">返回上一页</a>
+  </div>
+
+  <div class="container">
+    <h1>物料列表导出 H0 审批业务流程图</h1>
+    <div class="subtitle">对应 PRD §5.10：所有物料列表导出先审批，部门经理必审，非目标部门经理通过后追加万聚商品部门-张银群审核。</div>
+
+    <div class="demo-toolbar">
+      <strong>演示工具：</strong>
+      点击节点按钮，高亮当前流程位置：
+      <button data-step="A" class="active">① 发起导出</button>
+      <button data-step="C">② 待 H0 审批</button>
+      <button data-step="E">③ 部门经理审核</button>
+      <button data-step="H">④ 张银群审核</button>
+      <button data-step="K">⑤ 执行导出</button>
+      <button data-step="Z">驳回失败</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">主流程图</div>
+      <div class="mermaid-wrap">
+        <pre class="mermaid" id="mermaidChart">
+flowchart TD
+    A["① 用户在物料列表<br/>发起导出物料数据"]:::applicant
+    B["MPM 创建导出任务<br/>状态=待 H0 审批<br/>暂不执行导出"]:::system
+    C["发起 H0 审批<br/>提交任务类型 / 发起人 / 发起时间<br/>导出范围 / 导出数据量"]:::h0
+    D["H0 流转至<br/>发起人部门经理"]:::h0
+    E{"③ 部门经理审核<br/>必审，不可跳过"}:::manager
+    F{"部门经理所属部门<br/>是否为万聚商品部门<br/>或万聚商城部门？"}:::judge
+    G["不追加审核<br/>H0 审批通过"]:::pass
+    H["追加审核节点<br/>万聚商品部门-张银群"]:::extra
+    I{"④ 张银群审核"}:::extra
+    J["H0 回调 MPM<br/>审批通过"]:::h0
+    K["⑤ MPM 执行导出任务<br/>状态=待执行 / 执行中"]:::system
+    L["导出文件生成<br/>任务处理完成"]:::pass
+    M["记录审批日志<br/>任务类型 / 发起人 / 审核链路<br/>最终任务状态"]:::system
+    Z["任一节点驳回<br/>H0 通知任务发起人<br/>MPM 标记执行失败<br/>不执行导出"]:::fail
+    X["H0 审批异常或回调失败<br/>记录异常日志<br/>状态=执行失败 / 待重试"]:::fail
+
+    A --> B --> C --> D --> E
+    E -->|通过| F
+    E -->|驳回| Z
+    F -->|是| G --> J
+    F -->|否| H --> I
+    I -->|通过| J
+    I -->|驳回| Z
+    C -.回调异常.-> X
+    J --> K --> L --> M
+
+    classDef applicant fill:#e6f7ff,stroke:#1677ff,stroke-width:2px,color:#003a8c;
+    classDef system fill:#f6ffed,stroke:#52c41a,stroke-width:2px,color:#135200;
+    classDef h0 fill:#fff7e6,stroke:#faad14,stroke-width:2px,color:#874d00;
+    classDef manager fill:#fffbe6,stroke:#faad14,stroke-width:2px,color:#874d00;
+    classDef extra fill:#f9f0ff,stroke:#722ed1,stroke-width:2px,color:#391085;
+    classDef judge fill:#f0f5ff,stroke:#2f54eb,stroke-width:2px,color:#10239e;
+    classDef pass fill:#f6ffed,stroke:#52c41a,stroke-width:2px,color:#135200;
+    classDef fail fill:#fff1f0,stroke:#ff4d4f,stroke-width:2px,color:#a8071a;
+        </pre>
+      </div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#1677ff;"></span>发起人</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#faad14;"></span>H0 / 部门经理</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#722ed1;"></span>追加审核</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#52c41a;"></span>MPM / 通过</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#ff4d4f;"></span>失败 / 异常</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">流程节点说明</div>
+      <div class="node-grid">
+        <div class="node-card applicant">
+          <div class="node-card-title">导出发起人</div>
+          <div class="node-card-role">物料列表用户</div>
+          <div class="node-card-desc">发起筛选导出、外链价格导出、商城价导出、自定义导出或全部导出。发起后仅创建任务，不立即生成文件。</div>
+        </div>
+        <div class="node-card system">
+          <div class="node-card-title">MPM 任务中心</div>
+          <div class="node-card-role">导出任务承载方</div>
+          <div class="node-card-desc">保存任务类型、发起人、发起时间、导出范围、预计导出数量，并将任务置为“待 H0 审批”。</div>
+        </div>
+        <div class="node-card manager">
+          <div class="node-card-title">部门经理审核</div>
+          <div class="node-card-role">发起人部门经理</div>
+          <div class="node-card-desc">所有导出均必须审核。即使发起人属于万聚商品部门或万聚商城部门，也不得跳过部门经理节点。</div>
+        </div>
+        <div class="node-card extra">
+          <div class="node-card-title">张银群追加审核</div>
+          <div class="node-card-role">万聚商品部门</div>
+          <div class="node-card-desc">部门经理不属于万聚商品部门或万聚商城部门时追加。通过后才允许 MPM 执行导出任务。</div>
+        </div>
+        <div class="node-card fail">
+          <div class="node-card-title">驳回处理</div>
+          <div class="node-card-role">任一审批节点</div>
+          <div class="node-card-desc">H0 通知任务发起人；MPM 将导出任务标记为执行失败，并记录驳回人、时间、原因。</div>
+        </div>
+        <div class="node-card system">
+          <div class="node-card-title">导出执行</div>
+          <div class="node-card-role">审批通过后触发</div>
+          <div class="node-card-desc">审批通过前不执行导出；通过后按既有任务中心逻辑进入待执行、执行中、执行完成或执行失败。</div>
+        </div>
+        <div class="node-card system">
+          <div class="node-card-title">审计日志</div>
+          <div class="node-card-role">全链路追溯</div>
+          <div class="node-card-desc">记录发起人、部门、任务类型、审批人、是否追加张银群、审核意见、最终任务状态。</div>
+        </div>
+        <div class="node-card fail">
+          <div class="node-card-title">异常补偿</div>
+          <div class="node-card-role">H0 回调异常</div>
+          <div class="node-card-desc">审批异常或回调失败时记录异常日志，任务状态进入执行失败或待重试，具体补偿策略由研发方案确认。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">哪些导出需要 H0 审批</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:34%;">导出动作</th>
+            <th style="width:18%;">是否审批</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>筛选条件导出</strong></td><td><span class="tag tag-orange">需要 H0 审批</span></td><td>按当前查询条件导出物料数据，审批通过前不生成文件。</td></tr>
+          <tr><td><strong>外链价格导出</strong></td><td><span class="tag tag-orange">需要 H0 审批</span></td><td>任务类型在 H0 审批页展示为外链价格导出。</td></tr>
+          <tr><td><strong>商城价导出</strong></td><td><span class="tag tag-orange">需要 H0 审批</span></td><td>任务类型在 H0 审批页展示为商城价导出。</td></tr>
+          <tr><td><strong>自定义导出</strong></td><td><span class="tag tag-orange">需要 H0 审批</span></td><td>需展示自定义导出范围和预计导出数据量。</td></tr>
+          <tr><td><strong>全部导出</strong></td><td><span class="tag tag-red">需要 H0 审批</span></td><td>数据范围最大，审批链路与其他导出一致。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">H0 审批页展示字段</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:18%;">字段</th>
+            <th style="width:22%;">字段名称</th>
+            <th style="width:10%;">必填</th>
+            <th>展示说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>taskType</code></td><td>任务类型</td><td><span class="tag tag-red">Y</span></td><td>外链价格导出、商城价导出、自定义导出、全部导出等。</td></tr>
+          <tr><td><code>applyUserName</code></td><td>发起人</td><td><span class="tag tag-red">Y</span></td><td>导出任务发起人姓名。</td></tr>
+          <tr><td><code>applyUserNo</code></td><td>发起人工号</td><td><span class="tag tag-red">Y</span></td><td>用于审批、通知、日志追溯。</td></tr>
+          <tr><td><code>applyDeptName</code></td><td>发起部门</td><td><span class="tag tag-red">Y</span></td><td>展示发起人所属部门，用于审核人判断。</td></tr>
+          <tr><td><code>applyTime</code></td><td>发起时间</td><td><span class="tag tag-red">Y</span></td><td>导出任务发起时间。</td></tr>
+          <tr><td><code>exportScope</code></td><td>导出范围</td><td><span class="tag tag-grey">N</span></td><td>筛选导出、勾选导出、全部导出等。</td></tr>
+          <tr><td><code>exportCount</code></td><td>导出数据量</td><td><span class="tag tag-grey">N</span></td><td>本次预计导出的物料数量。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">任务状态机</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:24%;">场景</th>
+            <th style="width:18%;">H0 审批状态</th>
+            <th style="width:18%;">系统任务状态</th>
+            <th>后续动作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>任务创建并发起 H0</td>
+            <td><span class="tag tag-blue">审批中</span></td>
+            <td><span class="tag tag-grey">待 H0 审批</span></td>
+            <td>暂不执行导出。</td>
+          </tr>
+          <tr>
+            <td>部门经理通过，且属于万聚商品部门/万聚商城部门</td>
+            <td><span class="tag tag-green">审批通过</span></td>
+            <td><span class="tag tag-orange">待执行 / 执行中</span></td>
+            <td>不追加审核，执行导出任务。</td>
+          </tr>
+          <tr>
+            <td>部门经理通过，但不属于万聚商品部门/万聚商城部门</td>
+            <td><span class="tag tag-purple">追加审批中</span></td>
+            <td><span class="tag tag-blue">待追加审核</span></td>
+            <td>流转至万聚商品部门-张银群。</td>
+          </tr>
+          <tr>
+            <td>张银群审核通过</td>
+            <td><span class="tag tag-green">审批通过</span></td>
+            <td><span class="tag tag-orange">待执行 / 执行中</span></td>
+            <td>执行导出任务。</td>
+          </tr>
+          <tr>
+            <td>任一审批节点驳回</td>
+            <td><span class="tag tag-red">审批驳回</span></td>
+            <td><span class="tag tag-red">执行失败</span></td>
+            <td>H0 通知任务发起人，MPM 不执行导出。</td>
+          </tr>
+          <tr>
+            <td>H0 审批异常或回调失败</td>
+            <td><span class="tag tag-red">审批异常</span></td>
+            <td><span class="tag tag-red">执行失败 / 待重试</span></td>
+            <td>记录异常日志，补偿策略由研发方案确认。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">通知模板模拟</div>
+      <div class="notify-list">
+        <div class="notify-card">
+          <div class="notify-head">任务发起后通知部门经理</div>
+          <div class="notify-body">您有一条《MPM 物料列表导出任务》待审，任务类型：<code>{taskType}</code>，发起人：<code>{applyUserName}</code>，发起时间：<code>{applyTime}</code>。</div>
+        </div>
+        <div class="notify-card">
+          <div class="notify-head">追加审核通知张银群</div>
+          <div class="notify-body">部门经理已通过《MPM 物料列表导出任务》，因部门不属于万聚商品部门/万聚商城部门，请继续审核。</div>
+        </div>
+        <div class="notify-card">
+          <div class="notify-head">任一节点驳回通知发起人</div>
+          <div class="notify-body">您发起的《物料列表导出任务 <code>{taskNo}</code>》被 <code>{approverName}</code> 驳回，原因：<code>{rejectReason}</code>，任务已标记执行失败。</div>
+        </div>
+        <div class="notify-card">
+          <div class="notify-head">审批通过后任务状态通知</div>
+          <div class="notify-body">您发起的《物料列表导出任务 <code>{taskNo}</code>》已审批通过，系统正在生成导出文件，请在任务中心查看处理结果。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">MPM ↔ H0 接口字段速览</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:18%;">方向</th>
+            <th style="width:24%;">接口 / 事件</th>
+            <th>关键字段</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-blue">MPM → H0</span></td>
+            <td><code>POST /h0/approval/start</code><br />发起审批</td>
+            <td><code>bizSystem</code> / <code>bizTaskId</code> / <code>taskType</code> / <code>applyUserName</code> / <code>applyUserNo</code> / <code>applyDeptName</code> / <code>applyTime</code> / <code>exportScope</code> / <code>exportCount</code> / <code>callbackUrl</code></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-orange">H0 → MPM</span></td>
+            <td><code>POST {callbackUrl}</code><br />审批回调</td>
+            <td><code>flowId</code> / <code>bizTaskId</code> / <code>eventType</code> / <code>currentNode</code> / <code>approverName</code> / <code>approverDeptName</code> / <code>decision</code> / <code>decisionComment</code> / <code>track[]</code></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-green">MPM 内部</span></td>
+            <td>审批通过后执行导出</td>
+            <td>根据 H0 回调结果更新任务状态；通过后生成文件，驳回后标记执行失败。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer">PRD V1.12 · §5.10 · 业务流程原型 · 仅供内部评审</div>
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "default",
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: "basis",
+        nodeSpacing: 35,
+        rankSpacing: 50
+      },
+      themeVariables: {
+        fontFamily: '-apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif',
+        fontSize: "13px"
+      }
+    });
+
+    const STEP_NODES = {
+      A: "用户在物料列表",
+      C: "发起 H0 审批",
+      E: "部门经理审核",
+      H: "万聚商品部门-张银群",
+      K: "执行导出任务",
+      Z: "任一节点驳回"
+    };
+
+    function highlightNode(keyword) {
+      document.querySelectorAll("#mermaidChart svg .node").forEach(node => {
+        node.style.outline = "";
+        node.style.outlineOffset = "";
+      });
+      document.querySelectorAll("#mermaidChart svg .node").forEach(node => {
+        const text = node.textContent || "";
+        if (text.includes(keyword)) {
+          node.style.outline = "3px solid #ff4d4f";
+          node.style.outlineOffset = "4px";
+          node.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      });
+    }
+
+    document.querySelectorAll(".demo-toolbar button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".demo-toolbar button").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        const keyword = STEP_NODES[button.dataset.step];
+        if (keyword) setTimeout(() => highlightNode(keyword), 100);
+      });
+    });
+
+    window.addEventListener("load", () => {
+      setTimeout(() => highlightNode(STEP_NODES.A), 500);
+    });
+  </script>
+</body>
+</html>
