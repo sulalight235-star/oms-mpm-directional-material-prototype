@@ -669,7 +669,7 @@
             </div>
           </div>
           <div class="form-item">
-            <div class="form-label"><span style="color:var(--text-sub);" title="未询价时显示"待询价"">ⓘ</span> 项目调拨参考价</div>
+            <div class="form-label"><span class="change-badge">本次新增<span class="change-tip"><b>同步规则</b><br/>由 <b>IQS 系统</b>每日凌晨 00:00~06:00 批次同步<br/>拉取前一天完结项目对应物料的项目调拨参考价<br/><b>记录规则</b>:取值 0.01 不追加记录;其他取值新增价格记录并更新最新值<br/><b>操作人</b>:root;时间记录为同步成功时间<br/>来源:PRD V1.4(2026-05-11)</span></span><span style="color:var(--text-sub);" title="未询价时显示&quot;待询价&quot;">ⓘ</span> 项目调拨参考价</div>
             <div class="input-addon">
               <input class="f-input" readonly placeholder="待询价" style="flex:1;color:var(--text-sub);" />
               <span class="input-suffix">元</span>
@@ -696,7 +696,7 @@
           <input class="f-input" placeholder="请输入" />
         </div>
         <div class="form-item">
-          <div class="form-label">对外最高成交价</div>
+          <div class="form-label"><span class="change-badge">本次新增<span class="change-tip"><b>同步规则</b><br/>由 <b>SAP 接口</b>每月结账之后凌晨 00:00~06:00 批次同步<br/>拉取上一月时间范围内,当前物料所在货主的最高对外成交价<br/><b>同步逻辑</b>:等同对内最新成本价(组织间开票价)<br/><b>字段名</b>:保持"对外最高成交价"不变,不再以人工维护或外部录入作为主口径<br/><b>操作人</b>:root;时间记录为同步成功时间<br/>来源:PRD V1.6(2026-05-21)</span></span>对外最高成交价</div>
           <div class="input-addon">
             <input class="f-input" placeholder="请输入" style="flex:1;" />
             <span class="input-suffix">元</span>
@@ -741,14 +741,18 @@
         </div>
       </div>
 
-      <!-- 成本运费 + 检测费 -->
+      <!-- 成本运费 + 收货地址 + 检测费 -->
       <div class="form-grid-4" style="margin-bottom:12px;">
         <div class="form-item span2">
-          <div class="form-label"><span class="req">*</span> 成本是否含运费</div>
+          <div class="form-label"><span class="req">*</span> <span class="change-badge">本次修订<span class="change-tip"><b>同步规则(V1.7)</b><br/>由 <b>IQS 客户报价清单</b>每日凌晨批次反写,与项目调拨参考价同窗口<br/><b>条件 A</b>:IQS 地址非空 AND 包邮=是 → 自动写入【含运费】<br/><b>覆盖策略</b>:以 IQS 为权威,反写覆盖人工值,本期不支持反向回退<br/><b>联动</b>:含运费=是 时 → 收货地址必有值(IQS 地址或兜底"海宁库")<br/>来源:PRD V1.7(2026-05-21)</span></span> 成本是否含运费</div>
           <div class="radio-group">
             <label class="radio-item"><input type="radio" name="freight" checked /> 不含</label>
             <label class="radio-item"><input type="radio" name="freight" /> 含运费</label>
           </div>
+        </div>
+        <div class="form-item span2">
+          <div class="form-label"><span class="change-badge">本次新增<span class="change-tip"><b>字段来源(V1.7 新增)</b><br/>MPM 详情页"成本是否含运费"字段后新增<br/><b>维护方式</b>:支持人工编辑 + IQS 客户报价清单自动反写<br/><b>反写条件 A</b>:IQS 地址非空 AND 包邮=是 → 写入 IQS 地址<br/><b>反写条件 B(兜底)</b>:IQS 交付地点为空 AND MPM 含运费=是 → 默认写入"海宁库"<br/><b>覆盖策略</b>:以 IQS 为权威,反写覆盖人工值<br/><b>操作人</b>:root;时间记录为同步成功时间<br/>来源:PRD V1.7(2026-05-21)</span></span> 收货地址</div>
+          <input class="f-input" placeholder="请输入收货地址(为空且含运费=是时,默认&quot;海宁库&quot;)" maxlength="200" />
         </div>
         <div class="form-item span2">
           <div class="form-label">检测费</div>
