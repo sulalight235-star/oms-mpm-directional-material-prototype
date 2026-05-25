@@ -135,54 +135,6 @@
     /* ── 主体 ── */
     .page { padding: 12px 16px 24px; }
 
-    /* ── 奖励数据汇总（自工作台移入） ── */
-    .reward-stats {
-      background: var(--bg-container);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      margin-bottom: 12px;
-      padding: 6px 0;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .reward-stat-item {
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-right: 1px solid var(--border-light);
-      cursor: pointer;
-      transition: background .2s;
-    }
-    .reward-stat-item:last-child { border-right: 0; }
-    .reward-stat-item:hover { background: #fafafa; }
-    .reward-stat-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius-sm);
-      display: grid;
-      place-items: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-    .reward-stat-icon.blue   { background: var(--primary-bg); color: var(--primary); }
-    .reward-stat-icon.green  { background: #f6ffed; color: var(--success); }
-    .reward-stat-icon.orange { background: #fff7e6; color: var(--warning); }
-    .reward-stat-icon.red    { background: #fff1f0; color: var(--error); }
-    .reward-stat-label {
-      font-size: 12px;
-      color: var(--text-sub);
-      margin-bottom: 4px;
-    }
-    .reward-stat-value {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text-title);
-      line-height: 1.2;
-      font-variant-numeric: tabular-nums;
-    }
-
     .filter-card {
       background: var(--bg-container);
       border: 1px solid var(--border-light);
@@ -283,8 +235,6 @@
     .action-guide-target {
       position: relative;
       border: 2px solid #fa8c16 !important;
-      background: #fff7e6 !important;
-      color: #fa8c16 !important;
       animation: guideButtonShake 1.8s ease-in-out infinite;
     }
 
@@ -682,31 +632,6 @@
 
   <!-- 主体 -->
   <main class="page">
-    <!-- 奖励数据汇总(自工作台移入) -->
-    <section class="reward-stats" id="rewardStats">
-      <div class="reward-stat-item" data-reward-filter="全部">
-        <div class="reward-stat-icon blue">🎁</div>
-        <div>
-          <div class="reward-stat-label">奖励配置总数</div>
-          <div class="reward-stat-value">186</div>
-        </div>
-      </div>
-      <div class="reward-stat-item" data-reward-filter="生效中">
-        <div class="reward-stat-icon green">✓</div>
-        <div>
-          <div class="reward-stat-label">当前生效中</div>
-          <div class="reward-stat-value">124</div>
-        </div>
-      </div>
-      <div class="reward-stat-item" data-reward-filter="异常">
-        <div class="reward-stat-icon red">!</div>
-        <div>
-          <div class="reward-stat-label">异常同步</div>
-          <div class="reward-stat-value">6</div>
-        </div>
-      </div>
-    </section>
-
     <!-- 筛选区 -->
     <section class="filter-card">
       <div class="filter-head">
