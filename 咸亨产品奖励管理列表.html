@@ -280,36 +280,100 @@
       gap: 8px;
     }
 
+    .action-guide-target {
+      position: relative;
+      border: 2px solid #fa8c16 !important;
+      background: #fff7e6 !important;
+      color: #fa8c16 !important;
+      animation: guideButtonShake 1.8s ease-in-out infinite;
+    }
+
+    .guide-arrow-wrap {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+      animation: guideFadeIn .3s ease;
+      z-index: 80;
+      white-space: nowrap;
+    }
+
+    .guide-arrow {
+      font-size: 18px;
+      color: #fa8c16;
+      animation: guideArrowBounce .8s ease infinite;
+      line-height: 1;
+    }
+
+    .guide-label {
+      background: #fa8c16;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 12px;
+      margin-top: 4px;
+      box-shadow: 0 2px 8px rgba(250,140,22,.35);
+    }
+
+    @keyframes guideButtonShake {
+      0%,100% { transform: translateX(0); }
+      15% { transform: translateX(-2px); }
+      30% { transform: translateX(2px); }
+      45% { transform: translateX(-1px); }
+      60% { transform: translateX(1px); }
+    }
+
+    @keyframes guideArrowBounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @keyframes guideFadeIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
     /* ── 状态切换 ── */
     .status-tabs {
-      padding: 12px 16px 0;
+      padding: 0 16px;
       display: flex;
-      gap: 10px;
+      align-items: center;
+      background: var(--bg-container);
+      border-bottom: 1px solid var(--border-light);
+      flex-wrap: wrap;
+      gap: 0;
     }
     .status-tab {
-      height: 32px;
-      padding: 0 16px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--bg-container);
-      color: var(--text-body);
+      height: 40px;
+      padding: 0 14px;
+      border: none;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: var(--text-sub);
       cursor: pointer;
       transition: .2s;
       font-size: 13px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      margin-bottom: -1px;
     }
-    .status-tab:hover { color: var(--primary); border-color: var(--primary); }
+    .status-tab:hover { color: var(--text-body); }
     .status-tab.active {
       color: var(--primary);
-      border-color: var(--primary);
-      background: var(--primary-bg);
+      border-bottom-color: var(--primary);
+      background: transparent;
       font-weight: 600;
     }
     .status-tab .count {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       height: 18px;
       min-width: 18px;
       padding: 0 5px;
@@ -647,12 +711,11 @@
     <section class="filter-card">
       <div class="filter-head">
         <div class="filter-title">筛选条件</div>
-        <div class="filter-tip">默认显示物料编码、物料名称、奖励类型、配置状态、奖励有效期</div>
       </div>
       <form id="rewardFilterForm" class="filter-grid reward-filter-grid" onsubmit="event.preventDefault();">
         <div class="filter-item">
           <label for="rewardCode">物料编码</label>
-          <input id="rewardCode" class="f-input" placeholder="请输入物料编码" />
+          <input id="rewardCode" class="f-input" placeholder="多个编码用英文逗号分隔" />
         </div>
         <div class="filter-item">
           <label for="rewardName">物料名称</label>
@@ -684,7 +747,6 @@
         <div class="filter-actions">
           <button class="btn btn-primary" type="button" id="rewardSearchBtn">查询</button>
           <button class="btn btn-default" type="button" id="rewardResetBtn">重置</button>
-          <button class="btn btn-default" type="button" id="rewardExpandBtn">展开</button>
         </div>
       </form>
     </section>
@@ -695,19 +757,42 @@
       <div class="summary-bar">
         <div class="summary-main">
           <div class="summary-title">咸亨产品奖励管理</div>
-          <div class="summary-desc">用于维护项目奖励、定额奖励、比例奖励</div>
         </div>
         <div class="toolbar-actions">
-          <button class="btn btn-default" type="button" id="importRewardBtn">批量导入</button>
-          <button class="btn btn-default" type="button" id="batchDeleteRewardBtn">批量删除</button>
+          <button class="btn btn-default action-guide-target" type="button" id="importRewardBtn">
+            批量导入
+            <span class="guide-arrow-wrap" id="rewardActionGuide">
+              <span class="guide-arrow">▼</span>
+              <span class="guide-label">点击进行批量导入</span>
+            </span>
+          </button>
+          <button class="btn btn-default action-guide-target" type="button" id="batchDeleteRewardBtn">
+            批量删除
+            <span class="guide-arrow-wrap">
+              <span class="guide-arrow">▼</span>
+              <span class="guide-label">点击进行批量删除</span>
+            </span>
+          </button>
           <div class="dropdown-wrap" style="position:relative;display:inline-block;">
-            <button class="btn btn-default" type="button" id="exportRewardBtn">导出 ▾</button>
+            <button class="btn btn-default action-guide-target" type="button" id="exportRewardBtn">
+              导出 ▾
+              <span class="guide-arrow-wrap">
+                <span class="guide-arrow">▼</span>
+                <span class="guide-label">点击导出数据</span>
+              </span>
+            </button>
             <div class="dropdown-menu" id="exportDropdown" style="display:none;position:absolute;right:0;top:calc(100% + 4px);min-width:160px;background:#fff;border:1px solid #d9d9d9;border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,0.08);z-index:50;overflow:hidden;">
               <div class="dropdown-item" data-export-type="当前查询" style="padding:8px 12px;font-size:13px;cursor:pointer;">导出当前查询</div>
-              <div class="dropdown-item" data-export-type="全部" style="padding:8px 12px;font-size:13px;cursor:pointer;border-top:1px solid #f0f0f0;">导出全部（含已失效/已删除）</div>
+              <div class="dropdown-item" data-export-type="全部" style="padding:8px 12px;font-size:13px;cursor:pointer;border-top:1px solid #f0f0f0;">导出全部</div>
             </div>
           </div>
-          <button class="btn btn-default" type="button" id="historyEntryBtn">操作历史</button>
+          <button class="btn btn-default action-guide-target" type="button" id="historyEntryBtn">
+            操作历史
+            <span class="guide-arrow-wrap">
+              <span class="guide-arrow">▼</span>
+              <span class="guide-label">点击查看操作历史</span>
+            </span>
+          </button>
         </div>
       </div>
 
@@ -750,7 +835,6 @@
               <th>配置状态</th>
               <th>更新时间</th>
               <th>更新人</th>
-              <th style="width: 140px;">操作</th>
             </tr>
           </thead>
           <tbody id="rewardTableBody"></tbody>
@@ -802,14 +886,7 @@
       </div>
       <div class="bulk-modal-body">
         <div class="bulk-tip" style="background:#fffbe6;border:1px solid #ffe58f;color:#874d00;padding:8px 12px;border-radius:4px;margin-bottom:12px;line-height:1.7;font-size:12px;">
-          💡 本期提供 <strong>3 个独立 Excel 模板</strong>：批量新增 / 批量修改 / 批量删除。修改与删除模板均使用「<strong>物料编码 + 奖励有效期开始时间</strong>」作为业务键定位记录。<br/>
-          ⚠ 业务键请勿手工修改；如需调整开始时间，请用"删除原记录 + 新增新记录"两步完成。修改类操作建议先在列表「导出当前查询/导出全部」获取数据，再回传至「批量修改模板」。<br/>
-          🔒 <strong>V1.9 审核流程：</strong>点击"执行"后任务<strong>不会直接入库</strong>，会进入两级审核（① 陆雅静 · 产业管理部门 → ② 汪李琼 · 考核部门）。两节点全部通过后系统自动入库；任意节点驳回则全单失败。审核进度与结果通过钉钉通知。详见 <a href="批量任务审核流程图.html" target="_blank" class="bulk-link">查看审核业务流程图</a>。<br/>
-          <span style="display:inline-block;margin-top:4px;">
-            🔗 一键跳转：
-            <a href="javascript:void(0)" class="bulk-link" data-jump-export="当前查询" style="margin-right:12px;">去导出当前查询</a>
-            <a href="javascript:void(0)" class="bulk-link" data-jump-export="全部">去导出全部</a>
-          </span>
+          <strong>审核流程：</strong>点击"执行"后任务不会直接入库，会进入两级审核（① 陆雅静 · 产业管理部门 → ② 汪李琼 · 考核部门）。两节点全部通过后系统自动入库；任意节点驳回则全单失败。审核进度与结果通过钉钉通知。
         </div>
         <table class="bulk-table">
           <colgroup>
@@ -826,7 +903,7 @@
             <tr>
               <td>
                 <div><strong>批量新增模板</strong></div>
-                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码 / 奖励类型 / 奖励金额 / 奖励比例 / 有效期开始时间 / 有效期结束时间 / 说明文案（≤500字，支持 http/https 链接）。同一文件可混合多种奖励类型。物料货主、品牌由系统按物料编码自动联查带出，无需填写。</div>
+                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码 / 奖励类型 / 奖励金额 / 奖励比例 / 有效期开始时间 / 有效期结束时间 / 说明文案。</div>
               </td>
               <td><span class="bulk-link" data-tpl="批量新增模板">下载</span></td>
               <td>
@@ -839,7 +916,7 @@
             <tr>
               <td>
                 <div><strong>批量修改模板</strong></div>
-                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码（业务键）/ 有效期开始时间（业务键）/ 奖励类型 / 金额 / 比例 / 有效期结束时间 / 说明文案（≤500字，支持 http/https 链接）。留空 = 不改；填写 = 覆盖；支持跨类型切换。</div>
+                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码 / 有效期开始时间 / 奖励类型 / 金额 / 比例 / 有效期结束时间 / 说明文案。</div>
               </td>
               <td><span class="bulk-link" data-tpl="批量修改模板">下载</span></td>
               <td>
@@ -852,13 +929,13 @@
             <tr>
               <td>
                 <div><strong>批量删除模板</strong></div>
-                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码（业务键）/ 有效期开始时间（业务键）/ 删除原因（选填，≥50 行强制要求填写）。执行逻辑删除，历史保留可追溯。</div>
+                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码 / 有效期开始时间 / 删除原因。</div>
               </td>
               <td><span class="bulk-link" data-tpl="批量删除模板">下载</span></td>
               <td>
                 <div class="bulk-action">
                   <span class="bulk-link" data-file-pick>选择文件</span>
-                  <span class="bulk-link" data-exec="批量删除（导入）">执行</span>
+                  <span class="bulk-link" data-exec="批量删除">执行</span>
                 </div>
               </td>
             </tr>
@@ -868,27 +945,26 @@
     </div>
   </div>
 
-  <!-- 批量删除弹窗（列表多选触发的二次确认） -->
+  <!-- 批量删除弹窗 -->
   <div class="modal-mask" id="modalDelete" data-modal>
-    <div class="bulk-modal" style="max-width:520px;">
+    <div class="bulk-modal" style="max-width:560px;">
       <div class="bulk-modal-header">
         批量删除
         <span class="modal-close" data-modal-close>×</span>
       </div>
-      <div class="bulk-modal-body">
+      <div class="bulk-modal-body" style="padding-left:24px;padding-right:24px;">
         <div style="margin-bottom:12px;font-size:13px;">
           已选 <strong id="deleteSelectedCount" style="color:#cf1322;">0</strong> 条奖励配置准备执行<strong>逻辑删除</strong>。
         </div>
         <div style="background:#fff1f0;border:1px solid #ffa39e;color:#820014;padding:10px 12px;border-radius:4px;line-height:1.7;font-size:12px;margin-bottom:12px;">
-          <div style="font-weight:600;margin-bottom:4px;">⚠ 删除将走两级审核，审核通过后立即生效，影响范围：</div>
-          • <strong>V1.9 审核流程：</strong>① 陆雅静（产业管理部门）→ ② 汪李琼（考核部门）；两节点通过自动入库，任意驳回则全单失败；<br/>
-          • 商城前台<strong>立即隐藏</strong>对应奖励 Banner（已删除是商城唯一隐藏触发）；<br/>
+          <div style="font-weight:600;margin-bottom:4px;">⚠ 删除审核通过后立即生效，影响范围：</div>
+          • 商城前台<strong>立即隐藏</strong>对应奖励 Banner；<br/>
           • BI 不再将其计入"当前生效"汇总；<br/>
-          • <strong>历史记录会完整保留</strong>（操作历史中可追溯，含删除前的全部字段值）；<br/>
+          • <strong>历史记录会完整保留</strong>；<br/>
           • 如需恢复，请通过批量新增模板重新创建一条新的奖励配置。
         </div>
         <div style="margin-bottom:12px;">
-          <label style="display:block;font-size:12px;color:#595959;margin-bottom:4px;">删除原因（选填，≥50 条时强制要求填写）</label>
+          <label style="display:block;font-size:12px;color:#595959;margin-bottom:4px;">删除原因</label>
           <textarea id="deleteReason" rows="3" maxlength="200" placeholder="例如：政策调整、奖励周期结束、配置错误等" style="width:100%;border:1px solid #d9d9d9;border-radius:4px;padding:6px 8px;font-size:12px;resize:vertical;"></textarea>
         </div>
         <div style="margin-bottom:16px;font-size:12px;">
@@ -1097,16 +1173,6 @@
       return `<span class="tag ${cls || ''}">${label}</span>`;
     }
 
-    function rowActionsHtml(row) {
-      const needRetry = row.mallSync === '失败' || row.biSync === '失败';
-      const historyLink = `<a class="td-link" href="javascript:void(0)" data-row-action="history" data-code="${row.code}">历史</a>`;
-      if (needRetry) {
-        const retryLink = `<a class="td-link" href="javascript:void(0)" data-row-action="retry" data-code="${row.code}">重试同步</a>`;
-        return `${retryLink} <span class="muted">|</span> ${historyLink}`;
-      }
-      return historyLink;
-    }
-
     function renderRows() {
       tableBody.innerHTML = '';
       if (!state.filtered.length) {
@@ -1140,7 +1206,6 @@
           <td>${tagHtml(row.status, row.statusTag)}</td>
           <td>${row.updated}</td>
           <td>${row.updater || '<span class="muted">-</span>'}</td>
-          <td>${rowActionsHtml(row)}</td>
         `;
         frag.appendChild(tr);
       });
@@ -1152,6 +1217,7 @@
     /* ------ 过滤 ------ */
     function applyFilter() {
       const code = document.getElementById('rewardCode').value.trim();
+      const codeList = code.split(',').map(item => item.trim()).filter(Boolean);
       const name = document.getElementById('rewardName').value.trim();
       const type = document.getElementById('rewardType').value;
       const statusField = document.getElementById('rewardStatus').value;
@@ -1161,7 +1227,7 @@
         if (row.status === '已删除' && statusField !== '已删除') return false;
         if (state.status === '生效中' && row.status !== '生效中') return false;
         if (state.status === '异常' && !row.isError) return false;
-        if (code && !row.code.includes(code)) return false;
+        if (codeList.length && !codeList.some(item => row.code.includes(item))) return false;
         if (name && !row.name.includes(name)) return false;
         if (type && row.type !== type) return false;
         if (statusField && row.status !== statusField) return false;
@@ -1328,7 +1394,7 @@
       // 第 2 个 Sheet：导出说明
       const readme = [
         ['导出说明', '', '', ''],
-        ['模式', '', '', mode === 'all' ? '导出全部（含已失效、已删除）' : '导出当前查询（按当前列表筛选条件）'],
+        ['模式', '', '', mode === 'all' ? '导出全部' : '导出当前查询'],
         ['导出条数', '', '', String(rows.length)],
         ['生成时间', '', '', new Date().toLocaleString('zh-CN')],
         [],
@@ -1356,8 +1422,8 @@
         [],
         ['回传说明', '', '', ''],
         ['1', '', '', '此导出文件可直接补/改可改字段后，通过【批量导入 → 批量修改模板】回传'],
-        ['2', '', '', '业务键（物料编码 + 奖励有效期开始时间）请勿改动，否则将无法定位记录'],
-        ['3', '', '', '奖励类型必填，导出值为枚举数字 1/2/3，回传时保持一致即可（即使不切换类型也需填写当前类型）'],
+        ['2', '', '', '物料编码和奖励有效期开始时间用于定位记录'],
+        ['3', '', '', '奖励类型必填，导出值为枚举数字 1/2/3'],
         ['4', '', '', '如需将其中部分行执行删除：复制业务键到批量删除模板再回传'],
       ];
       const readmeWs = XLSX.utils.aoa_to_sheet(readme);
@@ -1637,10 +1703,6 @@
       applyFilter();
       showMessage('已重置筛选条件');
     });
-    document.getElementById('rewardExpandBtn').addEventListener('click', () => {
-      showMessage('已展开更多筛选（示例）');
-    });
-
     /* ------ 刷新 / 顶栏 / 页签 ------ */
     document.getElementById('refreshBtn').addEventListener('click', () => {
       applyFilter();
@@ -1677,12 +1739,11 @@
       item.addEventListener('click', () => showMessage(`已点击：${item.dataset.name}`));
     });
 
-    /* ------ 行内交互：查看/编辑走 href；重试同步拦截 ------ */
+    /* ------ 行内交互：勾选 ------ */
     tableBody.addEventListener('click', (event) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
 
-      // 行勾选
       if (target.classList.contains('reward-row-check')) {
         const code = target.dataset.code;
         if (target.checked) state.selected.add(code); else state.selected.delete(code);
@@ -1691,15 +1752,6 @@
           state.filtered.length > 0 &&
           state.filtered.every(r => state.selected.has(r.code));
         return;
-      }
-
-      const action = target.dataset.rowAction;
-      if (!action) return;
-      const code = target.dataset.code || '';
-      if (action === 'retry') {
-        showMessage(`已触发 ${code} 同步重试，稍后查看结果`, 'success');
-      } else if (action === 'history') {
-        window.location.href = `咸亨产品奖励管理操作历史.html?code=${encodeURIComponent(code)}`;
       }
     });
 

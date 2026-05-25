@@ -217,7 +217,6 @@
       <div class="page-head-left">
         <span class="back-btn" onclick="goPage('咸亨产品奖励管理列表.html')">← 返回奖励管理列表</span>
         <span class="page-title">操作历史</span>
-        <span class="page-subtitle">记录所有奖励配置变更（新增 / 修改 / 删除），可按物料、操作人、时间、操作类型筛选查阅</span>
       </div>
     </section>
 
@@ -225,7 +224,6 @@
     <section class="filter-card">
       <div class="filter-head">
         <div class="filter-title">筛选条件</div>
-        <div class="filter-tip">默认显示近 7 天；从列表行内"历史"跳转会自动按物料过滤</div>
       </div>
       <form id="historyFilterForm" class="filter-grid" onsubmit="event.preventDefault();">
         <div class="filter-item">
@@ -242,7 +240,7 @@
         </div>
         <div class="filter-item">
           <label for="fCode">物料编码</label>
-          <input id="fCode" class="f-input" placeholder="如 SKU-10001" />
+          <input id="fCode" class="f-input" placeholder="多个编码用英文逗号分隔" />
         </div>
         <div class="filter-item">
           <label for="fRewardType">奖励类型</label>
@@ -272,14 +270,9 @@
             <option>列表批量删除</option>
           </select>
         </div>
-        <div class="filter-item">
-          <label for="fBatch">批次号</label>
-          <input id="fBatch" class="f-input" placeholder="如 BAT-20260517-0021" />
-        </div>
         <div class="filter-actions" style="grid-column: span 4;">
           <button class="btn btn-primary" type="button" id="searchBtn">查询</button>
           <button class="btn btn-default" type="button" id="resetBtn">重置</button>
-          <button class="btn btn-default" type="button" id="exportBtn">导出记录</button>
         </div>
       </form>
     </section>
@@ -289,7 +282,9 @@
       <div class="summary-bar">
         <div class="summary-main">
           <div class="summary-title">变更记录</div>
-          <div class="summary-desc">默认按操作时间倒序；只读，不可编辑 / 删除；至少保留 5 年</div>
+        </div>
+        <div class="toolbar-actions">
+          <button class="btn btn-default" type="button" id="exportBtn">导出记录</button>
         </div>
       </div>
 
@@ -580,18 +575,17 @@
     /* ===== 筛选 ===== */
     function applyFilter() {
       const code = document.getElementById('fCode').value.trim();
+      const codeList = code.split(',').map(item => item.trim()).filter(Boolean);
       const operator = document.getElementById('fOperator').value.trim();
       const rewardType = document.getElementById('fRewardType').value;
       const opType = document.getElementById('fOpType').value;
       const opSource = document.getElementById('fOpSource').value;
-      const batch = document.getElementById('fBatch').value.trim();
       currentList = ALL_HISTORY.filter(r => {
-        if (code && !r.code.includes(code)) return false;
+        if (codeList.length && !codeList.some(item => r.code.includes(item))) return false;
         if (operator && !r.operator.includes(operator)) return false;
         if (rewardType && r.rewardType !== rewardType) return false;
         if (opType && r.opType !== opType) return false;
         if (opSource && r.opSource !== opSource) return false;
-        if (batch && (!r.batch || !r.batch.includes(batch))) return false;
         return true;
       });
       const filterParts = [];
