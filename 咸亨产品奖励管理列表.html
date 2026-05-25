@@ -723,13 +723,6 @@
               <div class="dropdown-item" data-export-type="全部" style="padding:8px 12px;font-size:13px;cursor:pointer;border-top:1px solid #f0f0f0;">导出全部</div>
             </div>
           </div>
-          <button class="btn btn-default action-guide-target" type="button" id="historyEntryBtn">
-            操作历史
-            <span class="guide-arrow-wrap">
-              <span class="guide-arrow">▼</span>
-              <span class="guide-label">点击查看操作历史</span>
-            </span>
-          </button>
         </div>
       </div>
 
@@ -1410,11 +1403,6 @@
         // 全量同步生成 xlsx（mock 数据量 10 行远小于 5000 阈值）
         doExport('all');
       }
-    });
-
-    // 操作历史按钮
-    document.getElementById('historyEntryBtn').addEventListener('click', () => {
-      window.location.href = '咸亨产品奖励管理操作历史.html';
     });
 
     // 顶部导航「任务中心」入口（替代原"我的导出任务"弹窗）
