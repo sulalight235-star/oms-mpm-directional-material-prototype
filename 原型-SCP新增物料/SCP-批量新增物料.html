@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>批量新增物料 · 咸亨国际供应商协同平台（SCP）</title>
+<style>
+  :root{
+    --primary:#1677ff; --primary-hover:#4096ff; --primary-active:#0958d9;
+    --header-bg:#1f2b5b; --error:#ff4d4f; --link:#1677ff;
+    --text-title:#1f2329; --text-body:#333; --text-sub:#86909c; --border:#e5e6eb;
+    --nav-active-bg:#eaf2ff; --info-bg:#eef3ff; --info-border:#c7d8ff;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;color:var(--text-body);background:#f0f2f5;}
+  /* ── 顶部条 ── */
+  .topbar{height:48px;background:var(--header-bg);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 0 0 16px;position:fixed;top:0;left:0;right:0;z-index:30;}
+  .topbar .brand{font-size:16px;font-weight:600;letter-spacing:.5px;}
+  .topbar .right{display:flex;align-items:center;height:100%;}
+  .topbar .right .item{display:flex;align-items:center;gap:5px;padding:0 12px;height:100%;color:#dfe6f5;cursor:pointer;font-size:13px;}
+  .topbar .right .item:hover{color:#fff;}
+  .topbar .right .icon{position:relative;font-size:15px;}
+  .topbar .right .dot{position:absolute;top:-3px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--error);border:1.5px solid var(--header-bg);}
+  .topbar .clear{background:#e34d4d;height:100%;display:flex;align-items:center;padding:0 18px;cursor:pointer;font-weight:500;}
+  .topbar .clear:hover{background:#d83b3b;}
+  /* ── 布局 ── */
+  .layout{display:flex;padding-top:48px;height:100%;}
+  .sider{width:176px;background:#fff;border-right:1px solid var(--border);height:calc(100vh - 48px);overflow-y:auto;position:fixed;left:0;top:48px;bottom:0;}
+  .sider::-webkit-scrollbar{width:6px;} .sider::-webkit-scrollbar-thumb{background:#d9d9d9;border-radius:3px;}
+  .nav-item{display:flex;align-items:center;gap:8px;height:42px;padding:0 16px;color:var(--text-body);cursor:pointer;font-size:13px;position:relative;}
+  .nav-item .ic{width:16px;text-align:center;color:#8a94a6;}
+  .nav-item.group{font-weight:500;}
+  .nav-item.group .chev{margin-left:auto;color:#b0b6c0;font-size:11px;transition:.2s;}
+  .nav-item.group.open .chev{transform:rotate(180deg);}
+  .nav-item:hover{background:#f5f7fa;}
+  .sub{display:none;}
+  .sub.open{display:block;}
+  .sub .nav-item{padding-left:40px;height:38px;color:#4e5969;}
+  .sub .nav-item.active{background:var(--nav-active-bg);color:var(--primary);font-weight:500;}
+  .sub .nav-item.active::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary);}
+  /* ── 主区 ── */
+  .main{margin-left:176px;flex:1;display:flex;flex-direction:column;height:calc(100vh - 48px);}
+  .tabbar{display:flex;align-items:center;gap:2px;background:#eef1f7;padding:6px 10px 0;border-bottom:1px solid var(--border);}
+  .tab{display:flex;align-items:center;gap:8px;height:30px;padding:0 14px;background:#f7f8fa;border:1px solid var(--border);border-bottom:none;border-radius:4px 4px 0 0;color:#4e5969;cursor:pointer;font-size:13px;}
+  .tab .x{color:#b0b6c0;font-size:13px;}
+  .tab .x:hover{color:var(--error);}
+  .tab.active{background:#fff;color:var(--primary);font-weight:500;}
+  .tab.plain{background:transparent;border:none;color:#4e5969;}
+  .content{flex:1;overflow-y:auto;background:#fff;padding:20px 28px 90px;position:relative;}
+  /* ── 操作流程 ── */
+  .flow{background:var(--info-bg);border:1px solid var(--info-border);border-radius:6px;padding:16px 20px;display:flex;gap:12px;max-width:1180px;}
+  .flow .ic{color:var(--primary);font-size:20px;flex-shrink:0;line-height:1.4;}
+  .flow .title{font-weight:600;color:var(--text-title);margin-bottom:8px;font-size:14px;}
+  .flow .step{color:#4e5969;line-height:2;}
+  .flow .step b{color:var(--text-title);font-weight:500;}
+  .link{color:var(--link);cursor:pointer;}
+  .link:hover{text-decoration:underline;}
+  /* ── 表单 ── */
+  .form{max-width:1180px;margin-top:24px;}
+  .row{display:flex;align-items:flex-start;margin-bottom:22px;}
+  .label{width:96px;flex-shrink:0;text-align:right;padding-right:12px;color:var(--text-body);line-height:32px;}
+  .label .req{color:var(--error);margin-right:2px;}
+  .ctrl{flex:1;}
+  .radio{display:inline-flex;align-items:center;gap:6px;line-height:32px;cursor:pointer;}
+  .radio input{accent-color:var(--primary);width:15px;height:15px;}
+  .select{width:332px;height:32px;border:1px solid var(--border);border-radius:4px;background:#fff;display:flex;align-items:center;padding:0 10px;cursor:pointer;color:var(--text-sub);position:relative;user-select:none;}
+  .select.filled{color:var(--text-body);}
+  .select .arrow{margin-left:auto;color:#b0b6c0;font-size:11px;}
+  .select.invalid{border-color:var(--error);}
+  .dropdown{position:absolute;top:36px;left:0;width:332px;background:#fff;border:1px solid var(--border);border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,.12);z-index:20;display:none;overflow:hidden;}
+  .dropdown.show{display:block;}
+  .dropdown .opt{padding:8px 12px;cursor:pointer;color:var(--text-body);}
+  .dropdown .opt:hover{background:var(--nav-active-bg);color:var(--primary);}
+  .links-line{margin-top:10px;display:flex;flex-wrap:wrap;gap:18px;}
+  .links-line.tight{margin-top:8px;}
+  .btn-file{height:32px;padding:0 16px;border:1px solid var(--border);background:#fff;border-radius:4px;cursor:pointer;color:var(--text-body);}
+  .btn-file:hover{border-color:var(--primary);color:var(--primary);}
+  .hint{color:var(--text-sub);margin-left:12px;}
+  .file-chip{display:inline-flex;align-items:center;gap:6px;margin-left:12px;color:var(--primary);}
+  .file-chip .rm{color:#b0b6c0;cursor:pointer;}
+  .file-chip .rm:hover{color:var(--error);}
+  /* ── 底部操作条 ── */
+  .footer{position:fixed;right:0;bottom:0;left:176px;height:60px;background:#fff;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:0 28px;box-shadow:0 -2px 8px rgba(0,0,0,.04);z-index:20;}
+  .btn{height:34px;padding:0 22px;border-radius:4px;cursor:pointer;font-size:13px;border:1px solid var(--border);background:#fff;color:var(--text-body);}
+  .btn:hover{border-color:var(--primary);color:var(--primary);}
+  .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff;}
+  .btn-primary:hover{background:var(--primary-hover);color:#fff;}
+  /* ── Toast ── */
+  .toast-wrap{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:99;display:flex;flex-direction:column;gap:8px;align-items:center;}
+  .toast{background:#fff;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.16);padding:9px 16px;display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(-8px);transition:.25s;font-size:13px;}
+  .toast.show{opacity:1;transform:translateY(0);}
+  .toast .ti{font-weight:700;}
+  .toast.success .ti{color:#52c41a;} .toast.error .ti{color:var(--error);} .toast.info .ti{color:var(--primary);}
+  /* ── 上传附件弹窗（完全复用 文件管理·批量新增文件 样式）── */
+  .modal-mask{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:200;}
+  .modal-mask.show{display:flex;}
+  .modal-card{background:#fff;border-radius:8px;box-shadow:0 6px 16px rgba(0,0,0,0.12);width:520px;max-width:92vw;display:flex;flex-direction:column;overflow:hidden;}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #f0f0f0;}
+  .modal-head-title{font-size:15px;font-weight:600;color:var(--text-title);}
+  .modal-close{width:28px;height:28px;border:0;border-radius:4px;background:transparent;color:var(--text-sub);font-size:16px;cursor:pointer;}
+  .modal-close:hover{color:var(--text-body);background:#fafafa;}
+  .modal-body{padding:20px 24px;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 24px 20px;border-top:1px solid #f0f0f0;}
+  .modal-form-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;}
+  .modal-form-row .lbl{width:90px;flex-shrink:0;text-align:right;font-size:13px;color:var(--text-title);padding-top:2px;}
+  .modal-form-row .lbl-req::before{content:"* ";color:var(--error);}
+  .tpl-line{font-size:13px;color:var(--text-body);margin-bottom:12px;}
+  .tpl-line .tpl-link{color:var(--primary);cursor:pointer;}
+  .tpl-line .tpl-link:hover{text-decoration:underline;}
+  .upload-dragger{border:2px dashed var(--border);border-radius:8px;padding:24px 16px;text-align:center;cursor:pointer;background:#fafbfc;}
+  .upload-dragger:hover{border-color:var(--primary);background:#e6f4ff;}
+  .upload-icon{font-size:28px;color:var(--primary);}
+  .upload-text{margin-top:8px;font-size:13px;color:var(--text-title);}
+  .upload-hint{margin-top:4px;font-size:12px;color:var(--text-sub);line-height:1.6;}
+  .btn-default{background:#fff;border-color:var(--border);color:var(--text-body);}
+  .btn-default:hover{border-color:var(--primary);color:var(--primary);}
+  .attach-file-item{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#f6ffed;border:1px solid #b7eb8f;border-radius:4px;margin-bottom:6px;font-size:13px;}
+</style>
+</head>
+<body>
+  <!-- 顶部条 -->
+  <div class="topbar">
+    <div class="brand">咸亨国际供应商协同平台（SCP）</div>
+    <div class="right">
+      <div class="item" onclick="go('../index.html')" title="返回原型门户">🔄 切换系统</div>
+      <div class="item">更新通知</div>
+      <div class="item"><span class="icon">🔔<span class="dot"></span></span></div>
+      <div class="item"><span class="icon">📋<span class="dot"></span></span></div>
+      <div class="item">黄战领 ▾</div>
+      <div class="clear" onclick="toast('已清除当前会话标签','info')">清除</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- 左侧导航 -->
+    <aside class="sider">
+      <div class="nav-item" onclick="toast('原型仅演示物料管理相关页面','info')"><span class="ic">🏠</span>工作台</div>
+      <div class="nav-item" onclick="toast('原型仅演示物料管理相关页面','info')"><span class="ic">📢</span>咸亨公告</div>
+      <div class="nav-item group" onclick="toggleGroup(this)"><span class="ic">👤</span>基本信息<span class="chev">▾</span></div>
+      <div class="nav-item group open" onclick="toggleGroup(this)"><span class="ic">✉️</span>物料管理<span class="chev">▾</span></div>
+      <div class="sub open">
+        <div class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">项目物料提报管理</div>
+        <div class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">项目物料</div>
+        <div class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">我的物料</div>
+        <div class="nav-item" onclick="go('SCP-单个新增物料.html')">新增物料</div>
+        <div class="nav-item active">批量新增</div>
+        <div class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">待提交物料</div>
+        <div class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">我新增的品牌</div>
+        <div class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">我的申请</div>
+      </div>
+      <div class="nav-item group" onclick="toggleGroup(this)"><span class="ic">📄</span>订单管理<span class="chev">▾</span></div>
+      <div class="nav-item group" onclick="toggleGroup(this)"><span class="ic">👤</span>客户开票<span class="chev">▾</span></div>
+    </aside>
+
+    <!-- 主区 -->
+    <main class="main">
+      <div class="tabbar">
+        <div class="tab plain" onclick="toast('原型仅演示新增/批量新增','info')">工作台</div>
+        <div class="tab" onclick="go('SCP-单个新增物料.html')">新增物料 <span class="x">✕</span></div>
+        <div class="tab active">批量新增 <span class="x" onclick="event.stopPropagation();toast('原型页，关闭无效','info')">✕</span></div>
+        <div class="tab" onclick="toast('原型仅演示新增/批量新增','info')">任务中心 <span class="x">✕</span></div>
+      </div>
+
+      <div class="content">
+        <!-- 操作流程 -->
+        <div class="flow">
+          <div class="ic">ⓘ</div>
+          <div>
+            <div class="title">操作流程</div>
+            <div class="step">第一步：提前在系统内维护好品牌信息 <span class="link" onclick="toast('跳转品牌维护页（原型）','info')">前往维护</span></div>
+            <div class="step">第二步：物料附件提交导入，并通过任务结果获取文件地址链接 <span class="link" onclick="openModal('modalUploadAttach')">上传附件</span></div>
+            <div class="step">第三步：选择导入的物料类型，并下载模板（电商供应商物料需要勾选关联项目）</div>
+            <div class="step">第四步：上传图片文件，并导入商品模板 <span class="link" onclick="toast('打开导入规范说明（原型）','info')">查看导入规范</span></div>
+          </div>
+        </div>
+
+        <!-- 表单 -->
+        <div class="form">
+          <div class="row">
+            <div class="label"><span class="req">*</span>物料类型</div>
+            <div class="ctrl">
+              <label class="radio"><input type="radio" name="mtype" checked> 电商供应商物料</label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label"><span class="req">*</span>关联项目</div>
+            <div class="ctrl">
+              <div class="select" id="projSelect" onclick="toggleDropdown(event)">
+                <span id="projText">请选择关联项目</span><span class="arrow">▾</span>
+                <div class="dropdown" id="projDropdown">
+                  <div class="opt" onclick="pickProj(event,'2026 电商日常采购项目')">2026 电商日常采购项目</div>
+                  <div class="opt" onclick="pickProj(event,'咸亨商城自营补货项目')">咸亨商城自营补货项目</div>
+                  <div class="opt" onclick="pickProj(event,'劳保用品集采项目')">劳保用品集采项目</div>
+                  <div class="opt" onclick="pickProj(event,'电工仪表专项项目')">电工仪表专项项目</div>
+                </div>
+              </div>
+              <div class="links-line tight">
+                <span class="link" onclick="toast('预览品牌/单位/类目参考信息（原型）','info')">预览品牌/单位/类目参考信息</span>
+              </div>
+              <div class="links-line tight">
+                <span class="link" onclick="downloadImportTemplate()">下载导入模板</span>
+                <span class="link" onclick="download('客户分类.xlsx')">客户分类下载</span>
+                <span class="link" onclick="download('客户品牌.xlsx')">客户品牌下载</span>
+                <span class="link" onclick="download('客户标准库.xlsx')">客户标准库下载</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label">上传图片</div>
+            <div class="ctrl">
+              <button class="btn-file" onclick="document.getElementById('imgInput').click()">选择图片</button>
+              <span class="hint" id="imgHint">支持 bmp、gif、jpg、png、webp、heic，图片大小不高于 2M。最多 512 张图片，超出部分将上传失败</span>
+              <input type="file" id="imgInput" accept=".bmp,.gif,.jpg,.jpeg,.png,.webp,.heic" multiple hidden onchange="onImg(this)">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label"><span class="req">*</span>导入物料</div>
+            <div class="ctrl" id="fileCtrl">
+              <button class="btn-file" onclick="document.getElementById('xlsxInput').click()">选择文件</button>
+              <span class="hint">模板填写和上传说明，可以查看<span class="link" onclick="toast('打开商品导入帮助（原型）','info')">商品导入帮助</span></span>
+              <span id="fileChip"></span>
+              <input type="file" id="xlsxInput" accept=".xlsx,.xls" hidden onchange="onXlsx(this)">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label">上传附件</div>
+            <div class="ctrl">
+              <button class="btn-file" onclick="openModal('modalUploadAttach')">📤 上传附件</button>
+              <span class="hint">通过 zip + 附件管理文档批量上传资质等附件到 MPM OSS；导入物料时按附件管理文档自动关联</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部操作 -->
+      <div class="footer">
+        <button class="btn" onclick="toast('已取消，返回上一页（原型）','info')">取 消</button>
+        <button class="btn btn-primary" onclick="startImport()">开始导入</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- 上传附件弹窗（完全复用 文件管理·批量新增文件 弹窗） -->
+  <div class="modal-mask" id="modalUploadAttach">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-head-title">上传附件</div>
+        <button class="modal-close" onclick="closeModal('modalUploadAttach')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="tpl-line">
+          模板下载：<span class="tpl-link" onclick="downloadAttachTemplate()">下载「附件管理文档模板.csv」</span>
+        </div>
+        <div class="modal-form-row">
+          <span class="lbl lbl-req">上传方式</span>
+          <div style="flex:1;">
+            <label><input type="radio" name="attachMode" checked /> 走 MPM 文件上传组件(zip + 附件管理文档)</label>
+          </div>
+        </div>
+        <div class="upload-dragger" onclick="onMockUploadAttach()">
+          <div class="upload-icon">📤</div>
+          <div class="upload-text">点击或拖拽 zip 压缩包到此处</div>
+          <div class="upload-hint">
+            zip 内含批量文件（单包 ≤ 500MB）<br/>
+            附件管理文档 Excel ≤ 5000 行 · 列：文件名称 / 文件类型
+          </div>
+        </div>
+        <div id="attachFileList" style="margin-top:12px;"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-default" onclick="closeModal('modalUploadAttach')">取消</button>
+        <button class="btn btn-primary" onclick="onConfirmAttach()">提交</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+  const state = { proj:'', img:0, xlsx:'' };
+
+  function go(path){ window.location.href = path; }
+  function toggleGroup(el){
+    el.classList.toggle('open');
+    const sub = el.nextElementSibling;
+    if(sub && sub.classList.contains('sub')) sub.classList.toggle('open');
+  }
+  function toast(text,type='info'){
+    const map={success:'成功',error:'失败',info:'提示',warning:'注意'};
+    const w=document.getElementById('toastWrap');
+    const el=document.createElement('div');
+    el.className='toast '+type;
+    el.innerHTML='<span class="ti">'+(map[type]||'提示')+'</span><span>'+text+'</span>';
+    w.appendChild(el);
+    requestAnimationFrame(()=>el.classList.add('show'));
+    setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),250);},2600);
+  }
+  function download(name){ toast('已开始下载：'+name,'success'); }
+
+  /* ── 弹窗控制 ── */
+  function openModal(id){ document.getElementById(id).classList.add('show'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+  document.querySelectorAll('.modal-mask').forEach(m=>{
+    m.addEventListener('click',function(e){ if(e.target===this) this.classList.remove('show'); });
+  });
+
+  /* ── 上传附件（复用 文件管理·批量新增文件 逻辑）── */
+  function onMockUploadAttach(){
+    const names=['批量附件-202606.zip','资质附件包.zip'];
+    const i=document.querySelectorAll('#attachFileList .attach-file-item').length;
+    const name=names[i%names.length];
+    const div=document.createElement('div');
+    div.className='attach-file-item';
+    div.innerHTML='<span style="color:#52c41a;">✓</span><span style="flex:1;">'+name+'</span><span style="color:var(--text-sub);font-size:12px;">'+(i*120+86)+'.0MB · 上传完成</span>';
+    document.getElementById('attachFileList').appendChild(div);
+  }
+  function onConfirmAttach(){
+    const cnt=document.querySelectorAll('#attachFileList .attach-file-item').length;
+    if(cnt===0){ toast('请先上传 zip 压缩包','warning'); return; }
+    closeModal('modalUploadAttach');
+    document.getElementById('attachFileList').innerHTML='';
+    toast('已创建批量新增附件任务，可至「任务中心」查看进度','success');
+  }
+
+  /* ── CSV 真实下载 ── */
+  function downloadCSV(filename, rows){
+    const BOM='﻿';
+    const esc=v=>{ v=(v==null?'':String(v)); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; };
+    const csv=BOM+rows.map(r=>r.map(esc).join(',')).join('\r\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),500);
+    toast('已下载：'+filename,'success');
+  }
+  function downloadAttachTemplate(){
+    const headers=['文件名称(必填)','文件类型(必填,1=国家强制性产品认证试验报告 2=产品质量检验检测报告 3=检验检疫证明 4=特种劳动防护用品安全标志(LA) 5=其他自愿性认证)'];
+    const sample=['CCC认证报告-QF-A5.pdf','1'];
+    downloadCSV('附件管理文档模板.csv',[headers,sample]);
+  }
+  function downloadImportTemplate(){
+    const cols=['*序号','*品牌编码','*品牌名称','*名称','*型号规格','*基本单位编码','*基本单位名称','*类目编码','*类目名称','*毛重（kg）','*市场价（元）','参考供货价（元）','*起订量','是否倍数下单','含安装费','含检测费','*含运费','描述','条形码','净重（kg）','*已停产','发货日','长（mm）','宽（mm）','高（mm）','税收分类编码','税收分类名称','税收分类简称','税率','*链接类型','*链接地址','*平台类型','*店铺类型','*外链数量(当外部链接的商品单位和咸亨商城的商品单位不一致时，需要填写计价单位转换，表明外部链接的商品数量和咸亨商城商品数量的换算关系。)','*咸亨数量','资质类型（1=国家强制性产品认证试验报告 2=产品质量检验检测报告 3=检验检疫证明 4=特种劳动防护用品安全标志(LA) 5=其他自愿性认证）','资质附件 OSS url地址','*协议价(pushPrice)','*品牌id(brandId)','商城价(mallPrice)','spu编码(spu)','*类目编码(categoryCode)','库存数量(stock)'];
+    const group=new Array(cols.length).fill('');
+    group[0]='主要信息'; group[18]='次要信息'; group[29]='外部链接（导入形式只能添加一个外部链接，如果需要加入外部链接，以下信息全部都要填写）'; group[37]='安能(API0423)';
+    const tip=new Array(cols.length).fill('');
+    tip[0]='1';
+    tip[4]='型号规格会过滤空格，若需要分割请使用“-”代替';
+    tip[13]='填写：1表示是\n填写：0表示否';
+    tip[14]='填写：1表示含\n填写：0表示不含';
+    tip[15]='填写：2表示含出厂检测费\n填写：1表示含第三方检测费\n填写：0表示不含检测费';
+    tip[16]='填写：1表示含\n填写：0表示不含';
+    tip[20]='填写：1表示停产\n填写：0表示未停产';
+    tip[29]='填写：类似、匹配';
+    tip[30]='填写外部链接地址';
+    tip[31]='填写：京东、天猫、苏宁、震坤行、政采云、得力、集什、鑫方盛、其他';
+    tip[32]='填写：自营、第三方';
+    tip[33]='填写正整数';
+    tip[34]='填写正整数';
+    downloadCSV('电商供应商物料导入模板.csv',[group,cols,tip]);
+  }
+
+  function toggleDropdown(e){
+    e.stopPropagation();
+    document.getElementById('projDropdown').classList.toggle('show');
+  }
+  function pickProj(e,name){
+    e.stopPropagation();
+    state.proj=name;
+    const t=document.getElementById('projText');
+    t.textContent=name;
+    document.getElementById('projSelect').classList.add('filled');
+    document.getElementById('projSelect').classList.remove('invalid');
+    document.getElementById('projDropdown').classList.remove('show');
+  }
+  document.addEventListener('click',()=>document.getElementById('projDropdown').classList.remove('show'));
+
+  function onImg(input){
+    state.img=input.files.length;
+    document.getElementById('imgHint').innerHTML = state.img
+      ? '已选 <b style="color:#1677ff">'+state.img+'</b> 张图片（上限 512 张，单张 ≤ 2M）'
+      : '支持 bmp、gif、jpg、png、webp、heic，图片大小不高于 2M。最多 512 张图片，超出部分将上传失败';
+    if(state.img) toast('已选择 '+state.img+' 张图片','success');
+  }
+  function onXlsx(input){
+    if(!input.files.length){ state.xlsx=''; document.getElementById('fileChip').innerHTML=''; return; }
+    state.xlsx=input.files[0].name;
+    document.getElementById('fileChip').innerHTML =
+      '<span class="file-chip">📄 '+state.xlsx+' <span class="rm" onclick="clearXlsx()">✕</span></span>';
+    document.getElementById('fileCtrl').querySelector('.select')?.classList.remove('invalid');
+  }
+  function clearXlsx(){ state.xlsx=''; document.getElementById('xlsxInput').value=''; document.getElementById('fileChip').innerHTML=''; }
+
+  function startImport(){
+    let ok=true;
+    if(!state.proj){ document.getElementById('projSelect').classList.add('invalid'); ok=false; }
+    if(!state.xlsx){ document.getElementById('fileChip').innerHTML='<span style="color:#ff4d4f;margin-left:12px;">请先选择导入物料文件</span>'; ok=false; }
+    if(!ok){ toast('请先完善必填项：关联项目 / 导入物料','error'); return; }
+    toast('导入任务已创建，正在跳转任务中心查看进度…','success');
+    setTimeout(()=>toast('（原型）任务中心页未包含在本次范围','info'),1400);
+  }
+</script>
+</body>
+</html>

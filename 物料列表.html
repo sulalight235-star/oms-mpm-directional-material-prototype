@@ -672,17 +672,26 @@
     .demo-tips {
       position: fixed; bottom: 16px; right: 16px;
       background: rgba(0,0,0,0.78); color: #fff;
-      padding: 12px 14px; border-radius: var(--radius);
+      padding: 10px 14px; border-radius: var(--radius);
       font-size: 12px; line-height: 1.65; max-width: 340px;
       z-index: 99; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .demo-tips b { color: #ffd666; }
     .demo-tips .ti { color: #95de64; }
+    .demo-tips-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; cursor: pointer; user-select: none;
+    }
+    .demo-tips-title { font-weight: 600; color: #ffd666; }
+    .demo-tips-toggle { font-size: 12px; opacity: .8; white-space: nowrap; }
+    .demo-tips-toggle::after { content: '收起 ▾'; }
+    .demo-tips.collapsed .demo-tips-toggle::after { content: '展开 ▸'; }
+    .demo-tips-body { margin-top: 10px; max-height: 60vh; overflow-y: auto; }
+    .demo-tips.collapsed .demo-tips-body { display: none; }
     .demo-tips-section { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.2); }
     .demo-tips-section:first-child { margin-top: 0; padding-top: 0; border-top: none; }
     .demo-tips-close {
-      position: absolute; top: 6px; right: 8px;
-      color: #fff; cursor: pointer; font-size: 14px; opacity: .6;
+      color: #fff; cursor: pointer; font-size: 14px; opacity: .6; padding-left: 4px;
     }
     .demo-tips-close:hover { opacity: 1; }
 
@@ -1271,7 +1280,7 @@
             <div class="field-panels">
               <div class="field-panel">
                 <div class="field-panel-head">
-                  <span>全部字段（共71个）</span>
+                  <span>全部字段（共72个）</span>
                 </div>
                 <ul class="field-list">
                   <li class="disabled"><input type="checkbox" checked disabled>物料（编码）</li>
@@ -1292,6 +1301,7 @@
                   <li><input type="checkbox">物料品牌（名称）</li>
                   <li><input type="checkbox">基本单位（名称）</li>
                   <li><input type="checkbox">描述（内部备注）</li>
+                  <li><input type="checkbox">附件资料OSS URL地址<span class="bm-new-tag">本次新增</span></li>
                   <li><input type="checkbox">商城上架</li>
                 </ul>
               </div>
@@ -1388,7 +1398,14 @@
 
   <!-- 演示提示(右下角) -->
   <div class="demo-tips" id="demoTips">
-    <span class="demo-tips-close" onclick="document.getElementById('demoTips').style.display='none'">×</span>
+    <div class="demo-tips-header" onclick="document.getElementById('demoTips').classList.toggle('collapsed')">
+      <span class="demo-tips-title">💡 演示说明</span>
+      <span>
+        <span class="demo-tips-toggle"></span>
+        <span class="demo-tips-close" onclick="event.stopPropagation();document.getElementById('demoTips').style.display='none'">×</span>
+      </span>
+    </div>
+    <div class="demo-tips-body">
     <div class="demo-tips-section">
       <b>💡 演示操作：</b><br/>
       1. 点击 <b>「导入批改」</b> 打开批量修改弹窗（参考既有 6 个批改项 + 本期新增 1 行-新增/批改物料附件）<br/>
@@ -1399,10 +1416,16 @@
       • 批量修改弹窗末行新增 <span class="ti">「新增/批改物料附件」</span><br/>
       • 模板 3 列固定表头：<br/>
       &nbsp;&nbsp;<b>*物料编码</b><br/>
-      &nbsp;&nbsp;<b>*文件类型</b>（1=国家强制性产品认证试验报告 / 2=产品质量检验检测报告 / 3=检验检疫证明 / 4=特种劳动防护用品安全标志(LA) / 5=其他自愿性认证）<br/>
-      &nbsp;&nbsp;<b>*文件OSS URL地址</b><br/>
+      &nbsp;&nbsp;<b>*资质类型</b>（1=国家强制性产品认证试验报告 2=产品质量检验检测报告 3=检验检疫证明 4=特种劳动防护用品安全标志(LA) 5=其他自愿性认证）<br/>
+      &nbsp;&nbsp;<b>*资质文件OSS地址</b><br/>
       • 按 (material_code, doc_type) 业务键 upsert<br/>
       • 不触发资质校验，不进入审核流程
+    </div>
+    <div class="demo-tips-section">
+      <b>🆕 4.8.0 新增：</b><br/>
+      • <b>路径</b>：<span class="ti">物料导出 ▾ → 自定义导出 → 选择字段 → 全部字段</span><br/>
+      • <b>新增内容</b>：全部字段中新增 <span class="ti">「附件资料OSS URL地址」</span>（位于「商城上架」上方，列表内已标 <b>本次新增</b> 角标），勾选后导出列含物料关联的资质附件 OSS URL。<br/>
+      • <b>依据说明</b>：对应 MPM v4.8.0 商品资质资料管理 PRD <b>§3.2.14 物料资质文件 URL 列表 Excel 导出</b>，使自定义导出可按需带出资质 OSS URL，供审计/对账直接点击下载，无需走独立「导出资质资料」入口。
     </div>
   </div>
 
@@ -1670,7 +1693,7 @@
 
     // 本期新增「新增/批改物料附件」模板下载 - 真实触发浏览器下载
     document.getElementById('bmQualTplDownload').addEventListener('click', () => {
-      const headers = ['*物料编码', '*文件类型（1=国家强制性产品认证试验报告 / 2=产品质量检验检测报告 / 3=检验检疫证明 / 4=特种劳动防护用品安全标志(LA) / 5=其他自愿性认证）', '*文件OSS URL地址'];
+      const headers = ['*物料编码', '*资质类型(1=国家强制性产品认证试验报告 2=产品质量检验检测报告 3=检验检疫证明 4=特种劳动防护用品安全标志(LA) 5=其他自愿性认证)', '*资质文件OSS地址'];
       const sample = ['A1901005067', '1', 'https://mpm-oss.xianheng.cn/mpm/qual/2026/05/A1901005067/CCC_TEST_REPORT/uuid_CCC认证报告.pdf'];
       downloadCSV('新增批改物料附件模板.csv', headers, sample);
       showMessage('已下载: 新增批改物料附件模板.csv', 'success');
