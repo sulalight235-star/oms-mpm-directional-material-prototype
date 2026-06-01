@@ -586,6 +586,106 @@
       padding: 12px 24px 20px;
     }
 
+    /* ── 导入批改弹窗(表格样式) ── */
+    .bm-modal-card { width: 416px; max-width: 96vw; border-radius: 2px; }
+    .bm-modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 32px;
+      padding: 0 38px 0 12px;
+      border-bottom: 1px solid var(--border-light);
+      position: relative;
+    }
+    .bm-modal-head-title { font-size: 14px; font-weight: 500; color: var(--text-title); }
+    .bm-modal-head .modal-close {
+      top: 2px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+    }
+    .bm-modal-body { padding: 0 8px 20px 4px; max-height: 308px; overflow-y: auto; overflow-x: hidden; }
+    .bm-modal-body::-webkit-scrollbar { width: 6px; }
+    .bm-modal-body::-webkit-scrollbar-thumb { background: #bfbfbf; border-radius: 4px; }
+    .bm-table { width: 100%; font-size: 14px; }
+    .bm-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 118px 126px;
+      align-items: stretch;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .bm-row.bm-head {
+      height: 28px;
+      border-bottom: none;
+      background: #edf3ff;
+    }
+    .bm-cell {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      padding: 9px 10px;
+      color: var(--text-title);
+      line-height: 1.45;
+      word-break: break-all;
+    }
+    .bm-head .bm-cell {
+      height: 28px;
+      padding-top: 0;
+      padding-bottom: 0;
+      font-weight: 500;
+      border-right: 1px solid #dfe8f7;
+    }
+    .bm-head .bm-cell:last-child { border-right: 0; }
+    .bm-item-name { font-size: 13px; }
+    .bm-tpl,
+    .bm-ops {
+      justify-content: center;
+      padding-left: 6px;
+      padding-right: 6px;
+      white-space: nowrap;
+    }
+    .bm-link {
+      color: #1f5fff;
+      cursor: pointer;
+      display: inline-block;
+      margin-right: 0;
+      white-space: nowrap;
+    }
+    .bm-ops .bm-link + .bm-link { margin-left: 12px; }
+    .bm-link:hover { text-decoration: underline; }
+    .bm-new-tag {
+      display: inline-block;
+      margin-left: 4px;
+      padding: 0 4px;
+      height: 16px;
+      line-height: 16px;
+      border-radius: 2px;
+      background: #f6ffed;
+      border: 1px solid #b7eb8f;
+      color: #389e0d;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    /* ── 演示提示(右下角) ── */
+    .demo-tips {
+      position: fixed; bottom: 16px; right: 16px;
+      background: rgba(0,0,0,0.78); color: #fff;
+      padding: 12px 14px; border-radius: var(--radius);
+      font-size: 12px; line-height: 1.65; max-width: 340px;
+      z-index: 99; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .demo-tips b { color: #ffd666; }
+    .demo-tips .ti { color: #95de64; }
+    .demo-tips-section { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.2); }
+    .demo-tips-section:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+    .demo-tips-close {
+      position: absolute; top: 6px; right: 8px;
+      color: #fff; cursor: pointer; font-size: 14px; opacity: .6;
+    }
+    .demo-tips-close:hover { opacity: 1; }
+
     /* 自定义导出弹窗 */
     .modal-card.wide { width: 960px; max-width: 96vw; }
     .modal-body {
@@ -712,7 +812,7 @@
   <header class="topbar">
     <div class="brand">
       <div class="brand-logo">咸</div>
-      <span class="brand-name">咸亨国际主数据管理平台</span>
+      <span class="brand-name" style="cursor:pointer;" onclick="location.href='oms-mpm-物料工作台原型.html'">咸亨国际主数据管理平台</span>
       <button class="switch-btn" type="button" data-action="switch-system">切换系统</button>
     </div>
     <nav class="nav-menu">
@@ -732,7 +832,7 @@
   <div class="tabs-bar">
     <div class="tabs-list">
       <div class="tab" onclick="go('oms-mpm-物料工作台原型.html')">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
-      <div class="tab active">物料列表 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab active" onclick="location.href='物料列表.html'">物料列表 <span class="cls" onclick="event.stopPropagation()">×</span></div>
       <div class="tab" onclick="go('物料审核详情.html')">物料信息-编辑 <span class="cls" onclick="event.stopPropagation()">×</span></div>
     </div>
     <div class="tabs-clear" id="clearTabs">清除</div>
@@ -877,10 +977,9 @@
             <button class="btn-link" type="button" data-action-text="刷新">刷新</button>
           </div>
           <div class="toolbar-right">
-            <button class="tool-btn" type="button" data-action-text="提交外重复校">提交外重复校</button>
-            <button class="tool-btn" type="button" data-action-text="物料清洗">物料清洗</button>
-            <button class="tool-btn" type="button" data-action-text="导入批改">导入批改</button>
+            <button class="tool-btn" id="batchModifyBtn" type="button">导入批改</button>
             <button class="tool-btn" type="button" data-action-text="推送">推送</button>
+            <button class="tool-btn" type="button" data-action-text="禁用">禁用</button>
             <div class="dropdown" id="exportDropdown">
               <button class="tool-btn" id="exportBtn" type="button">物料导出 ▾</button>
               <div class="dropdown-menu">
@@ -890,6 +989,8 @@
                 <button class="dropdown-item" type="button" data-export="外链导出">外链导出</button>
               </div>
             </div>
+            <button class="tool-btn" type="button" data-action-text="基础数据下载">基础数据下载</button>
+            <button class="tool-btn" type="button" data-action-text="推送失败导出">推送失败导出</button>
           </div>
         </div>
 
@@ -1236,6 +1337,75 @@
     </div>
   </div>
 
+  <!-- 导入批改弹窗 -->
+  <div class="modal-mask" id="modalBatchModify" role="dialog" aria-modal="true" aria-labelledby="batchModifyTitle">
+    <div class="modal-card bm-modal-card">
+      <div class="bm-modal-head">
+        <div class="bm-modal-head-title" id="batchModifyTitle">批量修改</div>
+        <button class="modal-close" type="button" data-modal-close="modalBatchModify" aria-label="关闭">×</button>
+      </div>
+      <div class="bm-modal-body">
+        <div class="bm-table">
+          <div class="bm-row bm-head">
+            <div class="bm-cell bm-item-name">修改项</div>
+            <div class="bm-cell bm-tpl">模板下载</div>
+            <div class="bm-cell bm-ops">操作</div>
+          </div>
+          <div class="bm-row">
+            <div class="bm-cell bm-item-name">结算价/停产/运费/检测费/安装费/成交价/成本价/检测费/安装费</div>
+            <div class="bm-cell bm-tpl"><span class="bm-link" data-tpl="结算价批改模板.xlsx">下载</span></div>
+            <div class="bm-cell bm-ops"><span class="bm-link" data-bm-pick="结算价批改">选择文件</span><span class="bm-link" data-bm-run="结算价批改">执行</span></div>
+          </div>
+          <div class="bm-row">
+            <div class="bm-cell bm-item-name">批改市场价/商城价/是否可售/上下架</div>
+            <div class="bm-cell bm-tpl"><span class="bm-link" data-tpl="市场商城价批改模板.xlsx">下载</span></div>
+            <div class="bm-cell bm-ops"><span class="bm-link" data-bm-pick="市场商城价批改">选择文件</span><span class="bm-link" data-bm-run="市场商城价批改">执行</span></div>
+          </div>
+          <div class="bm-row">
+            <div class="bm-cell bm-item-name">导入推送</div>
+            <div class="bm-cell bm-tpl"><span class="bm-link" data-tpl="导入推送模板.xlsx">下载</span></div>
+            <div class="bm-cell bm-ops"><span class="bm-link" data-bm-pick="导入推送">选择文件</span><span class="bm-link" data-bm-run="导入推送">执行</span></div>
+          </div>
+          <div class="bm-row">
+            <div class="bm-cell bm-item-name">导入禁用</div>
+            <div class="bm-cell bm-tpl"><span class="bm-link" data-tpl="导入禁用模板.xlsx">下载</span></div>
+            <div class="bm-cell bm-ops"><span class="bm-link" data-bm-pick="导入禁用">选择文件</span><span class="bm-link" data-bm-run="导入禁用">执行</span></div>
+          </div>
+          <div class="bm-row">
+            <div class="bm-cell bm-item-name">使用组织</div>
+            <div class="bm-cell bm-tpl"><span class="bm-link" data-tpl="使用组织批改模板.xlsx">下载</span></div>
+            <div class="bm-cell bm-ops"><span class="bm-link" data-bm-pick="使用组织">选择文件</span><span class="bm-link" data-bm-run="使用组织">执行</span></div>
+          </div>
+          <div class="bm-row">
+            <div class="bm-cell bm-item-name">新增/批改物料附件<span class="bm-new-tag">新增</span></div>
+            <div class="bm-cell bm-tpl"><span class="bm-link" id="bmQualTplDownload">下载</span></div>
+            <div class="bm-cell bm-ops"><span class="bm-link" data-bm-pick="新增/批改物料附件">选择文件</span><span class="bm-link" data-bm-run="新增/批改物料附件">执行</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 演示提示(右下角) -->
+  <div class="demo-tips" id="demoTips">
+    <span class="demo-tips-close" onclick="document.getElementById('demoTips').style.display='none'">×</span>
+    <div class="demo-tips-section">
+      <b>💡 演示操作：</b><br/>
+      1. 点击 <b>「导入批改」</b> 打开批量修改弹窗（参考既有 6 个批改项 + 本期新增 1 行-新增/批改物料附件）<br/>
+      2. 弹窗中 <b>「下载」</b> 触发浏览器下载对应 Excel 模板
+    </div>
+    <div class="demo-tips-section">
+      <b>🆕 本期相关：</b><br/>
+      • 批量修改弹窗末行新增 <span class="ti">「新增/批改物料附件」</span><br/>
+      • 模板 3 列固定表头：<br/>
+      &nbsp;&nbsp;<b>*物料编码</b><br/>
+      &nbsp;&nbsp;<b>*文件类型</b>（1=国家强制性产品认证试验报告 / 2=产品质量检验检测报告 / 3=检验检疫证明 / 4=特种劳动防护用品安全标志(LA) / 5=其他自愿性认证）<br/>
+      &nbsp;&nbsp;<b>*文件OSS URL地址</b><br/>
+      • 按 (material_code, doc_type) 业务键 upsert<br/>
+      • 不触发资质校验，不进入审核流程
+    </div>
+  </div>
+
   <script>
     const state = {
       keyword: '',
@@ -1464,6 +1634,59 @@
       }
       document.querySelectorAll('.tree-list > li, .tree-list > li ul > li').forEach(li => {
         li.style.display = li.textContent.includes(keyword) ? '' : 'none';
+      });
+    });
+
+    // ─── 批量修改弹窗交互 ───
+    document.getElementById('batchModifyBtn').addEventListener('click', (event) => {
+      event.stopPropagation();
+      openModal('modalBatchModify');
+    });
+
+    // 触发浏览器下载 CSV(Excel 可打开)
+    function downloadCSV(filename, headers, sampleRow) {
+      const BOM = '﻿';
+      const escapeCell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+      const rows = [headers.map(escapeCell).join(',')];
+      if (sampleRow) rows.push(sampleRow.map(escapeCell).join(','));
+      const csv = BOM + rows.join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 500);
+    }
+
+    // 通用模板下载(其他批改项 - 仅模拟提示)
+    document.querySelectorAll('#modalBatchModify [data-tpl]').forEach(el => {
+      el.addEventListener('click', () => {
+        showMessage(`已下载: ${el.dataset.tpl}`, 'success');
+      });
+    });
+
+    // 本期新增「新增/批改物料附件」模板下载 - 真实触发浏览器下载
+    document.getElementById('bmQualTplDownload').addEventListener('click', () => {
+      const headers = ['*物料编码', '*文件类型（1=国家强制性产品认证试验报告 / 2=产品质量检验检测报告 / 3=检验检疫证明 / 4=特种劳动防护用品安全标志(LA) / 5=其他自愿性认证）', '*文件OSS URL地址'];
+      const sample = ['A1901005067', '1', 'https://mpm-oss.xianheng.cn/mpm/qual/2026/05/A1901005067/CCC_TEST_REPORT/uuid_CCC认证报告.pdf'];
+      downloadCSV('新增批改物料附件模板.csv', headers, sample);
+      showMessage('已下载: 新增批改物料附件模板.csv', 'success');
+    });
+
+    // 选择文件
+    document.querySelectorAll('#modalBatchModify [data-bm-pick]').forEach(el => {
+      el.addEventListener('click', () => {
+        showMessage(`已选择「${el.dataset.bmPick}」的批改文件(模拟)`, 'success');
+      });
+    });
+
+    // 执行
+    document.querySelectorAll('#modalBatchModify [data-bm-run]').forEach(el => {
+      el.addEventListener('click', () => {
+        showMessage(`「${el.dataset.bmRun}」已加入异步任务,可至「任务中心」查看进度`, 'success');
       });
     });
 

@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>资质配置-编辑 - 咸亨国际主数据管理平台</title>
+  <style>
+    :root {
+      --primary: #1677ff;
+      --primary-hover: #4096ff;
+      --primary-bg: #e6f4ff;
+      --success: #52c41a;
+      --success-bg: #f6ffed;
+      --success-border: #b7eb8f;
+      --warning: #faad14;
+      --warning-bg: #fffbe6;
+      --warning-border: #ffe58f;
+      --error: #ff4d4f;
+      --error-bg: #fff1f0;
+      --error-border: #ffccc7;
+      --text-title: rgba(0,0,0,0.88);
+      --text-body: rgba(0,0,0,0.65);
+      --text-sub: rgba(0,0,0,0.45);
+      --text-light: rgba(0,0,0,0.30);
+      --border: #d9d9d9;
+      --border-light: #f0f0f0;
+      --bg-layout: #f5f5f5;
+      --bg-container: #ffffff;
+      --bg-table-head: #fafafa;
+      --radius: 6px;
+      --radius-sm: 4px;
+      --radius-lg: 8px;
+      --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 1px 6px rgba(0,0,0,0.04);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      font-size: 14px;
+      background: var(--bg-layout);
+      color: var(--text-body);
+      min-width: 1280px;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+
+    /* 顶栏 */
+    .topbar { height: 48px; background: #001529; color: rgba(255,255,255,0.85); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: sticky; top: 0; z-index: 120; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-logo { width: 28px; height: 28px; background: var(--primary); border-radius: 6px; display: grid; place-items: center; font-size: 13px; font-weight: 700; color: #fff; }
+    .brand-name { font-size: 16px; font-weight: 600; color: #fff; white-space: nowrap; }
+    .switch-btn { border: 1px solid rgba(255,255,255,0.25); background: transparent; color: rgba(255,255,255,0.75); border-radius: var(--radius); padding: 3px 10px; font-size: 12px; cursor: pointer; line-height: 22px; }
+    .switch-btn:hover { border-color: var(--primary); color: #fff; }
+    .nav-menu { display: flex; align-items: center; height: 100%; }
+    .nav-item { display: flex; align-items: center; gap: 5px; padding: 0 13px; height: 100%; font-size: 13px; color: rgba(255,255,255,0.75); cursor: pointer; white-space: nowrap; }
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .nav-item.active { color: #fff; background: rgba(255,255,255,0.1); }
+    .nav-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); margin: 0 3px; }
+    .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+
+    /* 标签页 */
+    .tabs-bar { height: 36px; background: var(--bg-container); border-bottom: 1px solid var(--border-light); display: flex; align-items: stretch; justify-content: space-between; padding: 0 8px 0 0; position: sticky; top: 48px; z-index: 110; }
+    .tabs-list { display: flex; align-items: stretch; }
+    .tab { display: flex; align-items: center; gap: 6px; padding: 0 12px; font-size: 13px; color: var(--text-body); cursor: pointer; border-right: 1px solid var(--border-light); white-space: nowrap; }
+    .tab:hover { background: var(--bg-table-head); }
+    .tab.active { background: #fff; color: var(--primary); border-bottom: 2px solid var(--primary); margin-bottom: -1px; }
+    .tab .close { font-size: 12px; color: var(--text-sub); padding: 2px; }
+    .tab .close:hover { color: var(--error); }
+    .tabs-clean { padding: 0 12px; display: grid; place-items: center; color: var(--text-sub); cursor: pointer; font-size: 13px; }
+    .tabs-clean:hover { color: var(--primary); }
+
+    /* 页面主区 */
+    .main { padding: 16px; min-height: calc(100vh - 84px); }
+    .page-header { background: var(--bg-container); border-radius: var(--radius-lg); padding: 12px 20px; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .page-header-left { display: flex; align-items: center; gap: 8px; }
+    .back-btn { font-size: 18px; cursor: pointer; color: var(--text-sub); padding: 4px 8px; border-radius: var(--radius); }
+    .back-btn:hover { background: var(--bg-table-head); color: var(--primary); }
+    .page-title { font-size: 16px; font-weight: 600; color: var(--text-title); }
+    .page-header-actions { display: flex; align-items: center; gap: 8px; }
+    .btn { padding: 5px 16px; border-radius: var(--radius); border: 1px solid var(--border); background: #fff; color: var(--text-body); cursor: pointer; font-size: 14px; transition: all .2s; }
+    .btn:hover { color: var(--primary); border-color: var(--primary); }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); color: #fff; }
+    .btn-text { background: transparent; border: none; color: var(--primary); padding: 5px 8px; }
+    .btn-text:hover { background: var(--primary-bg); }
+    .btn-danger { color: var(--error); border-color: var(--error); }
+    .btn-danger:hover { background: var(--error); color: #fff; }
+    .btn-sm { padding: 2px 10px; font-size: 13px; }
+
+    /* Alert */
+    .alert { padding: 9px 16px; border-radius: var(--radius); display: flex; align-items: flex-start; gap: 8px; margin-bottom: 12px; font-size: 13px; }
+    .alert-info { background: var(--primary-bg); border: 1px solid #91caff; color: rgba(0,0,0,0.85); }
+    .alert-warning { background: var(--warning-bg); border: 1px solid var(--warning-border); }
+    .alert-icon { flex-shrink: 0; color: var(--primary); font-size: 14px; line-height: 20px; }
+    .alert-warning .alert-icon { color: var(--warning); }
+
+    /* Card */
+    .card { background: var(--bg-container); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow); margin-bottom: 12px; }
+    .card-section-title { display: flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 600; color: var(--text-title); margin-bottom: 16px; padding-left: 8px; border-left: 3px solid var(--primary); }
+    .card-section-title-sub { font-size: 13px; font-weight: normal; color: var(--text-sub); margin-left: 4px; }
+
+    /* 类目信息只读 */
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px 24px; }
+    .info-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    .info-label { color: var(--text-sub); white-space: nowrap; }
+    .info-value { color: var(--text-title); font-weight: 500; }
+
+    /* 货主块 */
+    .owner-card { background: var(--bg-table-head); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 16px; position: relative; }
+    .owner-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .owner-card-index { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 13px; font-weight: 600; display: grid; place-items: center; flex-shrink: 0; }
+    .owner-card-delete { margin-left: auto; color: var(--text-sub); cursor: pointer; padding: 4px 8px; border-radius: var(--radius); font-size: 13px; }
+    .owner-card-delete:hover { color: var(--error); background: var(--error-bg); }
+
+    /* 表单项 */
+    .form-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .form-label { width: 130px; flex-shrink: 0; text-align: right; color: var(--text-title); font-size: 14px; padding-top: 5px; }
+    .form-label-required::before { content: "* "; color: var(--error); }
+    .form-content { flex: 1; min-width: 0; }
+
+    /* 输入框 */
+    .input, .select { width: 100%; max-width: 380px; height: 32px; padding: 4px 11px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; background: #fff; outline: none; transition: all .2s; }
+    .input:focus, .select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-bg); }
+    .select { appearance: none; padding-right: 28px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23999' fill='none' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; cursor: pointer; }
+
+    /* Radio */
+    .radio-group { display: flex; align-items: center; gap: 24px; padding-top: 5px; }
+    .radio { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; }
+    .radio input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
+
+    /* Checkbox */
+    .checkbox-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 16px; max-width: 600px; padding-top: 5px; }
+    .checkbox { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; padding: 4px 8px; border-radius: var(--radius); }
+    .checkbox:hover { background: var(--bg-table-head); }
+    .checkbox input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
+    .checkbox-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 4px; }
+    .tag-required { background: var(--error-bg); color: var(--error); border: 1px solid var(--error-border); }
+    .tag-voluntary { background: var(--primary-bg); color: var(--primary); border: 1px solid #91caff; }
+
+    /* 属性条件构造器 */
+    .expr-builder { background: #fff; border: 1px dashed var(--border); border-radius: var(--radius-lg); padding: 12px 16px; max-width: 760px; }
+    .expr-group { background: #fafbfc; border: 1px solid var(--border-light); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 10px; }
+    .expr-group-sub { background: #fff3e0; border-color: var(--warning-border); }
+    .expr-group-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+    .expr-group-label { font-size: 13px; color: var(--text-sub); }
+    .expr-group-relation { padding: 2px 8px; background: var(--primary); color: #fff; border-radius: 4px; font-size: 12px; font-weight: 600; }
+    .expr-group-relation.or { background: var(--warning); }
+    .expr-group-readonly { padding: 2px 6px; background: var(--bg-table-head); color: var(--text-sub); border-radius: 4px; font-size: 11px; }
+    .expr-group-actions { margin-left: auto; display: flex; gap: 8px; }
+    .expr-add-btn { color: var(--primary); cursor: pointer; font-size: 13px; padding: 2px 8px; border-radius: 4px; }
+    .expr-add-btn:hover { background: var(--primary-bg); }
+    .expr-add-btn.disabled { color: var(--text-light); cursor: not-allowed; }
+    .expr-add-btn.disabled:hover { background: transparent; }
+    .expr-condition { display: flex; align-items: center; gap: 8px; padding: 6px 0; flex-wrap: wrap; }
+    .expr-condition-tree { font-size: 13px; color: var(--text-sub); }
+    .expr-select { height: 28px; padding: 2px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fff; outline: none; font-size: 13px; cursor: pointer; min-width: 110px; }
+    .expr-select:focus { border-color: var(--primary); }
+    .expr-value-tags { display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; min-width: 200px; padding: 2px 4px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fff; min-height: 28px; }
+    .expr-value-tag { display: inline-flex; align-items: center; gap: 4px; padding: 1px 6px; background: var(--primary-bg); color: var(--primary); border: 1px solid #91caff; border-radius: 3px; font-size: 12px; }
+    .expr-value-tag .x { cursor: pointer; opacity: .6; }
+    .expr-value-tag .x:hover { opacity: 1; }
+    .expr-value-tag.expired { background: var(--error-bg); color: var(--error); border-color: var(--error-border); }
+    .expr-condition-remove { color: var(--text-sub); cursor: pointer; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+    .expr-condition-remove:hover { background: var(--error-bg); color: var(--error); }
+
+    /* 隐藏区 */
+    .hidden { display: none !important; }
+
+    /* 加货主按钮 */
+    .add-owner-btn { width: 100%; padding: 10px 16px; border: 1px dashed var(--border); background: #fff; border-radius: var(--radius-lg); color: var(--primary); cursor: pointer; font-size: 14px; transition: all .2s; }
+    .add-owner-btn:hover { border-color: var(--primary); background: var(--primary-bg); }
+
+    /* 操作历史链接 */
+    .meta-row { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--text-sub); padding-top: 8px; border-top: 1px dashed var(--border-light); margin-top: 12px; }
+
+    /* Tooltip 用于失效枚举值 */
+    [data-tip] { position: relative; }
+    [data-tip]:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 12px; white-space: nowrap; z-index: 100; }
+
+    /* 演示提示气泡（右下角） */
+    .demo-tips { position: fixed; bottom: 16px; right: 16px; background: rgba(0,0,0,0.78); color: #fff; padding: 12px 14px; border-radius: var(--radius); font-size: 12px; line-height: 1.65; max-width: 320px; z-index: 99; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .demo-tips b { color: #ffd666; }
+    .demo-tips .ti { color: #95de64; }
+    .demo-tips-section { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.2); }
+    .demo-tips-section:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+    /* 操作记录弹窗 */
+    .op-modal-mask { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: none; align-items: flex-start; justify-content: center; padding: 60px 20px; overflow-y: auto; }
+    .op-modal-mask.open { display: flex; animation: fadeIn .2s; }
+    .op-modal { background: #fff; border-radius: var(--radius-lg); box-shadow: 0 6px 16px rgba(0,0,0,0.08); width: 1280px; max-width: 100%; max-height: calc(100vh - 120px); overflow: hidden; display: flex; flex-direction: column; animation: opModalIn .25s; }
+    @keyframes opModalIn { from { transform: translateY(-12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .op-modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+    .op-modal-title { font-size: 15px; font-weight: 500; color: var(--text-title); }
+    .op-modal-close { font-size: 20px; color: var(--text-sub); cursor: pointer; padding: 2px 8px; border-radius: var(--radius); line-height: 1; }
+    .op-modal-close:hover { color: var(--error); background: var(--error-bg); }
+    .op-modal-body { flex: 1; overflow-y: auto; padding: 16px 20px 0; }
+    .op-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .op-table thead th { background: var(--bg-table-head); text-align: left; padding: 11px 14px; color: var(--text-title); font-weight: 600; border-bottom: 1px solid var(--border-light); white-space: nowrap; }
+    .op-table tbody td { padding: 12px 14px; border-bottom: 1px solid var(--border-light); color: var(--text-body); vertical-align: middle; }
+    .op-table tbody tr:hover { background: #fafbfc; }
+    .op-cell-ellipsis { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; }
+    .op-modal-footer { padding: 12px 20px; display: flex; justify-content: flex-end; align-items: center; gap: 12px; font-size: 13px; color: var(--text-sub); border-top: 1px solid var(--border-light); }
+    .op-pagi-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; padding: 0 8px; border: 1px solid var(--border); border-radius: var(--radius); background: #fff; color: var(--text-body); cursor: pointer; font-size: 13px; }
+    .op-pagi-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .op-pagi-btn.active { border-color: var(--primary); color: var(--primary); background: var(--primary-bg); }
+    .op-pagi-btn.disabled { color: var(--text-light); cursor: not-allowed; }
+    .op-pagi-btn.disabled:hover { border-color: var(--border); color: var(--text-light); }
+    .op-pagi-size { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 13px; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+<!-- 顶栏 -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">咸</div>
+    <div class="brand-name" style="cursor:pointer;" onclick="location.href='oms-mpm-物料工作台原型.html'">咸亨国际主数据管理平台</div>
+    <button class="switch-btn">🔥 切换系统</button>
+  </div>
+  <div class="nav-menu">
+    <div class="nav-item">💬 消息通知</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">📋 价格审核</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">版本更新</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">推送ERP ━━━</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">管理模块</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">任务中心</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">清洗任务</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">
+      <div class="user-avatar">王</div>
+      <span>管理员 ▼</span>
+    </div>
+  </div>
+</div>
+
+<!-- 标签页栏 -->
+<div class="tabs-bar">
+  <div class="tabs-list">
+    <div class="tab" onclick="goToTab('cat-list')" title="点击返回类目列表">📊 类目列表 <span class="close" onclick="event.stopPropagation()">×</span></div>
+    <div class="tab active" onclick="goToTab('current')">资质配置-编辑 <span class="close" onclick="event.stopPropagation();goToTab('cat-list')">×</span></div>
+  </div>
+  <div class="tabs-clean">清除</div>
+</div>
+
+<!-- 主内容 -->
+<div class="main">
+
+  <!-- 页头 -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <span class="back-btn" title="返回">←</span>
+      <span class="page-title">资质配置-编辑</span>
+    </div>
+    <div class="page-header-actions">
+      <button class="btn btn-primary">保存</button>
+      <button class="btn">关闭</button>
+      <button class="btn-text" onclick="openOpRecord()">操作记录</button>
+    </div>
+  </div>
+
+  <!-- 类目信息 -->
+  <div class="card">
+    <div class="card-section-title">类目信息<span class="card-section-title-sub">（只读）</span></div>
+    <div class="info-grid">
+      <div class="info-item"><span class="info-label">父级类目:</span><span class="info-value">仪器仪表 → 电工测量 → 钳形表 → 钳形电流表</span></div>
+      <div class="info-item"><span class="info-label">类目名称:</span><span class="info-value">钳形电流表</span></div>
+      <div class="info-item"><span class="info-label">前缀编码:</span><span class="info-value">02010201</span></div>
+    </div>
+  </div>
+
+  <!-- 资质配置 -->
+  <div class="card">
+    <div class="card-section-title">资质配置<span class="card-section-title-sub">*依据四级类目按货主配置必传资质要求</span></div>
+
+    <!-- 货主块 #1（未启用属性设置） -->
+    <div class="owner-card">
+      <div class="owner-card-header">
+        <span class="owner-card-index">1</span>
+        <span style="color: var(--text-sub); font-size: 13px;">货主</span>
+        <span style="color: var(--text-title); font-weight: 500;">：万聚国际（杭州）供应链有限公司</span>
+        <span class="owner-card-delete">🗑 删除货主块</span>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label form-label-required">货主</label>
+        <div class="form-content">
+          <select class="select">
+            <option>万聚国际（杭州）供应链有限公司</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label form-label-required">是否启用属性设置</label>
+        <div class="form-content">
+          <div class="radio-group">
+            <label class="radio"><input type="radio" name="attr1" checked /> 否</label>
+            <label class="radio"><input type="radio" name="attr1" /> 是</label>
+          </div>
+          <div style="color: var(--text-sub); font-size: 12px; margin-top: 4px;">不启用 = 该（类目 + 货主）下所有物料统一适用本规则</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label form-label-required">必传资质类型</label>
+        <div class="form-content">
+          <div class="checkbox-group">
+            <label class="checkbox"><input type="checkbox" checked /> 国家强制性产品认证试验报告</label>
+            <label class="checkbox"><input type="checkbox" checked /> 产品质量检验检测报告</label>
+            <label class="checkbox"><input type="checkbox" /> 检验检疫证明</label>
+            <label class="checkbox"><input type="checkbox" checked /> 特种劳动防护用品安全标志(LA)</label>
+            <label class="checkbox"><input type="checkbox" /> 其他自愿性认证</label>
+          </div>
+          <div style="color: var(--text-sub); font-size: 12px; margin-top: 6px;">已选 3 项 · 至少选择 1 项</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label form-label-required">开关</label>
+        <div class="form-content">
+          <div class="radio-group">
+            <label class="radio"><input type="radio" name="enable1" checked /> 开启</label>
+            <label class="radio"><input type="radio" name="enable1" /> 停用</label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 货主块 #2（启用属性设置 + 含子组） -->
+    <div class="owner-card">
+      <div class="owner-card-header">
+        <span class="owner-card-index">2</span>
+        <span style="color: var(--text-sub); font-size: 13px;">货主</span>
+        <span style="color: var(--text-title); font-weight: 500;">：咸亨国际电子商务有限公司</span>
+        <span class="owner-card-delete">🗑 删除货主块</span>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label form-label-required">货主</label>
+        <div class="form-content">
+          <select class="select">
+            <option>咸亨国际电子商务有限公司</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label form-label-required">是否启用属性设置</label>
+        <div class="form-content">
+          <div class="radio-group">
+            <label class="radio"><input type="radio" name="attr2" /> 否</label>
+            <label class="radio"><input type="radio" name="attr2" checked /> 是</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 属性条件构造器 -->
+      <div class="form-row">
+        <label class="form-label form-label-required">属性条件</label>
+        <div class="form-content">
+          <div class="expr-builder">
+
+            <!-- 根条件组 -->
+            <div class="expr-group">
+              <div class="expr-group-header">
+                <span class="expr-group-label">根条件组：关系</span>
+                <span class="expr-group-relation">AND</span>
+                <span class="expr-group-label">（条件之间用 AND 连接）</span>
+                <div class="expr-group-actions">
+                  <span class="expr-add-btn">+ 添加条件项</span>
+                  <span class="expr-add-btn disabled" title="已有 1 个子组，最多两层嵌套">+ 添加子组（已禁用）</span>
+                </div>
+              </div>
+
+              <!-- 条件项 1 -->
+              <div class="expr-condition">
+                <span class="expr-condition-tree">├</span>
+                <select class="expr-select"><option>属性：防护等级</option></select>
+                <select class="expr-select" style="min-width:70px;"><option>IN</option></select>
+                <div class="expr-value-tags">
+                  <span class="expr-value-tag">A <span class="x">×</span></span>
+                  <span class="expr-value-tag">B <span class="x">×</span></span>
+                </div>
+                <span class="expr-condition-remove">✕</span>
+              </div>
+
+              <!-- 子组（OR） -->
+              <div class="expr-group expr-group-sub" style="margin-top: 6px;">
+                <div class="expr-group-header">
+                  <span class="expr-condition-tree">└</span>
+                  <span class="expr-group-label">子组：关系</span>
+                  <span class="expr-group-relation or">OR</span>
+                  <span class="expr-group-readonly">系统自动取反，不可改</span>
+                  <div class="expr-group-actions">
+                    <span class="expr-add-btn">+ 添加子组内条件项</span>
+                    <span class="expr-add-btn" style="color: var(--error);">✕ 删除子组</span>
+                  </div>
+                </div>
+
+                <div class="expr-condition">
+                  <span class="expr-condition-tree">├</span>
+                  <select class="expr-select"><option>属性：防滑系数</option></select>
+                  <select class="expr-select" style="min-width:60px;"><option>=</option></select>
+                  <div class="expr-value-tags">
+                    <span class="expr-value-tag">5 <span class="x">×</span></span>
+                  </div>
+                  <span class="expr-condition-remove">✕</span>
+                </div>
+
+                <div class="expr-condition">
+                  <span class="expr-condition-tree">└</span>
+                  <select class="expr-select"><option>属性：防水等级</option></select>
+                  <select class="expr-select" style="min-width:60px;"><option>=</option></select>
+                  <div class="expr-value-tags">
+                    <span class="expr-value-tag" data-tip="该枚举值在属性主数据中已被禁用，请重新选择后才能保存">IP67 ⚠ <span class="x">×</span></span>
+                  </div>
+                  <span class="expr-condition-remove">✕</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="color: var(--text-sub); font-size: 12px; padding: 4px 4px 0; line-height: 1.6;">
+              当前表达式预览：<code style="background:#f0f0f0; padding:2px 6px; border-radius:3px; color:#d4380d;">防护等级 IN [A, B] AND (防滑系数 = 5 OR 防水等级 = IP67)</code><br/>
+              ⚠ <span style="color: var(--error);">检测到 1 个已失效枚举值（防水等级 = IP67），保存前需手动清理</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label form-label-required">必传资质类型</label>
+        <div class="form-content">
+          <div class="checkbox-group">
+            <label class="checkbox"><input type="checkbox" checked /> 国家强制性产品认证试验报告</label>
+            <label class="checkbox"><input type="checkbox" checked /> 产品质量检验检测报告</label>
+            <label class="checkbox"><input type="checkbox" checked /> 检验检疫证明</label>
+            <label class="checkbox"><input type="checkbox" checked /> 特种劳动防护用品安全标志(LA)</label>
+            <label class="checkbox"><input type="checkbox" /> 其他自愿性认证</label>
+          </div>
+          <div style="color: var(--text-sub); font-size: 12px; margin-top: 6px;">已选 4 项 · 至少选择 1 项</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label form-label-required">开关</label>
+        <div class="form-content">
+          <div class="radio-group">
+            <label class="radio"><input type="radio" name="enable2" checked /> 开启</label>
+            <label class="radio"><input type="radio" name="enable2" /> 停用</label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 新增货主按钮 -->
+    <button class="add-owner-btn" onclick="alert('演示：将在下方插入新的货主块，自动滚动到新位置并聚焦到货主下拉。\\n\\n下拉项来自：当前类目「钳形电流表」已有采购信息配置的货主子集，已添加的会被自动过滤。')">
+      + 新增货主
+    </button>
+
+  </div>
+
+  <!-- 底部提示 -->
+  <div class="alert alert-warning">
+    <span class="alert-icon">⚠</span>
+    <div>
+      <strong>检测到本页存在 1 项校验问题</strong>，请修复后再保存：
+      <span style="color: var(--error); margin-left: 4px;">货主 #2 的属性条件中含有已失效枚举值（防水等级 = IP67）</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- 演示提示气泡 -->
+<div class="demo-tips">
+  <div class="demo-tips-section">
+    <b>💡 演示操作：</b><br/>
+    1. 货主块 #1 演示<span class="ti">「未启用属性设置」</span>：直接配必传资质 + 开关<br/>
+    2. 货主块 #2 演示<span class="ti">「启用属性设置 + 两层嵌套」</span>：根 AND 包子组 OR<br/>
+    3. 留意子组内红色 <b>"IP67 ⚠"</b> 失效枚举值提示<br/>
+    4. 点 <b>「+ 新增货主」</b> 看下拉过滤已选货主<br/>
+    5. 点顶部 <b>"保存"</b> 触发校验汇总
+  </div>
+  <div class="demo-tips-section">
+    <b>🆕 本期新增内容：</b><br/>
+    • 四级类目行操作新增<span class="ti">「资质配置」</span>按钮入口<br/>
+    • 按货主独立配置规则，业务键 (类目+货主) 唯一<br/>
+    • <span class="ti">「是否启用属性设置」</span>开关<br/>
+    • 两层嵌套 AND/OR 属性条件构造器（仅枚举类型）<br/>
+    • 必传资质 5 选 N（强制 3 项 + 自愿 2 项）<br/>
+    • 失效枚举值实时检测 + 保存前必清理<br/>
+    • 配置即时生效，不需要审批
+  </div>
+</div>
+
+<!-- 操作记录弹窗 -->
+<div class="op-modal-mask" id="opDrawerMask" onclick="closeOpRecord(event)">
+  <div class="op-modal" onclick="event.stopPropagation()">
+    <div class="op-modal-header">
+      <div class="op-modal-title">操作记录</div>
+      <span class="op-modal-close" onclick="closeOpRecord()">×</span>
+    </div>
+    <div class="op-modal-body">
+      <table class="op-table">
+        <thead>
+          <tr>
+            <th style="width: 14%;">变更类型</th>
+            <th style="width: 18%;">变更字段</th>
+            <th style="width: 20%;">变更前</th>
+            <th style="width: 20%;">变更后</th>
+            <th style="width: 12%;">变更人</th>
+            <th style="width: 16%;">变更时间</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>页面修改</td>
+            <td>必传资质类型</td>
+            <td><span class="op-cell-ellipsis" title="CCC + 质检 + LA">CCC + 质检 + LA</span></td>
+            <td><span class="op-cell-ellipsis" title="CCC + 质检 + 检验检疫 + LA">CCC + 质检 + 检验检疫 + LA</span></td>
+            <td>王云龙</td>
+            <td>2026-05-28 11:45:32</td>
+          </tr>
+          <tr>
+            <td>页面修改</td>
+            <td>属性条件</td>
+            <td><span class="op-cell-ellipsis" title="防护等级 IN [A]">防护等级 IN [A]</span></td>
+            <td><span class="op-cell-ellipsis" title="防护等级 IN [A,B] AND (防滑系数=5 OR 防水等级=IP67)">防护等级 IN [A,B] AND (防...</span></td>
+            <td>王云龙</td>
+            <td>2026-05-28 11:45:32</td>
+          </tr>
+          <tr>
+            <td>页面新增</td>
+            <td>必传资质类型</td>
+            <td>-</td>
+            <td><span class="op-cell-ellipsis" title="CCC试验报告 + 质检报告 + LA">CCC试验报告 + 质检报告 + LA</span></td>
+            <td>王云龙</td>
+            <td>2026-05-28 10:30:18</td>
+          </tr>
+          <tr>
+            <td>页面新增</td>
+            <td>是否启用属性设置</td>
+            <td>-</td>
+            <td>否</td>
+            <td>王云龙</td>
+            <td>2026-05-28 10:30:18</td>
+          </tr>
+          <tr>
+            <td>页面新增</td>
+            <td>开关</td>
+            <td>-</td>
+            <td>开启</td>
+            <td>王云龙</td>
+            <td>2026-05-28 10:30:18</td>
+          </tr>
+          <tr>
+            <td>页面修改</td>
+            <td>必传资质类型</td>
+            <td><span class="op-cell-ellipsis" title="CCC + 质检">CCC + 质检</span></td>
+            <td><span class="op-cell-ellipsis" title="CCC + 质检 + LA">CCC + 质检 + LA</span></td>
+            <td>李四</td>
+            <td>2026-05-27 16:08:45</td>
+          </tr>
+          <tr>
+            <td>启停</td>
+            <td>开关</td>
+            <td>开启</td>
+            <td>停用</td>
+            <td>王云龙</td>
+            <td>2026-05-26 09:15:22</td>
+          </tr>
+          <tr>
+            <td>页面新增（批量）</td>
+            <td>规则数</td>
+            <td>-</td>
+            <td><span class="op-cell-ellipsis" title="本批次共导入 156 条规则（含本类目 3 条）">本批次共导入 156 条规则（含本...</span></td>
+            <td>王云龙</td>
+            <td>2026-05-24 14:20:33</td>
+          </tr>
+          <tr>
+            <td>移除</td>
+            <td>货主块</td>
+            <td><span class="op-cell-ellipsis" title="杭州某已下线供应商 - 配置3项">杭州某已下线供应商 - 配置3项</span></td>
+            <td>-</td>
+            <td>张三</td>
+            <td>2026-05-20 11:02:11</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="op-modal-footer">
+      <span style="color: var(--text-body);">共 9 条</span>
+      <span class="op-pagi-btn disabled" title="上一页">&lt;</span>
+      <span class="op-pagi-btn active">1</span>
+      <span class="op-pagi-btn disabled" title="下一页">&gt;</span>
+      <span class="op-pagi-size">10 条/页 <span style="color: var(--text-sub);">▼</span></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 操作记录弹窗:打开/关闭
+  function openOpRecord() {
+    document.getElementById('opDrawerMask').classList.add('open');
+  }
+  function closeOpRecord(event) {
+    // 点击遮罩或关闭按钮时关闭;点击弹窗内部不关闭
+    if (event && event.target.closest && event.target.closest('.op-modal') && !event.target.closest('.op-modal-close')) return;
+    document.getElementById('opDrawerMask').classList.remove('open');
+  }
+
+  // tab 跳转
+  function goToTab(target) {
+    if (target === 'cat-list') {
+      // 跳转到资质规则批量维护-含任务详情.html 的类目列表视图
+      window.location.href = '资质规则批量维护-含任务详情.html';
+    } else if (target === 'current') {
+      // 当前 tab(资质配置-编辑),无需跳转
+      return;
+    }
+  }
+
+  // 属性枚举值池（演示用）
+  const ATTR_POOL = {
+    '防护等级': ['A', 'B', 'C', 'D'],
+    '防滑系数': ['3', '4', '5', '6'],
+    '防水等级': ['IP54', 'IP65', 'IP67', 'IP68'],
+    '温度范围': ['-20~60', '-40~85']
+  };
+
+  // 删除单个 tag
+  function removeTag(x) {
+    const tag = x.closest('.expr-value-tag');
+    if (tag) tag.remove();
+  }
+
+  // 删除单个条件项
+  function removeCondition(x) {
+    const cond = x.closest('.expr-condition');
+    if (cond) cond.remove();
+  }
+
+  // 删除子组
+  function removeSubGroup(x) {
+    const sub = x.closest('.expr-group-sub');
+    if (sub && confirm('确定删除该子组及其全部条件项？')) {
+      // 子组被删后，根组的"添加子组"按钮重新可用
+      const root = sub.closest('.expr-builder').querySelector('.expr-group:not(.expr-group-sub)');
+      if (root) {
+        const addSubBtn = root.querySelector('[data-role="add-sub-group"]');
+        if (addSubBtn) { addSubBtn.classList.remove('disabled'); addSubBtn.textContent = '+ 添加子组'; addSubBtn.removeAttribute('title'); }
+      }
+      sub.remove();
+    }
+  }
+
+  // 删除货主块
+  function removeOwnerCard(x) {
+    const card = x.closest('.owner-card');
+    if (card && confirm('确定删除该货主块？该货主的资质规则将被移除（保存后生效）。')) {
+      card.remove();
+    }
+  }
+
+  // 构建新条件项 DOM
+  function buildCondition(attrName, defaultVals) {
+    attrName = attrName || '防护等级';
+    defaultVals = defaultVals || [];
+    const attrOptions = Object.keys(ATTR_POOL).map(a => `<option ${a===attrName?'selected':''}>属性：${a}</option>`).join('');
+    const tagsHtml = defaultVals.map(v => `<span class="expr-value-tag">${v} <span class="x" onclick="removeTag(this)">×</span></span>`).join('');
+    const div = document.createElement('div');
+    div.className = 'expr-condition';
+    div.innerHTML = `
+      <span class="expr-condition-tree">├</span>
+      <select class="expr-select" onchange="onAttrChange(this)">${attrOptions}</select>
+      <select class="expr-select" style="min-width:70px;"><option>IN</option><option>=</option></select>
+      <div class="expr-value-tags" onclick="onAddValue(this)" title="点击空白处添加枚举值">${tagsHtml}</div>
+      <span class="expr-condition-remove" onclick="removeCondition(this)" title="删除该条件项">✕</span>
+    `;
+    return div;
+  }
+
+  // 切换属性时清空已选枚举值
+  function onAttrChange(sel) {
+    const tags = sel.parentElement.querySelector('.expr-value-tags');
+    tags.innerHTML = '';
+  }
+
+  // 点击空白处加枚举值（演示用：弹 prompt 让用户输入）
+  function onAddValue(container) {
+    const cond = container.closest('.expr-condition');
+    const attrSel = cond.querySelector('.expr-select');
+    const attrName = attrSel.value.replace('属性：', '');
+    const pool = ATTR_POOL[attrName] || [];
+    const used = Array.from(container.querySelectorAll('.expr-value-tag')).map(t => t.textContent.replace('×','').trim());
+    const remain = pool.filter(v => !used.includes(v));
+    if (remain.length === 0) { alert(`属性「${attrName}」的枚举值已全部添加`); return; }
+    const v = prompt(`请输入要添加的枚举值（可选：${remain.join(', ')}）`, remain[0]);
+    if (!v) return;
+    if (!pool.includes(v)) { alert(`枚举值「${v}」不在属性「${attrName}」的枚举范围内`); return; }
+    if (used.includes(v)) { alert(`枚举值「${v}」已存在`); return; }
+    const span = document.createElement('span');
+    span.className = 'expr-value-tag';
+    span.innerHTML = `${v} <span class="x" onclick="removeTag(this)">×</span>`;
+    container.appendChild(span);
+  }
+
+  // 添加条件项（根组或子组）
+  function addCondition(btn) {
+    const group = btn.closest('.expr-group');
+    const newCond = buildCondition('防护等级', ['A']);
+    // 插入到该 group 内最后一个 .expr-condition 之后，避免越过嵌套子组
+    const lastCond = Array.from(group.children).filter(c => c.classList.contains('expr-condition')).pop();
+    if (lastCond) lastCond.after(newCond); else group.querySelector('.expr-group-header').after(newCond);
+  }
+
+  // 添加子组（仅根组）
+  function addSubGroup(btn) {
+    if (btn.classList.contains('disabled')) { alert('已有 1 个子组，最多两层嵌套'); return; }
+    const root = btn.closest('.expr-group');
+    const rootRelEl = root.querySelector('.expr-group-relation');
+    const rootRel = rootRelEl ? rootRelEl.textContent.trim() : 'AND';
+    const subRel = rootRel === 'AND' ? 'OR' : 'AND';
+    const subRelClass = subRel === 'OR' ? 'or' : '';
+    const sub = document.createElement('div');
+    sub.className = 'expr-group expr-group-sub';
+    sub.style.marginTop = '6px';
+    sub.innerHTML = `
+      <div class="expr-group-header">
+        <span class="expr-condition-tree">└</span>
+        <span class="expr-group-label">子组：关系</span>
+        <span class="expr-group-relation ${subRelClass}">${subRel}</span>
+        <span class="expr-group-readonly">系统自动取反，不可改</span>
+        <div class="expr-group-actions">
+          <span class="expr-add-btn" onclick="addCondition(this)">+ 添加子组内条件项</span>
+          <span class="expr-add-btn" style="color: var(--error);" onclick="removeSubGroup(this)">✕ 删除子组</span>
+        </div>
+      </div>
+    `;
+    sub.appendChild(buildCondition('防滑系数', ['5']));
+    root.appendChild(sub);
+    // 禁用根组的"添加子组"按钮（已达最多 1 个子组）
+    btn.classList.add('disabled');
+    btn.textContent = '+ 添加子组（已禁用）';
+    btn.title = '已有 1 个子组，最多两层嵌套';
+  }
+
+  // 给现有静态 DOM 绑定 onclick（构造器初次加载时） + 给根组加 add-sub-group 标记
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.owner-card-delete').forEach(el => el.setAttribute('onclick', 'removeOwnerCard(this)'));
+    document.querySelectorAll('.expr-builder .expr-condition-remove').forEach(el => el.setAttribute('onclick', 'removeCondition(this)'));
+    document.querySelectorAll('.expr-builder .expr-value-tag .x').forEach(el => el.setAttribute('onclick', 'removeTag(this)'));
+    document.querySelectorAll('.expr-builder .expr-value-tags').forEach(el => { if (!el.getAttribute('onclick')) { el.setAttribute('onclick', 'onAddValue(this)'); el.setAttribute('title', '点击空白处添加枚举值'); } });
+
+    document.querySelectorAll('.expr-builder .expr-group').forEach(group => {
+      const isSub = group.classList.contains('expr-group-sub');
+      const actions = group.querySelector('.expr-group-actions');
+      if (!actions) return;
+      Array.from(actions.querySelectorAll('.expr-add-btn')).forEach(btn => {
+        const t = btn.textContent.trim();
+        if (t.startsWith('+ 添加条件项')) btn.setAttribute('onclick', 'addCondition(this)');
+        else if (t.startsWith('+ 添加子组内条件项')) btn.setAttribute('onclick', 'addCondition(this)');
+        else if (t.startsWith('+ 添加子组')) { btn.setAttribute('onclick', 'addSubGroup(this)'); btn.setAttribute('data-role', 'add-sub-group'); }
+        else if (t.startsWith('✕ 删除子组')) btn.setAttribute('onclick', 'removeSubGroup(this)');
+      });
+    });
+  });
+
+  // ESC 关闭抽屉
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeOpRecord();
+  });
+</script>
+
+</body>
+</html>

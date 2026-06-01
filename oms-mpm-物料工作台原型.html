@@ -552,7 +552,7 @@
   <header class="topbar">
     <div class="brand">
       <div class="brand-logo">咸</div>
-      <span class="brand-name">咸亨国际主数据管理平台</span>
+      <span class="brand-name" style="cursor:pointer;" onclick="location.href='oms-mpm-物料工作台原型.html'">咸亨国际主数据管理平台</span>
       <button class="switch-btn" type="button" data-action="switch-system">切换系统</button>
     </div>
     <nav class="nav-menu">
@@ -570,7 +570,7 @@
 
   <div class="tabs-bar">
     <div class="tabs-list">
-      <div class="tab active">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab active" onclick="location.href='oms-mpm-物料工作台原型.html'">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
       <div class="tab" onclick="goPage('咸亨产品奖励管理列表.html')">咸亨产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
     </div>
     <div class="tabs-clear" id="clearTabs">清除</div>
@@ -629,14 +629,15 @@
               </span>
             </a>
             <a class="link" href="javascript:void(0)">暂存列表</a>
-            <a class="link" href="javascript:void(0)">新增物料</a>
-            <a class="link" href="javascript:void(0)">批量新增</a>
+            <a class="link" href="物料审核详情.html">新增物料</a>
+            <a class="link" href="批量新增物料列表.html">批量新增</a>
             <a class="link active" href="我发起的.html">我发起的</a>
             <a class="link" href="审核结果.html">审核结果</a>
             <a class="link" href="javascript:void(0)">商图打包</a>
             <a class="link" href="待我审核.html">待我审核</a>
             <a class="link" href="javascript:void(0)">价格预警</a>
             <a class="link" href="javascript:void(0)">审核日志</a>
+            <a class="link" href="文件管理.html">文件管理</a>
             <a class="link center-link" href="javascript:void(0)">待我审核（产业）</a>
             <a class="link center-link" href="javascript:void(0)">审核结果（产业）</a>
           </div>
@@ -648,7 +649,7 @@
             <div>类目属性</div>
           </div>
           <div class="module-links cols-3">
-            <a class="link" href="javascript:void(0)">类目列表</a>
+            <a class="link" href="资质规则批量维护-含任务详情.html">类目列表</a>
             <a class="link" href="javascript:void(0)">属性列表</a>
             <a class="link" href="javascript:void(0)">（新）属性列表</a>
           </div>

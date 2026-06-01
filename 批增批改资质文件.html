@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>批增批改资质文件 - 咸亨国际主数据管理平台</title>
+  <style>
+    :root {
+      --primary: #1677ff;
+      --primary-hover: #4096ff;
+      --primary-bg: #e6f4ff;
+      --success: #52c41a;
+      --success-bg: #f6ffed;
+      --success-border: #b7eb8f;
+      --warning: #faad14;
+      --warning-bg: #fffbe6;
+      --warning-border: #ffe58f;
+      --error: #ff4d4f;
+      --error-bg: #fff1f0;
+      --error-border: #ffccc7;
+      --text-title: rgba(0,0,0,0.88);
+      --text-body: rgba(0,0,0,0.65);
+      --text-sub: rgba(0,0,0,0.45);
+      --text-light: rgba(0,0,0,0.30);
+      --border: #d9d9d9;
+      --border-light: #f0f0f0;
+      --bg-layout: #f5f5f5;
+      --bg-container: #ffffff;
+      --bg-table-head: #fafafa;
+      --radius: 6px;
+      --radius-sm: 4px;
+      --radius-lg: 8px;
+      --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 1px 6px rgba(0,0,0,0.04);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      font-size: 14px;
+      background: var(--bg-layout);
+      color: var(--text-body);
+      min-width: 1280px;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+
+    /* 顶栏 */
+    .topbar { height: 48px; background: #001529; color: rgba(255,255,255,0.85); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: sticky; top: 0; z-index: 120; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-logo { width: 28px; height: 28px; background: var(--primary); border-radius: 6px; display: grid; place-items: center; font-size: 13px; font-weight: 700; color: #fff; }
+    .brand-name { font-size: 16px; font-weight: 600; color: #fff; white-space: nowrap; }
+    .switch-btn { border: 1px solid rgba(255,255,255,0.25); background: transparent; color: rgba(255,255,255,0.75); border-radius: var(--radius); padding: 3px 10px; font-size: 12px; cursor: pointer; line-height: 22px; }
+    .switch-btn:hover { border-color: var(--primary); color: #fff; }
+    .nav-menu { display: flex; align-items: center; height: 100%; }
+    .nav-item { display: flex; align-items: center; gap: 5px; padding: 0 13px; height: 100%; font-size: 13px; color: rgba(255,255,255,0.75); cursor: pointer; white-space: nowrap; }
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .nav-item.active { color: #fff; background: rgba(255,255,255,0.1); }
+    .nav-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); margin: 0 3px; }
+    .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+
+    /* 标签页 */
+    .tabs-bar { height: 36px; background: var(--bg-container); border-bottom: 1px solid var(--border-light); display: flex; align-items: stretch; justify-content: space-between; padding: 0 8px 0 0; position: sticky; top: 48px; z-index: 110; }
+    .tabs-list { display: flex; align-items: stretch; }
+    .tab { display: flex; align-items: center; gap: 6px; padding: 0 12px; font-size: 13px; color: var(--text-body); cursor: pointer; border-right: 1px solid var(--border-light); white-space: nowrap; }
+    .tab:hover { background: var(--bg-table-head); }
+    .tab.active { background: #fff; color: var(--primary); border-bottom: 2px solid var(--primary); margin-bottom: -1px; }
+    .tab .close { font-size: 12px; color: var(--text-sub); padding: 2px; }
+    .tab .close:hover { color: var(--error); }
+    .tabs-clean { padding: 0 12px; display: grid; place-items: center; color: var(--text-sub); cursor: pointer; font-size: 13px; }
+    .tabs-clean:hover { color: var(--primary); }
+
+    /* 页面主区 */
+    .main { padding: 16px; min-height: calc(100vh - 84px); }
+    .page-header { background: var(--bg-container); border-radius: var(--radius-lg); padding: 12px 20px; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; }
+    .page-header-left { display: flex; align-items: center; gap: 8px; }
+    .back-btn { font-size: 18px; cursor: pointer; color: var(--text-sub); padding: 4px 8px; border-radius: var(--radius); }
+    .back-btn:hover { background: var(--bg-table-head); color: var(--primary); }
+    .page-title { font-size: 16px; font-weight: 600; color: var(--text-title); }
+    .page-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .btn { padding: 5px 16px; border-radius: var(--radius); border: 1px solid var(--border); background: #fff; color: var(--text-body); cursor: pointer; font-size: 14px; transition: all .2s; position: relative; }
+    .btn:hover { color: var(--primary); border-color: var(--primary); }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); color: #fff; }
+    .btn-text { background: transparent; border: none; color: var(--primary); padding: 5px 8px; cursor: pointer; font-size: 14px; }
+    .btn-text:hover { background: var(--primary-bg); }
+    .btn-danger { color: var(--error); border-color: var(--error); }
+    .btn-danger:hover { background: var(--error); color: #fff; }
+    .btn-sm { padding: 2px 10px; font-size: 13px; }
+
+    /* New 角标 */
+    .btn-new::after {
+      content: "";
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      width: 8px;
+      height: 8px;
+      background: var(--error);
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px #fff;
+    }
+    .btn-new-label {
+      display: inline-block;
+      margin-left: 4px;
+      padding: 0 5px;
+      background: var(--error);
+      color: #fff;
+      font-size: 10px;
+      line-height: 14px;
+      border-radius: 8px;
+      vertical-align: middle;
+      font-weight: 600;
+    }
+
+    /* Alert */
+    .alert { padding: 9px 16px; border-radius: var(--radius); display: flex; align-items: flex-start; gap: 8px; margin-bottom: 12px; font-size: 13px; }
+    .alert-info { background: var(--primary-bg); border: 1px solid #91caff; color: rgba(0,0,0,0.85); }
+    .alert-warning { background: var(--warning-bg); border: 1px solid var(--warning-border); }
+    .alert-success { background: var(--success-bg); border: 1px solid var(--success-border); }
+    .alert-icon { flex-shrink: 0; color: var(--primary); font-size: 14px; line-height: 20px; font-weight: 700; }
+    .alert-warning .alert-icon { color: var(--warning); }
+    .alert-success .alert-icon { color: var(--success); }
+
+    /* Card */
+    .card { background: var(--bg-container); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow); margin-bottom: 12px; }
+    .card-section-title { display: flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 600; color: var(--text-title); margin-bottom: 16px; padding-left: 8px; border-left: 3px solid var(--primary); }
+    .card-section-title-sub { font-size: 13px; font-weight: normal; color: var(--text-sub); margin-left: 4px; }
+
+    /* 表格 */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border-light); border-radius: var(--radius); }
+    table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.tbl th, table.tbl td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-light); white-space: nowrap; }
+    table.tbl th { background: var(--bg-table-head); color: var(--text-title); font-weight: 600; }
+    table.tbl tr:last-child td { border-bottom: none; }
+    table.tbl tr:hover td { background: #fafcff; }
+    table.tbl .col-link { color: var(--primary); cursor: pointer; }
+    table.tbl .col-link:hover { text-decoration: underline; }
+
+    /* Tag */
+    .tag { display: inline-block; padding: 1px 8px; border-radius: 4px; font-size: 12px; line-height: 20px; border: 1px solid; }
+    .tag-blue { background: var(--primary-bg); color: var(--primary); border-color: #91caff; }
+    .tag-green { background: var(--success-bg); color: var(--success); border-color: var(--success-border); }
+    .tag-orange { background: var(--warning-bg); color: var(--warning); border-color: var(--warning-border); }
+    .tag-red { background: var(--error-bg); color: var(--error); border-color: var(--error-border); }
+    .tag-gray { background: var(--bg-table-head); color: var(--text-sub); border-color: var(--border-light); }
+
+    /* 处理中橙闪 */
+    .tag-processing { animation: pulseOrange 1.4s ease-in-out infinite; }
+    @keyframes pulseOrange {
+      0%, 100% { background: var(--warning-bg); color: var(--warning); }
+      50% { background: var(--warning); color: #fff; }
+    }
+
+    /* Modal 遮罩 + 容器 */
+    .modal-mask { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; display: none; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 40px 16px; }
+    .modal-mask.show { display: flex; animation: fadeIn .2s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal { background: #fff; border-radius: var(--radius-lg); width: 640px; max-width: 100%; box-shadow: 0 8px 28px rgba(0,0,0,0.18); animation: slideDown .25s ease; }
+    @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+    .modal-title { font-size: 16px; font-weight: 600; color: var(--text-title); }
+    .modal-close { font-size: 18px; color: var(--text-sub); cursor: pointer; padding: 4px 8px; border-radius: var(--radius); line-height: 1; }
+    .modal-close:hover { background: var(--bg-table-head); color: var(--text-title); }
+    .modal-body { padding: 16px 20px; max-height: calc(100vh - 220px); overflow-y: auto; }
+    .modal-footer { padding: 12px 20px; border-top: 1px solid var(--border-light); display: flex; justify-content: flex-end; gap: 8px; }
+
+    /* 表单 */
+    .form-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .form-label { width: 96px; flex-shrink: 0; text-align: right; color: var(--text-title); font-size: 14px; padding-top: 5px; }
+    .form-label-required::before { content: "* "; color: var(--error); }
+    .form-content { flex: 1; min-width: 0; }
+
+    /* 模板下载行 */
+    .tpl-block { background: var(--bg-table-head); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 12px 14px; }
+    .tpl-row { display: flex; align-items: center; gap: 8px; }
+    .tpl-desc { color: var(--text-sub); font-size: 12px; line-height: 1.8; margin-top: 6px; padding-left: 4px; }
+    .tpl-desc .num { display: inline-block; width: 18px; color: var(--text-body); font-weight: 600; }
+
+    /* Upload dragger */
+    .upload-dragger { border: 1px dashed var(--border); border-radius: var(--radius); background: var(--bg-table-head); padding: 22px 16px; text-align: center; cursor: pointer; transition: all .2s; }
+    .upload-dragger:hover { border-color: var(--primary); background: var(--primary-bg); }
+    .upload-dragger .up-icon { display: inline-block; width: 38px; height: 38px; border-radius: 50%; background: var(--primary-bg); color: var(--primary); font-size: 18px; font-weight: 700; line-height: 38px; margin-bottom: 8px; }
+    .upload-dragger .up-text { color: var(--text-title); font-size: 14px; font-weight: 500; }
+    .upload-dragger .up-hint { color: var(--text-sub); font-size: 12px; margin-top: 4px; }
+
+    /* 已选文件 */
+    .file-selected { margin-top: 10px; display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #fff; border: 1px solid var(--border-light); border-radius: var(--radius); font-size: 13px; }
+    .file-selected .file-icon { width: 20px; height: 22px; background: #16a34a; color: #fff; display: grid; place-items: center; font-size: 9px; font-weight: 700; border-radius: 2px; flex-shrink: 0; }
+    .file-selected .file-name { flex: 1; color: var(--text-title); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .file-selected .file-size { color: var(--text-sub); font-size: 12px; }
+    .file-selected .file-remove { color: var(--text-sub); cursor: pointer; padding: 2px 8px; border-radius: var(--radius-sm); font-size: 12px; }
+    .file-selected .file-remove:hover { color: var(--error); background: var(--error-bg); }
+
+    /* 处理语义说明 */
+    .semantic-card { background: var(--primary-bg); border: 1px solid #91caff; border-radius: var(--radius); padding: 10px 14px; margin-top: 4px; }
+    .semantic-card .sem-title { font-size: 13px; font-weight: 600; color: var(--text-title); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .semantic-card .sem-list { list-style: none; padding: 0; margin: 0; color: var(--text-body); font-size: 12px; line-height: 1.85; }
+    .semantic-card .sem-list li { padding-left: 14px; position: relative; }
+    .semantic-card .sem-list li::before { content: "·"; position: absolute; left: 4px; color: var(--primary); font-weight: 700; font-size: 14px; }
+    .semantic-card .sem-list code { background: #fff; padding: 1px 5px; border-radius: 3px; font-family: Consolas, Monaco, monospace; font-size: 11px; color: #d4380d; }
+
+    /* Drawer 抽屉 */
+    .drawer-mask { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1100; display: none; }
+    .drawer-mask.show { display: block; animation: fadeIn .2s ease; }
+    .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 720px; background: #fff; box-shadow: -2px 0 12px rgba(0,0,0,0.15); z-index: 1101; display: none; flex-direction: column; transform: translateX(100%); transition: transform .25s ease; }
+    .drawer.show { display: flex; transform: translateX(0); }
+    .drawer-header { padding: 14px 20px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+    .drawer-title { font-size: 16px; font-weight: 600; color: var(--text-title); }
+    .drawer-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+    .drawer-footer { padding: 12px 20px; border-top: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+
+    /* 详情区块 */
+    .detail-section { margin-bottom: 18px; }
+    .detail-section-title { font-size: 14px; font-weight: 600; color: var(--text-title); padding-left: 8px; border-left: 3px solid var(--primary); margin-bottom: 10px; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; padding: 0 4px; }
+    .detail-row { display: flex; gap: 8px; font-size: 13px; line-height: 1.8; }
+    .detail-row .dl { color: var(--text-sub); white-space: nowrap; min-width: 76px; }
+    .detail-row .dv { color: var(--text-title); word-break: break-all; }
+
+    /* 统计数字 */
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .stat-cell { background: var(--bg-table-head); border-radius: var(--radius); padding: 14px 12px; text-align: center; border: 1px solid var(--border-light); }
+    .stat-cell .num { font-size: 22px; font-weight: 600; line-height: 1.2; }
+    .stat-cell .lbl { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
+    .stat-cell.total .num { color: var(--text-title); }
+    .stat-cell.add .num { color: var(--primary); }
+    .stat-cell.mod .num { color: var(--warning); }
+    .stat-cell.fail .num { color: var(--error); }
+
+    /* 失败明细表 */
+    .fail-table { width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid var(--border-light); border-radius: var(--radius); overflow: hidden; }
+    .fail-table th { background: var(--bg-table-head); color: var(--text-title); font-weight: 600; padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border-light); white-space: nowrap; }
+    .fail-table td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+    .fail-table tr:last-child td { border-bottom: none; }
+    .fail-table tr:hover td { background: #fff8f8; }
+    .fail-table .url-cell { max-width: 240px; word-break: break-all; color: var(--text-sub); font-size: 11px; font-family: Consolas, Monaco, monospace; }
+    .fail-table .reason-cell { color: var(--error); font-size: 12px; }
+
+    /* Toast / Message */
+    .msg { position: fixed; top: 84px; left: 50%; transform: translateX(-50%); background: #fff; border: 1px solid var(--border-light); border-left: 4px solid var(--success); padding: 10px 16px; border-radius: var(--radius); box-shadow: 0 4px 14px rgba(0,0,0,0.12); z-index: 1200; font-size: 14px; color: var(--text-title); display: none; align-items: center; gap: 8px; min-width: 240px; }
+    .msg.show { display: flex; animation: slideDownMsg .25s ease; }
+    @keyframes slideDownMsg { from { transform: translate(-50%, -20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+    .msg-icon { width: 18px; height: 18px; border-radius: 50%; background: var(--success); color: #fff; display: grid; place-items: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+
+    /* 演示提示气泡 */
+    .demo-tips { position: fixed; bottom: 16px; right: 16px; background: rgba(0,0,0,0.78); color: #fff; padding: 12px 14px; border-radius: var(--radius); font-size: 12px; line-height: 1.65; max-width: 320px; z-index: 99; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .demo-tips b { color: #ffd666; }
+    .demo-tips .ti { color: #95de64; }
+    .demo-tips-section { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.2); }
+    .demo-tips-section:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+    .demo-tips-toggle { position: fixed; bottom: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 98; font-size: 14px; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<!-- 顶栏 -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">咸</div>
+    <div class="brand-name" style="cursor:pointer;" onclick="location.href='oms-mpm-物料工作台原型.html'">咸亨国际主数据管理平台</div>
+    <button class="switch-btn">切换系统</button>
+  </div>
+  <div class="nav-menu">
+    <div class="nav-item">消息通知</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">价格审核</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">版本更新</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">推送ERP</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">管理模块</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">任务中心</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">清洗任务</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">
+      <div class="user-avatar">王</div>
+      <span>管理员 ▼</span>
+    </div>
+  </div>
+</div>
+
+<!-- 标签页栏 -->
+<div class="tabs-bar">
+  <div class="tabs-list">
+    <div class="tab" onclick="location.href='资质规则批量维护-含任务详情.html'">类目列表 <span class="close">×</span></div>
+    <div class="tab active" onclick="location.href='物料列表.html'">物料管理 <span class="close">×</span></div>
+  </div>
+  <div class="tabs-clean">清除</div>
+</div>
+
+<!-- 主内容：物料管理列表页（背景） -->
+<div class="main">
+
+  <!-- 页头 -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <span class="back-btn" title="返回">←</span>
+      <span class="page-title">物料管理</span>
+    </div>
+    <div class="page-header-actions">
+      <button class="btn">新增物料</button>
+      <button class="btn">批量新增物料</button>
+      <button class="btn">批量修改物料</button>
+      <button class="btn btn-primary btn-new" onclick="openModal()">
+        批增批改资质文件
+        <span class="btn-new-label">New</span>
+      </button>
+      <button class="btn">导出物料数据</button>
+      <button class="btn">导出资质资料</button>
+      <button class="btn">物料暂存区</button>
+    </div>
+  </div>
+
+  <!-- 入口位置说明 -->
+  <div class="alert alert-info">
+    <span class="alert-icon">i</span>
+    <div>
+      <strong>本期新增「批增批改资质文件」独立入口</strong>，与「批量新增物料」「批量修改物料」并列。点击顶部按钮即可批量为已存在物料关联资质文件 OSS 地址，常用于物料导入前预先备好资质或批量修改资质 OSS 地址。
+    </div>
+  </div>
+
+  <!-- 物料表格（简化） -->
+  <div class="card">
+    <div class="card-section-title">物料列表<span class="card-section-title-sub">（仅展示前 8 条，用于演示入口位置）</span></div>
+    <div class="table-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th width="40"><input type="checkbox" /></th>
+            <th>物料编码</th>
+            <th>物料名称</th>
+            <th>四级类目</th>
+            <th>货主</th>
+            <th>资质完备</th>
+            <th>状态</th>
+            <th width="160">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="checkbox" /></td>
+            <td>M00012345</td>
+            <td>钳形电流表 QF-A5 0.01A-600A</td>
+            <td>钳形电流表</td>
+            <td>万聚国际（杭州）</td>
+            <td><span class="tag tag-green">完备</span></td>
+            <td><span class="tag tag-green">已上架</span></td>
+            <td><a class="col-link">编辑</a> · <a class="col-link">查看资质</a></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" /></td>
+            <td>M00012346</td>
+            <td>钳形电流表 QF-B2 0.1A-200A</td>
+            <td>钳形电流表</td>
+            <td>咸亨国际电子商务</td>
+            <td><span class="tag tag-red">缺 2 项</span></td>
+            <td><span class="tag tag-orange">待补资质</span></td>
+            <td><a class="col-link">编辑</a> · <a class="col-link">查看资质</a></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" /></td>
+            <td>M00012347</td>
+            <td>绝缘手套 12kV-RJ7</td>
+            <td>电工绝缘手套</td>
+            <td>万聚国际（杭州）</td>
+            <td><span class="tag tag-green">完备</span></td>
+            <td><span class="tag tag-green">已上架</span></td>
+            <td><a class="col-link">编辑</a> · <a class="col-link">查看资质</a></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" /></td>
+            <td>M00012348</td>
+            <td>安全帽 ABS V 型 黄色</td>
+            <td>安全帽</td>
+            <td>咸亨国际电子商务</td>
+            <td><span class="tag tag-orange">缺 1 项</span></td>
+            <td><span class="tag tag-orange">待补资质</span></td>
+            <td><a class="col-link">编辑</a> · <a class="col-link">查看资质</a></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" /></td>
+            <td>M00012349</td>
+            <td>反光背心 荧光黄 XL</td>
+            <td>反光警示服</td>
+            <td>万聚国际（杭州）</td>
+            <td><span class="tag tag-green">完备</span></td>
+            <td><span class="tag tag-green">已上架</span></td>
+            <td><a class="col-link">编辑</a> · <a class="col-link">查看资质</a></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" /></td>
+            <td>M00012350</td>
+            <td>万用表 数字 UT39A+</td>
+            <td>数字万用表</td>
+            <td>咸亨国际电子商务</td>
+            <td><span class="tag tag-green">完备</span></td>
+            <td><span class="tag tag-green">已上架</span></td>
+            <td><a class="col-link">编辑</a> · <a class="col-link">查看资质</a></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" /></td>
+            <td>M00012351</td>
+            <td>绝缘梯 5m 玻璃钢</td>
+            <td>绝缘梯</td>
+            <td>万聚国际（杭州）</td>
+            <td><span class="tag tag-red">缺 3 项</span></td>
+            <td><span class="tag tag-orange">待补资质</span></td>
+            <td><a class="col-link">编辑</a> · <a class="col-link">查看资质</a></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" /></td>
+            <td>M00012352</td>
+            <td>验电笔 高压 10kV</td>
+            <td>验电器</td>
+            <td>咸亨国际电子商务</td>
+            <td><span class="tag tag-green">完备</span></td>
+            <td><span class="tag tag-green">已上架</span></td>
+            <td><a class="col-link">编辑</a> · <a class="col-link">查看资质</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ========== 操作弹窗 ========== -->
+<div class="modal-mask" id="modalMask">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">批增批改资质文件</div>
+      <div class="modal-close" onclick="closeModal()">×</div>
+    </div>
+    <div class="modal-body">
+
+      <div class="alert alert-info" style="margin-bottom: 14px;">
+        <span class="alert-icon">i</span>
+        <div>
+          本入口仅建立物料↔资质文件的关联，<strong>不触发资质校验、不进入审核流程</strong><br/>
+          常用于：① 物料导入前预先备好资质　② 批量修改资质 OSS 地址
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label form-label-required">模板下载</label>
+        <div class="form-content">
+          <div class="tpl-block">
+            <div class="tpl-row">
+              <button class="btn btn-sm" onclick="downloadTpl()">下载批增批改资质文件模板.xlsx</button>
+              <span style="color: var(--text-sub); font-size: 12px;">模板含 1 行示例数据</span>
+            </div>
+            <div class="tpl-desc">
+              模板 3 列：<br/>
+              <span class="num">①</span> 物料编码（必填）<br/>
+              <span class="num">②</span> 资质类型（必填，5 选 1）<br/>
+              <span class="num">③</span> 资质文件 OSS 地址（必填，域名必须为 MPM OSS）
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label form-label-required">上传 Excel</label>
+        <div class="form-content">
+          <div class="upload-dragger" onclick="pickFile()" id="uploadDragger">
+            <div class="up-icon">+</div>
+            <div class="up-text">点击或拖拽 Excel 文件到此处</div>
+            <div class="up-hint">支持 .xlsx / .xls；单文件 ≤ 50MB；单批 ≤ 50000 行</div>
+          </div>
+          <div class="file-selected" id="fileSelected">
+            <div class="file-icon">XLS</div>
+            <div class="file-name">批增批改资质文件_20260528.xlsx</div>
+            <div class="file-size">3.5MB</div>
+            <span class="file-remove" onclick="removeFile()">移除</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label" style="color: var(--text-sub);">处理语义</label>
+        <div class="form-content">
+          <div class="semantic-card">
+            <div class="sem-title">
+              <span style="display:inline-block;width:6px;height:6px;background:var(--primary);border-radius:50%;"></span>
+              upsert 处理语义
+            </div>
+            <ul class="sem-list">
+              <li><code>物料编码 + 资质类型</code> 已存在 → 更新 OSS 地址（写物料操作历史：旧 → 新）</li>
+              <li><code>物料编码 + 资质类型</code> 不存在 → 新增关联</li>
+              <li><code>物料编码</code> 不存在（含暂存区）→ 该行失败</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" id="submitBtn" onclick="submitTask()">提交并跳转任务中心</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 任务中心 Drawer ========== -->
+<div class="drawer-mask" id="drawerMask" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-title">任务详情 - BATCH-QUAL-20260528-001</div>
+    <div class="modal-close" onclick="closeDrawer()">×</div>
+  </div>
+  <div class="drawer-body">
+
+    <!-- 基础信息 -->
+    <div class="detail-section">
+      <div class="detail-section-title">基础信息</div>
+      <div class="detail-grid">
+        <div class="detail-row"><span class="dl">任务编号：</span><span class="dv">BATCH-QUAL-20260528-001</span></div>
+        <div class="detail-row"><span class="dl">任务类型：</span><span class="dv">批增批改资质文件</span></div>
+        <div class="detail-row"><span class="dl">状态：</span><span class="dv"><span class="tag tag-orange">部分失败</span></span></div>
+        <div class="detail-row"><span class="dl">发起人：</span><span class="dv">王云龙</span></div>
+        <div class="detail-row"><span class="dl">提交时间：</span><span class="dv">2026-05-28 14:30:00</span></div>
+        <div class="detail-row"><span class="dl">完成时间：</span><span class="dv">2026-05-28 14:32:18</span></div>
+        <div class="detail-row" style="grid-column: 1 / -1;">
+          <span class="dl">上传文件：</span>
+          <span class="dv">
+            <span style="display: inline-flex; align-items: center; gap: 6px;">
+              <span style="display:inline-grid;place-items:center;width:18px;height:20px;background:#16a34a;color:#fff;font-size:9px;font-weight:700;border-radius:2px;">XLS</span>
+              批增批改资质文件_20260528.xlsx
+              <span style="color: var(--text-sub);">(3.5MB)</span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 处理结果统计 -->
+    <div class="detail-section">
+      <div class="detail-section-title">处理结果统计</div>
+      <div class="stat-grid">
+        <div class="stat-cell total">
+          <div class="num">328</div>
+          <div class="lbl">总行数</div>
+        </div>
+        <div class="stat-cell add">
+          <div class="num">198</div>
+          <div class="lbl">新增（条）</div>
+        </div>
+        <div class="stat-cell mod">
+          <div class="num">115</div>
+          <div class="lbl">修改（条）</div>
+        </div>
+        <div class="stat-cell fail">
+          <div class="num">15</div>
+          <div class="lbl">失败（条）</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 失败明细 -->
+    <div class="detail-section">
+      <div class="detail-section-title" style="display:flex;align-items:center;justify-content:space-between;border-left:none;padding-left:0;">
+        <span style="padding-left: 8px; border-left: 3px solid var(--primary);">失败明细预览<span style="color: var(--text-sub); font-size: 12px; font-weight: normal; margin-left: 6px;">（前 10 条，共 15 条）</span></span>
+        <button class="btn btn-sm" onclick="downloadFail()">下载失败明细 Excel</button>
+      </div>
+      <table class="fail-table">
+        <thead>
+          <tr>
+            <th width="50">行号</th>
+            <th width="100">物料编码</th>
+            <th width="140">资质类型</th>
+            <th>OSS URL</th>
+            <th width="180">失败原因</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>3</td>
+            <td>M99999001</td>
+            <td>CCC_TEST_REPORT</td>
+            <td class="url-cell">https://mpm-oss.xianheng.cn/qual/ccc-202605-001.pdf</td>
+            <td class="reason-cell">物料编码不存在</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>M00012360</td>
+            <td>QUALITY_REPORT</td>
+            <td class="url-cell">https://other-oss.example.com/quality/r-007.pdf</td>
+            <td class="reason-cell">OSS URL 域名非 mpm-oss.xianheng.cn</td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td>M00012365</td>
+            <td>9</td>
+            <td class="url-cell">https://mpm-oss.xianheng.cn/qual/inspect-202605-012.pdf</td>
+            <td class="reason-cell">资质类型编号 9 非法，请使用 1-5</td>
+          </tr>
+          <tr>
+            <td>28</td>
+            <td>M00012380</td>
+            <td>LA_SAFETY</td>
+            <td class="url-cell">https://mpm-oss.xianheng.cn/qual/la-202605-028.pdf</td>
+            <td class="reason-cell">同 Excel 内重复（保留最后一行）</td>
+          </tr>
+          <tr>
+            <td>45</td>
+            <td>M88800123</td>
+            <td>INSPECT_CERT</td>
+            <td class="url-cell">https://mpm-oss.xianheng.cn/qual/inspect-202605-045.pdf</td>
+            <td class="reason-cell">物料编码不存在</td>
+          </tr>
+          <tr>
+            <td>67</td>
+            <td>M00012420</td>
+            <td>OTHER_VOLUNTARY</td>
+            <td class="url-cell">http://mpm-oss.xianheng.cn/qual/other-067.pdf</td>
+            <td class="reason-cell">OSS URL 必须以 https:// 开头</td>
+          </tr>
+          <tr>
+            <td>89</td>
+            <td>M00012442</td>
+            <td>7</td>
+            <td class="url-cell">https://mpm-oss.xianheng.cn/qual/ccc-202605-089.pdf</td>
+            <td class="reason-cell">资质类型编号 7 非法，请使用 1-5</td>
+          </tr>
+          <tr>
+            <td>112</td>
+            <td>M00012465</td>
+            <td>CCC_TEST_REPORT</td>
+            <td class="url-cell">https://aliyun-oss.example.com/ccc-202605-112.pdf</td>
+            <td class="reason-cell">OSS URL 域名非 mpm-oss.xianheng.cn</td>
+          </tr>
+          <tr>
+            <td>156</td>
+            <td>M77700456</td>
+            <td>QUALITY_REPORT</td>
+            <td class="url-cell">https://mpm-oss.xianheng.cn/qual/quality-202605-156.pdf</td>
+            <td class="reason-cell">物料编码不存在</td>
+          </tr>
+          <tr>
+            <td>203</td>
+            <td>M00012556</td>
+            <td>LA_SAFETY</td>
+            <td class="url-cell">https://mpm-oss.xianheng.cn/qual/la-202605-203.pdf</td>
+            <td class="reason-cell">同 Excel 内重复（保留最后一行）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+  <div class="drawer-footer">
+    <span style="color: var(--text-sub); font-size: 12px;">异步任务结果保留 30 天</span>
+    <div>
+      <button class="btn" onclick="closeDrawer()">关闭</button>
+      <button class="btn btn-primary" onclick="closeDrawer()">返回任务中心</button>
+    </div>
+  </div>
+</div>
+
+<!-- 消息提示 -->
+<div class="msg" id="msg">
+  <span class="msg-icon">√</span>
+  <span id="msgText">任务已提交，正在跳转任务中心...</span>
+</div>
+
+<!-- 演示提示气泡 -->
+<div class="demo-tips" id="demoTips">
+  <div class="demo-tips-section">
+    <b>演示操作：</b><br/>
+    1. 点顶部 <b>「批增批改资质文件」</b> 按钮（带 New 角标）→ 打开操作弹窗<br/>
+    2. 弹窗内可点 <span class="ti">「下载模板」</span>、查看 upsert 处理语义说明<br/>
+    3. 弹窗已 mock 选中文件状态，点 <span class="ti">「移除」</span> 可清空，点上传区可重新模拟选择<br/>
+    4. 点底部 <b>「提交并跳转任务中心」</b> → 弹 Message → 自动打开任务详情 Drawer<br/>
+    5. Drawer 展示统计 + 失败明细前 10 条
+  </div>
+  <div class="demo-tips-section">
+    <b>本期新增内容：</b><br/>
+    • 物料管理顶部新增 <span class="ti">「批增批改资质文件」</span> 按钮（独立于批量新增/修改）<br/>
+    • 操作弹窗：模板下载 + 拖拽上传 + 处理语义说明<br/>
+    • Excel 3 列 upsert：物料编码 + 资质类型 + OSS URL<br/>
+    • 不触发资质校验、不进入审核流程<br/>
+    • 任务中心详情 Drawer：统计 4 维 + 失败明细可下载
+  </div>
+  <div style="text-align: right; margin-top: 8px;">
+    <span style="cursor:pointer; color:#ffd666; font-size: 11px;" onclick="hideTips()">收起 ▾</span>
+  </div>
+</div>
+<div class="demo-tips-toggle" id="demoTipsToggle" style="display: none;" onclick="showTips()">i</div>
+
+<script>
+  // ========== 弹窗控制 ==========
+  function openModal() {
+    document.getElementById('modalMask').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('modalMask').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  // 点遮罩关闭弹窗
+  document.getElementById('modalMask').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // ========== 文件选择模拟 ==========
+  var fileSelectedEl = document.getElementById('fileSelected');
+  var uploadDraggerEl = document.getElementById('uploadDragger');
+  var submitBtnEl = document.getElementById('submitBtn');
+
+  function refreshFileUI() {
+    var hasFile = fileSelectedEl.style.display !== 'none';
+    submitBtnEl.disabled = !hasFile;
+    submitBtnEl.style.opacity = hasFile ? '1' : '0.5';
+    submitBtnEl.style.cursor = hasFile ? 'pointer' : 'not-allowed';
+    submitBtnEl.title = hasFile ? '' : '请先选择文件';
+  }
+  function pickFile() {
+    // 模拟选择文件
+    fileSelectedEl.style.display = 'flex';
+    refreshFileUI();
+  }
+  function removeFile() {
+    fileSelectedEl.style.display = 'none';
+    refreshFileUI();
+  }
+  function downloadTpl() {
+    showMsg('开始下载：批增批改资质文件模板_v2.0.xlsx');
+  }
+  function downloadFail() {
+    showMsg('开始下载：失败明细_BATCH-QUAL-20260528-001.xlsx');
+  }
+
+  // ========== 提交流程 ==========
+  function submitTask() {
+    var hasFile = fileSelectedEl.style.display !== 'none';
+    if (!hasFile) {
+      showMsg('请先选择文件', 'warn');
+      return;
+    }
+    closeModal();
+    showMsg('任务已提交，正在跳转任务中心...');
+    setTimeout(function() {
+      openDrawer();
+    }, 700);
+  }
+
+  // ========== Drawer ==========
+  function openDrawer() {
+    document.getElementById('drawerMask').classList.add('show');
+    document.getElementById('drawer').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    document.getElementById('drawerMask').classList.remove('show');
+    document.getElementById('drawer').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  // ========== Message ==========
+  var msgTimer = null;
+  function showMsg(text, type) {
+    var msg = document.getElementById('msg');
+    var msgText = document.getElementById('msgText');
+    var icon = msg.querySelector('.msg-icon');
+    msgText.textContent = text;
+    if (type === 'warn') {
+      msg.style.borderLeftColor = 'var(--warning)';
+      icon.style.background = 'var(--warning)';
+      icon.textContent = '!';
+    } else {
+      msg.style.borderLeftColor = 'var(--success)';
+      icon.style.background = 'var(--success)';
+      icon.textContent = '√';
+    }
+    msg.classList.add('show');
+    clearTimeout(msgTimer);
+    msgTimer = setTimeout(function() {
+      msg.classList.remove('show');
+    }, 2500);
+  }
+
+  // ========== 演示提示气泡 ==========
+  function hideTips() {
+    document.getElementById('demoTips').style.display = 'none';
+    document.getElementById('demoTipsToggle').style.display = 'grid';
+  }
+  function showTips() {
+    document.getElementById('demoTips').style.display = 'block';
+    document.getElementById('demoTipsToggle').style.display = 'none';
+  }
+
+  // 初始化：默认有文件选中（demo），按钮可点
+  refreshFileUI();
+</script>
+
+</body>
+</html>

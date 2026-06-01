@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>物料审核详情 - A1901005067 - 咸亨国际主数据管理平台</title>
+  <title>物料审核-AI资质审核子项 - A1901005067 - 咸亨国际主数据管理平台</title>
   <style>
     :root {
       --primary:      #1677ff;
@@ -91,6 +91,61 @@
     .ai-line{font-size:12px;color:var(--text-body);line-height:1.8;padding-left:4px;}
     .ai-line-warn{color:var(--error);}
     .ai-line-pass{color:var(--primary);}
+
+    /* ── AI 子项行(本期新增样式) ── */
+    .ai-banner-block{padding:0;}
+    .ai-banner-block .ai-banner-title{padding:10px 16px;border-bottom:1px solid #ffd6cc;margin-bottom:0;background:rgba(255,255,255,0.5);}
+    .ai-toggle{font-size:11px;color:var(--text-sub);cursor:pointer;padding:2px 4px;border-radius:3px;}
+    .ai-toggle:hover{color:var(--primary);background:rgba(0,0,0,0.04);}
+    .ai-banner-body{padding:4px 0;}
+    .ai-item-row{padding:10px 16px;display:flex;align-items:flex-start;gap:12px;border-top:1px solid rgba(255,77,79,0.10);}
+    .ai-item-row:first-child{border-top:none;}
+    .ai-item-row.ai-item-new{background:rgba(82,196,26,0.04);}
+    .ai-mini-btn{flex-shrink:0;padding:3px 10px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;border:none;min-width:50px;line-height:1.4;}
+    .ai-mini-btn-pass{background:var(--primary);color:#fff;}
+    .ai-mini-btn-pass:hover{background:var(--primary-hover);}
+    .ai-mini-btn-reject{background:var(--error);color:#fff;}
+    .ai-mini-btn-reject:hover{opacity:.85;}
+    .ai-item-content{flex:1;min-width:0;padding-top:2px;font-size:13px;line-height:1.7;}
+    .ai-item-title{font-weight:600;color:var(--text-title);}
+    .ai-item-text{color:var(--text-body);}
+    .ai-new-tag{display:inline-block;padding:0 6px;background:var(--success-bg);color:var(--success);border:1px solid #b7eb8f;border-radius:3px;font-size:11px;margin-left:6px;}
+
+    /* 资质审核扩展内容 */
+    .ai-qual-extra{margin-top:8px;padding:10px 12px;background:#fff;border:1px solid var(--border-light);border-radius:var(--radius);}
+    .ai-qual-meta-row{font-size:12px;line-height:1.9;}
+    .ai-qual-meta-label{color:var(--text-sub);margin-right:6px;}
+    .ai-qual-meta-value{color:var(--text-body);}
+    .ai-qual-pass-tag{display:inline-block;padding:0 6px;background:var(--success-bg);color:var(--success);border:1px solid #b7eb8f;border-radius:3px;font-size:11px;margin-left:6px;}
+    .ai-qual-toggle{color:var(--primary);cursor:pointer;font-size:12px;margin-top:6px;display:inline-block;}
+    .ai-qual-toggle:hover{color:var(--primary-hover);}
+    .ai-qual-detail{margin-top:8px;padding:8px 12px;background:var(--bg-table-head);border-radius:var(--radius);display:none;}
+    .ai-qual-detail.open{display:block;}
+    .ai-qual-detail-item{padding:3px 0;font-size:12px;line-height:1.7;}
+    .ai-qual-detail-item .check{color:var(--success);margin-right:6px;font-weight:600;}
+    .ai-qual-detail-item .point{font-weight:500;color:var(--text-title);}
+    .ai-qual-detail-item .detail{color:var(--text-body);}
+    .ai-qual-files{margin-top:8px;display:flex;align-items:center;gap:10px;padding-top:6px;border-top:1px dashed var(--border-light);flex-wrap:wrap;}
+    .ai-qual-files-label{color:var(--text-sub);font-size:11px;}
+    .ai-qual-file{color:var(--primary);font-size:12px;cursor:pointer;}
+    .ai-qual-file:hover{text-decoration:underline;}
+    .ai-qual-foot{margin-top:8px;display:flex;align-items:center;gap:14px;font-size:11px;color:var(--text-sub);padding-top:6px;border-top:1px dashed var(--border-light);flex-wrap:wrap;}
+
+    /* AI 不一致提示弹窗 + 通过确认弹窗 */
+    .ai-modal-mask{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;z-index:1500;align-items:center;justify-content:center;}
+    .ai-modal-mask.open{display:flex;}
+    .ai-modal-box{background:#fff;border-radius:8px;box-shadow:0 6px 16px rgba(0,0,0,0.08);width:420px;max-width:90vw;animation:aiModalIn .2s;}
+    @keyframes aiModalIn{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+    .ai-modal-head{display:flex;justify-content:flex-end;padding:8px 14px;}
+    .ai-modal-close{font-size:18px;color:var(--text-sub);cursor:pointer;padding:2px 6px;}
+    .ai-modal-close:hover{color:var(--error);}
+    .ai-modal-body{padding:4px 24px 24px;display:flex;align-items:flex-start;gap:12px;}
+    .ai-modal-icon{font-size:24px;flex-shrink:0;line-height:1.3;}
+    .ai-modal-icon-warn{color:var(--warning);}
+    .ai-modal-icon-info{color:var(--primary);}
+    .ai-modal-text{flex:1;line-height:1.7;font-size:14px;color:var(--text-title);}
+    .ai-modal-text-strong{font-weight:600;margin-bottom:6px;}
+    .ai-modal-foot{padding:12px 24px 20px;display:flex;justify-content:flex-end;gap:8px;}
 
     /* ── 卡片通用 ── */
     .card{background:var(--bg-container);border:1px solid var(--border-light);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:8px;overflow:hidden;}
@@ -218,62 +273,6 @@
     textarea.m-form-control{height:auto;padding:7px 11px;resize:vertical;min-height:80px;}
     .m-form-control:disabled{background:#fafafa;color:var(--text-sub);cursor:not-allowed;}
     .modal-footer{padding:12px 24px;border-top:1px solid var(--border-light);display:flex;gap:8px;justify-content:flex-end;}
-
-    /* ── 资料附件区(本期改造:复用资质资料表格) ── */
-    .qa-alert{padding:9px 16px;border-radius:var(--radius);display:flex;align-items:flex-start;gap:8px;margin-bottom:12px;font-size:13px;line-height:1.7;}
-    .qa-alert-success{background:var(--success-bg);border:1px solid #b7eb8f;}
-    .qa-alert-warning{background:#fffbe6;border:1px solid #ffe58f;}
-    .qa-alert-icon{font-size:14px;flex-shrink:0;line-height:22px;}
-    .qa-alert-success .qa-alert-icon{color:var(--success);}
-    .qa-alert-warning .qa-alert-icon{color:var(--warning);}
-    .qa-alert-action{margin-left:auto;flex-shrink:0;}
-    .qa-alert-action .btn{height:26px;padding:0 10px;font-size:12px;}
-
-    .qa-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:0;}
-    .qa-table thead th{background:var(--bg-table-head);text-align:left;padding:10px 14px;color:var(--text-title);font-weight:600;border-bottom:1px solid var(--border-light);}
-    .qa-table tbody td{padding:14px 14px;border-bottom:1px solid var(--border-light);color:var(--text-body);vertical-align:top;}
-    .qa-table tbody tr:hover{background:#fafbfc;}
-    .qa-table .oss-link{color:var(--primary);cursor:pointer;word-break:break-all;}
-    .qa-table .oss-link:hover{text-decoration:underline;}
-    .qa-table .op{color:var(--primary);cursor:pointer;margin-right:10px;}
-    .qa-table .op:hover{color:var(--primary-hover);text-decoration:underline;}
-    .qa-table .op.danger{color:var(--error);}
-    .qa-type-badge{display:inline-block;padding:1px 6px;background:var(--error-bg);color:var(--error);border:1px solid #ffccc7;border-radius:3px;font-size:11px;margin-left:6px;}
-    .qa-type-badge.voluntary{background:var(--primary-bg);color:var(--primary);border-color:#91caff;}
-
-    /* 资质上传弹窗 + Popconfirm */
-    .qa-form-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;}
-    .qa-form-label{width:100px;flex-shrink:0;text-align:right;color:var(--text-title);font-size:14px;padding-top:6px;}
-    .qa-form-label-required::before{content:"* ";color:var(--error);}
-    .qa-form-content{flex:1;}
-    .qa-select{width:100%;height:32px;padding:4px 11px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;background:#fff;outline:none;}
-    .qa-upload-dragger{border:2px dashed var(--border);border-radius:8px;padding:28px 20px;text-align:center;cursor:pointer;background:#fafbfc;}
-    .qa-upload-dragger:hover{border-color:var(--primary);background:var(--primary-bg);}
-    .qa-upload-icon{font-size:32px;color:var(--primary);}
-    .qa-upload-text{margin-top:8px;font-size:14px;color:var(--text-title);}
-    .qa-upload-hint{margin-top:6px;font-size:12px;color:var(--text-sub);line-height:1.7;}
-    .qa-upload-list{margin-top:12px;}
-    .qa-upload-item{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--success-bg);border:1px solid #b7eb8f;border-radius:var(--radius);font-size:13px;margin-bottom:6px;}
-    .qa-upload-item-name{flex:1;color:var(--text-body);}
-    .qa-upload-item-size{color:var(--text-sub);font-size:12px;}
-    .qa-upload-item-del{color:var(--text-sub);cursor:pointer;padding:2px 6px;}
-    .qa-upload-item-del:hover{color:var(--error);}
-
-    .qa-popconfirm-mask{position:fixed;inset:0;background:rgba(0,0,0,0.3);display:none;z-index:1700;align-items:center;justify-content:center;}
-    .qa-popconfirm-mask.open{display:flex;}
-    .qa-popconfirm-box{background:#fff;border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,0.08);padding:16px 20px;max-width:360px;}
-    .qa-popconfirm-title{display:flex;align-items:flex-start;gap:8px;font-size:14px;color:var(--text-title);margin-bottom:12px;line-height:1.7;}
-    .qa-popconfirm-title-icon{color:var(--warning);font-size:16px;flex-shrink:0;line-height:1.5;}
-    .qa-popconfirm-actions{display:flex;justify-content:flex-end;gap:8px;}
-
-    /* ── 资料附件操作提示 ── */
-    .qa-demo-tips{position:fixed;right:16px;bottom:64px;width:360px;max-width:calc(100vw - 32px);background:rgba(0,0,0,0.78);color:#fff;border-radius:var(--radius);padding:12px 14px;font-size:12px;line-height:1.75;z-index:170;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
-    .qa-demo-tips b{color:#ffd666;}
-    .qa-demo-tips .ti{color:#95de64;}
-    .qa-demo-tips-section{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(255,255,255,0.2);}
-    .qa-demo-tips-section:first-child{margin-top:0;padding-top:0;border-top:none;}
-    .qa-demo-tips-close{position:absolute;top:6px;right:8px;color:#fff;cursor:pointer;font-size:14px;opacity:.6;}
-    .qa-demo-tips-close:hover{opacity:1;}
 
     /* ── 类目选择弹窗 ── */
     .cat-modal{width:880px;max-width:96vw;}
@@ -518,6 +517,60 @@
     }
     .price-tooltip b{color:#ffd666;font-weight:500;}
     .price-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-sub);font-size:13px;}
+
+    /* ── 资料附件区(本期改造:复用资质资料表格) ── */
+    .qa-alert{padding:9px 16px;border-radius:var(--radius);display:flex;align-items:flex-start;gap:8px;margin-bottom:12px;font-size:13px;line-height:1.7;}
+    .qa-alert-success{background:var(--success-bg);border:1px solid #b7eb8f;}
+    .qa-alert-warning{background:#fffbe6;border:1px solid #ffe58f;}
+    .qa-alert-icon{font-size:14px;flex-shrink:0;line-height:22px;}
+    .qa-alert-success .qa-alert-icon{color:var(--success);}
+    .qa-alert-warning .qa-alert-icon{color:var(--warning);}
+    .qa-alert-action{margin-left:auto;flex-shrink:0;}
+    .qa-alert-action .btn{height:26px;padding:0 10px;font-size:12px;}
+
+    .qa-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:0;}
+    .qa-table thead th{background:var(--bg-table-head);text-align:left;padding:10px 14px;color:var(--text-title);font-weight:600;border-bottom:1px solid var(--border-light);}
+    .qa-table tbody td{padding:14px 14px;border-bottom:1px solid var(--border-light);color:var(--text-body);vertical-align:top;}
+    .qa-table tbody tr:hover{background:#fafbfc;}
+    .qa-table .oss-link{color:var(--primary);cursor:pointer;word-break:break-all;}
+    .qa-table .oss-link:hover{text-decoration:underline;}
+    .qa-table .op{color:var(--primary);cursor:pointer;margin-right:10px;}
+    .qa-table .op:hover{color:var(--primary-hover);text-decoration:underline;}
+    .qa-table .op.danger{color:var(--error);}
+    .qa-type-badge{display:inline-block;padding:1px 6px;background:var(--error-bg);color:var(--error);border:1px solid #ffccc7;border-radius:3px;font-size:11px;margin-left:6px;}
+    .qa-type-badge.voluntary{background:var(--primary-bg);color:var(--primary);border-color:#91caff;}
+
+    /* 资质上传弹窗 + Popconfirm */
+    .qa-form-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;}
+    .qa-form-label{width:100px;flex-shrink:0;text-align:right;color:var(--text-title);font-size:14px;padding-top:6px;}
+    .qa-form-label-required::before{content:"* ";color:var(--error);}
+    .qa-form-content{flex:1;}
+    .qa-select{width:100%;height:32px;padding:4px 11px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;background:#fff;outline:none;}
+    .qa-upload-dragger{border:2px dashed var(--border);border-radius:8px;padding:28px 20px;text-align:center;cursor:pointer;background:#fafbfc;}
+    .qa-upload-dragger:hover{border-color:var(--primary);background:var(--primary-bg);}
+    .qa-upload-icon{font-size:32px;color:var(--primary);}
+    .qa-upload-text{margin-top:8px;font-size:14px;color:var(--text-title);}
+    .qa-upload-hint{margin-top:6px;font-size:12px;color:var(--text-sub);line-height:1.7;}
+    .qa-upload-list{margin-top:12px;}
+    .qa-upload-item{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--success-bg);border:1px solid #b7eb8f;border-radius:var(--radius);font-size:13px;margin-bottom:6px;}
+    .qa-upload-item-name{flex:1;color:var(--text-body);}
+    .qa-upload-item-size{color:var(--text-sub);font-size:12px;}
+    .qa-upload-item-del{color:var(--text-sub);cursor:pointer;padding:2px 6px;}
+    .qa-upload-item-del:hover{color:var(--error);}
+
+    .qa-popconfirm-mask{position:fixed;inset:0;background:rgba(0,0,0,0.3);display:none;z-index:1700;align-items:center;justify-content:center;}
+    .qa-popconfirm-mask.open{display:flex;}
+    .qa-popconfirm-box{background:#fff;border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,0.08);padding:16px 20px;max-width:360px;}
+    .qa-popconfirm-title{display:flex;align-items:flex-start;gap:8px;font-size:14px;color:var(--text-title);margin-bottom:12px;line-height:1.7;}
+    .qa-popconfirm-title-icon{color:var(--warning);font-size:16px;flex-shrink:0;line-height:1.5;}
+    .qa-popconfirm-actions{display:flex;justify-content:flex-end;gap:8px;}
+
+    /* ── 演示提示气泡 ── */
+    .demo-tips{position:fixed;bottom:64px;right:16px;background:rgba(0,0,0,0.78);color:#fff;padding:12px 14px;border-radius:var(--radius);font-size:12px;line-height:1.65;max-width:320px;z-index:99;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+    .demo-tips b{color:#ffd666;}
+    .demo-tips .ti{color:#95de64;}
+    .demo-tips-section{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(255,255,255,0.2);}
+    .demo-tips-section:first-child{margin-top:0;padding-top:0;border-top:none;}
   </style>
 </head>
 <body>
@@ -575,6 +628,114 @@
 <!-- 主内容区 -->
 <div class="page">
 <div class="page-inner">
+
+  <!-- ───── AI 审核建议区(本期新增 + 既有 4 子项) ───── -->
+  <div class="ai-banner ai-banner-block">
+    <div class="ai-banner-title">
+      <div class="ai-banner-title-text">
+        <span class="ai-toggle" id="aiToggle" onclick="toggleAIBanner()">▼</span>
+        <span>AI审核建议：</span>
+        <span class="ai-suggest-tag">建议【驳回】</span>
+      </div>
+    </div>
+    <div class="ai-banner-body" id="aiBannerBody">
+
+      <!-- 子项 1：文本审核 -->
+      <div class="ai-item-row">
+        <button class="ai-mini-btn ai-mini-btn-pass">通过</button>
+        <div class="ai-item-content">
+          <span class="ai-item-title">【文本审核】</span>
+          <span class="ai-item-text">审核通过</span>
+        </div>
+      </div>
+
+      <!-- 子项 2：图片审核 -->
+      <div class="ai-item-row">
+        <button class="ai-mini-btn ai-mini-btn-pass">通过</button>
+        <div class="ai-item-content">
+          <span class="ai-item-title">【图片审核】</span>
+          <span class="ai-item-text">审核通过</span>
+        </div>
+      </div>
+
+      <!-- 子项 3：类目审核（驳回） -->
+      <div class="ai-item-row">
+        <button class="ai-mini-btn ai-mini-btn-reject">驳回</button>
+        <div class="ai-item-content">
+          <span class="ai-item-title">【类目审核】</span>
+          <span class="ai-item-text">
+            相似度95%：审核：审核不通过，建议四级类目为警示带；商品名称为"反光警示胶带"，描述为"工程级反光膜黄黑 10cm×22m"，符合带状、柔性、成卷包装、黄黑高对比度颜色组合等特征。候选5（警示带）的类目定义明确包含"用于安全隔离、警戒提示的带状标识物"，适用范围涵盖"具有明显颜色（如红白、黄黑）"的柔性带状产品。其他候选中，候选1（交通道路标识）和候选6（警示安全标识）均指独立标牌或贴纸类标识，非带状卷材；候选2（反光背心）为服装类；候选3（防火胶带）、候选4（医用胶带）、候选7（打包胶带）、候选8/11（打印机耗材）、候选16（电工胶带）等均不符合"警示用途和"反光膜材质"的核心特征。因此最匹配候选5（警示带）。
+          </span>
+        </div>
+      </div>
+
+      <!-- 子项 4：图文一致性审核 -->
+      <div class="ai-item-row">
+        <button class="ai-mini-btn ai-mini-btn-pass">通过</button>
+        <div class="ai-item-content">
+          <span class="ai-item-title">【图文一致性审核】</span>
+          <span class="ai-item-text">审核通过</span>
+        </div>
+      </div>
+
+      <!-- 子项 5：资质审核（本期新增） -->
+      <div class="ai-item-row ai-item-new">
+        <button class="ai-mini-btn ai-mini-btn-pass">通过</button>
+        <div class="ai-item-content">
+          <span class="ai-item-title">【资质审核】</span>
+          <span class="ai-item-text">资质完整，内容合规</span>
+          <span class="ai-new-tag">本期新增子项</span>
+
+          <div class="ai-qual-extra">
+            <div class="ai-qual-meta-row">
+              <span class="ai-qual-meta-label">匹配规则：</span>
+              <span class="ai-qual-meta-value">钳形电流表 × 万聚国际（杭州）供应链有限公司</span>
+            </div>
+            <div class="ai-qual-meta-row">
+              <span class="ai-qual-meta-label">必传资质：</span>
+              <span class="ai-qual-meta-value">CCC 试验报告 / 质检报告 / LA <span class="ai-qual-pass-tag">3 项全部齐全</span></span>
+            </div>
+
+            <span class="ai-qual-toggle" onclick="toggleAIDetail()" id="aiQualToggle">▶ 展开 AI 判断详情（4 项）</span>
+
+            <div class="ai-qual-detail" id="aiQualDetail">
+              <div class="ai-qual-detail-item">
+                <span class="check">✓</span><span class="point">型号匹配：</span>
+                <span class="detail">资质文件中的"QF-A5"与物料型号一致</span>
+              </div>
+              <div class="ai-qual-detail-item">
+                <span class="check">✓</span><span class="point">有效期检查：</span>
+                <span class="detail">CCC 证书有效期 2031-01-01，LA 证书有效期 2029-06-01，均未过期</span>
+              </div>
+              <div class="ai-qual-detail-item">
+                <span class="check">✓</span><span class="point">资质覆盖：</span>
+                <span class="detail">已覆盖规则要求的 3 类资质（CCC / 质检 / LA）</span>
+              </div>
+              <div class="ai-qual-detail-item">
+                <span class="check">✓</span><span class="point">内容完整：</span>
+                <span class="detail">所有证书的关键字段（证书编号 / 产品信息 / 有效期）齐全</span>
+              </div>
+            </div>
+
+            <div class="ai-qual-files">
+              <span class="ai-qual-files-label">参与审核文件（3 份）：</span>
+              <span class="ai-qual-file" onclick="showMsg('预览：CCC认证报告-2026.pdf')">📄 CCC认证报告-2026.pdf [预览]</span>
+              <span class="ai-qual-file" onclick="showMsg('预览：质检报告.pdf')">📄 质检报告.pdf [预览]</span>
+              <span class="ai-qual-file" onclick="showMsg('预览：LA标志证书.pdf')">📄 LA标志证书.pdf [预览]</span>
+            </div>
+
+            <div class="ai-qual-foot">
+              <span>模型版本：claude-opus-4.7-20260101</span>
+              <span>置信度：<b style="color:var(--success);">94%</b></span>
+              <span>耗时：2 分 18 秒</span>
+              <span>审核时间：2026-05-28 14:40:32</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <!-- 主要信息区 -->
   <div class="card" id="card-main">
@@ -1097,7 +1258,7 @@
     </div>
   </div>
 
-  <!-- 资料附件区(本期改造:复用资质资料表格) -->
+  <!-- 资料附件区(本期改造:复用资质资料表格,不含 AI 摘要) -->
   <div class="card" id="card-attachment">
     <div class="card-header" onclick="toggleCard('card-attachment')">
       <div class="card-title">
@@ -1309,64 +1470,6 @@
   </div>
 </div>
 
-<!-- 资质上传弹窗(本期改造:资料附件模块用) -->
-<div class="modal-overlay" id="qaUploadModal">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-header-title">批量上传</span>
-      <span class="modal-close" onclick="closeQAUploadModal()">×</span>
-    </div>
-    <div class="modal-body">
-      <div class="qa-form-row">
-        <label class="qa-form-label qa-form-label-required">图片资质类型：</label>
-        <div class="qa-form-content">
-          <select class="qa-select" id="qaTypeSelect">
-            <option value="">请选择图片资质类型</option>
-            <optgroup label="── 本期新增 ──">
-              <option value="CCC_TEST_REPORT">国家强制性产品认证试验报告</option>
-              <option value="QUALITY_INSPECTION">产品质量检验检测报告</option>
-              <option value="INSPECTION_QUARANTINE">检验检疫证明</option>
-              <option value="LA">特种劳动防护用品安全标志(LA)</option>
-              <option value="VOLUNTARY_CERT">其他自愿性认证</option>
-            </optgroup>
-            <optgroup label="── 既有 ──">
-            </optgroup>
-          </select>
-        </div>
-      </div>
-
-      <div class="qa-upload-dragger" onclick="onQAMockUpload()">
-        <div class="qa-upload-icon">📤</div>
-        <div class="qa-upload-text">点击或拖拽文件到此处</div>
-        <div class="qa-upload-hint">
-          支持: jpg / png / webp / svg / heic / avif / doc / docx / pdf / xls / xlsx<br/>
-          单文件 ≤ 10MB · 数量不限
-        </div>
-      </div>
-
-      <div class="qa-upload-list" id="qaUploadList"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-default" onclick="closeQAUploadModal()">取消</button>
-      <button class="btn btn-primary" onclick="onQAUploadConfirm()">确定</button>
-    </div>
-  </div>
-</div>
-
-<!-- 删除确认 Popconfirm -->
-<div class="qa-popconfirm-mask" id="qaPopconfirm">
-  <div class="qa-popconfirm-box">
-    <div class="qa-popconfirm-title">
-      <span class="qa-popconfirm-title-icon">⚠</span>
-      <span>确认删除此资质文件吗？<br/><span style="color:var(--text-sub);font-size:12px;">删除后将记录到物料操作历史，已审核通过的历史不受影响。</span></span>
-    </div>
-    <div class="qa-popconfirm-actions">
-      <button class="btn btn-default btn-sm" onclick="closeQAPopconfirm()">取消</button>
-      <button class="btn btn-primary btn-sm" onclick="confirmQADelete()">确认删除</button>
-    </div>
-  </div>
-</div>
-
 <!-- 类目选择弹窗 -->
 <div class="modal-overlay" id="categoryModal">
   <div class="modal cat-modal">
@@ -1441,21 +1544,97 @@
 <!-- 消息提示 -->
 <div class="msg-wrap" id="msgWrap"></div>
 
-<!-- 资料附件模块操作提示 -->
-<div class="qa-demo-tips" id="qaDemoTips">
-  <span class="qa-demo-tips-close" onclick="document.getElementById('qaDemoTips').style.display='none'">×</span>
-  <div class="qa-demo-tips-section">
-    <b>资料附件操作：</b><br/>
-    1. 点击 <span class="ti">上传资质图片</span> 新增资质文件。<br/>
-    2. 表格内支持 <span class="ti">点击预览</span>、<span class="ti">修改地址</span>、<span class="ti">删除</span>。<br/>
-    3. 缺失提示会展示还需补充的资质类型，可点 <span class="ti">立即上传</span> 快速补传。
+<!-- AI 决策不一致提示弹窗（本期新增） -->
+<div class="ai-modal-mask" id="aiMismatchModal">
+  <div class="ai-modal-box">
+    <div class="ai-modal-head"><span class="ai-modal-close" onclick="closeAIModal('aiMismatchModal')">×</span></div>
+    <div class="ai-modal-body">
+      <span class="ai-modal-icon ai-modal-icon-warn">⚠</span>
+      <div class="ai-modal-text">
+        <div class="ai-modal-text-strong">提示</div>
+        <div id="aiMismatchText">AI建议【审核驳回】，您确认【审核通过】吗？</div>
+      </div>
+    </div>
+    <div class="ai-modal-foot">
+      <button class="btn btn-default" onclick="closeAIModal('aiMismatchModal')">取消</button>
+      <button class="btn btn-primary" onclick="confirmAIMismatch()">确定</button>
+    </div>
   </div>
-  <div class="qa-demo-tips-section">
-    <b>注意事项：</b><br/>
-    • 图片资质类型仅可选本期 5 类。<br/>
-    • 修改地址复用同一个上传弹窗，保存后覆盖当前资质文件地址。<br/>
-    • 删除前会二次确认；删除后缺失提示会重新计算。<br/>
-    • 本模块不展示上传人、上传时间、文件大小和“必传”标签。
+</div>
+
+<!-- AI 通过确认弹窗（本期新增,与 AI 一致时直接弹此） -->
+<div class="ai-modal-mask" id="aiPassConfirmModal">
+  <div class="ai-modal-box">
+    <div class="ai-modal-head"><span class="ai-modal-close" onclick="closeAIModal('aiPassConfirmModal')">×</span></div>
+    <div class="ai-modal-body">
+      <span class="ai-modal-icon ai-modal-icon-info">❓</span>
+      <div class="ai-modal-text">
+        <div class="ai-modal-text-strong">提示</div>
+        <div>确认通过本物料审核？<br/>通过后将自动推送 SAP / MALL / WMS / OMS / IQS。</div>
+      </div>
+    </div>
+    <div class="ai-modal-foot">
+      <button class="btn btn-default" onclick="closeAIModal('aiPassConfirmModal')">取消</button>
+      <button class="btn btn-primary" onclick="finalPassAudit()">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 资质上传弹窗(本期改造:资料附件模块用) -->
+<div class="modal-overlay" id="qaUploadModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-header-title">批量上传</span>
+      <span class="modal-close" onclick="closeQAUploadModal()">×</span>
+    </div>
+    <div class="modal-body">
+      <div class="qa-form-row">
+        <label class="qa-form-label qa-form-label-required">图片资质类型：</label>
+        <div class="qa-form-content">
+          <select class="qa-select" id="qaTypeSelect">
+            <option value="">请选择图片资质类型</option>
+            <optgroup label="── 本期新增 ──">
+              <option value="CCC_TEST_REPORT">国家强制性产品认证试验报告</option>
+              <option value="QUALITY_INSPECTION">产品质量检验检测报告</option>
+              <option value="INSPECTION_QUARANTINE">检验检疫证明</option>
+              <option value="LA">特种劳动防护用品安全标志(LA)</option>
+              <option value="VOLUNTARY_CERT">其他自愿性认证</option>
+            </optgroup>
+            <optgroup label="── 既有 ──">
+            </optgroup>
+          </select>
+        </div>
+      </div>
+
+      <div class="qa-upload-dragger" onclick="onQAMockUpload()">
+        <div class="qa-upload-icon">📤</div>
+        <div class="qa-upload-text">点击或拖拽文件到此处</div>
+        <div class="qa-upload-hint">
+          支持: jpg / png / webp / svg / heic / avif / doc / docx / pdf / xls / xlsx<br/>
+          单文件 ≤ 10MB · 数量不限
+        </div>
+      </div>
+
+      <div class="qa-upload-list" id="qaUploadList"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeQAUploadModal()">取消</button>
+      <button class="btn btn-primary" onclick="onQAUploadConfirm()">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 删除确认 Popconfirm -->
+<div class="qa-popconfirm-mask" id="qaPopconfirm">
+  <div class="qa-popconfirm-box">
+    <div class="qa-popconfirm-title">
+      <span class="qa-popconfirm-title-icon">⚠</span>
+      <span>确认删除此资质文件吗？<br/><span style="color:var(--text-sub);font-size:12px;">删除后将记录到物料操作历史，已审核通过的历史不受影响。</span></span>
+    </div>
+    <div class="qa-popconfirm-actions">
+      <button class="btn btn-default btn-sm" onclick="closeQAPopconfirm()">取消</button>
+      <button class="btn btn-primary btn-sm" onclick="confirmQADelete()">确认删除</button>
+    </div>
   </div>
 </div>
 
@@ -1469,30 +1648,43 @@
   // 跳转
   function go(url) { window.location.href = url; }
 
-  // 通过审核
-  function passAudit() {
-    showMsg('审核通过：A1901005067', 'ok');
+  // ─── 本期新增:AI 资质审核子项相关 ───
+  const AI_QUAL_DECISION = 'APPROVE'; // 模拟资质审核 AI 建议=APPROVE
+  let pendingDecision = null;
+
+  function toggleAIBanner() {
+    const body = document.getElementById('aiBannerBody');
+    const arrow = document.getElementById('aiToggle');
+    if (body.style.display === 'none') {
+      body.style.display = '';
+      arrow.textContent = '▼';
+    } else {
+      body.style.display = 'none';
+      arrow.textContent = '▶';
+    }
   }
 
-  // 驳回弹窗
-  function openRejectModal() {
-    document.getElementById('rejectRemark').value = '';
-    document.getElementById('rejectModal').classList.add('open');
-  }
-  function closeRejectModal() {
-    document.getElementById('rejectModal').classList.remove('open');
-  }
-  function submitReject() {
-    const remark = document.getElementById('rejectRemark').value.trim();
-    if (!remark) { showMsg('请填写驳回原因', 'warn'); return; }
-    closeRejectModal();
-    showMsg('已驳回：A1901005067', 'err');
+  function toggleAIDetail() {
+    const list = document.getElementById('aiQualDetail');
+    const toggle = document.getElementById('aiQualToggle');
+    list.classList.toggle('open');
+    toggle.textContent = list.classList.contains('open')
+      ? '▼ 收起 AI 判断详情'
+      : '▶ 展开 AI 判断详情（4 项）';
   }
 
-  // 点击遮罩关闭
-  document.getElementById('rejectModal').addEventListener('click', function(e) {
-    if (e.target === this) closeRejectModal();
-  });
+  function openAIModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeAIModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  function confirmAIMismatch() {
+    closeAIModal('aiMismatchModal');
+    if (pendingDecision === 'REJECT') {
+      _openRejectModalActual();
+    } else {
+      openAIModal('aiPassConfirmModal');
+    }
+  }
+  // ─── 本期新增结束 ───
 
   // ─── 资料附件模块(资质资料表格)交互 ───
   let qaCurrentEditType = '';
@@ -1609,6 +1801,7 @@
     }
   }
 
+  // 点击遮罩关闭
   if (document.getElementById('qaUploadModal')) {
     document.getElementById('qaUploadModal').addEventListener('click', function(e) {
       if (e.target === this) closeQAUploadModal();
@@ -1619,6 +1812,55 @@
       if (e.target === this) closeQAPopconfirm();
     });
   }
+
+  // 通过审核（本期改为先做 AI 一致性检查）
+  function passAudit() {
+    // 资质审核 AI 建议 = APPROVE,用户选通过 → 一致 → 直接弹通过确认
+    // 但其他子项(类目审核)AI 建议是 REJECT,这里以"资质审核子项"为不一致检查口径
+    if (AI_QUAL_DECISION === 'REJECT') {
+      pendingDecision = 'APPROVE';
+      document.getElementById('aiMismatchText').innerHTML = 'AI建议【审核驳回】，您确认【审核通过】吗？';
+      openAIModal('aiMismatchModal');
+    } else {
+      pendingDecision = 'APPROVE';
+      openAIModal('aiPassConfirmModal');
+    }
+  }
+
+  function finalPassAudit() {
+    closeAIModal('aiPassConfirmModal');
+    showMsg('审核通过：A1901005067 (decision_consistent_with_ai = ' + (AI_QUAL_DECISION === 'APPROVE' ? 'true' : 'false') + ')', 'ok');
+  }
+
+  // 驳回弹窗（本期改为先做 AI 一致性检查）
+  function openRejectModal() {
+    // 资质审核 AI 建议 = APPROVE,用户选驳回 → 不一致 → 先弹提示
+    if (AI_QUAL_DECISION === 'APPROVE') {
+      pendingDecision = 'REJECT';
+      document.getElementById('aiMismatchText').innerHTML = 'AI建议【审核通过】，您确认【审核驳回】吗？';
+      openAIModal('aiMismatchModal');
+    } else {
+      _openRejectModalActual();
+    }
+  }
+  function _openRejectModalActual() {
+    document.getElementById('rejectRemark').value = '';
+    document.getElementById('rejectModal').classList.add('open');
+  }
+  function closeRejectModal() {
+    document.getElementById('rejectModal').classList.remove('open');
+  }
+  function submitReject() {
+    const remark = document.getElementById('rejectRemark').value.trim();
+    if (!remark) { showMsg('请填写驳回原因', 'warn'); return; }
+    closeRejectModal();
+    showMsg('已驳回：A1901005067', 'err');
+  }
+
+  // 点击遮罩关闭
+  document.getElementById('rejectModal').addEventListener('click', function(e) {
+    if (e.target === this) closeRejectModal();
+  });
 
   // 消息提示
   function showMsg(text, type = 'info') {
@@ -2137,5 +2379,29 @@
     renderPriceView();
   }
 </script>
+<!-- 演示提示气泡 -->
+<div class="demo-tips">
+  <div class="demo-tips-section">
+    <b>💡 演示操作：</b><br/>
+    1. 顶部 <b>"AI审核建议"</b> 区点 <b>▼</b> 折叠/展开<br/>
+    2. <b>【资质审核】</b>子项点 <b>"▶ 展开 AI 判断详情"</b> 看 4 项理由<br/>
+    3. 滚到 <span class="ti">§ 资料附件</span> 看本期改造的资质表格<br/>
+    4. 表格行点 <b>"修改地址"</b> 或 <b>"删除"</b> 试试<br/>
+    5. 底部点 <b>"驳回"</b> 触发 <b>不一致提示</b> → 驳回理由必填<br/>
+    6. 底部点 <b>"通过"</b> 触发通过确认弹窗
+  </div>
+  <div class="demo-tips-section">
+    <b>🆕 本期新增内容：</b><br/>
+    • 顶部 AI 审核建议区新增<span class="ti">【资质审核】子项</span><br/>
+    • 含匹配规则 / 必传清单 / AI 4 项判断 / 参与文件 / 模型置信度<br/>
+    • <span class="ti">§ 资料附件</span>改造为资质表格（模块名保留）<br/>
+    • 命中规则提示 + 缺失提示动态联动<br/>
+    • 上传/修改地址 复用同一「批量上传」弹窗<br/>
+    • <b>决策不一致提示弹窗</b>（黄色 ⚠）<br/>
+    • <b>驳回理由必填弹窗</b>（既有，扩展含 AI 一致性标记）<br/>
+    • <b>通过确认弹窗</b>（蓝色 ❓ + 推送下游说明）
+  </div>
+</div>
+
 </body>
 </html>
