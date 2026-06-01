@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>暂存列表 - 咸亨国际主数据管理平台</title>
+  <style>
+    :root {
+      --primary: #1677ff;
+      --primary-hover: #4096ff;
+      --primary-bg: #e6f4ff;
+      --success: #52c41a;
+      --warning: #faad14;
+      --error: #ff4d4f;
+      --text-title: rgba(0,0,0,0.88);
+      --text-body: rgba(0,0,0,0.65);
+      --text-sub: rgba(0,0,0,0.45);
+      --border: #d9d9d9;
+      --border-light: #f0f0f0;
+      --bg-layout: #f5f5f5;
+      --bg-container: #ffffff;
+      --bg-table-head: #fafafa;
+      --radius: 6px;
+      --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 1px 6px rgba(0,0,0,0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      font-size: 14px;
+      background: var(--bg-layout);
+      color: var(--text-body);
+      min-width: 1360px;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+
+    .topbar {
+      height: 48px;
+      background: #001529;
+      color: rgba(255,255,255,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      position: sticky;
+      top: 0;
+      z-index: 120;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-logo {
+      width: 28px; height: 28px;
+      background: var(--primary);
+      border-radius: 6px;
+      display: grid; place-items: center;
+      font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .brand-name { font-size: 16px; font-weight: 600; color: #fff; white-space: nowrap; cursor: pointer; }
+    .switch-btn {
+      border: 1px solid rgba(255,255,255,0.25);
+      background: transparent;
+      color: rgba(255,255,255,0.75);
+      border-radius: var(--radius);
+      padding: 3px 10px; font-size: 12px; cursor: pointer;
+      line-height: 22px; transition: all .2s;
+    }
+    .switch-btn:hover { border-color: var(--primary); color: #fff; }
+    .nav-menu { display: flex; align-items: center; height: 100%; }
+    .nav-item {
+      display: flex; align-items: center; gap: 5px;
+      padding: 0 13px; height: 100%;
+      font-size: 13px; color: rgba(255,255,255,0.75);
+      cursor: pointer; position: relative; white-space: nowrap; transition: .2s;
+    }
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .badge { min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: var(--error); color: #fff; font-size: 10px; line-height: 16px; text-align: center; font-weight: 600; }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--error); position: absolute; top: 10px; right: 7px; border: 1.5px solid #001529; }
+    .nav-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); margin: 0 3px; }
+    .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+
+    .tabs-bar {
+      height: 36px;
+      background: var(--bg-container);
+      border-bottom: 1px solid var(--border-light);
+      display: flex; align-items: stretch; justify-content: space-between;
+      padding: 0 8px 0 0;
+      position: sticky; top: 48px; z-index: 110;
+    }
+    .tabs-list { display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
+    .tabs-list::-webkit-scrollbar { display: none; }
+    .tab {
+      display: flex; align-items: center; gap: 6px;
+      padding: 0 14px; font-size: 12px; color: var(--text-sub);
+      cursor: pointer; border-right: 1px solid var(--border-light);
+      white-space: nowrap; transition: .2s; position: relative;
+    }
+    .tab:hover { color: var(--text-body); background: #fafafa; }
+    .tab.active { color: var(--primary); background: var(--primary-bg); }
+    .tab.active::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--primary); }
+    .tab .cls { font-size: 10px; opacity: .5; padding: 2px; border-radius: 2px; }
+    .tab:hover .cls { opacity: .85; }
+    .tab .cls:hover { background: rgba(0,0,0,0.08); color: var(--error); }
+    .tabs-clear { display: flex; align-items: center; padding: 0 12px; font-size: 12px; color: var(--text-sub); cursor: pointer; border-left: 1px solid var(--border-light); }
+    .tabs-clear:hover { color: var(--primary); }
+
+    .page { padding: 12px 16px 24px; }
+    .filter-card {
+      background: var(--bg-container);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 8px;
+    }
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(260px, 1fr)) auto;
+      gap: 12px 18px;
+      align-items: center;
+    }
+    .filter-item { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .filter-item label { width: 76px; flex-shrink: 0; font-size: 13px; color: var(--text-body); text-align: right; }
+    .f-input, .f-select {
+      width: 100%; height: 34px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 0 11px; font-size: 13px; outline: none;
+      color: var(--text-body); background: var(--bg-container);
+      transition: border .2s, box-shadow .2s;
+    }
+    .f-input:focus, .f-select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(22,119,255,.1); }
+    .filter-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+    .icon-btn {
+      width: 34px; height: 34px; flex-shrink: 0;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      background: var(--bg-container); color: var(--text-sub);
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    }
+    .icon-btn:hover { color: var(--primary); border-color: var(--primary); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      height: 32px; padding: 0 15px; border-radius: var(--radius);
+      font-size: 13px; cursor: pointer; transition: .2s;
+      border: 1px solid transparent; white-space: nowrap; background: var(--bg-container);
+    }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+    .btn-default { color: var(--text-body); border-color: var(--border); }
+    .btn-default:hover { color: var(--primary); border-color: var(--primary); }
+    .btn-link { color: var(--primary); border: none; padding: 0; background: transparent; height: auto; cursor: pointer; font-size: 13px; }
+    .btn-link:hover { text-decoration: underline; }
+    .btn-link.danger { color: var(--error); }
+
+    .table-panel {
+      background: var(--bg-container);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .toolbar {
+      padding: 10px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .toolbar-left, .toolbar-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .toolbar-label { font-size: 13px; color: var(--text-body); }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; min-width: 1480px; border-collapse: collapse; font-size: 13px; }
+    thead tr { background: var(--bg-table-head); }
+    thead th {
+      padding: 10px 12px; text-align: left; font-weight: 600;
+      color: var(--text-title); border-bottom: 1px solid var(--border);
+      white-space: nowrap; background: var(--bg-table-head);
+    }
+    tbody tr { border-bottom: 1px solid var(--border-light); transition: background .12s; }
+    tbody tr:hover { background: #fafafa; }
+    tbody td { padding: 10px 12px; vertical-align: middle; color: var(--text-body); white-space: nowrap; }
+    .col-check { width: 44px; text-align: center; }
+    .col-check input { cursor: pointer; }
+    .td-link { color: var(--primary); cursor: pointer; }
+    .td-link:hover { text-decoration: underline; }
+    .muted { color: var(--text-sub); }
+    .price { font-variant-numeric: tabular-nums; color: var(--text-title); }
+    .status-up { color: var(--success); font-weight: 500; }
+    .status-down { color: var(--error); font-weight: 500; }
+    .status-sale { color: #d46b08; font-weight: 500; }
+    .status-ok { color: var(--success); font-weight: 500; }
+
+    .pagination {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 12px 16px; border-top: 1px solid var(--border-light); flex-wrap: wrap;
+    }
+    .pagination-left { font-size: 13px; color: var(--text-sub); }
+    .pagination-right { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .page-btn {
+      min-width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius);
+      background: var(--bg-container); color: var(--text-body); cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; transition: .2s; font-size: 13px;
+    }
+    .page-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .page-jump { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-body); }
+    .page-jump input, .page-jump select {
+      width: 56px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius);
+      text-align: center; outline: none; background: var(--bg-container);
+    }
+    .page-jump input:focus, .page-jump select:focus { border-color: var(--primary); }
+
+    .message-wrap {
+      position: fixed; top: 56px; left: 50%; transform: translateX(-50%);
+      z-index: 999; pointer-events: none;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .message-item {
+      background: var(--bg-container); border-radius: var(--radius);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12), 0 3px 6px rgba(0,0,0,0.08);
+      padding: 9px 12px; font-size: 14px; color: var(--text-body);
+      display: flex; align-items: center; gap: 8px;
+      opacity: 0; transform: translateY(-8px); transition: .25s; white-space: nowrap;
+    }
+    .message-item.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 1500px) {
+      .filter-grid { grid-template-columns: repeat(2, minmax(240px, 1fr)) auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">咸</div>
+      <span class="brand-name" onclick="location.href='oms-mpm-物料工作台原型.html'">咸亨国际主数据管理平台</span>
+      <button class="switch-btn" type="button" data-action="switch-system">切换系统</button>
+    </div>
+    <nav class="nav-menu">
+      <div class="nav-item" data-name="消息通知">消息通知<span class="badge-dot"></span></div>
+      <div class="nav-item" data-name="价格审核">价格审核<span class="badge-dot"></span></div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-name="版本更新">版本更新</div>
+      <div class="nav-item" data-name="推送ERP">推送ERP</div>
+      <div class="nav-item" data-name="管理模块">管理模块</div>
+      <div class="nav-item" data-name="任务中心">任务中心<span class="badge">9+</span></div>
+      <div class="nav-item" data-name="清洗任务">清洗任务<span class="badge-dot"></span></div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-name="管理员"><div class="user-avatar">管</div>管理员 ▾</div>
+    </nav>
+  </header>
+
+  <div class="tabs-bar">
+    <div class="tabs-list">
+      <div class="tab" onclick="go('待我审核.html')">待我审核 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="go('审核结果.html')">审核结果 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="go('物料审核详情.html')">物料信息-详情 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="comingSoon('待推送物料列表')">待推送物料列表 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="comingSoon('提报商品详情')">提报商品详情 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="go('批量新增物料列表.html')">批量新增 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="comingSoon('批量新增-编辑')">批量新增-编辑 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="go('物料列表.html')">物料列表 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab active">暂存列表 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    </div>
+    <div class="tabs-clear" id="clearTabs">清除</div>
+  </div>
+
+  <main class="page">
+    <section class="filter-card">
+      <form id="filterForm" class="filter-grid">
+        <div class="filter-item">
+          <label for="executorSelect">订单执行员</label>
+          <select id="executorSelect" class="f-select">
+            <option value="">请选择</option>
+            <option>郭佳菲</option>
+            <option>王云龙</option>
+            <option>李敏</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="levelSelect">物料等级</label>
+          <select id="levelSelect" class="f-select">
+            <option value="">请选择</option>
+            <option>零星</option>
+            <option>常规</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="materialName">物料名称</label>
+          <input id="materialName" class="f-input" placeholder="多个物料名称英文逗号间隔;或在表格中复制" />
+        </div>
+        <div class="filter-actions">
+          <button class="icon-btn" type="button" title="编辑列" data-action-text="编辑列">✎</button>
+          <button id="searchBtn" class="btn btn-primary" type="button">查询</button>
+          <button id="resetBtn" class="btn btn-default" type="button">重置</button>
+          <button class="icon-btn" type="button" title="展开/收起" data-action-text="展开筛选">»</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="table-panel">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <span class="toolbar-label">操作：</span>
+          <button class="btn-link" type="button" id="refreshBtn">刷新</button>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn-link danger" type="button" id="deleteBtn">删除</button>
+          <button class="btn-link" type="button" id="submitBtn">提交</button>
+          <button class="icon-btn" type="button" title="编辑列" data-action-text="编辑列">✎</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-check"><input type="checkbox" id="checkAll" /></th>
+              <th>名称</th>
+              <th>类目</th>
+              <th>货主</th>
+              <th>型号</th>
+              <th>规格</th>
+              <th>品牌</th>
+              <th>商城价(元)</th>
+              <th>市场价(元)</th>
+              <th>物料等级</th>
+              <th>上下架</th>
+              <th>可售</th>
+              <th>图片关系</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- 数据行由 JS 渲染 -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination">
+        <div class="pagination-left" id="selectInfo">已选：0 条数据</div>
+        <div class="pagination-right">
+          <button class="page-btn" type="button" data-page="prev">‹</button>
+          <button class="page-btn active" type="button" data-page="1">1</button>
+          <button class="page-btn" type="button" data-page="2">2</button>
+          <button class="page-btn" type="button" data-page="3">3</button>
+          <button class="page-btn" type="button" data-page="4">4</button>
+          <button class="page-btn" type="button" data-page="5">5</button>
+          <span class="muted">…</span>
+          <button class="page-btn" type="button" data-page="12">12</button>
+          <button class="page-btn" type="button" data-page="next">›</button>
+          <span class="pagination-left" style="margin-left:8px;">共 277 条</span>
+          <div class="page-jump">
+            <select id="pageSizeSelect">
+              <option selected>25</option>
+              <option>50</option>
+              <option>100</option>
+            </select>
+            <span>条/页</span>
+          </div>
+          <div class="page-jump">
+            <span>跳至</span>
+            <input id="pageJumpInput" value="1" />
+            <span>页</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="message-wrap" id="messageWrap"></div>
+
+  <script>
+    function go(path) { window.location.href = path; }
+    function comingSoon(name) { showMessage(`「${name}」原型暂未提供`); }
+
+    const detailUrl = '物料审核详情.html';
+
+    // 暂存列表示例数据(还原参考图)
+    const rows = [
+      { name: '直柄充电式液压钳', cat: '充电式液压钳', owner: '万聚国际（杭州）', model: 'ES-300', spec: '-', brand: '玉环/YUHAN', mall: '1350.00', market: '1350.00', level: '零星', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '艾思捷', cat: '防爆锤类', owner: '万聚国际（杭州）', model: '22010', spec: '-', brand: '艾思捷/FSS', mall: '待询价', market: '11.00', level: '零星', shelf: '上架', sale: '不可售', img: '匹配' },
+      { name: '漏电保护器测试仪', cat: '漏电保护器测试仪', owner: '万聚国际（杭州）', model: 'ETCR8620', spec: '-', brand: '铱泰/ETCR', mall: '550.00', market: '550.00', level: '零星', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '有芯卷筒卫生纸', cat: '大卷纸', owner: '万聚国际（杭州）', model: '116216', spec: '-', brand: '洁云/HYGIENIX', mall: '20.21', market: '20.21', level: '常规', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '多功能阴极保护数显仪', cat: '杂散电流记录仪', owner: '万聚国际（杭州）', model: 'CPT-M1', spec: '-', brand: '安科/ANKO', mall: '25988.10', market: '25988.10', level: '零星', shelf: '下架', sale: '可售', img: '匹配' },
+      { name: '在线式四合一气体检测仪', cat: '固定式气体检测仪', owner: '万聚国际（杭州）', model: 'SK/MIC-600-4S-T', spec: '-', brand: '东日瀛能/SKYEAGUFNT', mall: '20376.00', market: '20376.00', level: '零星', shelf: '上架', sale: '不可售', img: '匹配' },
+      { name: '金桔洗洁精', cat: '厨房清洁剂', owner: '万聚国际（杭州）', model: '408*2', spec: '-', brand: '立白/LIBY', mall: '104.00', market: '120.00', level: '零星', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '异形热缩盒', cat: '其它电缆附件', owner: '万聚国际（杭州）', model: '125*10', spec: '-', brand: '潮鑫/ZJCHAOXIN', mall: '358.02', market: '358.02', level: '零星', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '蓄电池内阻测试仪', cat: '蓄电池内阻仪', owner: '万聚国际（杭州）', model: 'PITE3915', spec: '-', brand: '国产/MADEINCHINA', mall: '12000.00', market: '12000.00', level: '零星', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '手动填料式注脂枪', cat: '手动液压注脂枪及配件', owner: '万聚国际（杭州）', model: 'HS-70ST', spec: '-', brand: '海胜/HAISHENG', mall: '5960.00', market: '5960.00', level: '零星', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '编织袋', cat: '编织袋/麻袋', owner: '万聚国际（杭州）', model: '60*100', spec: '-', brand: 'JOJO/JOJO', mall: '1.42', market: '1.42', level: '零星', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '辅助绝缘手套', cat: '绝缘手套', owner: '万聚国际（杭州）', model: '400V', spec: '-', brand: '安全牌/ANQUANPAI', mall: '24.00', market: '24.00', level: '零星', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '美工类', cat: '纸箱', owner: '咸亨国际科技股份', model: '100*100cm', spec: '-', brand: '国优/GUOYOU', mall: '24.50', market: '24.50', level: '零星', shelf: '上架', sale: '不可售', img: '匹配' },
+      { name: '无线充移动电源', cat: '移动电源', owner: '万聚国际（杭州）', model: 'EG-PD19', spec: '-', brand: '恩谷/ENGUE', mall: '251.38', market: '251.38', level: '常规', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '苍蝇拍', cat: '其它杀虫除味', owner: '万聚国际（杭州）', model: '48.2CM*12CM', spec: '-', brand: '茶花/CHAHUA', mall: '14.95', market: '14.95', level: '零星', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '衣柜', cat: '更衣柜', owner: '咸亨国际科技股份', model: '2m', spec: '-', brand: '钢柜/GANGJU', mall: '2800.00', market: '2800.00', level: '零星', shelf: '上架', sale: '不可售', img: '匹配' },
+      { name: '尼龙扎带', cat: '塑料扎带', owner: '万聚国际（杭州）', model: 'BY-ZD-WH4*200/黑色', spec: '-', brand: '博扬/BOYANG', mall: '444.00', market: '444.00', level: '零星', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '相控直流电源', cat: '直流电源', owner: '万聚国际（杭州）', model: 'YDX-YSCR-220-30A', spec: '-', brand: '易达新/TALENTED', mall: '119642.96', market: '119642.96', level: '零星', shelf: '上架', sale: '可售', img: '匹配' },
+      { name: '线盘', cat: '线盘及其线轴架', owner: '万聚国际（杭州）', model: 'ZY-S34010', spec: '-', brand: '泽优/ZEYOU', mall: '1250.00', market: '1250.00', level: '零星', shelf: '上架', sale: '不可售', img: '匹配' }
+    ];
+
+    function shelfClass(v) { return v === '上架' ? 'status-up' : 'status-down'; }
+    function saleClass(v) { return v === '可售' ? 'status-ok' : 'status-sale'; }
+    function mallCell(v) { return v === '待询价' ? `<span class="muted">待询价</span>` : `<span class="price">${v}</span>`; }
+
+    function renderTable() {
+      const body = document.getElementById('tableBody');
+      body.innerHTML = rows.map((r, i) => `
+        <tr>
+          <td class="col-check"><input type="checkbox" class="row-check" data-index="${i}" /></td>
+          <td><a class="td-link" href="${detailUrl}">${r.name}</a></td>
+          <td>${r.cat}</td>
+          <td>${r.owner}</td>
+          <td>${r.model}</td>
+          <td class="muted">${r.spec}</td>
+          <td>${r.brand}</td>
+          <td>${mallCell(r.mall)}</td>
+          <td class="price">${r.market}</td>
+          <td>${r.level}</td>
+          <td class="${shelfClass(r.shelf)}">${r.shelf}</td>
+          <td class="${saleClass(r.sale)}">${r.sale}</td>
+          <td><span class="status-ok">${r.img}</span></td>
+        </tr>
+      `).join('');
+      bindRowChecks();
+    }
+
+    function showMessage(text, type = 'info') {
+      const wrap = document.getElementById('messageWrap');
+      const icons = { info: '提示', success: '成功', warning: '注意', error: '失败' };
+      const el = document.createElement('div');
+      el.className = 'message-item';
+      el.innerHTML = `<span>${icons[type]}</span><span>${text}</span>`;
+      wrap.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('show'));
+      setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 250); }, 2200);
+    }
+
+    function selectedIndexes() {
+      return Array.from(document.querySelectorAll('.row-check:checked')).map(c => Number(c.dataset.index));
+    }
+    function updateSelectInfo() {
+      const n = selectedIndexes().length;
+      document.getElementById('selectInfo').textContent = `已选：${n} 条数据`;
+      const all = document.getElementById('checkAll');
+      const total = document.querySelectorAll('.row-check').length;
+      all.checked = n > 0 && n === total;
+      all.indeterminate = n > 0 && n < total;
+    }
+    function bindRowChecks() {
+      document.querySelectorAll('.row-check').forEach(c => c.addEventListener('change', updateSelectInfo));
+      updateSelectInfo();
+    }
+
+    document.getElementById('checkAll').addEventListener('change', (e) => {
+      document.querySelectorAll('.row-check').forEach(c => { c.checked = e.target.checked; });
+      updateSelectInfo();
+    });
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => showMessage(`已点击：${item.dataset.name}`));
+    });
+    document.querySelector('[data-action="switch-system"]').addEventListener('click', () => showMessage('模拟切换系统'));
+    document.getElementById('clearTabs').addEventListener('click', () => showMessage('已清除所有标签页'));
+    document.querySelectorAll('[data-action-text]').forEach(btn => {
+      btn.addEventListener('click', () => showMessage(`已执行：${btn.dataset.actionText}`));
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', () => { renderTable(); showMessage('列表已刷新', 'success'); });
+
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const kw = document.getElementById('materialName').value.trim();
+      showMessage(`已按“${kw || '全部条件'}”执行查询`, 'success');
+    });
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      document.getElementById('filterForm').reset();
+      showMessage('已重置筛选条件');
+    });
+
+    document.getElementById('deleteBtn').addEventListener('click', () => {
+      const n = selectedIndexes().length;
+      if (n === 0) { showMessage('请先勾选要删除的暂存物料', 'warning'); return; }
+      showMessage(`已删除 ${n} 条暂存物料`, 'success');
+    });
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      const n = selectedIndexes().length;
+      if (n === 0) { showMessage('请先勾选要提交的暂存物料', 'warning'); return; }
+      showMessage(`已提交 ${n} 条暂存物料进入审核流程`, 'success');
+    });
+
+    document.querySelectorAll('[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const value = btn.dataset.page;
+        if (value === 'prev' || value === 'next') { showMessage(`已切换${value === 'prev' ? '上' : '下'}一页`); return; }
+        document.querySelectorAll('[data-page]').forEach(item => item.classList.remove('active'));
+        if (/^\d+$/.test(value)) btn.classList.add('active');
+        showMessage(`已切换到第 ${value} 页`);
+      });
+    });
+    document.getElementById('pageSizeSelect').addEventListener('change', (e) => showMessage(`已切换每页 ${e.target.value} 条`));
+    document.getElementById('pageJumpInput').addEventListener('change', (e) => showMessage(`已跳转到第 ${Number(e.target.value) || 1} 页`));
+
+    renderTable();
+  </script>
+</body>
+</html>

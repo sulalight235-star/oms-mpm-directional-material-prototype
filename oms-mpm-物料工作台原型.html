@@ -435,17 +435,6 @@
 
     .center-link { text-align: center; }
 
-    .material-guide-target {
-      position: relative;
-      border: 2px solid #fa8c16;
-      border-radius: 4px;
-      color: #fa8c16 !important;
-      background: #fff7e6;
-      padding: 6px 10px;
-      margin: -6px -10px;
-      animation: guideButtonShake 1.8s ease-in-out infinite;
-    }
-
     .reward-row {
       cursor: pointer;
       outline: 0 solid transparent;
@@ -457,66 +446,37 @@
       box-shadow: 0 12px 30px rgba(255, 137, 21, 0.18);
     }
 
-    .reward-row.click-focus {
-      border: 2px solid #fa8c16;
-      background: #fffaf2;
-      box-shadow: 0 8px 24px rgba(250, 140, 22, .12);
+    /* ── 演示提示(右下角，每个版本一张卡片，各自独立收起/展开) ── */
+    .demo-tips-stack {
+      position: fixed; bottom: 16px; right: 16px;
+      display: flex; flex-direction: column; gap: 10px;
+      width: 360px; max-width: calc(100vw - 32px);
+      max-height: calc(100vh - 32px); overflow-y: auto;
+      z-index: 99;
     }
-
-    .guide-arrow-wrap {
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 52%;
-      transform: translateX(-50%);
-      z-index: 5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      pointer-events: none;
-      white-space: nowrap;
-      animation: guideFadeIn .3s ease;
+    .demo-tips {
+      background: rgba(0,0,0,0.80); color: #fff;
+      padding: 12px 14px; border-radius: 6px;
+      font-size: 12px; line-height: 1.65;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      flex-shrink: 0;
     }
-
-    .guide-arrow {
-      color: #fa8c16;
-      font-size: 20px;
-      line-height: 1;
-      animation: guideArrowBounce .8s ease infinite;
+    .demo-tips-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 14px; cursor: pointer; user-select: none;
     }
-
-    .guide-label {
-      background: #fa8c16;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      padding: 4px 11px;
-      border-radius: 13px;
-      margin-top: 4px;
-      box-shadow: 0 2px 8px rgba(250, 140, 22, .35);
+    .demo-tips-head .t { color: #ffd666; font-size: 13px; font-weight: 700; }
+    .demo-tips-toggle { color: #fff; opacity: .65; font-size: 12px; white-space: nowrap; }
+    .demo-tips-head:hover .demo-tips-toggle { opacity: 1; }
+    .demo-tips-body {
+      margin-top: 10px; max-height: 240px; overflow-y: auto; padding-right: 6px;
     }
-
-    .material-guide-target .guide-arrow-wrap {
-      top: calc(100% + 6px);
-      left: 50%;
-    }
-
-    @keyframes guideButtonShake {
-      0%,100% { transform: translateX(0); }
-      15% { transform: translateX(-2px); }
-      30% { transform: translateX(2px); }
-      45% { transform: translateX(-1px); }
-      60% { transform: translateX(1px); }
-    }
-
-    @keyframes guideArrowBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-
-    @keyframes guideFadeIn {
-      from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
-      to { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
+    .demo-tips-body::-webkit-scrollbar { width: 6px; }
+    .demo-tips-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.28); border-radius: 3px; }
+    .demo-tips.collapsed { padding: 9px 14px; }
+    .demo-tips.collapsed .demo-tips-body { display: none; }
+    .demo-tips b { color: #ffd666; }
+    .demo-tips .ti { color: #95de64; }
 
     .toast {
       position: fixed;
@@ -621,14 +581,8 @@
             <div>物料</div>
           </div>
           <div class="module-links cols-4">
-            <a class="link material-guide-target" href="物料列表.html">
-              物料列表
-              <span class="guide-arrow-wrap" id="materialListGuide">
-                <span class="guide-arrow">▼</span>
-                <span class="guide-label">点击查看物料列表</span>
-              </span>
-            </a>
-            <a class="link" href="javascript:void(0)">暂存列表</a>
+            <a class="link" href="物料列表.html">物料列表</a>
+            <a class="link" href="暂存列表.html">暂存列表</a>
             <a class="link" href="物料审核详情.html">新增物料</a>
             <a class="link" href="批量新增物料列表.html">批量新增</a>
             <a class="link active" href="我发起的.html">我发起的</a>
@@ -668,11 +622,7 @@
           </div>
         </div>
 
-        <div class="module-row tall reward-row click-focus" id="rewardModule">
-          <div class="guide-arrow-wrap" id="rewardGuide">
-            <span class="guide-arrow">▼</span>
-            <span class="guide-label">新增咸亨产品奖励管理入口</span>
-          </div>
+        <div class="module-row tall reward-row" id="rewardModule">
           <div class="module-tab tab-reward">
             <div class="tab-icon">🎁</div>
             <div>咸亨产品<br />奖励管理</div>
@@ -811,9 +761,62 @@
 
   <div class="toast" id="toast">已点击</div>
 
+  <!-- 演示提示(右下角，每个版本一张卡片，各自独立收起/展开，展开高度固定) -->
+  <div class="demo-tips-stack">
+    <div class="demo-tips" id="tip-v480">
+      <div class="demo-tips-head" onclick="toggleTip('tip-v480')">
+        <span class="t">💡 MPM v4.8.0 操作提示</span>
+        <span class="demo-tips-toggle">收起 ▾</span>
+      </div>
+      <div class="demo-tips-body">
+        <b>演示操作：</b><br/>
+        a) 类目管理 → 四级类目列表 → 行操作 <b>「资质配置」</b><br/>
+        b) 类目管理 → 四级类目列表 → 顶部 <b>「导入批改」</b> → 弹窗内新增 <span class="ti">「批量维护资质规则」</span> 行 → 下载/上传模板<br/>
+        c) 物料管理 → 新增物料 / 批量新增 / 我发起的 / 待我审核 / 待我审核（生产）/ 我暂存的 → 资质资料区块 <b>「+ 上传文件」</b> 按钮<br/>
+        d) 物料管理 → 批量新增 → 批量新增列表第二步 <span class="ti">"关联资质文件"</span> 前的资料准备<br/>
+        e) 物料管理 → 文件管理 → <b>批增上传资质文件</b> 入口<br/>
+        f) 物料管理 → 物料列表 → 导入批改 → <b>删除</b>【关联产品资料、关联检测报告、关联质量证明】<br/>
+        g) 物料管理 → 物料列表 → 导入批改 → <b>新增</b>【新增\批改物料附件】<br/>
+        <b>本期改动：</b><br/>
+        1. MPM 内资质要求规则配置模块（单类目「资质配置」按钮 +「批量维护资质规则」Excel 模板入口）<br/>
+        2. MPM 内置文件上传组件 + 对外文件上传 REST API（本期 OSS 唯一守门员）<br/>
+        3. 7 个物料创建/修改入口的统一资质校验<br/>
+        4. AI 资质审核引擎（异步 OCR + LLM）+ 既有审核单 AI 建议回写 + 决策弹窗（不一致提示 / 驳回理由 / 通过确认）<br/>
+        5. 批增批改资质文件独立入口（Excel 三列：物料编码 / 资质类型 / OSS URL）<br/>
+        6. 物料资质文件 URL 列表 Excel 异步导出（4 列：物料编码 / 文件类型 / 文件名称 / 文件 URL 地址）<br/>
+        7. 物料详情的操作历史记录与查询<br/>
+        8. 类目资质规则操作历史记录与查询
+      </div>
+    </div>
+    <div class="demo-tips" id="tip-v470">
+      <div class="demo-tips-head" onclick="toggleTip('tip-v470')">
+        <span class="t">💡 MPM v4.7.0 操作提示</span>
+        <span class="demo-tips-toggle">收起 ▾</span>
+      </div>
+      <div class="demo-tips-body">
+        <b>演示操作：</b><br/>
+        1. 点击 <b>「物料列表」</b>，查看物料编码，进入物料详情，查看物料字段变更信息<br/>
+        2. 进入 <span class="ti">「咸亨产品奖励管理」</span>，体验奖励配置列表、批量导入、操作历史<br/>
+        <b>本期改动：</b><br/>
+        • 新增 <b>咸亨产品奖励管理</b> 模块：Excel 批量导入维护奖励配置（增/改/删）+ H0 两级审核 + 异步任务执行，审核通过后同步推送商城库<br/>
+        • 新增 <b>导出</b>：无需审核权限，一键导出全部奖励配置（归档 / 对账 / 下游核对）<br/>
+        • 新增 <b>操作历史</b>：记录每次配置变更，支持导出追溯修订内容<br/>
+        • 新增 <b>接口字段</b>：商城前台展示物料奖励标签及金额 / 比例 / 说明文案<br/>
+        • <b>角色权限</b>：新增 <span class="ti">【采购员（新运营）】</span>；系统管理员、审批经理增加采购员及咸亨产品激励模块权限
+      </div>
+    </div>
+  </div>
+
   <script>
     function goPage(url) {
       window.location.href = url;
+    }
+
+    function toggleTip(id) {
+      const el = document.getElementById(id);
+      const toggle = el.querySelector(".demo-tips-toggle");
+      const collapsed = el.classList.toggle("collapsed");
+      toggle.textContent = collapsed ? "展开 ▸" : "收起 ▾";
     }
 
     const toast = document.getElementById("toast");
