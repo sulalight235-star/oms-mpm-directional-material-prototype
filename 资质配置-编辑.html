@@ -326,7 +326,7 @@
 
     </div>
 
-    <!-- 配置块 #2（启用属性设置 + 含子组） -->
+    <!-- 配置块 #2（启用属性设置 + 并列属性组） -->
     <div class="owner-card">
       <div class="form-row">
         <label class="form-label form-label-required">货主</label>
@@ -353,15 +353,15 @@
         <div class="form-content">
           <div class="expr-builder">
 
-            <!-- 根条件组 -->
+            <!-- 属性组 1 -->
             <div class="expr-group">
               <div class="expr-group-header">
-                <span class="expr-group-label">根条件组：关系</span>
+                <span class="expr-group-label">属性组 1：关系</span>
                 <span class="expr-group-relation">AND</span>
                 <span class="expr-group-label">（条件之间用 AND 连接）</span>
                 <div class="expr-group-actions">
                   <span class="expr-add-btn">+ 添加条件项</span>
-                  <span class="expr-add-btn disabled" title="已有 1 个子组，最多两层嵌套">+ 添加子组（已禁用）</span>
+                  <span class="expr-add-btn">+ 添加属性组</span>
                 </div>
               </div>
 
@@ -376,44 +376,43 @@
                 </div>
                 <span class="expr-condition-remove">✕</span>
               </div>
+            </div>
 
-              <!-- 子组（OR） -->
-              <div class="expr-group expr-group-sub" style="margin-top: 6px;">
-                <div class="expr-group-header">
-                  <span class="expr-condition-tree">└</span>
-                  <span class="expr-group-label">子组：关系</span>
-                  <span class="expr-group-relation or">OR</span>
-                  <span class="expr-group-readonly">系统自动取反，不可改</span>
-                  <div class="expr-group-actions">
-                    <span class="expr-add-btn">+ 添加子组内条件项</span>
-                    <span class="expr-add-btn" style="color: var(--error);">✕ 删除子组</span>
-                  </div>
+            <!-- 属性组 2（OR） -->
+            <div class="expr-group expr-group-sub" style="margin-top: 6px;">
+              <div class="expr-group-header">
+                <span class="expr-group-label">属性组 2：关系</span>
+                <span class="expr-group-relation or">OR</span>
+                <span class="expr-group-readonly">与属性组 1 并列</span>
+                <div class="expr-group-actions">
+                  <span class="expr-add-btn">+ 添加条件项</span>
+                  <span class="expr-add-btn" style="color: var(--error);">✕ 删除属性组</span>
                 </div>
+              </div>
 
-                <div class="expr-condition">
-                  <span class="expr-condition-tree">├</span>
-                  <select class="expr-select"><option>属性：防滑系数</option></select>
-                  <select class="expr-select" style="min-width:60px;"><option>=</option></select>
-                  <div class="expr-value-tags">
-                    <span class="expr-value-tag">5 <span class="x">×</span></span>
-                  </div>
-                  <span class="expr-condition-remove">✕</span>
+              <div class="expr-condition">
+                <span class="expr-condition-tree">├</span>
+                <select class="expr-select"><option>属性：防滑系数</option></select>
+                <select class="expr-select" style="min-width:60px;"><option>=</option></select>
+                <div class="expr-value-tags">
+                  <span class="expr-value-tag">5 <span class="x">×</span></span>
                 </div>
+                <span class="expr-condition-remove">✕</span>
+              </div>
 
-                <div class="expr-condition">
-                  <span class="expr-condition-tree">└</span>
-                  <select class="expr-select"><option>属性：防水等级</option></select>
-                  <select class="expr-select" style="min-width:60px;"><option>=</option></select>
-                  <div class="expr-value-tags">
-                    <span class="expr-value-tag" data-tip="该枚举值在属性主数据中已被禁用，请重新选择后才能保存">IP67 ⚠ <span class="x">×</span></span>
-                  </div>
-                  <span class="expr-condition-remove">✕</span>
+              <div class="expr-condition">
+                <span class="expr-condition-tree">└</span>
+                <select class="expr-select"><option>属性：防水等级</option></select>
+                <select class="expr-select" style="min-width:60px;"><option>=</option></select>
+                <div class="expr-value-tags">
+                  <span class="expr-value-tag" data-tip="该枚举值在属性主数据中已被禁用，请重新选择后才能保存">IP67 ⚠ <span class="x">×</span></span>
                 </div>
+                <span class="expr-condition-remove">✕</span>
               </div>
             </div>
 
             <div style="color: var(--text-sub); font-size: 12px; padding: 4px 4px 0; line-height: 1.6;">
-              当前表达式预览：<code style="background:#f0f0f0; padding:2px 6px; border-radius:3px; color:#d4380d;">防护等级 IN [A, B] AND (防滑系数 = 5 OR 防水等级 = IP67)</code><br/>
+              当前表达式预览：<code style="background:#f0f0f0; padding:2px 6px; border-radius:3px; color:#d4380d;">属性组1（AND）：防护等级 IN [A, B]；属性组2（OR）：防滑系数 = 5 OR 防水等级 = IP67</code><br/>
               ⚠ <span style="color: var(--error);">检测到 1 个已失效枚举值（防水等级 = IP67），保存前需手动清理</span>
             </div>
 
@@ -470,8 +469,8 @@
   <div class="demo-tips-section">
     <b>💡 演示操作：</b><br/>
     1. 货主块 #1 演示<span class="ti">「未启用属性设置」</span>：直接配必传资质 + 开关<br/>
-    2. 货主块 #2 演示<span class="ti">「启用属性设置 + 两层嵌套」</span>：根 AND 包子组 OR<br/>
-    3. 留意子组内红色 <b>"IP67 ⚠"</b> 失效枚举值提示<br/>
+    2. 货主块 #2 演示<span class="ti">「启用属性设置 + 并列属性组」</span>：属性组 1 为 AND，属性组 2 为 OR<br/>
+    3. 留意属性组 #2 内红色 <b>"IP67 ⚠"</b> 失效枚举值提示<br/>
     4. 点 <b>「+ 新增货主」</b> 看下拉过滤已选货主<br/>
     5. 点顶部 <b>"保存"</b> 触发校验汇总
   </div>
@@ -480,7 +479,7 @@
     • 四级类目行操作新增<span class="ti">「资质配置」</span>按钮入口<br/>
     • 按货主独立配置规则，业务键 (类目+货主) 唯一<br/>
     • <span class="ti">「是否启用属性设置」</span>开关<br/>
-    • 两层嵌套 AND/OR 属性条件构造器（仅枚举类型）<br/>
+    • 并列 AND/OR 属性组构造器（仅枚举类型）<br/>
     • 必传资质 5 选 N（强制 3 项 + 自愿 2 项）<br/>
     • 失效枚举值实时检测 + 保存前必清理<br/>
     • 配置即时生效，不需要审批
@@ -519,7 +518,7 @@
             <td>页面修改</td>
             <td>属性条件</td>
             <td><span class="op-cell-ellipsis" title="防护等级 IN [A]">防护等级 IN [A]</span></td>
-            <td><span class="op-cell-ellipsis" title="防护等级 IN [A,B] AND (防滑系数=5 OR 防水等级=IP67)">防护等级 IN [A,B] AND (防...</span></td>
+            <td><span class="op-cell-ellipsis" title="属性组1（AND）：防护等级 IN [A,B]；属性组2（OR）：防滑系数=5 OR 防水等级=IP67">属性组1（AND）：防护等级 IN...</span></td>
             <td>王云龙</td>
             <td>2026-05-28 11:45:32</td>
           </tr>
@@ -634,17 +633,12 @@
     if (cond) cond.remove();
   }
 
-  // 删除子组
-  function removeSubGroup(x) {
-    const sub = x.closest('.expr-group-sub');
-    if (sub && confirm('确定删除该子组及其全部条件项？')) {
-      // 子组被删后，根组的"添加子组"按钮重新可用
-      const root = sub.closest('.expr-builder').querySelector('.expr-group:not(.expr-group-sub)');
-      if (root) {
-        const addSubBtn = root.querySelector('[data-role="add-sub-group"]');
-        if (addSubBtn) { addSubBtn.classList.remove('disabled'); addSubBtn.textContent = '+ 添加子组'; addSubBtn.removeAttribute('title'); }
-      }
-      sub.remove();
+  // 删除属性组
+  function removeAttrGroup(x) {
+    const group = x.closest('.expr-group');
+    if (group && confirm('确定删除该属性组及其全部条件项？')) {
+      group.remove();
+      refreshAttrGroupLabels();
     }
   }
 
@@ -699,47 +693,54 @@
     container.appendChild(span);
   }
 
-  // 添加条件项（根组或子组）
+  // 添加条件项（当前属性组）
   function addCondition(btn) {
     const group = btn.closest('.expr-group');
     const newCond = buildCondition('防护等级', ['A']);
-    // 插入到该 group 内最后一个 .expr-condition 之后，避免越过嵌套子组
+    // 插入到该属性组内最后一个条件项之后
     const lastCond = Array.from(group.children).filter(c => c.classList.contains('expr-condition')).pop();
     if (lastCond) lastCond.after(newCond); else group.querySelector('.expr-group-header').after(newCond);
   }
 
-  // 添加子组（仅根组）
-  function addSubGroup(btn) {
-    if (btn.classList.contains('disabled')) { alert('已有 1 个子组，最多两层嵌套'); return; }
-    const root = btn.closest('.expr-group');
-    const rootRelEl = root.querySelector('.expr-group-relation');
-    const rootRel = rootRelEl ? rootRelEl.textContent.trim() : 'AND';
-    const subRel = rootRel === 'AND' ? 'OR' : 'AND';
-    const subRelClass = subRel === 'OR' ? 'or' : '';
-    const sub = document.createElement('div');
-    sub.className = 'expr-group expr-group-sub';
-    sub.style.marginTop = '6px';
-    sub.innerHTML = `
+  // 刷新并列属性组编号
+  function refreshAttrGroupLabels() {
+    document.querySelectorAll('.expr-builder').forEach(builder => {
+      Array.from(builder.querySelectorAll(':scope > .expr-group')).forEach((group, index) => {
+        const label = group.querySelector('.expr-group-label');
+        if (label) label.textContent = `属性组 ${index + 1}：关系`;
+      });
+    });
+  }
+
+  // 添加并列属性组
+  function addAttrGroup(btn) {
+    const builder = btn.closest('.expr-builder');
+    if (!builder) return;
+    const currentGroups = Array.from(builder.querySelectorAll(':scope > .expr-group'));
+    const prevRelEl = currentGroups[currentGroups.length - 1]?.querySelector('.expr-group-relation');
+    const prevRel = prevRelEl ? prevRelEl.textContent.trim() : 'AND';
+    const rel = prevRel === 'AND' ? 'OR' : 'AND';
+    const relClass = rel === 'OR' ? 'or' : '';
+    const group = document.createElement('div');
+    group.className = 'expr-group expr-group-sub';
+    group.style.marginTop = '6px';
+    group.innerHTML = `
       <div class="expr-group-header">
-        <span class="expr-condition-tree">└</span>
-        <span class="expr-group-label">子组：关系</span>
-        <span class="expr-group-relation ${subRelClass}">${subRel}</span>
-        <span class="expr-group-readonly">系统自动取反，不可改</span>
+        <span class="expr-group-label">属性组 ${currentGroups.length + 1}：关系</span>
+        <span class="expr-group-relation ${relClass}">${rel}</span>
+        <span class="expr-group-readonly">并列关系</span>
         <div class="expr-group-actions">
-          <span class="expr-add-btn" onclick="addCondition(this)">+ 添加子组内条件项</span>
-          <span class="expr-add-btn" style="color: var(--error);" onclick="removeSubGroup(this)">✕ 删除子组</span>
+          <span class="expr-add-btn" onclick="addCondition(this)">+ 添加条件项</span>
+          <span class="expr-add-btn" style="color: var(--error);" onclick="removeAttrGroup(this)">✕ 删除属性组</span>
         </div>
       </div>
     `;
-    sub.appendChild(buildCondition('防滑系数', ['5']));
-    root.appendChild(sub);
-    // 禁用根组的"添加子组"按钮（已达最多 1 个子组）
-    btn.classList.add('disabled');
-    btn.textContent = '+ 添加子组（已禁用）';
-    btn.title = '已有 1 个子组，最多两层嵌套';
+    group.appendChild(buildCondition('防滑系数', ['5']));
+    const preview = builder.querySelector(':scope > div[style*="color: var(--text-sub)"]');
+    if (preview) preview.before(group); else builder.appendChild(group);
   }
 
-  // 给现有静态 DOM 绑定 onclick（构造器初次加载时） + 给根组加 add-sub-group 标记
+  // 给现有静态 DOM 绑定 onclick（构造器初次加载时）
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.owner-card-delete').forEach(el => el.setAttribute('onclick', 'removeOwnerCard(this)'));
     document.querySelectorAll('.expr-builder .expr-condition-remove').forEach(el => el.setAttribute('onclick', 'removeCondition(this)'));
@@ -753,11 +754,11 @@
       Array.from(actions.querySelectorAll('.expr-add-btn')).forEach(btn => {
         const t = btn.textContent.trim();
         if (t.startsWith('+ 添加条件项')) btn.setAttribute('onclick', 'addCondition(this)');
-        else if (t.startsWith('+ 添加子组内条件项')) btn.setAttribute('onclick', 'addCondition(this)');
-        else if (t.startsWith('+ 添加子组')) { btn.setAttribute('onclick', 'addSubGroup(this)'); btn.setAttribute('data-role', 'add-sub-group'); }
-        else if (t.startsWith('✕ 删除子组')) btn.setAttribute('onclick', 'removeSubGroup(this)');
+        else if (t.startsWith('+ 添加属性组')) btn.setAttribute('onclick', 'addAttrGroup(this)');
+        else if (t.startsWith('✕ 删除属性组')) btn.setAttribute('onclick', 'removeAttrGroup(this)');
       });
     });
+    refreshAttrGroupLabels();
   });
 
   // ESC 关闭抽屉
