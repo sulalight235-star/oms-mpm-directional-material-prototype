@@ -278,15 +278,8 @@
   <div class="card">
     <div class="card-section-title">资质配置<span class="card-section-title-sub">*依据四级类目按货主配置必传资质要求</span></div>
 
-    <!-- 货主块 #1（未启用属性设置） -->
+    <!-- 配置块 #1（未启用属性设置） -->
     <div class="owner-card">
-      <div class="owner-card-header">
-        <span class="owner-card-index">1</span>
-        <span style="color: var(--text-sub); font-size: 13px;">货主</span>
-        <span style="color: var(--text-title); font-weight: 500;">：万聚国际（杭州）供应链有限公司</span>
-        <span class="owner-card-delete">🗑 删除货主块</span>
-      </div>
-
       <div class="form-row">
         <label class="form-label form-label-required">货主</label>
         <div class="form-content">
@@ -333,15 +326,8 @@
 
     </div>
 
-    <!-- 货主块 #2（启用属性设置 + 含子组） -->
+    <!-- 配置块 #2（启用属性设置 + 含子组） -->
     <div class="owner-card">
-      <div class="owner-card-header">
-        <span class="owner-card-index">2</span>
-        <span style="color: var(--text-sub); font-size: 13px;">货主</span>
-        <span style="color: var(--text-title); font-weight: 500;">：咸亨国际电子商务有限公司</span>
-        <span class="owner-card-delete">🗑 删除货主块</span>
-      </div>
-
       <div class="form-row">
         <label class="form-label form-label-required">货主</label>
         <div class="form-content">
@@ -780,5 +766,80 @@
   });
 </script>
 
+<script>
+(function initDemoTipsCollapse() {
+  const STYLE_ID = 'demoTipsCollapseStyle';
+  if (!document.getElementById(STYLE_ID)) {
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = [
+      '.demo-tips, .qa-demo-tips { transition: max-width .2s ease, padding .2s ease; }',
+      '.demo-tips-header, .qa-demo-tips-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; cursor:pointer; user-select:none; }',
+      '.demo-tips-title, .qa-demo-tips-title { color:#ffd666; font-weight:700; }',
+      '.demo-tips-actions, .qa-demo-tips-actions { display:flex; align-items:center; gap:8px; color:#fff; opacity:.82; white-space:nowrap; }',
+      '.demo-tips-toggle, .qa-demo-tips-toggle { font-size:12px; }',
+      '.demo-tips-close, .qa-demo-tips-close { color:#fff; cursor:pointer; font-size:14px; opacity:.7; }',
+      '.demo-tips-close:hover, .qa-demo-tips-close:hover { opacity:1; }',
+      '.demo-tips-body, .qa-demo-tips-body { max-height:60vh; overflow-y:auto; }',
+      '.demo-tips.collapsed, .qa-demo-tips.collapsed { padding:9px 14px; }',
+      '.demo-tips.collapsed .demo-tips-body, .qa-demo-tips.collapsed .qa-demo-tips-body { display:none; }',
+      '.demo-tips.collapsed .demo-tips-header, .qa-demo-tips.collapsed .qa-demo-tips-header { margin-bottom:0; }'
+    ].join('\n');
+    document.head.appendChild(style);
+  }
+
+  function setupTip(tip, prefix) {
+    let header = tip.querySelector('.' + prefix + '-header, .' + prefix + '-head');
+    let body = tip.querySelector('.' + prefix + '-body');
+
+    if (!body) {
+      body = document.createElement('div');
+      body.className = prefix + '-body';
+      Array.from(tip.childNodes).forEach(node => {
+        if (!(node.nodeType === 1 && node.classList && (
+          node.classList.contains(prefix + '-header') ||
+          node.classList.contains(prefix + '-head') ||
+          node.classList.contains(prefix + '-close')
+        ))) {
+          body.appendChild(node);
+        }
+      });
+      tip.appendChild(body);
+    }
+
+    if (!header) {
+      header = document.createElement('div');
+      header.className = prefix + '-header';
+      header.innerHTML = '<span class="' + prefix + '-title">💡 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
+      tip.insertBefore(header, body);
+    }
+
+    header.removeAttribute('onclick');
+    header.onclick = null;
+    tip.querySelectorAll('.' + prefix + '-close').forEach(el => { if (!header.contains(el)) el.remove(); });
+    const toggle = header.querySelector('.' + prefix + '-toggle') || tip.querySelector('.' + prefix + '-toggle');
+    const close = header.querySelector('.' + prefix + '-close') || tip.querySelector('.' + prefix + '-close');
+    const sync = () => { if (toggle) toggle.textContent = tip.classList.contains('collapsed') ? '展开 ▸' : '收起 ▾'; };
+
+    header.addEventListener('click', event => {
+      if (event.target.closest('.' + prefix + '-close')) return;
+      tip.classList.toggle('collapsed');
+      sync();
+    });
+    if (close) {
+      close.addEventListener('click', event => {
+        event.stopPropagation();
+        tip.style.display = 'none';
+      });
+    }
+    sync();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.demo-tips').forEach(tip => setupTip(tip, 'demo-tips'));
+    document.querySelectorAll('.qa-demo-tips').forEach(tip => setupTip(tip, 'qa-demo-tips'));
+  });
+})();
+</script>
 </body>
 </html>
