@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>物料详情 · 咸亨国际供应商协同平台（SCP）</title>
+<style>
+  :root{
+    --primary:#1677ff;--header-bg:#1f2b5b;--error:#ff4d4f;--link:#1677ff;
+    --text-title:#1f2329;--text-body:#333;--text-sub:#86909c;--border:#e5e6eb;
+    --nav-active-bg:#eaf2ff;--info-bg:#eef3ff;--info-border:#c7d8ff;--section-bg:#fafbfc;
+    --bg-table-head:#fafafa;--radius:6px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;color:var(--text-body);background:#f0f2f5}
+  a{color:var(--link);text-decoration:none;cursor:pointer}
+  .topbar{height:48px;background:var(--header-bg);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 0 0 16px;position:fixed;top:0;left:0;right:0;z-index:30}
+  .brand{font-size:16px;font-weight:600;letter-spacing:.5px}
+  .right{display:flex;align-items:center;height:100%}
+  .right .item{display:flex;align-items:center;gap:5px;padding:0 12px;height:100%;color:#dfe6f5;cursor:pointer}
+  .right .item:hover{color:#fff}
+  .icon{position:relative;font-size:15px}.dot{position:absolute;top:-3px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--error);border:1.5px solid var(--header-bg)}
+  .clear{background:#e34d4d;height:100%;display:flex;align-items:center;padding:0 18px;font-weight:500;cursor:pointer}
+  .layout{display:flex;padding-top:48px;height:100%}
+  .sider{width:176px;background:#fff;border-right:1px solid var(--border);height:calc(100vh - 48px);overflow:auto;position:fixed;left:0;top:48px}
+  .nav-item{display:flex;align-items:center;gap:8px;height:42px;padding:0 16px;color:var(--text-body);cursor:pointer;position:relative}
+  .nav-item .ic{width:16px;text-align:center;color:#8a94a6}.nav-item.group{font-weight:500}.nav-item.group .chev{margin-left:auto;color:#b0b6c0;font-size:11px}.sub.open{display:block}.sub .nav-item{padding-left:40px;height:38px;color:#4e5969}.sub .active{background:var(--nav-active-bg);color:var(--primary);font-weight:500}.sub .active::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary)}
+  .main{margin-left:176px;flex:1;display:flex;flex-direction:column;height:calc(100vh - 48px)}
+  .tabbar{display:flex;align-items:center;gap:2px;background:#eef1f7;padding:6px 10px 0;border-bottom:1px solid var(--border)}
+  .tab{display:flex;align-items:center;gap:8px;height:30px;padding:0 14px;background:#f7f8fa;border:1px solid var(--border);border-bottom:none;border-radius:4px 4px 0 0;color:#4e5969}
+  .tab.active{background:#fff;color:var(--primary);font-weight:500}.x{color:#b0b6c0}
+  .actionbar{display:flex;justify-content:space-between;align-items:center;padding:10px 28px;background:#fff;border-bottom:1px solid var(--border)}
+  .breadcrumb{color:#4e5969}.breadcrumb a{color:var(--primary)}
+  .actions{display:flex;gap:20px}.act{color:var(--link);cursor:pointer;font-size:14px}
+  .content{flex:1;overflow:auto;background:#fff;padding:18px 28px 40px}
+  .summary{max-width:1180px;background:var(--info-bg);border:1px solid var(--info-border);border-radius:6px;padding:14px 18px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px 24px;margin-bottom:16px}
+  .summary b{color:var(--text-title);font-weight:600}
+  .section{max-width:1180px;border:1px solid var(--border);border-radius:6px;padding:18px 22px 18px;margin-top:16px;background:#fff}
+  .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .section-title{font-weight:600;color:var(--text-title);font-size:14px;border-left:3px solid var(--primary);padding-left:8px;display:flex;align-items:center;gap:10px}
+  .sub-note{font-weight:400;font-size:12px;color:var(--text-sub)}
+  .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 30px}
+  .field{display:flex;flex-direction:column;gap:6px;min-width:0}.field.col2{grid-column:span 2}.field.col3{grid-column:span 3}
+  .flabel{color:var(--text-body)}.req{color:var(--error);margin-right:2px}
+  .input{height:32px;border:1px solid var(--border);border-radius:4px;padding:0 10px;width:100%;font-size:13px;background:#f7f8fa;color:#4e5969}
+  textarea.input{height:84px;padding:8px 10px;resize:none;line-height:1.6}
+  .unit{display:flex;align-items:center;border:1px solid var(--border);border-radius:4px;overflow:hidden;background:#f7f8fa}.unit input{border:0;flex:1;height:30px;padding:0 10px;background:transparent}.unit .u{background:#f0f1f5;padding:0 10px;color:var(--text-sub);line-height:30px;border-left:1px solid var(--border)}
+  .inline{display:flex;align-items:center;gap:18px;height:32px;color:#4e5969}.fhint{color:var(--text-sub);font-size:12px;line-height:1.6}
+  .qa-table{width:100%;border-collapse:collapse;background:#fff}
+  .qa-table th{height:36px;background:#fafafa;text-align:left;padding:0 14px;color:#111;font-weight:700;border-bottom:1px solid #edf0f5}
+  .qa-table td{height:64px;padding:10px 14px;border-bottom:1px solid #edf0f5;color:#26364a;vertical-align:middle;line-height:1.6}
+  .qa-table tr:last-child td{border-bottom:0}
+  .oss-link{color:#006dff;word-break:break-all}.tag{display:inline-flex;padding:1px 7px;border:1px solid #b7eb8f;background:#f6ffed;color:#52c41a;border-radius:4px;font-size:12px}
+  .ext-box{height:40px;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-sub);max-width:560px;border-radius:4px}
+  .thumbs{display:flex;gap:10px;flex-wrap:wrap}.thumb{width:96px;height:96px;border-radius:6px;border:1px solid var(--border);background:linear-gradient(135deg,#dce3ef,#f6f8fb);display:flex;align-items:center;justify-content:center;color:var(--text-sub);font-size:12px;text-align:center}
+  .footer{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--border);height:54px;display:flex;justify-content:flex-end;gap:10px;align-items:center;padding:0 28px}
+  .btn{height:32px;border:1px solid var(--border);background:#fff;border-radius:4px;padding:0 18px;cursor:pointer}.btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="brand">咸亨国际供应商协同平台（SCP）</div><div class="right"><div class="item" onclick="location.href='../index.html'" title="返回原型门户">🔄 切换系统</div><div class="item">更新通知</div><div class="item"><span class="icon">🔔<span class="dot"></span></span></div><div class="item"><span class="icon">📋<span class="dot"></span></span></div><div class="item">黄战领 ▾</div><div class="clear">清除</div></div></div>
+<div class="layout">
+  <aside class="sider">
+    <div class="nav-item"><span class="ic">🏠</span>工作台</div><div class="nav-item"><span class="ic">📢</span>咸亨公告</div><div class="nav-item group"><span class="ic">👤</span>基本信息<span class="chev">▾</span></div><div class="nav-item group open"><span class="ic">✉️</span>物料管理<span class="chev">▾</span></div>
+    <div class="sub open"><div class="nav-item" onclick="location.href='SCP-项目物料提报管理.html'">项目物料提报管理</div><div class="nav-item">项目物料</div><div class="nav-item active" onclick="location.href='SCP-我的物料.html'">我的物料</div><div class="nav-item" onclick="location.href='SCP-单个新增物料.html'">新增物料</div><div class="nav-item" onclick="location.href='SCP-批量新增物料.html'">批量新增</div><div class="nav-item" onclick="location.href='SCP-待提交物料.html'">待提交物料</div><div class="nav-item">我新增的品牌</div><div class="nav-item" onclick="location.href='SCP-我的申请.html'">我的申请</div></div>
+    <div class="nav-item group"><span class="ic">📄</span>订单管理<span class="chev">▾</span></div><div class="nav-item group"><span class="ic">👤</span>客户开票<span class="chev">▾</span></div>
+  </aside>
+  <main class="main">
+    <div class="tabbar"><div class="tab">工作台</div><div class="tab">我的物料 <span class="x">×</span></div><div class="tab active">物料信息-详情 <span class="x">×</span></div></div>
+    <div class="actionbar"><div class="breadcrumb"><a onclick="history.back()">物料管理</a> / 物料信息-详情</div><div class="actions"><span class="act" onclick="history.back()">返回</span><span class="act">关闭</span></div></div>
+    <div class="content">
+      <div class="summary">
+        <div><b>物料编码：</b><span id="codeText">B2001014767</span></div><div><b>物料类型：</b>电商供应商物料</div><div><b>审核状态：</b><span class="tag">已生效</span></div><div><b>关联项目：</b>安能</div>
+        <div><b>提交时间：</b>2026-06-01 19:40:12</div><div><b>上架时间：</b>2026-06-03 10:54:18</div><div><b>供应商：</b>咸亨供应商</div><div><b>维护人：</b>饶胚超</div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><div class="section-title">主要信息</div></div>
+        <div class="grid3">
+          <div class="field"><div class="flabel">编码</div><input class="input" id="codeInput" value="B2001014767" readonly></div>
+          <div class="field"><div class="flabel"><span class="req">*</span>品牌</div><input class="input" value="德力西/DELIXI" readonly></div>
+          <div class="field"><div class="flabel"><span class="req">*</span>名称</div><input class="input" value="污水泵" readonly><div class="fhint">以名词结尾；描述性词语放描述中；不能过长。</div></div>
+          <div class="field"><div class="flabel"><span class="req">*</span>型号</div><input class="input" value="37KW" readonly></div>
+          <div class="field"><div class="flabel"><span class="req">*</span>基本单位</div><input class="input" value="台" readonly></div>
+          <div class="field"><div class="flabel"><span class="req">*</span>类目</div><input class="input" value="泵 / 污水泵" readonly></div>
+          <div class="field"><div class="flabel"><span class="req">*</span>毛重</div><div class="unit"><input value="10.00" readonly><span class="u">kg</span></div></div>
+          <div class="field"><div class="flabel"><span class="req">*</span>市场价</div><div class="unit"><input value="314.60" readonly><span class="u">元</span></div></div>
+          <div class="field"><div class="flabel">参考供货价</div><div class="unit"><input value="待询价" readonly><span class="u">元</span></div></div>
+          <div class="field"><div class="flabel"><span class="req">*</span>起订量</div><input class="input" value="1" readonly></div>
+          <div class="field"><div class="flabel">是否倍数下单</div><div class="inline">否</div></div>
+          <div class="field"><div class="flabel">含安装费</div><div class="inline">不含</div></div>
+          <div class="field col3"><div class="flabel">描述</div><textarea class="input" readonly>项目物料详情查看态，字段布局参考单个新增物料页面。</textarea></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><div class="section-title">次要信息</div></div>
+        <div class="grid3">
+          <div class="field"><div class="flabel">条形码</div><input class="input" value="-" readonly></div>
+          <div class="field"><div class="flabel">净重</div><div class="unit"><input value="9.50" readonly><span class="u">kg</span></div></div>
+          <div class="field"><div class="flabel"><span class="req">*</span>已停产</div><div class="inline">否</div></div>
+          <div class="field col2"><div class="flabel">尺寸 / 体积</div><input class="input" value="长 500mm / 宽 320mm / 高 280mm" readonly></div>
+          <div class="field"><div class="flabel">发货期</div><input class="input" value="详询客服" readonly></div>
+          <div class="field"><div class="flabel">税收分类编码</div><input class="input" value="1090129010000000000" readonly></div>
+          <div class="field"><div class="flabel"><span class="req">*</span>税收分类名称</div><input class="input" value="泵" readonly></div>
+          <div class="field"><div class="flabel"><span class="req">*</span>税率</div><input class="input" value="13%" readonly></div>
+        </div>
+      </div>
+
+      <div class="section"><div class="section-head"><div class="section-title">关联项目信息</div></div><input class="input" style="max-width:420px" value="安能 / 中国铝业" readonly></div>
+      <div class="section">
+        <div class="section-head"><div class="section-title">拓展属性 <span class="sub-note">拓展属性标题为蓝色代表有平台项目对该拓展属性有要求</span></div></div>
+        <div style="font-size:12px;color:var(--text-body);margin-bottom:12px;line-height:1.6;background:#fffbe6;border:1px solid #ffe58f;border-radius:var(--radius);padding:8px 12px;">
+          依据四级类目展示的提示文案，紧固件螺帽螺栓四级类目的属性等级超过8.8硬度，咸亨集团暂不接受，请供应商或新增人员知晓；
+        </div>
+        <div class="grid3"><div class="field"><div class="flabel">材质</div><input class="input" value="铸铁" readonly></div><div class="field"><div class="flabel">防护等级</div><input class="input" value="IP55" readonly></div><div class="field"><div class="flabel">颜色</div><input class="input" value="/" readonly></div></div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><div class="section-title">资料附件</div></div>
+        <table class="qa-table">
+          <thead><tr><th style="width:240px">图片资质类型</th><th style="width:180px">文件名称</th><th>图片</th></tr></thead>
+          <tbody>
+            <tr><td>国家强制性产品认证试验报告</td><td>CCC认证报告.pdf</td><td><a class="oss-link" target="_blank" href="https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/1779963147676/CCC认证报告.pdf">https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/1779963147676/CCC认证报告.pdf</a></td></tr>
+            <tr><td>特种劳动防护用品安全标志（LA）</td><td>LA标志证书.pdf</td><td><a class="oss-link" target="_blank" href="https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/1779963147677/LA标志证书.pdf">https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/1779963147677/LA标志证书.pdf</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section"><div class="section-head"><div class="section-title">外部链接 / 价格佐证</div></div><div class="ext-box">暂无外部链接</div></div>
+      <div class="section"><div class="section-head"><div class="section-title">图文信息 <span class="sub-note">支持类型：.bmp / .gif / .jpg / .png / .webp / .heic</span></div></div><p><b>主图：</b></p><div class="thumbs"><div class="thumb">主图</div><div class="thumb">产品图</div></div><p><b>详情图：</b></p><div class="thumbs"><div class="thumb">参数图</div><div class="thumb">场景图</div><div class="thumb">细节图</div></div></div>
+    </div>
+    <div class="footer"><button class="btn" onclick="history.back()">返 回</button><button class="btn btn-primary" onclick="history.back()">关 闭</button></div>
+  </main>
+</div>
+<script>
+  const params = new URLSearchParams(location.search);
+  const code = params.get('code');
+  if (code) {
+    document.title = '物料详情 · ' + code + ' · SCP';
+    document.getElementById('codeText').textContent = code;
+    document.getElementById('codeInput').value = code;
+  }
+</script>
+
+<div class="scp-demo-tips">
+  <div class="scp-demo-tips-section">
+    <b>本期改造内容：</b><br>
+    <ul>
+      <li>物料详情页补充资料附件展示，覆盖资质类型、文件名称、OSS URL。</li>
+      <li>详情字段布局参考单个新增物料页面，适配只读查看场景。</li>
+      <li>顶部切换系统入口已统一回到原型门户。</li>
+    </ul>
+  </div>
+  <div class="scp-demo-tips-section">
+    <b>操作说明：</b><br>
+    1. 从列表或带 code 参数链接进入物料详情。<br>
+    2. 查看物料基础信息、拓展属性、资料附件和图文信息。<br>
+    3. 点击<span class="ti">返回 / 关闭</span>回到上一页。
+  </div>
+</div><script src="scp-demo-tips.js"></script>
+</body>
+</html>

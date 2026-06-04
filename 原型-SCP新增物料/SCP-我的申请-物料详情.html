@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>我的申请-物料详情 · 咸亨国际供应商协同平台（SCP）</title>
+<style>
+  :root{
+    --primary:#1677ff; --primary-hover:#4096ff; --primary-active:#0958d9;
+    --header-bg:#1f2b5b; --error:#ff4d4f; --link:#1677ff;
+    --text-title:#1f2329; --text-body:#333; --text-sub:#86909c; --border:#e5e6eb;
+    --nav-active-bg:#eaf2ff; --info-bg:#eef3ff; --info-border:#c7d8ff; --section-bg:#fafbfc;
+    --primary-bg:#e6f4ff; --success:#52c41a; --warning:#faad14;
+    --border-light:#f0f0f0; --bg-table-head:#fafafa; --radius:6px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;color:var(--text-body);background:#f0f2f5;}
+  /* 顶部条 */
+  .topbar{height:48px;background:var(--header-bg);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 0 0 16px;position:fixed;top:0;left:0;right:0;z-index:30;}
+  .topbar .brand{font-size:16px;font-weight:600;letter-spacing:.5px;}
+  .topbar .right{display:flex;align-items:center;height:100%;}
+  .topbar .right .item{display:flex;align-items:center;gap:5px;padding:0 12px;height:100%;color:#dfe6f5;cursor:pointer;}
+  .topbar .right .item:hover{color:#fff;}
+  .topbar .right .icon{position:relative;font-size:15px;}
+  .topbar .right .dot{position:absolute;top:-3px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--error);border:1.5px solid var(--header-bg);}
+  .topbar .clear{background:#e34d4d;height:100%;display:flex;align-items:center;padding:0 18px;cursor:pointer;font-weight:500;}
+  .topbar .clear:hover{background:#d83b3b;}
+  /* 布局 */
+  .layout{display:flex;padding-top:48px;height:100%;}
+  .sider{width:176px;background:#fff;border-right:1px solid var(--border);height:calc(100vh - 48px);overflow-y:auto;position:fixed;left:0;top:48px;bottom:0;}
+  .sider::-webkit-scrollbar{width:6px;} .sider::-webkit-scrollbar-thumb{background:#d9d9d9;border-radius:3px;}
+  .nav-item{display:flex;align-items:center;gap:8px;height:42px;padding:0 16px;color:var(--text-body);cursor:pointer;position:relative;}
+  .nav-item .ic{width:16px;text-align:center;color:#8a94a6;}
+  .nav-item.group{font-weight:500;}
+  .nav-item.group .chev{margin-left:auto;color:#b0b6c0;font-size:11px;transition:.2s;}
+  .nav-item.group.open .chev{transform:rotate(180deg);}
+  .nav-item:hover{background:#f5f7fa;}
+  .sub{display:none;} .sub.open{display:block;}
+  .sub .nav-item{padding-left:40px;height:38px;color:#4e5969;}
+  .sub .nav-item.active{background:var(--nav-active-bg);color:var(--primary);font-weight:500;}
+  .sub .nav-item.active::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary);}
+  /* 主区 */
+  .main{margin-left:176px;flex:1;display:flex;flex-direction:column;height:calc(100vh - 48px);}
+  .tabbar{display:flex;align-items:center;gap:2px;background:#eef1f7;padding:6px 10px 0;border-bottom:1px solid var(--border);}
+  .tab{display:flex;align-items:center;gap:8px;height:30px;padding:0 14px;background:#f7f8fa;border:1px solid var(--border);border-bottom:none;border-radius:4px 4px 0 0;color:#4e5969;cursor:pointer;}
+  .tab .x{color:#b0b6c0;} .tab .x:hover{color:var(--error);}
+  .tab.active{background:#fff;color:var(--primary);font-weight:500;}
+  .tab.plain{background:transparent;border:none;color:#4e5969;}
+  .actionbar{display:flex;justify-content:flex-end;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid var(--border);}
+  .actionbar .act{color:var(--link);cursor:pointer;font-size:14px;}
+  .actionbar .act:hover{text-decoration:underline;}
+  .content{flex:1;overflow-y:auto;background:#fff;padding:18px 28px 40px;}
+  /* 操作流程 */
+  .flow{background:var(--info-bg);border:1px solid var(--info-border);border-radius:6px;padding:16px 20px;display:flex;gap:12px;max-width:1180px;}
+  .flow .ic{color:var(--primary);font-size:20px;flex-shrink:0;line-height:1.4;}
+  .flow .title{font-weight:600;color:var(--text-title);margin-bottom:8px;font-size:14px;}
+  .flow .step{color:#4e5969;line-height:2;}
+  .link{color:var(--link);cursor:pointer;} .link:hover{text-decoration:underline;}
+  /* 物料类型行 */
+  .mtype-row{display:flex;align-items:center;gap:10px;max-width:1180px;margin:18px 2px;}
+  .mtype-row .req{color:var(--error);}
+  .radio{display:inline-flex;align-items:center;gap:6px;cursor:pointer;}
+  .radio input{accent-color:var(--primary);width:15px;height:15px;}
+  /* section */
+  .section{max-width:1180px;border:1px solid var(--border);border-radius:6px;padding:18px 22px 6px;margin-top:16px;background:#fff;}
+  .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .section-title{font-weight:600;color:var(--text-title);font-size:14px;border-left:3px solid var(--primary);padding-left:8px;display:flex;align-items:center;gap:10px;}
+  .section-title .sub-note{font-weight:400;font-size:12px;color:var(--text-sub);border:none;}
+  .section-title .req-note{font-weight:400;font-size:12px;color:var(--error);}
+  .hot{color:#fa541c;cursor:pointer;font-size:13px;}
+  .hot:hover{text-decoration:underline;}
+  .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 30px;}
+  .field{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .field.col2{grid-column:span 2;}
+  .field.col3{grid-column:span 3;}
+  .flabel{color:var(--text-body);} .flabel .req{color:var(--error);margin-right:2px;}
+  .input{height:32px;border:1px solid var(--border);border-radius:4px;padding:0 10px;width:100%;font-size:13px;background:#fff;}
+  .input:focus{border-color:var(--primary);outline:none;}
+  .input[readonly]{background:#f5f5f5;color:#86909c;}
+  .input.invalid{border-color:var(--error);}
+  textarea.input{height:84px;padding:8px 10px;resize:vertical;line-height:1.6;}
+  .unit{display:flex;align-items:center;border:1px solid var(--border);border-radius:4px;overflow:hidden;background:#fff;}
+  .unit:focus-within{border-color:var(--primary);}
+  .unit input{border:none;flex:1;height:30px;padding:0 10px;font-size:13px;min-width:0;}
+  .unit input:focus{outline:none;}
+  .unit .u{background:#f7f8fa;padding:0 10px;color:var(--text-sub);line-height:30px;border-left:1px solid var(--border);white-space:nowrap;}
+  .clearable{position:relative;}
+  .clearable .clr{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:#c0c4cc;cursor:pointer;font-size:14px;}
+  .clearable .clr:hover{color:var(--error);}
+  .fhint{color:var(--text-sub);font-size:12px;line-height:1.6;}
+  .fhint.red{color:var(--error);}
+  .inline{display:flex;align-items:center;gap:18px;flex-wrap:wrap;height:32px;}
+  .check{display:inline-flex;align-items:center;gap:6px;cursor:pointer;}
+  .check input{accent-color:var(--primary);width:14px;height:14px;}
+  .with-btn{display:flex;gap:8px;}
+  .mini-btn{height:32px;padding:0 12px;border:1px solid var(--border);background:#fff;border-radius:4px;cursor:pointer;white-space:nowrap;color:var(--text-body);}
+  .mini-btn:hover{border-color:var(--primary);color:var(--primary);}
+  /* 资质资料 */
+  .qual-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px dashed #eee;}
+  .qual-row:last-child{border-bottom:none;}
+  .qual-name{width:240px;color:var(--text-body);}
+  .qual-name .tag{display:inline-block;margin-left:6px;font-size:11px;color:#0958d9;background:#e6f0ff;border:1px solid #bcd6ff;border-radius:2px;padding:0 4px;}
+  .up-btn{height:30px;padding:0 14px;border:1px solid var(--border);background:#fff;border-radius:4px;cursor:pointer;color:var(--text-body);}
+  .up-btn:hover{border-color:var(--primary);color:var(--primary);}
+  .file-chip{display:inline-flex;align-items:center;gap:6px;color:var(--primary);}
+  .file-chip .rm{color:#b0b6c0;cursor:pointer;} .file-chip .rm:hover{color:var(--error);}
+  /* 外部链接 */
+  .ext-add{border:1px dashed var(--border);border-radius:4px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--primary);cursor:pointer;max-width:560px;}
+  .ext-add:hover{border-color:var(--primary);background:#f5f9ff;}
+  .ext-item{display:flex;align-items:center;gap:10px;margin-bottom:10px;max-width:760px;}
+  .ext-item input{flex:1;}
+  .ext-item .rm{color:#b0b6c0;cursor:pointer;font-size:16px;} .ext-item .rm:hover{color:var(--error);}
+  /* 图文 */
+  .img-block{margin-bottom:18px;}
+  .img-block .cap{color:var(--text-body);margin-bottom:8px;line-height:1.7;}
+  .img-block .cap b{color:var(--text-title);}
+  .up-box{width:96px;height:96px;border:1px dashed #9db8ff;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--primary);cursor:pointer;background:#f7faff;gap:4px;}
+  .up-box:hover{border-color:var(--primary);background:#eef4ff;}
+  .thumbs{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .thumb{width:96px;height:96px;border-radius:6px;border:1px solid var(--border);background:#eef1f7 center/cover;display:flex;align-items:center;justify-content:center;color:var(--text-sub);position:relative;font-size:12px;text-align:center;padding:4px;}
+  .thumb .rm{position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;}
+  /* 底部 */
+  .footer{position:fixed;right:0;bottom:0;left:176px;height:58px;background:#fff;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:0 28px;box-shadow:0 -2px 8px rgba(0,0,0,.04);z-index:20;}
+  .btn{height:34px;padding:0 22px;border-radius:4px;cursor:pointer;font-size:13px;border:1px solid var(--border);background:#fff;color:var(--text-body);}
+  .btn:hover{border-color:var(--primary);color:var(--primary);}
+  .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff;}
+  .btn-primary:hover{background:var(--primary-hover);color:#fff;}
+  .pad-bottom{height:70px;}
+  /* Toast / tooltip */
+  .toast-wrap{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:99;display:flex;flex-direction:column;gap:8px;align-items:center;}
+  .toast{background:#fff;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.16);padding:9px 16px;display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(-8px);transition:.25s;}
+  .toast.show{opacity:1;transform:translateY(0);}
+  .toast .ti{font-weight:700;}
+  .toast.success .ti{color:#52c41a;} .toast.error .ti{color:var(--error);} .toast.info .ti{color:var(--primary);}
+  [data-tip]{position:relative;}
+  [data-tip]:hover::after{content:attr(data-tip);position:absolute;left:0;top:130%;background:#1f2329;color:#fff;font-size:12px;padding:5px 9px;border-radius:4px;white-space:nowrap;z-index:40;font-weight:400;}
+  /* ── 资料附件（资质附件，完全复用 物料审核详情 样式）── */
+  .sec-upload-btn{height:28px;padding:0 12px;border:1px solid var(--primary);background:var(--primary);color:#fff;border-radius:var(--radius);cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:4px;}
+  .sec-upload-btn:hover{background:var(--primary-hover);}
+  .qa-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .qa-table thead th{background:var(--bg-table-head);text-align:left;padding:10px 14px;color:var(--text-title);font-weight:600;border-bottom:1px solid var(--border-light);}
+  .qa-table tbody td{padding:14px 14px;border-bottom:1px solid var(--border-light);color:var(--text-body);vertical-align:top;}
+  .qa-table tbody tr:hover{background:#fafbfc;}
+  .qa-table .oss-link{color:var(--primary);cursor:pointer;word-break:break-all;text-decoration:none;}
+  .qa-table .oss-link:hover{text-decoration:underline;}
+  .qa-table .op{color:var(--primary);cursor:pointer;margin-right:10px;}
+  .qa-table .op:hover{color:var(--primary-hover);text-decoration:underline;}
+  .qa-table .op.danger{color:var(--error);}
+  .qa-alert{padding:9px 16px;border-radius:var(--radius);display:flex;align-items:flex-start;gap:8px;margin-top:12px;font-size:13px;line-height:1.7;}
+  .qa-alert-warning{background:#fffbe6;border:1px solid #ffe58f;}
+  .qa-alert-icon{font-size:14px;flex-shrink:0;line-height:22px;color:var(--warning);}
+  .qa-alert-action{margin-left:auto;flex-shrink:0;}
+  .qa-alert-action .btn{height:26px;padding:0 10px;font-size:12px;}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;display:none;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:#fff;border-radius:8px;width:480px;max-width:94vw;box-shadow:0 6px 16px rgba(0,0,0,0.12);}
+  .modal-header{padding:16px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;}
+  .modal-header-title{font-size:16px;font-weight:600;color:var(--text-title);}
+  .modal-close{cursor:pointer;font-size:20px;color:var(--text-sub);line-height:1;}
+  .modal-close:hover{color:var(--text-title);}
+  .modal-body{padding:24px;}
+  .modal-footer{padding:12px 24px;border-top:1px solid var(--border-light);display:flex;gap:8px;justify-content:flex-end;}
+  .qa-form-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;}
+  .qa-form-label{width:100px;flex-shrink:0;text-align:right;color:var(--text-title);font-size:14px;padding-top:6px;}
+  .qa-form-label-required::before{content:"* ";color:var(--error);}
+  .qa-form-content{flex:1;}
+  .qa-select{width:100%;height:32px;padding:4px 11px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;background:#fff;outline:none;}
+  .qa-upload-dragger{border:2px dashed var(--border);border-radius:8px;padding:28px 20px;text-align:center;cursor:pointer;background:#fafbfc;}
+  .qa-upload-dragger:hover{border-color:var(--primary);background:var(--primary-bg);}
+  .qa-upload-icon{font-size:32px;color:var(--primary);}
+  .qa-upload-text{margin-top:8px;font-size:14px;color:var(--text-title);}
+  .qa-upload-hint{margin-top:6px;font-size:12px;color:var(--text-sub);line-height:1.7;}
+  .qa-upload-list{margin-top:12px;}
+  .qa-upload-item{display:flex;align-items:center;gap:8px;padding:6px 12px;background:#f6ffed;border:1px solid #b7eb8f;border-radius:var(--radius);font-size:13px;margin-bottom:6px;}
+  .qa-upload-item-name{flex:1;color:var(--text-body);}
+  .qa-upload-item-size{color:var(--text-sub);font-size:12px;}
+  .qa-upload-item-del{color:var(--text-sub);cursor:pointer;padding:2px 6px;}
+  .qa-upload-item-del:hover{color:var(--error);}
+  .qa-popconfirm-mask{position:fixed;inset:0;background:rgba(0,0,0,0.3);display:none;z-index:1700;align-items:center;justify-content:center;}
+  .qa-popconfirm-mask.open{display:flex;}
+  .qa-popconfirm-box{background:#fff;border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,0.08);padding:16px 20px;max-width:360px;}
+  .qa-popconfirm-title{display:flex;align-items:flex-start;gap:8px;font-size:14px;color:var(--text-title);margin-bottom:12px;line-height:1.7;}
+  .qa-popconfirm-title-icon{color:var(--warning);font-size:16px;flex-shrink:0;line-height:1.5;}
+  .qa-popconfirm-actions{display:flex;justify-content:flex-end;gap:8px;}
+  .btn-sm{height:28px;padding:0 12px;font-size:12px;}
+  .btn-default{background:#fff;border-color:var(--border);color:var(--text-body);}
+  .btn-default:hover{border-color:var(--primary);color:var(--primary);}
+</style>
+</head>
+<body>
+  <!-- 顶部条 -->
+  <div class="topbar">
+    <div class="brand">咸亨国际供应商协同平台（SCP）</div>
+    <div class="right">
+      <div class="item" onclick="go('../index.html')" title="返回原型门户">🔄 切换系统</div>
+      <div class="item">更新通知</div>
+      <div class="item"><span class="icon">🔔<span class="dot"></span></span></div>
+      <div class="item"><span class="icon">📋<span class="dot"></span></span></div>
+      <div class="item">黄战领 ▾</div>
+      <div class="clear" onclick="toast('已清除当前会话标签','info')">清除</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- 左侧导航 -->
+    <aside class="sider">
+      <div class="nav-item" onclick="toast('原型仅演示物料管理相关页面','info')"><span class="ic">🏠</span>工作台</div>
+      <div class="nav-item" onclick="toast('原型仅演示物料管理相关页面','info')"><span class="ic">📢</span>咸亨公告</div>
+      <div class="nav-item group" onclick="toggleGroup(this)"><span class="ic">👤</span>基本信息<span class="chev">▾</span></div>
+      <div class="nav-item group open" onclick="toggleGroup(this)"><span class="ic">✉️</span>物料管理<span class="chev">▾</span></div>
+      <div class="sub open">
+        <div class="nav-item" onclick="go('SCP-项目物料提报管理.html')">项目物料提报管理</div>
+        <div class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">项目物料</div>
+        <div class="nav-item" onclick="go('SCP-我的物料.html')">我的物料</div>
+        <div class="nav-item" onclick="go('SCP-单个新增物料.html')">新增物料</div>
+        <div class="nav-item" onclick="go('SCP-批量新增物料.html')">批量新增</div>
+        <div class="nav-item" onclick="go('SCP-待提交物料.html')">待提交物料</div>
+        <div class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">我新增的品牌</div>
+        <div class="nav-item active" onclick="go('SCP-我的申请.html')">我的申请</div>
+      </div>
+      <div class="nav-item group" onclick="toggleGroup(this)"><span class="ic">📄</span>订单管理<span class="chev">▾</span></div>
+      <div class="nav-item group" onclick="toggleGroup(this)"><span class="ic">👤</span>客户开票<span class="chev">▾</span></div>
+    </aside>
+
+    <main class="main">
+      <div class="tabbar">
+        <div class="tab plain" onclick="toast('原型仅演示新增/批量新增','info')">工作台</div>
+        <div class="tab" onclick="go('SCP-我的申请.html')">我的申请 <span class="x">✕</span></div><div class="tab active">物料详情 <span class="x" onclick="event.stopPropagation();toast('原型页，关闭无效','info')">✕</span></div>
+        <div class="tab" onclick="go('SCP-批量新增物料.html')">批量新增 <span class="x">✕</span></div>
+        <div class="tab" onclick="toast('原型仅演示新增/批量新增','info')">任务中心 <span class="x">✕</span></div>
+      </div>
+      <div class="actionbar">
+        <span class="act" onclick="save()">保存</span>
+        <span class="act" onclick="submitForm()">提交</span>
+        <span class="act" onclick="go('SCP-我的申请.html')">关闭</span>
+      </div>
+
+      <div class="content">
+        <!-- 操作流程 -->
+        <div class="flow">
+          <div class="ic">ⓘ</div>
+          <div>
+            <div class="title">操作流程</div>
+            <div class="step">第一步：新增物料前，请先维护好您的品牌信息</div>
+            <div class="step">第二步：填写好物料信息，并提交审核 <span class="link" onclick="toast('打开填写说明（原型）','info')">查看填写说明</span></div>
+            <div class="step">第三步：咸亨管理员审核通过后，物料生效。如果你的申请被驳回了，请前往【我的申请】重新提交</div>
+          </div>
+        </div>
+
+        <!-- 物料类型 -->
+        <div class="mtype-row"><span class="req">*</span>物料类型 <label class="radio"><input type="radio" name="mtype" checked> 电商供应商物料</label></div>
+
+        <!-- 主要信息 -->
+        <div class="section">
+          <div class="section-head">
+            <div class="section-title">主要信息</div>
+            <div class="hot" onclick="toast('快捷拾取：从历史物料拾取信息（原型）','info')">🔥 快捷拾取</div>
+          </div>
+          <div class="grid3">
+            <div class="field">
+              <div class="flabel">编码</div>
+              <input class="input" value="SRMHZS410406995" readonly>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>品牌</div>
+              <input class="input req-f" data-name="品牌" placeholder="请输入">
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>名称</div>
+              <input class="input req-f" data-name="名称" placeholder="请输入">
+              <div class="fhint">以名词结尾；描述性词语放描述中；不能过长。</div>
+            </div>
+
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>型号</div>
+              <input class="input req-f" data-name="型号" placeholder="请输入">
+              <div class="fhint">无型号可填规格，都无填 /（不能写通用、常规）</div>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>基本单位</div>
+              <input class="input req-f" data-name="基本单位" placeholder="请输入">
+              <div class="fhint red">审核后无法修改，请确认！</div>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>类目</div>
+              <div class="clearable">
+                <input class="input req-f" id="catInput" data-name="类目" placeholder="请选择类目" onclick="pickCat()">
+                <span class="clr" onclick="clearCat()">⊗</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>毛重</div>
+              <div class="unit"><input class="req-f" data-name="毛重" placeholder="请输入"><span class="u">kg</span></div>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>市场价</div>
+              <div class="unit"><input class="req-f" data-name="市场价" placeholder="请输入"><span class="u">元</span></div>
+            </div>
+            <div class="field">
+              <div class="flabel">参考供货价 <span data-tip="参考供货价用于平台比价，请填写含税价" style="color:#b0b6c0;cursor:help;">ⓘ</span></div>
+              <div class="unit"><input placeholder="请输入"><span class="u">元</span></div>
+              <div class="fhint">请填写含税价</div>
+            </div>
+
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>起订量</div>
+              <input class="input req-f" data-name="起订量" placeholder="请输入">
+            </div>
+            <div class="field">
+              <div class="flabel">是否倍数下单</div>
+              <div class="inline"><label class="check"><input type="checkbox"> 是否倍数下单</label></div>
+            </div>
+            <div class="field">
+              <div class="flabel">含安装费</div>
+              <div class="inline">
+                <label class="check"><input type="checkbox" name="install"> 含</label>
+                <label class="check"><input type="checkbox" name="install"> 不含</label>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="flabel">含检测费</div>
+              <div class="inline" style="height:auto;flex-direction:column;align-items:flex-start;gap:6px;">
+                <label class="check"><input type="checkbox"> 不含检测费</label>
+                <label class="check"><input type="checkbox"> 含第三方检测费</label>
+                <label class="check"><input type="checkbox"> 含出厂检测费</label>
+              </div>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>含运费</div>
+              <div class="inline">
+                <label class="radio"><input type="radio" name="freight" checked> 含</label>
+                <label class="radio"><input type="radio" name="freight"> 不含</label>
+              </div>
+            </div>
+            <div class="field"></div>
+
+            <div class="field col3">
+              <div class="flabel">描述</div>
+              <textarea class="input" placeholder="请输入"></textarea>
+              <div class="fhint">1、单位为大规格如包/箱时描述需注明规格个数；2、名称、型号、描述中的内容不允许重复；3、产品本身若有不同的颜色款式，需在描述中注明，且和主图的颜色或款式描述一致。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 次要信息 -->
+        <div class="section">
+          <div class="section-head"><div class="section-title">次要信息</div></div>
+          <div class="grid3">
+            <div class="field">
+              <div class="flabel">条形码</div>
+              <input class="input" placeholder="请输入">
+            </div>
+            <div class="field">
+              <div class="flabel">净重</div>
+              <div class="unit"><input placeholder="请输入"><span class="u">kg</span></div>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>已停产</div>
+              <div class="inline">
+                <label class="radio"><input type="radio" name="stop"> 是</label>
+                <label class="radio"><input type="radio" name="stop" checked> 否</label>
+              </div>
+            </div>
+
+            <div class="field col2">
+              <div class="flabel">尺寸 / 体积</div>
+              <div class="inline" style="gap:8px;height:auto;">
+                <div class="unit" style="width:120px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">长</span><input placeholder="请输入"><span class="u">mm</span></div>
+                <div class="unit" style="width:120px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">宽</span><input placeholder="请输入"><span class="u">mm</span></div>
+                <div class="unit" style="width:120px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">高</span><input placeholder="请输入"><span class="u">mm</span></div>
+                <div class="unit" style="width:140px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">体积</span><input placeholder="请输入"><span class="u">mm³</span></div>
+              </div>
+            </div>
+            <div class="field">
+              <div class="flabel">发货期 / 详询客服</div>
+              <div class="inline" style="gap:12px;">
+                <div class="unit" style="width:120px;"><input placeholder="请输入"><span class="u">天</span></div>
+                <label class="check"><input type="checkbox" checked> 详询客服</label>
+              </div>
+            </div>
+
+            <div class="field col2">
+              <div class="flabel">税收分类编码</div>
+              <div class="with-btn">
+                <input class="input" id="taxCode" placeholder="智能赋码自动带出" readonly>
+                <button class="mini-btn" onclick="smartTax()">🧾 智能赋码</button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>税收分类名称</div>
+              <input class="input req-f" id="taxName" data-name="税收分类名称" placeholder="智能赋码自动带出" readonly>
+            </div>
+
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>简称</div>
+              <input class="input req-f" id="taxShort" data-name="简称" placeholder="智能赋码自动带出" readonly>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>税率</div>
+              <input class="input req-f" id="taxRate" data-name="税率" placeholder="智能赋码自动带出" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- 关联项目信息 -->
+        <div class="section">
+          <div class="section-head"><div class="section-title">关联项目信息 <span class="req-note">*请至少添加一个关联项目</span></div></div>
+          <div class="clearable" style="max-width:420px;">
+            <input class="input req-f" id="projInput" data-name="关联项目" placeholder="请选择项目" onclick="pickProj()" readonly>
+            <span class="clr" onclick="clearProj()">▾</span>
+          </div>
+        </div>
+
+        <!-- 拓展属性 -->
+        <div class="section">
+          <div class="section-head"><div class="section-title">拓展属性 <span class="sub-note">拓展属性标题为蓝色代表有平台项目对该拓展属性有要求，鼠标移到拓展属性标题即可查看具体平台项目。都需填写，无法填写的填 /【如果是大批量无法填写，可能是四级类目选错】</span></div></div>
+          <div style="font-size:12px;color:var(--text-body);margin-bottom:12px;line-height:1.6;background:#fffbe6;border:1px solid #ffe58f;border-radius:var(--radius);padding:8px 12px;">
+            依据四级类目展示的提示文案，紧固件螺帽螺栓四级类目的属性等级超过8.8硬度，咸亨集团暂不接受，请供应商或新增人员知晓；
+          </div>
+          <div class="grid3">
+            <div class="field">
+              <div class="flabel" style="color:var(--primary);cursor:help;" data-tip="平台项目「咸亨商城自营」要求：含锌量">含锌量</div>
+              <input class="input" placeholder="请输入">
+            </div>
+            <div class="field">
+              <div class="flabel" style="color:var(--primary);cursor:help;" data-tip="平台项目「电工仪表专项」要求：防护等级">防护等级</div>
+              <input class="input" placeholder="请输入">
+            </div>
+            <div class="field">
+              <div class="flabel">材质</div>
+              <input class="input" placeholder="请输入">
+            </div>
+          </div>
+        </div>
+
+        <!-- 资料附件（完全复用 物料审核详情 · §资料附件 的功能与样式） -->
+        <div class="section">
+          <div class="section-head">
+            <div class="section-title">资料附件 <span class="sub-note">命中规则的必传资质需齐全；图片资质类型仅可选本期 12 类；单文件 ≤ 10MB</span></div>
+            <button class="sec-upload-btn" onclick="openQAUploadModal('')">📤 上传资质图片</button>
+          </div>
+          <table class="qa-table" id="qaTable">
+            <thead>
+              <tr>
+                <th style="width:280px;">图片资质类型</th>
+                <th style="width:180px;">文件名称</th>
+                <th>图片</th>
+                <th style="width:200px;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="qaTbody">
+              <tr>
+                <td>国家强制性产品认证试验报告</td>
+                <td class="qa-file-name">CCC认证报告.pdf</td>
+                <td><a class="oss-link" href="https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/CCC_TEST_REPORT/CCC认证报告.pdf" target="_blank" rel="noopener">https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/CCC_TEST_REPORT/CCC认证报告.pdf</a></td>
+                <td>
+                  <span class="op" onclick="openQAUploadModal('CCC_TEST_REPORT', this)">编辑</span>
+                  <span class="op danger" onclick="onQADeleteRow(this,'CCC_TEST_REPORT')">删除</span>
+                </td>
+              </tr>
+              <tr>
+                <td>特种劳动防护用品安全标志（LA）</td>
+                <td class="qa-file-name">LA标志证书.pdf</td>
+                <td><a class="oss-link" href="https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/LA/LA标志证书.pdf" target="_blank" rel="noopener">https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/LA/LA标志证书.pdf</a></td>
+                <td>
+                  <span class="op" onclick="openQAUploadModal('LA', this)">编辑</span>
+                  <span class="op danger" onclick="onQADeleteRow(this,'LA')">删除</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="qa-alert qa-alert-warning" id="qaMissingAlert">
+            <span class="qa-alert-icon">⚠</span>
+            <div><strong>还需上传 1 项必传资质：</strong>产品质量检验检测报告</div>
+            <div class="qa-alert-action"><button class="btn btn-primary btn-sm" onclick="openQAUploadModal('QUALITY_INSPECTION')">立即上传</button></div>
+          </div>
+        </div>
+
+        <!-- 外部链接/价格佐证 -->
+        <div class="section">
+          <div class="section-head"><div class="section-title">外部链接 / 价格佐证</div></div>
+          <div id="extList"></div>
+          <div class="ext-add" onclick="addExt()">+ 点击添加</div>
+        </div>
+
+        <!-- 图文信息 -->
+        <div class="section">
+          <div class="section-head"><div class="section-title">图文信息 <span class="hot" onclick="toast('链接取图：粘贴外部链接抓取图片（原型）','info')" style="margin-left:8px;">🔥 链接取图</span> <span class="sub-note">支持类型：.bmp / .gif / .jpg / .png / .webp / .heic</span></div></div>
+          <div class="img-block">
+            <div class="cap"><b>主图：</b>尺寸 800*800 以上，3 张以上，越多越好。第一张白底，其它尽量白底。主图要求颜色唯一，需要与描述或者拓展属性值一致【最低标准：不低于在其他平台上架的标准】</div>
+            <div class="thumbs" id="mainThumbs">
+              <div class="up-box" onclick="addThumb('mainThumbs')">＋<span>上传</span></div>
+            </div>
+          </div>
+          <div class="img-block">
+            <div class="cap"><b>详情图：</b>宽度要求 800，长度无要求。要图文丰富，需包含产品图、细节图、参数图、使用场景图【最低标准：不低于在其他平台上架的标准】。一定不能包含：7 天无理由退换货、送货上门、免费开票、水印、其它店铺信息、质保、包邮、链接、二维码、电话号码……等</div>
+            <div class="cap" style="color:var(--text-sub);">敏感词汇</div>
+            <div class="thumbs" id="detailThumbs">
+              <div class="up-box" onclick="addThumb('detailThumbs')">＋<span>上传</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad-bottom"></div>
+      </div>
+
+      <div class="footer">
+        <button class="btn" onclick="save()">保 存</button>
+        <button class="btn" onclick="toast('已关闭（原型）','info')">关 闭</button>
+        <button class="btn btn-primary" onclick="submitForm()">提 交</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- 资质上传弹窗（复用 物料审核详情 · 资料附件） -->
+  <div class="modal-overlay" id="qaUploadModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-header-title" id="qaModalTitle">批量上传</span>
+        <span class="modal-close" onclick="closeQAUploadModal()">×</span>
+      </div>
+      <div class="modal-body">
+        <div class="qa-form-row">
+          <label class="qa-form-label qa-form-label-required">图片资质类型：</label>
+          <div class="qa-form-content">
+            <select class="qa-select" id="qaTypeSelect">
+              <option value="">请选择图片资质类型</option>
+              <option value="SAFETY_PRODUCTION_LICENSE">安全生产许可证</option>
+              <option value="PRODUCTION_LICENSE">生产许可证</option>
+              <option value="CCC_TEST_REPORT">3C认证（或 消防3C证书）</option>
+              <option value="LA">特种劳动防护用品安全标志(LA)</option>
+              <option value="MA">MA认证（矿用产品安全标志）</option>
+              <option value="CLASSIFICATION_SOCIETY_CERT">船级社证书</option>
+              <option value="BRAND_AUTH">品牌授权</option>
+              <option value="QUALITY_INSPECTION">检测报告（包含：出厂检测报告、第三方检测报告、公安部授权的国家级检测机构出具的检测报告）</option>
+              <option value="CERTIFICATE">合格证（含标注国标GB 6095-2021的合格证）</option>
+              <option value="QUALITY_CERT">质量证明书</option>
+              <option value="RAW_MATERIAL_QUALITY_CERT">原材料质量证明书</option>
+              <option value="VOLUNTARY_CERT">自愿性认证</option>
+            </select>
+          </div>
+        </div>
+        <div class="qa-upload-dragger" onclick="onQAMockUpload()">
+          <div class="qa-upload-icon">📤</div>
+          <div class="qa-upload-text">点击或拖拽文件到此处</div>
+          <div class="qa-upload-hint">支持: jpg / png / webp / svg / heic / avif / doc / docx / pdf / xls / xlsx<br/>单文件 ≤ 10MB · 数量不限</div>
+        </div>
+        <div class="qa-upload-list" id="qaUploadList"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" onclick="closeQAUploadModal()">取消</button>
+        <button class="btn btn-primary" onclick="onQAUploadConfirm()">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 删除确认 Popconfirm -->
+  <div class="qa-popconfirm-mask" id="qaPopconfirm">
+    <div class="qa-popconfirm-box">
+      <div class="qa-popconfirm-title">
+        <span class="qa-popconfirm-title-icon">⚠</span>
+        <span>确认删除此资质文件吗？<br/><span style="color:var(--text-sub);font-size:12px;">删除后将记录到物料操作历史，已审核通过的历史不受影响。</span></span>
+      </div>
+      <div class="qa-popconfirm-actions">
+        <button class="btn btn-default btn-sm" onclick="closeQAPopconfirm()">取消</button>
+        <button class="btn btn-primary btn-sm" onclick="confirmQADelete()">确认删除</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toastWrap"></div>
+  <input type="file" id="hiddenFile" hidden>
+
+<script>
+  function go(path){ window.location.href = path; }
+  function toggleGroup(el){
+    el.classList.toggle('open');
+    const sub = el.nextElementSibling;
+    if(sub && sub.classList.contains('sub')) sub.classList.toggle('open');
+  }
+  function toast(text,type='info'){
+    const map={success:'成功',error:'失败',info:'提示',warning:'注意'};
+    const w=document.getElementById('toastWrap');
+    const el=document.createElement('div');
+    el.className='toast '+type;
+    el.innerHTML='<span class="ti">'+(map[type]||'提示')+'</span><span>'+text+'</span>';
+    w.appendChild(el);
+    requestAnimationFrame(()=>el.classList.add('show'));
+    setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),250);},2600);
+  }
+
+  /* 类目 / 关联项目 简易选择 */
+  function pickCat(){
+    const v = prompt('请选择/输入四级类目（原型用文本框模拟）：','02010201 钳形电流表');
+    if(v){ const i=document.getElementById('catInput'); i.value=v; i.classList.remove('invalid'); }
+  }
+  function clearCat(){ document.getElementById('catInput').value=''; }
+  function pickProj(){
+    const v = prompt('请选择关联项目（原型用文本框模拟）：','2026 电商日常采购项目');
+    if(v){ const i=document.getElementById('projInput'); i.value=v; i.classList.remove('invalid'); toast('已添加关联项目：'+v,'success'); }
+  }
+  function clearProj(){ document.getElementById('projInput').value=''; }
+
+  /* 智能赋码 */
+  function smartTax(){
+    document.getElementById('taxCode').value='1090512030000000000';
+    document.getElementById('taxName').value='电工仪器仪表';
+    document.getElementById('taxShort').value='钳形电流表';
+    document.getElementById('taxRate').value='13%';
+    ['taxName','taxShort','taxRate'].forEach(id=>document.getElementById(id).classList.remove('invalid'));
+    toast('智能赋码完成，已自动带出税收分类信息','success');
+  }
+
+  /* 资料附件（资质附件）——完全复用 物料审核详情 逻辑 */
+  function showMsg(text,type='info'){
+    const m={ok:'success',warn:'warning',info:'info',error:'error',success:'success',warning:'warning'};
+    toast(text, m[type]||'info');
+  }
+  let qaCurrentEditType=''; let qaPendingDeleteRow=null; let qaEditingRow=null; let qaMockFiles=[];
+  const QA_LABELS={
+    SAFETY_PRODUCTION_LICENSE:'安全生产许可证',
+    PRODUCTION_LICENSE:'生产许可证',
+    CCC_TEST_REPORT:'3C认证（或 消防3C证书）',
+    LA:'特种劳动防护用品安全标志(LA)',
+    MA:'MA认证（矿用产品安全标志）',
+    CLASSIFICATION_SOCIETY_CERT:'船级社证书',
+    BRAND_AUTH:'品牌授权',
+    QUALITY_INSPECTION:'检测报告（包含：出厂检测报告、第三方检测报告、公安部授权的国家级检测机构出具的检测报告）',
+    CERTIFICATE:'合格证（含标注国标GB 6095-2021的合格证）',
+    QUALITY_CERT:'质量证明书',
+    RAW_MATERIAL_QUALITY_CERT:'原材料质量证明书',
+    VOLUNTARY_CERT:'自愿性认证'
+  };
+  function openQAUploadModal(presetType,rowEl){
+    qaCurrentEditType=presetType;
+    qaEditingRow=rowEl?rowEl.closest('tr'):null;
+    if(qaEditingRow){
+      const nameCell=qaEditingRow.querySelector('.qa-file-name');
+      const curName=nameCell?nameCell.textContent.trim():'';
+      qaMockFiles=curName?[{name:curName,existing:true}]:[];
+    } else { qaMockFiles=[]; }
+    document.getElementById('qaModalTitle').textContent=qaEditingRow?'编辑资质文件':'批量上传';
+    document.getElementById('qaTypeSelect').value=presetType||'';
+    renderQAUploadList();
+    document.getElementById('qaUploadModal').classList.add('open');
+    if(presetType) setTimeout(()=>showMsg('已自动选择资质类型，可删除原附件后重新上传以修改','info'),100);
+  }
+  function closeQAUploadModal(){ document.getElementById('qaUploadModal').classList.remove('open'); }
+  function onQAMockUpload(){
+    const names=['质检报告-2026.pdf','补充材料.jpg','检验报告.docx'];
+    const name=names[qaMockFiles.length%names.length];
+    const size=(qaMockFiles.length*1.3+1.8).toFixed(1)+'MB';
+    qaMockFiles.push({name,size}); renderQAUploadList();
+  }
+  function renderQAUploadList(){
+    document.getElementById('qaUploadList').innerHTML=qaMockFiles.map((f,i)=>
+      '<div class="qa-upload-item"><span style="color:var(--success);">✓</span>'+
+      '<span class="qa-upload-item-name">'+f.name+'</span>'+
+      '<span class="qa-upload-item-size">'+(f.size?f.size+' · ':'')+(f.existing?'已上传':'上传完成')+'</span>'+
+      '<span class="qa-upload-item-del" onclick="removeQAFile('+i+')">✕</span></div>').join('');
+  }
+  function removeQAFile(i){ qaMockFiles.splice(i,1); renderQAUploadList(); }
+  function onQAUploadConfirm(){
+    const type=document.getElementById('qaTypeSelect').value;
+    if(!type){ showMsg('请选择图片资质类型','warn'); return; }
+    if(qaMockFiles.length===0){ showMsg('请至少上传 1 个文件','warn'); return; }
+    const file=qaMockFiles[qaMockFiles.length-1];
+    closeQAUploadModal();
+    if(qaEditingRow){
+      const url='https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/'+type+'/'+file.name;
+      const nameCell=qaEditingRow.querySelector('.qa-file-name');
+      if(nameCell) nameCell.textContent=file.name;
+      const link=qaEditingRow.querySelector('.oss-link');
+      if(link){ link.href=url; link.textContent=url; }
+      qaEditingRow=null;
+      showMsg('已更新附件：'+file.name+'（写入物料操作历史）','ok');
+    }
+    else { showMsg('已上传 '+qaMockFiles.length+' 个文件并关联到物料','ok'); addQARowToTable(type,file); updateQAMissingAlert(); }
+  }
+  function addQARowToTable(type,file){
+    const label=QA_LABELS[type]||type;
+    const url='https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/'+type+'/'+file.name;
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td>'+label+'</td>'+
+      '<td class="qa-file-name">'+file.name+'</td>'+
+      '<td><a class="oss-link" href="'+url+'" target="_blank" rel="noopener">'+url+'</a></td>'+
+      '<td><span class="op" onclick="openQAUploadModal(\''+type+'\', this)">编辑</span>'+
+      '<span class="op danger" onclick="onQADeleteRow(this,\''+type+'\')">删除</span></td>';
+    document.getElementById('qaTbody').appendChild(tr);
+  }
+  function onQADeleteRow(el,type){ qaPendingDeleteRow=el.closest('tr'); document.getElementById('qaPopconfirm').classList.add('open'); }
+  function closeQAPopconfirm(){ document.getElementById('qaPopconfirm').classList.remove('open'); qaPendingDeleteRow=null; }
+  function confirmQADelete(){ if(qaPendingDeleteRow) qaPendingDeleteRow.remove(); closeQAPopconfirm(); showMsg('已删除（已写入物料操作历史）','ok'); updateQAMissingAlert(); }
+  function updateQAMissingAlert(){
+    const rows=document.querySelectorAll('#qaTbody tr'); const types=new Set();
+    rows.forEach(tr=>{ const t=tr.querySelector('td').textContent;
+      if(t.includes('国家强制性')) types.add('CCC_TEST_REPORT');
+      if(t.includes('质量检验')) types.add('QUALITY_INSPECTION');
+      if(t.includes('LA')||t.includes('特种劳动')) types.add('LA'); });
+    const required=['CCC_TEST_REPORT','QUALITY_INSPECTION','LA'];
+    const missing=required.filter(t=>!types.has(t));
+    const al=document.getElementById('qaMissingAlert');
+    if(missing.length===0){ al.style.display='none'; }
+    else { al.style.display='flex'; al.querySelector('div').innerHTML='<strong>还需上传 '+missing.length+' 项必传资质：</strong>'+missing.map(m=>QA_LABELS[m]).join('、'); }
+  }
+  ['qaUploadModal','qaPopconfirm'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('click',function(e){ if(e.target===this){ id==='qaUploadModal'?closeQAUploadModal():closeQAPopconfirm(); } }); });
+
+  /* 外部链接 */
+  function addExt(){
+    const list=document.getElementById('extList');
+    const row=document.createElement('div');
+    row.className='ext-item';
+    row.innerHTML='<input class="input" placeholder="请输入外部链接 / 价格佐证 URL"><span class="rm" onclick="this.parentElement.remove()">✕</span>';
+    list.appendChild(row);
+  }
+
+  /* 图文上传 */
+  function addThumb(wrapId){
+    const f=document.getElementById('hiddenFile');
+    f.accept='.bmp,.gif,.jpg,.jpeg,.png,.webp,.heic';
+    f.value=''; f.onchange=()=>{
+      if(!f.files.length) return;
+      const wrap=document.getElementById(wrapId);
+      const box=wrap.querySelector('.up-box');
+      const t=document.createElement('div');
+      t.className='thumb';
+      t.textContent=f.files[0].name;
+      t.innerHTML+='<span class="rm" onclick="this.parentElement.remove()">✕</span>';
+      wrap.insertBefore(t,box);
+      toast('已上传图片：'+f.files[0].name,'success');
+    };
+    f.click();
+  }
+
+  /* 保存 / 提交 */
+  function save(){ toast('已保存草稿，可在【我的申请】继续编辑','success'); }
+  function submitForm(){
+    let firstBad=null;
+    document.querySelectorAll('.req-f').forEach(el=>{
+      if(!el.value.trim()){ el.classList.add('invalid'); if(!firstBad) firstBad=el; }
+      else el.classList.remove('invalid');
+    });
+    if(firstBad){
+      const name=firstBad.dataset.name||'必填项';
+      toast('请完善必填项：'+name,'error');
+      firstBad.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+    toast('已提交审核，等待咸亨管理员审核（资质命中规则将触发 AI 资质审核）','success');
+  }
+</script>
+
+<div class="scp-demo-tips">
+  <div class="scp-demo-tips-section">
+    <b>本期改造内容：</b><br>
+    <ul>
+      <li>我的申请详情页复用单个新增物料表单样式。</li>
+      <li>顶部操作流程保持与单个新增物料页面完全一致。</li>
+      <li>资质资料区域展示文件类型、文件名称和完整 OSS URL。</li>
+    </ul>
+  </div>
+  <div class="scp-demo-tips-section">
+    <b>操作说明：</b><br>
+    1. 从<span class="ti">我的申请</span>列表点击编码或名称进入。<br>
+    2. 查看申请中的物料信息和资质附件。<br>
+    3. 被驳回后可按顶部流程说明回到我的申请重新提交。
+  </div>
+</div><script src="scp-demo-tips.js"></script>
+</body>
+</html>
+
+
+

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
@@ -234,7 +234,7 @@
     <div class="brand">
       <div class="brand-logo">咸</div>
       <span class="brand-name" onclick="location.href='oms-mpm-物料工作台原型.html'">咸亨国际主数据管理平台</span>
-      <button class="switch-btn" type="button" data-action="switch-system">切换系统</button>
+      <button class="switch-btn" type="button" data-action="switch-system" onclick="window.location.href='index.html'">切换系统</button>
     </div>
     <nav class="nav-menu">
       <div class="nav-item" data-name="消息通知">消息通知<span class="badge-dot"></span></div>
@@ -459,7 +459,7 @@
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', () => showMessage(`已点击：${item.dataset.name}`));
     });
-    document.querySelector('[data-action="switch-system"]').addEventListener('click', () => showMessage('模拟切换系统'));
+    document.querySelector('[data-action="switch-system"]').addEventListener('click', () => window.location.href = 'index.html');
     document.getElementById('clearTabs').addEventListener('click', () => showMessage('已清除所有标签页'));
     document.querySelectorAll('[data-action-text]').forEach(btn => {
       btn.addEventListener('click', () => showMessage(`已执行：${btn.dataset.actionText}`));
@@ -503,3 +503,4 @@
   </script>
 </body>
 </html>
+

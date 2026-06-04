@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>项目物料提报管理 · SCP</title><link rel="stylesheet" href="scp-common.css"></head>
+<body>
+<div class="top"><div class="brand">咸亨国际供应商协同平台（SCP）</div><div class="top-right"><a class="switch-system" href="../index.html">🔄 切换系统</a><span>更新通知</span><span>🔔<i class="dot"></i></span><span>📋<i class="dot"></i></span><span>黄战领 ▾</span><span style="background:#e34d4d;height:48px;display:flex;align-items:center;padding:0 18px;color:#fff;font-weight:500">清除</span></div></div>
+<div class="layout"><aside class="side"><div class="nav"><div class="nav-row">🏠 工作台</div><div class="nav-row">📢 咸亨公告</div><div class="nav-row group">👤 基本信息 <span class="chev">▾</span></div><div class="nav-row group">✉️ 物料管理 <span class="chev">▾</span></div><div class="nav-sub"><div class="nav-row active" onclick="location.href='SCP-项目物料提报管理.html'">项目物料提报管理</div><div class="nav-row">项目物料</div><div class="nav-row" onclick="location.href='SCP-我的物料.html'">我的物料</div><div class="nav-row" onclick="location.href='SCP-单个新增物料.html'">新增物料</div><div class="nav-row" onclick="location.href='SCP-批量新增物料.html'">批量新增</div><div class="nav-row" onclick="location.href='SCP-待提交物料.html'">待提交物料</div><div class="nav-row">我新增的品牌</div><div class="nav-row" onclick="location.href='SCP-我的申请.html'">我的申请</div></div><div class="nav-row group">📄 订单管理 <span class="chev">▾</span></div><div class="nav-row group">👤 客户开票 <span class="chev">▾</span></div></div></aside>
+<main class="main"><div class="tabs"><div class="tab">工作台</div><div class="tab">我的申请 <span class="x">×</span></div><div class="tab">物料信息-详情 <span class="x">×</span></div><div class="tab">我的物料 <span class="x">×</span></div><div class="tab active">项目物料提报管理 <span class="x">×</span></div><div class="tab">提报记录-详情 <span class="x">×</span></div><div class="tab">项目物料 <span class="x">×</span></div><div class="tab">商品提报-详情 <span class="x">×</span></div><div class="tab">新增物料 <span class="x">×</span></div><div class="tab">批量新增 <span class="x">×</span></div></div>
+<div class="page">
+  <div class="filter">
+    <div class="filter-row"><span class="label">⦿条件:</span><span class="select">提报日期</span><span class="input" style="min-width:170px;color:#9aa4b2">请选择</span><span>→</span><span class="input" style="min-width:170px;color:#9aa4b2">请选择 📅</span><button class="btn primary">查询</button><button class="btn">重置</button></div>
+    <div class="filter-row"><span class="label">⦿方案:</span><button class="btn">缺省</button><button class="btn">添加</button><button class="btn">设为默认</button></div>
+    <div class="seg"><span class="on">全部</span><span>已驳回</span><span>待推送</span><span>审核完成</span><span>待销售审核</span><span>销售审核中</span><span>已推送</span></div>
+  </div>
+  <div class="toolbar"><div class="toolbar-left"><b>操作:</b><a>刷新</a></div><button class="btn primary">导出数据</button></div>
+  <table class="table">
+    <thead><tr><th><span class="check"></span></th><th>操作</th><th>提报状态</th><th>客户商品状态 ⓘ</th><th>提报类型</th><th>项目名称</th><th>审批流编码</th><th>商品编码</th><th>商品名称</th><th>提报日期</th><th>审核时间</th><th>当前审核人</th><th>审核备注</th></tr></thead>
+    <tbody>
+      <tr><td><span class="check"></span></td><td><a>流程记录</a>&nbsp;&nbsp;<a href="SCP-提报记录详情.html">查看详情</a></td><td>待推送</td><td>-</td><td>商品价格更新</td><td>安能</td><td>RP2026060319...</td><td>B1509059730</td><td>单人木床</td><td>2026-06-03 19...</td><td></td><td></td><td></td></tr>
+      <tr><td><span class="check"></span></td><td><a>流程记录</a>&nbsp;&nbsp;<a href="SCP-提报记录详情.html">查看详情</a></td><td>待推送</td><td>-</td><td>商品新增</td><td>安能</td><td>RP2026060319...</td><td>B1505021244</td><td>刀旗</td><td>2026-06-03 19...</td><td></td><td></td><td></td></tr>
+      <tr><td><span class="check"></span></td><td><a>流程记录</a>&nbsp;&nbsp;<a href="SCP-提报记录详情.html">查看详情</a></td><td>待推送</td><td>-</td><td>商品新增</td><td>安能</td><td>RP2026060319...</td><td>B1505021270</td><td>党员先锋队旗</td><td>2026-06-03 19...</td><td></td><td></td><td></td></tr>
+      <tr><td><span class="check"></span></td><td><a>流程记录</a>&nbsp;&nbsp;<a href="SCP-提报记录详情.html">查看详情</a></td><td>待推送</td><td>-</td><td>商品新增</td><td>安能</td><td>RP2026060318...</td><td>B1506024677</td><td>垃圾袋</td><td>2026-06-03 18...</td><td></td><td></td><td></td></tr>
+      <tr><td><span class="check"></span></td><td><a>流程记录</a>&nbsp;&nbsp;<a href="SCP-提报记录详情.html">查看详情</a></td><td>待推送</td><td>-</td><td>商品新增</td><td>安能</td><td>RP2026060318...</td><td>B1501023355</td><td>应急广告牌</td><td>2026-06-03 18...</td><td></td><td></td><td></td></tr>
+      <tr><td><span class="check"></span></td><td><a>流程记录</a>&nbsp;&nbsp;<a href="SCP-提报记录详情.html">查看详情</a></td><td>已推送</td><td>-</td><td>商品修改</td><td>安能</td><td>RP2026060317...</td><td>B1403005805</td><td>安全绳</td><td>2026-06-03 17...</td><td>2026-06-03 17...</td><td>吕星怡</td><td></td></tr>
+      <tr><td><span class="check"></span></td><td><a>流程记录</a>&nbsp;&nbsp;<a href="SCP-提报记录详情.html">查看详情</a></td><td>已推送</td><td>-</td><td>商品新增</td><td>安能</td><td>RP2026060317...</td><td>B1509058595</td><td>靠背椅</td><td>2026-06-03 17...</td><td>2026-06-03 17...</td><td>吕星怡</td><td></td></tr>
+      <tr><td><span class="check"></span></td><td><a>流程记录</a>&nbsp;&nbsp;<a href="SCP-提报记录详情.html">查看详情</a></td><td>已推送</td><td>-</td><td>商品新增</td><td>安能</td><td>RP2026060317...</td><td>B1509059730</td><td>单人木床</td><td>2026-06-03 17...</td><td>2026-06-03 17...</td><td>吕星怡</td><td></td></tr>
+      <tr><td><span class="check"></span></td><td><a>流程记录</a>&nbsp;&nbsp;<a href="SCP-提报记录详情.html">查看详情</a></td><td>已推送</td><td>-</td><td>商品新增</td><td>安能</td><td>RP2026060316...</td><td>B1509058593</td><td>床垫</td><td>2026-06-03 17...</td><td>2026-06-03 17...</td><td>吕星怡</td><td></td></tr>
+    </tbody>
+  </table>
+  <div class="pager"><span style="margin-right:auto">共401项内容</span><span>共 401 条</span><span class="pg">‹</span><span class="pg on">1</span><span class="pg">2</span><span class="pg">3</span><span class="pg">4</span><span class="pg">5</span><span>...</span><span class="pg">21</span><span class="pg">›</span><span class="select" style="min-width:100px">20条/页</span><span>跳至</span><span class="pg" style="width:70px"></span><span>页</span></div>
+</div></main></div>
+
+<div class="scp-demo-tips">
+  <div class="scp-demo-tips-section">
+    <b>本期改造内容：</b><br>
+    <ul>
+      <li>项目物料提报管理列表保留提报状态筛选和查看详情入口。</li>
+      <li>提报记录详情页补充商品资质图片/资料附件展示。</li>
+      <li>该入口与我的物料详情展示样式保持一致，便于项目物料查看。</li>
+    </ul>
+  </div>
+  <div class="scp-demo-tips-section">
+    <b>操作说明：</b><br>
+    1. 按提报日期或状态筛选项目物料。<br>
+    2. 点击<span class="ti">查看详情</span>进入提报记录详情。<br>
+    3. 在详情页查看提报商品信息和资质附件。
+  </div>
+</div><script src="scp-demo-tips.js"></script>
+</body></html>
+
+

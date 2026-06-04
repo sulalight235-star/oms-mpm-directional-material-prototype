@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
@@ -150,6 +150,8 @@
     .expr-add-btn:hover { background: var(--primary-bg); }
     .expr-add-btn.disabled { color: var(--text-light); cursor: not-allowed; }
     .expr-add-btn.disabled:hover { background: transparent; }
+    .expr-empty { display: none; padding: 12px; color: var(--text-sub); font-size: 13px; text-align: center; border: 1px dashed var(--border-light); border-radius: var(--radius); background: #fafbfc; }
+    .expr-builder.empty .expr-empty { display: block; }
     .expr-condition { display: flex; align-items: center; gap: 8px; padding: 6px 0; flex-wrap: wrap; }
     .expr-condition-tree { font-size: 13px; color: var(--text-sub); }
     .expr-select { height: 28px; padding: 2px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fff; outline: none; font-size: 13px; cursor: pointer; min-width: 110px; }
@@ -215,7 +217,7 @@
   <div class="brand">
     <div class="brand-logo">咸</div>
     <div class="brand-name" style="cursor:pointer;" onclick="location.href='oms-mpm-物料工作台原型.html'">咸亨国际主数据管理平台</div>
-    <button class="switch-btn">🔥 切换系统</button>
+    <button class="switch-btn" onclick="window.location.href='index.html'">🔥 切换系统</button>
   </div>
   <div class="nav-menu">
     <div class="nav-item">💬 消息通知</div>
@@ -258,7 +260,7 @@
       <span class="page-title">资质配置-编辑</span>
     </div>
     <div class="page-header-actions">
-      <button class="btn btn-primary">保存</button>
+      <button class="btn btn-primary" onclick="saveConfig()">保存</button>
       <button class="btn">关闭</button>
       <button class="btn-text" onclick="openOpRecord()">操作记录</button>
     </div>
@@ -351,7 +353,12 @@
       <div class="form-row">
         <label class="form-label form-label-required">属性条件</label>
         <div class="form-content">
-          <div class="expr-builder">
+            <div class="expr-builder">
+              <div class="expr-empty">
+                已删除全部属性组，请至少添加一个属性组（AND 或 OR）。
+                <span class="expr-add-btn" onclick="addAttrGroup(this, 'AND')">+ 添加 AND 属性组</span>
+                <span class="expr-add-btn" onclick="addAttrGroup(this, 'OR')">+ 添加 OR 属性组</span>
+              </div>
 
             <!-- 属性组 1 -->
             <div class="expr-group">
@@ -362,6 +369,7 @@
                 <div class="expr-group-actions">
                   <span class="expr-add-btn">+ 添加条件项</span>
                   <span class="expr-add-btn">+ 添加属性组</span>
+                  <span class="expr-add-btn" style="color: var(--error);">✕ 删除属性组</span>
                 </div>
               </div>
 
@@ -409,11 +417,6 @@
                 </div>
                 <span class="expr-condition-remove">✕</span>
               </div>
-            </div>
-
-            <div style="color: var(--text-sub); font-size: 12px; padding: 4px 4px 0; line-height: 1.6;">
-              当前表达式预览：<code style="background:#f0f0f0; padding:2px 6px; border-radius:3px; color:#d4380d;">属性组1（AND）：防护等级 IN [A, B]；属性组2（OR）：防滑系数 = 5 OR 防水等级 = IP67</code><br/>
-              ⚠ <span style="color: var(--error);">检测到 1 个已失效枚举值（防水等级 = IP67），保存前需手动清理</span>
             </div>
 
           </div>
@@ -637,8 +640,10 @@
   function removeAttrGroup(x) {
     const group = x.closest('.expr-group');
     if (group && confirm('确定删除该属性组及其全部条件项？')) {
+      const builder = group.closest('.expr-builder');
       group.remove();
       refreshAttrGroupLabels();
+      syncExprBuilderEmpty(builder);
     }
   }
 
@@ -709,17 +714,24 @@
         const label = group.querySelector('.expr-group-label');
         if (label) label.textContent = `属性组 ${index + 1}：关系`;
       });
+      syncExprBuilderEmpty(builder);
     });
   }
 
+  function syncExprBuilderEmpty(builder) {
+    if (!builder) return;
+    const hasGroup = !!builder.querySelector(':scope > .expr-group');
+    builder.classList.toggle('empty', !hasGroup);
+  }
+
   // 添加并列属性组
-  function addAttrGroup(btn) {
+  function addAttrGroup(btn, forceRel) {
     const builder = btn.closest('.expr-builder');
     if (!builder) return;
     const currentGroups = Array.from(builder.querySelectorAll(':scope > .expr-group'));
     const prevRelEl = currentGroups[currentGroups.length - 1]?.querySelector('.expr-group-relation');
     const prevRel = prevRelEl ? prevRelEl.textContent.trim() : 'AND';
-    const rel = prevRel === 'AND' ? 'OR' : 'AND';
+    const rel = forceRel || (currentGroups.length === 0 ? 'AND' : (prevRel === 'AND' ? 'OR' : 'AND'));
     const relClass = rel === 'OR' ? 'or' : '';
     const group = document.createElement('div');
     group.className = 'expr-group expr-group-sub';
@@ -736,8 +748,28 @@
       </div>
     `;
     group.appendChild(buildCondition('防滑系数', ['5']));
-    const preview = builder.querySelector(':scope > div[style*="color: var(--text-sub)"]');
-    if (preview) preview.before(group); else builder.appendChild(group);
+    builder.appendChild(group);
+    refreshAttrGroupLabels();
+  }
+
+  // 保存校验：启用属性设置时，AND/OR 属性组必须二选一至少保留一个
+  function saveConfig() {
+    const invalidOwnerNos = [];
+    document.querySelectorAll('.owner-card').forEach((card, index) => {
+      const enabledAttr = card.querySelector('input[type="radio"][name^="attr"]:checked');
+      const isAttrEnabled = enabledAttr && enabledAttr.parentElement.textContent.trim() === '是';
+      if (!isAttrEnabled) return;
+
+      const builder = card.querySelector('.expr-builder');
+      const hasAttrGroup = builder && builder.querySelector(':scope > .expr-group');
+      if (!hasAttrGroup) invalidOwnerNos.push(index + 1);
+    });
+
+    if (invalidOwnerNos.length) {
+      alert(`货主 #${invalidOwnerNos.join('、#')} 已启用属性设置，请至少保留一个属性组（AND 或 OR 二选一）。`);
+      return;
+    }
+    alert('演示：校验通过，可保存。');
   }
 
   // 给现有静态 DOM 绑定 onclick（构造器初次加载时）
@@ -844,3 +876,4 @@
 </script>
 </body>
 </html>
+

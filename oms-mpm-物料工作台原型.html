@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
@@ -513,7 +513,7 @@
     <div class="brand">
       <div class="brand-logo">咸</div>
       <span class="brand-name" style="cursor:pointer;" onclick="location.href='oms-mpm-物料工作台原型.html'">咸亨国际主数据管理平台</span>
-      <button class="switch-btn" type="button" data-action="switch-system">切换系统</button>
+      <button class="switch-btn" type="button" data-action="switch-system" onclick="window.location.href='index.html'">切换系统</button>
     </div>
     <nav class="nav-menu">
       <div class="nav-item" data-name="消息通知">消息通知<span class="badge-dot"></span></div>
@@ -721,11 +721,12 @@
             <div>物料对接</div>
           </div>
           <div class="module-links cols-5 dock-links">
-            <a class="link" href="javascript:void(0)">对接物料列表管理</a>
+            <a class="link" href="MPM-对接物料列表管理.html">对接物料列表管理</a>
             <a class="link" href="javascript:void(0)">项目管理</a>
-            <a class="link" href="javascript:void(0)">待推送物料列表</a>
+            <a class="link" href="MPM-待推送物料列表.html">待推送物料列表</a>
             <a class="link" href="javascript:void(0)">违禁词列表管理</a>
             <a class="link" href="javascript:void(0)">对接物料筛选工具</a>
+            <a class="link center-link" href="MPM-客户商品清单.html">客户推送管理</a>
             <a class="link center-link" href="javascript:void(0)">项目价格监管中心</a>
           </div>
         </div>
@@ -837,7 +838,7 @@
     });
 
     document.querySelector('[data-action="switch-system"]').addEventListener("click", () => {
-      showToast("模拟切换系统");
+      window.location.href = 'index.html';
     });
 
     document.querySelectorAll(".nav-item").forEach(item => {
@@ -940,3 +941,4 @@
 </script>
 </body>
 </html>
+
