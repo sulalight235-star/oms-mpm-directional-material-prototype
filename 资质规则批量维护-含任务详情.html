@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
@@ -82,6 +82,11 @@
     .cat-list-op.danger { color: var(--error); }
     .cat-list-op.text { color: var(--text-body); }
     .cat-list-op.highlight { color: var(--primary); font-weight: 600; }
+    .export-menu-wrap { position: relative; display: inline-flex; align-items: center; }
+    .export-menu { display: none; position: absolute; top: 24px; right: 0; min-width: 132px; background: #fff; border: 1px solid var(--border-light); border-radius: var(--radius); box-shadow: var(--shadow); padding: 4px 0; z-index: 20; }
+    .export-menu.open { display: block; }
+    .export-menu-item { padding: 7px 12px; color: var(--text-body); white-space: nowrap; cursor: pointer; }
+    .export-menu-item:hover { background: var(--primary-bg); color: var(--primary); }
 
     /* 表格 */
     .table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -111,6 +116,26 @@
     .modal-close { font-size: 18px; color: var(--text-sub); cursor: pointer; padding: 4px 8px; }
     .modal-close:hover { color: var(--error); }
     .modal-body { padding: 16px 20px; overflow-y: auto; }
+    .modal-footer { padding: 12px 20px; border-top: 1px solid var(--border-light); display: flex; justify-content: flex-end; gap: 8px; }
+    .category-modal { width: 760px; border-radius: 0; }
+    .category-modal .modal-header { height: 34px; padding: 0 20px; border-top: 3px solid #8c8c8c; }
+    .category-modal .modal-title { font-size: 14px; font-weight: 500; }
+    .category-modal .modal-close { font-size: 20px; padding: 2px 0; }
+    .category-modal .modal-body { padding: 24px 20px 18px; }
+    .cat-form-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 44px; row-gap: 18px; }
+    .cat-form-row { display: flex; align-items: flex-start; min-height: 28px; }
+    .cat-form-row.full { grid-column: 1 / span 2; }
+    .cat-form-label { width: 138px; flex-shrink: 0; text-align: right; padding-right: 10px; line-height: 28px; color: var(--text-title); }
+    .cat-form-label.required::before { content: "* "; color: var(--error); }
+    .cat-form-control { flex: 1; min-width: 0; }
+    .cat-input { width: 100%; height: 28px; padding: 3px 8px; border: 1px solid var(--border); border-radius: 2px; outline: none; color: var(--text-body); background: #fff; }
+    .cat-input[disabled] { background: #f5f5f5; color: var(--text-sub); cursor: not-allowed; }
+    .cat-radio-group { display: flex; align-items: center; gap: 12px; min-height: 28px; flex-wrap: wrap; }
+    .cat-radio { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .cat-radio input { width: 15px; height: 15px; accent-color: var(--primary); }
+    .cat-textarea { width: 100%; height: 74px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 2px; resize: none; outline: none; line-height: 1.5; color: var(--text-body); }
+    .cat-field-tip { color: var(--text-sub); font-size: 12px; line-height: 18px; margin-top: 4px; }
+    .cat-count { float: right; color: var(--text-sub); }
 
     /* 批量修改弹窗内表格 */
     .modify-table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -177,7 +202,7 @@
   <div class="brand">
     <div class="brand-logo">咸</div>
     <div class="brand-name" style="cursor:pointer;" onclick="location.href='oms-mpm-物料工作台原型.html'">咸亨国际主数据管理平台</div>
-    <button class="switch-btn">🔥 切换系统</button>
+    <button class="switch-btn" onclick="window.location.href='index.html'">🔥 切换系统</button>
   </div>
   <div class="nav-menu">
     <div class="nav-item">💬 消息通知</div>
@@ -236,7 +261,16 @@
             <span class="cat-list-op">禁用</span>
             <span class="cat-list-op">启用</span>
             <span class="cat-list-op">推送</span>
-            <span class="cat-list-op">导出 ▼</span>
+            <span class="export-menu-wrap">
+              <span class="cat-list-op" onclick="toggleExportMenu(event)">导出 ▼</span>
+              <span class="export-menu" id="exportMenu">
+                <span class="export-menu-item" onclick="showMsg('正在导出类目数据...', 'success')">类目数据导出</span>
+                <span class="export-menu-item" onclick="showMsg('正在导出类目配置...', 'success')">类目配置导出</span>
+                <span class="export-menu-item" onclick="showMsg('正在导出税编数据...', 'success')">税编数据导出</span>
+                <span class="export-menu-item" onclick="showMsg('正在导出有效期数据...', 'success')">有效期数据导出</span>
+                <span class="export-menu-item" onclick="downloadQualRuleConfig()">导出资质配置</span>
+              </span>
+            </span>
             <span class="cat-list-op highlight" onclick="openModifyModal()" style="border:1px solid var(--primary); padding:3px 8px; border-radius:4px;">📤 导入批改</span>
             <span class="cat-list-op">排序</span>
           </div>
@@ -260,42 +294,42 @@
           <tbody>
             <tr>
               <td><input type="checkbox" /></td>
-              <td><span class="link">钳形电流表</span></td>
+              <td><span class="link" onclick="openCategoryModal('钳形电流表','1')">钳形电流表</span></td>
               <td>否</td><td>否</td><td>否</td><td>1</td><td>全部物料</td><td>否</td>
               <td><span class="link">推送成功</span></td>
               <td><span class="link" onclick="goQualConfig()">资质配置</span> &nbsp; <span class="link">数据配置</span> &nbsp; <span class="link">税编信息</span></td>
             </tr>
             <tr>
               <td><input type="checkbox" /></td>
-              <td><span class="link">高低压钳形表</span></td>
+              <td><span class="link" onclick="openCategoryModal('高低压钳形表','2')">高低压钳形表</span></td>
               <td>否</td><td>否</td><td>否</td><td>2</td><td>全部物料</td><td>否</td>
               <td><span class="link">推送成功</span></td>
               <td><span class="link" onclick="goQualConfig()">资质配置</span> &nbsp; <span class="link">数据配置</span> &nbsp; <span class="link">税编信息</span></td>
             </tr>
             <tr>
               <td><input type="checkbox" /></td>
-              <td><span class="link">钳形泄露电流表</span></td>
+              <td><span class="link" onclick="openCategoryModal('钳形泄露电流表','3')">钳形泄露电流表</span></td>
               <td>否</td><td>否</td><td>否</td><td>3</td><td>全部物料</td><td>否</td>
               <td><span class="link">推送成功</span></td>
               <td><span class="link" onclick="goQualConfig()">资质配置</span> &nbsp; <span class="link">数据配置</span> &nbsp; <span class="link">税编信息</span></td>
             </tr>
             <tr>
               <td><input type="checkbox" /></td>
-              <td><span class="link">大口径钳形电流表</span></td>
+              <td><span class="link" onclick="openCategoryModal('大口径钳形电流表','4')">大口径钳形电流表</span></td>
               <td>否</td><td>否</td><td>否</td><td>4</td><td>全部物料</td><td>否</td>
               <td><span class="link">推送成功</span></td>
               <td><span class="link" onclick="goQualConfig()">资质配置</span> &nbsp; <span class="link">数据配置</span> &nbsp; <span class="link">税编信息</span></td>
             </tr>
             <tr>
               <td><input type="checkbox" /></td>
-              <td><span class="link">钳形功率表</span></td>
+              <td><span class="link" onclick="openCategoryModal('钳形功率表','5')">钳形功率表</span></td>
               <td>否</td><td>否</td><td>否</td><td>5</td><td>全部物料</td><td>否</td>
               <td><span class="link">推送成功</span></td>
               <td><span class="link" onclick="goQualConfig()">资质配置</span> &nbsp; <span class="link">数据配置</span> &nbsp; <span class="link">税编信息</span></td>
             </tr>
             <tr>
               <td><input type="checkbox" /></td>
-              <td><span class="link">大口径柔性钳形电流表</span></td>
+              <td><span class="link" onclick="openCategoryModal('大口径柔性钳形电流表','6')">大口径柔性钳形电流表</span></td>
               <td>否</td><td>否</td><td>否</td><td>6</td><td>全部物料</td><td>否</td>
               <td><span class="link">推送成功</span></td>
               <td><span class="link" onclick="goQualConfig()">资质配置</span> &nbsp; <span class="link">数据配置</span> &nbsp; <span class="link">税编信息</span></td>
@@ -429,11 +463,11 @@
             <tr><td class="mark">1</td><td class="mark">第【12】行</td><td>货主编码 1099 不在类目 02010205 的采购信息配置中</td></tr>
             <tr><td class="mark">2</td><td class="mark">第【35】行</td><td>类目编码 02010299 不存在或不是四级类目</td></tr>
             <tr><td class="mark">3</td><td class="mark">第【47】行</td><td>资质类型 [13] 超出 1-12 范围，请检查</td></tr>
-            <tr><td class="mark">4</td><td class="mark">第【68】行</td><td>属性"防护等级"的枚举值 [X] 不在当前枚举范围内</td></tr>
-            <tr><td class="mark">5</td><td class="mark">第【82】行</td><td>属性条件表达式无法解析：第 12 列附近括号不匹配</td></tr>
+            <tr><td class="mark">4</td><td class="mark">第【68】行</td><td>新增物料场景仅支持 1-6，多个请用英文逗号分隔</td></tr>
+            <tr><td class="mark">5</td><td class="mark">第【82】行</td><td>修改物料场景仅支持 1-5，多个请用英文逗号分隔</td></tr>
             <tr><td class="mark">6</td><td class="mark">第【98】行</td><td>必传资质类型为空，请至少选择 1 项</td></tr>
-            <tr><td class="mark">7</td><td class="mark">第【115】行</td><td>是否启用属性设置必须为 Y 或 N</td></tr>
-            <tr><td class="mark">8</td><td class="mark">第【127】行</td><td>开关必须为 Y 或 N</td></tr>
+            <tr><td class="mark">7</td><td class="mark">第【115】行</td><td>同一文件中类目编码 + 货主编码重复，请合并后重新上传</td></tr>
+            <tr><td class="mark">8</td><td class="mark">第【127】行</td><td>是否启用必须为 1(启用)或 2(关闭)</td></tr>
             <tr><td class="mark">9</td><td class="mark">第【143】行</td><td>货主编码 1099 不在类目 02010206 的采购信息配置中</td></tr>
             <tr><td class="mark">10</td><td class="mark">第【158】行</td><td>类目编码 02019999 不存在或不是四级类目</td></tr>
           </tbody>
@@ -445,6 +479,96 @@
     </div>
   </div>
 
+</div>
+
+<!-- 编辑类目信息弹窗 -->
+<div class="modal-mask" id="categoryModal">
+  <div class="modal category-modal">
+    <div class="modal-header">
+      <div class="modal-title">编辑类目信息</div>
+      <span class="modal-close" onclick="closeCategoryModal()">×</span>
+    </div>
+    <div class="modal-body">
+      <div class="cat-form-grid">
+        <div class="cat-form-row">
+          <label class="cat-form-label">父级类目</label>
+          <div class="cat-form-control"><input class="cat-input" value="仪器仪表->电工测量->钳形表" disabled /></div>
+        </div>
+        <div class="cat-form-row">
+          <label class="cat-form-label required">类目名称</label>
+          <div class="cat-form-control"><input class="cat-input" id="catNameInput" value="钳形电流表" /></div>
+        </div>
+        <div class="cat-form-row">
+          <label class="cat-form-label required">前缀编码</label>
+          <div class="cat-form-control"><input class="cat-input" value="02010201" disabled /></div>
+        </div>
+        <div class="cat-form-row">
+          <label class="cat-form-label required">排序</label>
+          <div class="cat-form-control"><input class="cat-input" id="catSortInput" value="1" /></div>
+        </div>
+        <div class="cat-form-row">
+          <label class="cat-form-label">热门搜索</label>
+          <div class="cat-form-control">
+            <div class="cat-radio-group">
+              <label class="cat-radio"><input type="radio" name="hotSearch" /> 是</label>
+              <label class="cat-radio"><input type="radio" name="hotSearch" checked /> 否</label>
+            </div>
+          </div>
+        </div>
+        <div class="cat-form-row">
+          <label class="cat-form-label">私有类目</label>
+          <div class="cat-form-control">
+            <div class="cat-radio-group">
+              <label class="cat-radio"><input type="radio" name="privateCat" /> 是</label>
+              <label class="cat-radio"><input type="radio" name="privateCat" checked /> 否</label>
+            </div>
+          </div>
+        </div>
+        <div class="cat-form-row">
+          <label class="cat-form-label required">来源类型</label>
+          <div class="cat-form-control">
+            <div class="cat-radio-group">
+              <label class="cat-radio"><input type="radio" name="sourceType" checked disabled /> 商城类目</label>
+              <label class="cat-radio"><input type="radio" name="sourceType" disabled /> 生产类目</label>
+            </div>
+          </div>
+        </div>
+        <div class="cat-form-row">
+          <label class="cat-form-label required">默认物料类型</label>
+          <div class="cat-form-control">
+            <div class="cat-radio-group">
+              <label class="cat-radio"><input type="radio" name="defaultMaterialType" checked /> 货物类</label>
+              <label class="cat-radio"><input type="radio" name="defaultMaterialType" /> 服务类</label>
+            </div>
+          </div>
+        </div>
+        <div class="cat-form-row">
+          <label class="cat-form-label required">应用场景</label>
+          <div class="cat-form-control">
+            <div class="cat-radio-group">
+              <label class="cat-radio"><input type="radio" name="applyScene" checked /> 全部物料</label>
+              <label class="cat-radio"><input type="radio" name="applyScene" /> 旧物料</label>
+              <label class="cat-radio"><input type="radio" name="applyScene" /> 新物料</label>
+            </div>
+          </div>
+        </div>
+        <div class="cat-form-row full">
+          <label class="cat-form-label">前台提示文案</label>
+          <div class="cat-form-control">
+            <textarea class="cat-textarea" id="frontTipText" maxlength="200" oninput="updateTipCount()" placeholder="请输入前台提示文案，可填写标点符号、链接文案和链接地址等信息。新增物料/修改物料场景选到该四级类目时，在属性维护模块展示。">该类目涉及强制性认证资料，请在提交前确认资料附件完整。详情见：https://example.com/qual-rule</textarea>
+            <div class="cat-field-tip">
+              支持设置 200 字，支持标点符号、链接等信息，支持链接地址信息。设置完成后，新增物料/修改物料场景选到该四级类目时，在属性维护模块展示对应提示文案。
+              <span class="cat-count" id="frontTipCount">0/200</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeCategoryModal()">取 消</button>
+      <button class="btn btn-primary" onclick="saveCategoryModal()">保 存</button>
+    </div>
+  </div>
 </div>
 
 <!-- 批量修改弹窗（参考既有 弹窗.png） -->
@@ -562,6 +686,27 @@
   }
 
   // 弹窗
+  function openCategoryModal(name, sort) {
+    document.getElementById('catNameInput').value = name || '钳形电流表';
+    document.getElementById('catSortInput').value = sort || '1';
+    document.getElementById('categoryModal').classList.add('open');
+    updateTipCount();
+  }
+  function closeCategoryModal() { document.getElementById('categoryModal').classList.remove('open'); }
+  function saveCategoryModal() {
+    const tip = document.getElementById('frontTipText').value || '';
+    if (tip.length > 200) {
+      showMsg('前台提示文案不能超过 200 字', 'info');
+      return;
+    }
+    closeCategoryModal();
+    showMsg('类目信息已保存，前台提示文案将在属性维护模块展示', 'success');
+  }
+  function updateTipCount() {
+    const tip = document.getElementById('frontTipText');
+    const count = document.getElementById('frontTipCount');
+    if (tip && count) count.textContent = tip.value.length + '/200';
+  }
   function openModifyModal() { document.getElementById('modifyModal').classList.add('open'); }
   function closeModifyModal() { document.getElementById('modifyModal').classList.remove('open'); }
 
@@ -631,8 +776,8 @@
           <tr><td class="mark">1</td><td class="mark">第【12】行</td><td>货主编码 1099 不在类目 02010205 的采购信息配置中</td></tr>
           <tr><td class="mark">2</td><td class="mark">第【35】行</td><td>类目编码 02010299 不存在或不是四级类目</td></tr>
           <tr><td class="mark">3</td><td class="mark">第【47】行</td><td>资质类型 [13] 超出 1-12 范围，请检查</td></tr>
-          <tr><td class="mark">4</td><td class="mark">第【68】行</td><td>属性"防护等级"的枚举值 [X] 不在当前枚举范围内</td></tr>
-          <tr><td class="mark">5</td><td class="mark">第【82】行</td><td>属性条件表达式无法解析：第 12 列附近括号不匹配</td></tr>
+          <tr><td class="mark">4</td><td class="mark">第【68】行</td><td>新增物料场景仅支持 1-6，多个请用英文逗号分隔</td></tr>
+          <tr><td class="mark">5</td><td class="mark">第【82】行</td><td>修改物料场景仅支持 1-5，多个请用英文逗号分隔</td></tr>
         </tbody>
       </table>
       <div class="table-pagination">共 <b>15</b> 条 &nbsp; &lt; 1 &gt; &nbsp; 10 条/页 ▼</div>
@@ -649,6 +794,9 @@
   }
 
   // 点击遮罩关闭
+  document.getElementById('categoryModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCategoryModal();
+  });
   document.getElementById('modifyModal').addEventListener('click', function(e) {
     if (e.target === this) closeModifyModal();
   });
@@ -656,46 +804,75 @@
   // 操作列「资质配置」跳转
   function goQualConfig() {
     showMsg('打开资质配置编辑页...', 'info');
-    setTimeout(() => { window.location.href = '资质配置-编辑.html'; }, 400);
+    setTimeout(() => { window.location.href = '资质配置-编辑-场景区分.html'; }, 400);
   }
 
-  // 下载【类目-资质配置】Excel 模板（CSV with BOM，Excel 可直接打开）
-  function downloadRuleTemplate() {
-    const headers = [
+  function getQualRuleHeaders() {
+    return [
       '四级类目编码*',
       '四级类目名称',
       '货主编码*',
       '货主名称',
       '必传资质类型*  (多选用分号; 1=安全生产许可证 2=生产许可证 3=3C认证 4=消防3C证书 5=特种劳动防护用品安全标志(LA) 6=MA认证（矿用产品安全标志） 7=船级社证书 8=品牌授权 9=检测报告 10=合格证 11=质量证明书 12=自愿性认证)',
       '是否启用*  (1=启用 2=关闭)',
-      '是否启用属性设置  (1=是 2=否)',
-      '属性项/属性值  (属性组冒号:间隔, 多个属性组分号;间隔, 例: 防护等级:A;B;防滑系数:5)',
-      '属性组配置  (1=并且 AND, 0=或者 OR)'
+      '新增物料场景（支持多个,英文逗号间隔；1=MPM新增物料，2=MPM批量新增，3=SCP新增物料，4=PLM新增物料，5=IQS新增物料，6=OMS新增物料；）',
+      '修改物料场景（支持多个，英文逗号间隔；1=MPM修改物料，2=MPM导入批改，3=SCP修改物料，4=PLM修改物料，5=OMS修改物料；）'
     ];
-    const sampleRows = [
-      ['02010201', '钳形电流表', '1025', '万聚国际(杭州)供应链有限公司', '1;2;4', '1', '1', '防护等级:A;B;防滑系数:5', '1'],
-      ['02010202', '高低压钳形表', '1025', '万聚国际(杭州)供应链有限公司', '1;2', '1', '2', '', ''],
-      ['02010201', '钳形电流表', '1027', '咸亨国际(温州)供应链有限公司', '1;2;3;4', '1', '1', '防护等级:A;B', '1']
-    ];
+  }
+
+  function downloadCsv(filename, headers, rows, successMsg) {
     const escape = v => {
       const s = String(v == null ? '' : v);
       return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
     };
     const BOM = String.fromCharCode(0xFEFF);
     const lines = [headers.map(escape).join(',')];
-    for (const row of sampleRows) lines.push(row.map(escape).join(','));
+    for (const row of rows) lines.push(row.map(escape).join(','));
     const csv = BOM + lines.join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = '类目-资质配置-模板.csv';
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    showMsg('已下载: 类目-资质配置-模板.csv（用 Excel 打开）', 'success');
+    showMsg(successMsg || ('已下载: ' + filename), 'success');
   }
+
+  // 下载【类目-资质配置】Excel 模板（CSV with BOM，Excel 可直接打开）
+  function downloadRuleTemplate() {
+    const headers = getQualRuleHeaders();
+    const sampleRows = [
+      ['02010201', '钳形电流表', '1025', '万聚国际(杭州)供应链有限公司', '1;2;4', '1', '1,2,3', '1,2,3'],
+      ['02010202', '高低压钳形表', '1025', '万聚国际(杭州)供应链有限公司', '1;2', '1', '1,3,6', '1,3'],
+      ['02010201', '钳形电流表', '1027', '咸亨国际(温州)供应链有限公司', '1;2;3;4', '2', '1', '']
+    ];
+    downloadCsv('类目-资质配置-模板.csv', headers, sampleRows, '已下载: 类目-资质配置-模板.csv（用 Excel 打开）');
+  }
+
+  function downloadQualRuleConfig() {
+    const menu = document.getElementById('exportMenu');
+    if (menu) menu.classList.remove('open');
+    const rows = [
+      ['02010201', '钳形电流表', '1025', '万聚国际(杭州)供应链有限公司', '1;2;4', '1', '1,2,3', '1,2,3'],
+      ['02010202', '高低压钳形表', '1025', '万聚国际(杭州)供应链有限公司', '1;2', '1', '1,3,6', '1,3'],
+      ['02010201', '钳形电流表', '1027', '咸亨国际(温州)供应链有限公司', '1;2;3;4', '2', '1', '']
+    ];
+    downloadCsv('类目-资质配置-导出.csv', getQualRuleHeaders(), rows, '已下载: 类目-资质配置-导出.csv（用 Excel 打开）');
+  }
+
+  function toggleExportMenu(event) {
+    event.stopPropagation();
+    const menu = document.getElementById('exportMenu');
+    if (menu) menu.classList.toggle('open');
+  }
+
+  document.addEventListener('click', function() {
+    const menu = document.getElementById('exportMenu');
+    if (menu) menu.classList.remove('open');
+  });
 </script>
 
 <script>
@@ -775,3 +952,4 @@
 </script>
 </body>
 </html>
+
