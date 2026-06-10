@@ -996,6 +996,7 @@
                 <button class="dropdown-item" type="button" data-export="自定义导出">自定义导出</button>
                 <button class="dropdown-item" type="button" data-export="商城价导出">商城价导出</button>
                 <button class="dropdown-item" type="button" data-export="外链导出">外链导出</button>
+                <button class="dropdown-item" type="button" data-export="资质附件导出">资质附件导出</button>
               </div>
             </div>
             <button class="tool-btn" type="button" data-action-text="基础数据下载">基础数据下载</button>
@@ -1280,7 +1281,7 @@
             <div class="field-panels">
               <div class="field-panel">
                 <div class="field-panel-head">
-                  <span>全部字段（共72个）</span>
+                  <span>全部字段（共71个）</span>
                 </div>
                 <ul class="field-list">
                   <li class="disabled"><input type="checkbox" checked disabled>物料（编码）</li>
@@ -1301,7 +1302,6 @@
                   <li><input type="checkbox">物料品牌（名称）</li>
                   <li><input type="checkbox">基本单位（名称）</li>
                   <li><input type="checkbox">描述（内部备注）</li>
-                  <li><input type="checkbox">附件资料OSS URL地址<span class="bm-new-tag">本次新增</span></li>
                   <li><input type="checkbox">商城上架</li>
                 </ul>
               </div>
@@ -1430,9 +1430,9 @@
     </div>
     <div class="demo-tips-section">
       <b>🆕 4.8.0 新增：</b><br/>
-      • <b>路径</b>：<span class="ti">物料导出 ▾ → 自定义导出 → 选择字段 → 全部字段</span><br/>
-      • <b>新增内容</b>：全部字段中新增 <span class="ti">「附件资料OSS URL地址」</span>（位于「商城上架」上方，列表内已标 <b>本次新增</b> 角标），勾选后导出列含物料关联的资质附件 OSS URL。<br/>
-      • <b>依据说明</b>：对应 MPM v4.8.0 商品资质资料管理 PRD <b>§3.2.14 物料资质文件 URL 列表 Excel 导出</b>，使自定义导出可按需带出资质 OSS URL，供审计/对账直接点击下载，无需走独立「导出资质资料」入口。
+      • <b>路径</b>：<span class="ti">物料导出 ▾ → 资质附件导出</span><br/>
+      • 点击后下载资质附件导出模板，表头为：<b>物料编码</b>、<b>资料附件类型</b>、<b>文件名称</b>、<b>文件 URL 地址</b><br/>
+      • 自定义导出字段中不再展示 <span class="ti">「附件资料OSS URL地址」</span> 字段。
     </div>
     </div>
   </div>
@@ -1606,6 +1606,8 @@
         state.pendingExport = action;
         if (action === '自定义导出') {
           openModal('modalCustomExport');
+        } else if (action === '资质附件导出') {
+          downloadQualAttachmentExportTemplate();
         } else {
           openModal('modalConfirmExport');
         }
@@ -1690,6 +1692,24 @@
       a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 500);
+    }
+
+    // 物料导出新增「资质附件导出」模板下载
+    function downloadQualAttachmentExportTemplate() {
+      const headers = [
+        '物料编码',
+        '资料附件类型（1=安全生产许可证 2=生产许可证 3=3C认证 4=消防3C证书 5=特种劳动防护用品安全标志(LA) 6=MA认证（矿用产品安全标志） 7=船级社证书 8=品牌授权 9=检测报告 10=合格证 11=质量证明书 12=自愿性认证）',
+        '文件名称',
+        '文件 URL 地址'
+      ];
+      const sample = [
+        'A1901005067',
+        '3',
+        'CCC认证报告.pdf',
+        'https://mpm-oss.xianheng.cn/mpm/qual/2026/05/A1901005067/CCC认证报告.pdf'
+      ];
+      downloadCSV('资质附件导出模板.csv', headers, sample);
+      showMessage('已下载: 资质附件导出模板.csv', 'success');
     }
 
     // 通用模板下载(其他批改项 - 仅模拟提示)

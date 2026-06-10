@@ -607,12 +607,12 @@
       <!-- Alert -->
       <div class="alert alert-info">
         <span class="alert-icon">i</span>
-        <div>模板 <strong>3 列</strong>（物料编码 / 资质类型 / 资质文件 OSS 地址），按行 upsert；OSS URL 请先通过「批增批改资质文件」入口或物料编辑页上传后获取，必须以 <code style="background:#fff; padding:1px 4px; border-radius:3px; color:#d4380d;">https://mpm-oss.xianheng.cn/</code> 开头。</div>
+        <div>模板 <strong>3 列</strong>（*物料编码 / *资质类型 / *资质文件 OSS 地址），按行 upsert；OSS URL 请先通过「批增批改资质文件」入口或物料编辑页上传后获取，必须以 <code style="background:#fff; padding:1px 4px; border-radius:3px; color:#d4380d;">https://mpm-oss.xianheng.cn/</code> 开头。</div>
       </div>
 
       <!-- 模板下载 -->
       <div class="upload-block">
-        <div class="upload-label"><span class="required">*</span>模板下载：<span class="upload-template-link" onclick="showMsg('已下载: 关联资质模板.xlsx', 'success')">下载关联资质模板.xlsx</span></div>
+        <div class="upload-label"><span class="required">*</span>模板下载：<span class="upload-template-link" onclick="downloadAssocQualTemplate()">下载关联资质模板.csv</span></div>
         <div class="upload-template-hint">从列表勾选行触发时，模板预填已勾选行的物料编码；从顶部按钮触发为空模板。</div>
       </div>
 
@@ -677,6 +677,40 @@
     document.getElementById('msg-text').textContent = text;
     clearTimeout(window._msgTimer);
     window._msgTimer = setTimeout(() => { msg.classList.remove('open'); }, 2500);
+  }
+
+  function downloadCSV(filename, rows) {
+    const BOM = '\uFEFF';
+    const escapeCell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+    const csv = BOM + rows.map(row => row.map(escapeCell).join(',')).join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+  }
+
+  function downloadAssocQualTemplate() {
+    const selectedCodes = Array.from(document.querySelectorAll('.row-check:checked'))
+      .map(check => check.closest('tr').querySelector('.code-cell')?.textContent.trim())
+      .filter(Boolean);
+    const sampleRows = selectedCodes.length
+      ? selectedCodes.map((code, index) => [
+        code,
+        index % 2 === 0 ? '3' : '9',
+        `https://mpm-oss.xianheng.cn/mpm/qual/2026/05/${code}/${index % 2 === 0 ? 'CCC认证报告.pdf' : '检测报告.pdf'}`
+      ])
+      : [['A1901005067', '3', 'https://mpm-oss.xianheng.cn/mpm/qual/2026/05/A1901005067/CCC认证报告.pdf']];
+
+    downloadCSV('关联资质模板.csv', [
+      ['*物料编码', '*资质类型', '*资质文件 OSS 地址'],
+      ...sampleRows
+    ]);
+    showMsg('已下载: 关联资质模板.csv', 'success');
   }
 
   // 筛选区展开/收起

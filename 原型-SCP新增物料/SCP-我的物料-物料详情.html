@@ -444,8 +444,8 @@
               <tr>
                 <th style="width:280px;">图片资质类型</th>
                 <th style="width:180px;">文件名称</th>
-                <th>图片</th>
-                <th style="width:200px;">操作</th>
+                <th>文件地址</th>
+                <th style="width:120px;">操作</th>
               </tr>
             </thead>
             <tbody id="qaTbody">
@@ -454,7 +454,6 @@
                 <td class="qa-file-name">CCC认证报告.pdf</td>
                 <td><a class="oss-link" href="https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/CCC_TEST_REPORT/CCC认证报告.pdf" target="_blank" rel="noopener">https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/CCC_TEST_REPORT/CCC认证报告.pdf</a></td>
                 <td>
-                  <span class="op" onclick="openQAUploadModal('CCC_TEST_REPORT', this)">编辑</span>
                   <span class="op danger" onclick="onQADeleteRow(this,'CCC_TEST_REPORT')">删除</span>
                 </td>
               </tr>
@@ -463,7 +462,6 @@
                 <td class="qa-file-name">LA标志证书.pdf</td>
                 <td><a class="oss-link" href="https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/LA/LA标志证书.pdf" target="_blank" rel="noopener">https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/LA/LA标志证书.pdf</a></td>
                 <td>
-                  <span class="op" onclick="openQAUploadModal('LA', this)">编辑</span>
                   <span class="op danger" onclick="onQADeleteRow(this,'LA')">删除</span>
                 </td>
               </tr>
@@ -472,7 +470,6 @@
           <div class="qa-alert qa-alert-warning" id="qaMissingAlert">
             <span class="qa-alert-icon">⚠</span>
             <div><strong>还需上传 1 项必传资质：</strong>产品质量检验检测报告</div>
-            <div class="qa-alert-action"><button class="btn btn-primary btn-sm" onclick="openQAUploadModal('QUALITY_INSPECTION')">立即上传</button></div>
           </div>
         </div>
 
@@ -616,7 +613,7 @@
     const m={ok:'success',warn:'warning',info:'info',error:'error',success:'success',warning:'warning'};
     toast(text, m[type]||'info');
   }
-  let qaCurrentEditType=''; let qaPendingDeleteRow=null; let qaEditingRow=null; let qaMockFiles=[];
+  let qaPendingDeleteRow=null; let qaMockFiles=[];
   const QA_LABELS={
     SAFETY_PRODUCTION_LICENSE:'安全生产许可证',
     PRODUCTION_LICENSE:'生产许可证',
@@ -631,19 +628,13 @@
     RAW_MATERIAL_QUALITY_CERT:'原材料质量证明书',
     VOLUNTARY_CERT:'自愿性认证'
   };
-  function openQAUploadModal(presetType,rowEl){
-    qaCurrentEditType=presetType;
-    qaEditingRow=rowEl?rowEl.closest('tr'):null;
-    if(qaEditingRow){
-      const nameCell=qaEditingRow.querySelector('.qa-file-name');
-      const curName=nameCell?nameCell.textContent.trim():'';
-      qaMockFiles=curName?[{name:curName,existing:true}]:[];
-    } else { qaMockFiles=[]; }
-    document.getElementById('qaModalTitle').textContent=qaEditingRow?'编辑资质文件':'批量上传';
+  function openQAUploadModal(presetType){
+    qaMockFiles=[];
+    document.getElementById('qaModalTitle').textContent='批量上传';
     document.getElementById('qaTypeSelect').value=presetType||'';
     renderQAUploadList();
     document.getElementById('qaUploadModal').classList.add('open');
-    if(presetType) setTimeout(()=>showMsg('已自动选择资质类型，可删除原附件后重新上传以修改','info'),100);
+    if(presetType) setTimeout(()=>showMsg('已自动选择资质类型','info'),100);
   }
   function closeQAUploadModal(){ document.getElementById('qaUploadModal').classList.remove('open'); }
   function onQAMockUpload(){
@@ -666,16 +657,9 @@
     if(qaMockFiles.length===0){ showMsg('请至少上传 1 个文件','warn'); return; }
     const file=qaMockFiles[qaMockFiles.length-1];
     closeQAUploadModal();
-    if(qaEditingRow){
-      const url='https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/'+type+'/'+file.name;
-      const nameCell=qaEditingRow.querySelector('.qa-file-name');
-      if(nameCell) nameCell.textContent=file.name;
-      const link=qaEditingRow.querySelector('.oss-link');
-      if(link){ link.href=url; link.textContent=url; }
-      qaEditingRow=null;
-      showMsg('已更新附件：'+file.name+'（写入物料操作历史）','ok');
-    }
-    else { showMsg('已上传 '+qaMockFiles.length+' 个文件并关联到物料','ok'); addQARowToTable(type,file); updateQAMissingAlert(); }
+    showMsg('已上传 '+qaMockFiles.length+' 个文件并关联到物料','ok');
+    addQARowToTable(type,file);
+    updateQAMissingAlert();
   }
   function addQARowToTable(type,file){
     const label=QA_LABELS[type]||type;
@@ -684,8 +668,7 @@
     tr.innerHTML='<td>'+label+'</td>'+
       '<td class="qa-file-name">'+file.name+'</td>'+
       '<td><a class="oss-link" href="'+url+'" target="_blank" rel="noopener">'+url+'</a></td>'+
-      '<td><span class="op" onclick="openQAUploadModal(\''+type+'\', this)">编辑</span>'+
-      '<span class="op danger" onclick="onQADeleteRow(this,\''+type+'\')">删除</span></td>';
+      '<td><span class="op danger" onclick="onQADeleteRow(this,\''+type+'\')">删除</span></td>';
     document.getElementById('qaTbody').appendChild(tr);
   }
   function onQADeleteRow(el,type){ qaPendingDeleteRow=el.closest('tr'); document.getElementById('qaPopconfirm').classList.add('open'); }

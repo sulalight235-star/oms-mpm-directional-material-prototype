@@ -456,7 +456,6 @@
                 <td class="qa-file-name">CCC认证报告.pdf</td>
                 <td><a class="oss-link" href="https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/CCC_TEST_REPORT/CCC认证报告.pdf" target="_blank" rel="noopener">https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/CCC_TEST_REPORT/CCC认证报告.pdf</a></td>
                 <td>
-                  <span class="op" onclick="openQAUploadModal('CCC_TEST_REPORT', this)">编辑</span>
                   <span class="op danger" onclick="onQADeleteRow(this,'CCC_TEST_REPORT')">删除</span>
                 </td>
               </tr>
@@ -465,7 +464,6 @@
                 <td class="qa-file-name">LA标志证书.pdf</td>
                 <td><a class="oss-link" href="https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/LA/LA标志证书.pdf" target="_blank" rel="noopener">https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/LA/LA标志证书.pdf</a></td>
                 <td>
-                  <span class="op" onclick="openQAUploadModal('LA', this)">编辑</span>
                   <span class="op danger" onclick="onQADeleteRow(this,'LA')">删除</span>
                 </td>
               </tr>
@@ -474,7 +472,6 @@
           <div class="qa-alert qa-alert-warning" id="qaMissingAlert">
             <span class="qa-alert-icon">⚠</span>
             <div><strong>还需上传 1 项必传资质：</strong>产品质量检验检测报告</div>
-            <div class="qa-alert-action"><button class="btn btn-primary btn-sm" onclick="openQAUploadModal('QUALITY_INSPECTION')">立即上传</button></div>
           </div>
         </div>
 
@@ -686,8 +683,7 @@
     tr.innerHTML='<td>'+label+'</td>'+
       '<td class="qa-file-name">'+file.name+'</td>'+
       '<td><a class="oss-link" href="'+url+'" target="_blank" rel="noopener">'+url+'</a></td>'+
-      '<td><span class="op" onclick="openQAUploadModal(\''+type+'\', this)">编辑</span>'+
-      '<span class="op danger" onclick="onQADeleteRow(this,\''+type+'\')">删除</span></td>';
+      '<td><span class="op danger" onclick="onQADeleteRow(this,\''+type+'\')">删除</span></td>';
     document.getElementById('qaTbody').appendChild(tr);
   }
   function onQADeleteRow(el,type){ qaPendingDeleteRow=el.closest('tr'); document.getElementById('qaPopconfirm').classList.add('open'); }

@@ -91,30 +91,6 @@
   .toast.show{opacity:1;transform:translateY(0);}
   .toast .ti{font-weight:700;}
   .toast.success .ti{color:#52c41a;} .toast.error .ti{color:var(--error);} .toast.info .ti{color:var(--primary);}
-  /* ── 上传附件弹窗（完全复用 文件管理·批量新增文件 样式）── */
-  .modal-mask{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:200;}
-  .modal-mask.show{display:flex;}
-  .modal-card{background:#fff;border-radius:8px;box-shadow:0 6px 16px rgba(0,0,0,0.12);width:520px;max-width:92vw;display:flex;flex-direction:column;overflow:hidden;}
-  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #f0f0f0;}
-  .modal-head-title{font-size:15px;font-weight:600;color:var(--text-title);}
-  .modal-close{width:28px;height:28px;border:0;border-radius:4px;background:transparent;color:var(--text-sub);font-size:16px;cursor:pointer;}
-  .modal-close:hover{color:var(--text-body);background:#fafafa;}
-  .modal-body{padding:20px 24px;}
-  .modal-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 24px 20px;border-top:1px solid #f0f0f0;}
-  .modal-form-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;}
-  .modal-form-row .lbl{width:90px;flex-shrink:0;text-align:right;font-size:13px;color:var(--text-title);padding-top:2px;}
-  .modal-form-row .lbl-req::before{content:"* ";color:var(--error);}
-  .tpl-line{font-size:13px;color:var(--text-body);margin-bottom:12px;}
-  .tpl-line .tpl-link{color:var(--primary);cursor:pointer;}
-  .tpl-line .tpl-link:hover{text-decoration:underline;}
-  .upload-dragger{border:2px dashed var(--border);border-radius:8px;padding:24px 16px;text-align:center;cursor:pointer;background:#fafbfc;}
-  .upload-dragger:hover{border-color:var(--primary);background:#e6f4ff;}
-  .upload-icon{font-size:28px;color:var(--primary);}
-  .upload-text{margin-top:8px;font-size:13px;color:var(--text-title);}
-  .upload-hint{margin-top:4px;font-size:12px;color:var(--text-sub);line-height:1.6;}
-  .btn-default{background:#fff;border-color:var(--border);color:var(--text-body);}
-  .btn-default:hover{border-color:var(--primary);color:var(--primary);}
-  .attach-file-item{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#f6ffed;border:1px solid #b7eb8f;border-radius:4px;margin-bottom:6px;font-size:13px;}
 </style>
 </head>
 <body>
@@ -168,8 +144,8 @@
           <div>
             <div class="title">操作流程</div>
             <div class="step">第一步：提前在系统内维护好品牌信息 <span class="link" onclick="toast('跳转品牌维护页（原型）','info')">前往维护</span></div>
-            <div class="step">第二步：物料附件提交导入，并通过任务结果获取文件地址链接 <span class="link" onclick="openModal('modalUploadAttach')">上传附件</span></div>
-            <div class="step">第三步：选择导入的物料类型，并下载模板（电商供应商物料需要勾选关联项目）</div>
+            <div class="step">第二步：选择导入的物料类型，并下载模板（电商供应商物料需要勾选关联项目）</div>
+            <div class="step">第三步：在模板中维护资质类型和资质附件 OSS url地址</div>
             <div class="step">第四步：上传图片文件，并导入商品模板 <span class="link" onclick="toast('打开导入规范说明（原型）','info')">查看导入规范</span></div>
           </div>
         </div>
@@ -226,13 +202,6 @@
             </div>
           </div>
 
-          <div class="row">
-            <div class="label">上传附件</div>
-            <div class="ctrl">
-              <button class="btn-file" onclick="openModal('modalUploadAttach')">📤 上传附件</button>
-              <span class="hint">通过 zip + 附件管理文档批量上传资质等附件到 MPM OSS；导入物料时按附件管理文档自动关联</span>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -242,40 +211,6 @@
         <button class="btn btn-primary" onclick="startImport()">开始导入</button>
       </div>
     </main>
-  </div>
-
-  <!-- 上传附件弹窗（完全复用 文件管理·批量新增文件 弹窗） -->
-  <div class="modal-mask" id="modalUploadAttach">
-    <div class="modal-card">
-      <div class="modal-head">
-        <div class="modal-head-title">上传附件</div>
-        <button class="modal-close" onclick="closeModal('modalUploadAttach')">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="tpl-line">
-          模板下载：<span class="tpl-link" onclick="downloadAttachTemplate()">下载「附件管理文档模板.csv」</span>
-        </div>
-        <div class="modal-form-row">
-          <span class="lbl lbl-req">上传方式</span>
-          <div style="flex:1;">
-            <label><input type="radio" name="attachMode" checked /> 走 MPM 文件上传组件(zip + 附件管理文档)</label>
-          </div>
-        </div>
-        <div class="upload-dragger" onclick="onMockUploadAttach()">
-          <div class="upload-icon">📤</div>
-          <div class="upload-text">点击或拖拽 zip 压缩包到此处</div>
-          <div class="upload-hint">
-            zip 内含批量文件（单包 ≤ 500MB）<br/>
-            附件管理文档 Excel ≤ 5000 行 · 列：文件名称 / 文件类型
-          </div>
-        </div>
-        <div id="attachFileList" style="margin-top:12px;"></div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-default" onclick="closeModal('modalUploadAttach')">取消</button>
-        <button class="btn btn-primary" onclick="onConfirmAttach()">提交</button>
-      </div>
-    </div>
   </div>
 
   <div class="toast-wrap" id="toastWrap"></div>
@@ -301,31 +236,6 @@
   }
   function download(name){ toast('已开始下载：'+name,'success'); }
 
-  /* ── 弹窗控制 ── */
-  function openModal(id){ document.getElementById(id).classList.add('show'); }
-  function closeModal(id){ document.getElementById(id).classList.remove('show'); }
-  document.querySelectorAll('.modal-mask').forEach(m=>{
-    m.addEventListener('click',function(e){ if(e.target===this) this.classList.remove('show'); });
-  });
-
-  /* ── 上传附件（复用 文件管理·批量新增文件 逻辑）── */
-  function onMockUploadAttach(){
-    const names=['批量附件-202606.zip','资质附件包.zip'];
-    const i=document.querySelectorAll('#attachFileList .attach-file-item').length;
-    const name=names[i%names.length];
-    const div=document.createElement('div');
-    div.className='attach-file-item';
-    div.innerHTML='<span style="color:#52c41a;">✓</span><span style="flex:1;">'+name+'</span><span style="color:var(--text-sub);font-size:12px;">'+(i*120+86)+'.0MB · 上传完成</span>';
-    document.getElementById('attachFileList').appendChild(div);
-  }
-  function onConfirmAttach(){
-    const cnt=document.querySelectorAll('#attachFileList .attach-file-item').length;
-    if(cnt===0){ toast('请先上传 zip 压缩包','warning'); return; }
-    closeModal('modalUploadAttach');
-    document.getElementById('attachFileList').innerHTML='';
-    toast('已创建批量新增附件任务，可至「任务中心」查看进度','success');
-  }
-
   /* ── CSV 真实下载 ── */
   function downloadCSV(filename, rows){
     const BOM='﻿';
@@ -337,11 +247,6 @@
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(()=>URL.revokeObjectURL(url),500);
     toast('已下载：'+filename,'success');
-  }
-  function downloadAttachTemplate(){
-    const headers=['文件名称(必填)','文件类型(必填,1=安全生产许可证 2=生产许可证 3=3C认证 4=消防3C证书 5=特种劳动防护用品安全标志(LA) 6=MA认证（矿用产品安全标志） 7=船级社证书 8=品牌授权 9=检测报告 10=合格证 11=质量证明书 12=自愿性认证)'];
-    const sample=['CCC认证报告-QF-A5.pdf','1'];
-    downloadCSV('附件管理文档模板.csv',[headers,sample]);
   }
   function downloadImportTemplate(){
     const cols=['*序号','*品牌编码','*品牌名称','*名称','*型号规格','*基本单位编码','*基本单位名称','*类目编码','*类目名称','*毛重（kg）','*市场价（元）','参考供货价（元）','*起订量','是否倍数下单','含安装费','含检测费','*含运费','描述','条形码','净重（kg）','*已停产','发货日','长（mm）','宽（mm）','高（mm）','税收分类编码','税收分类名称','税收分类简称','税率','*链接类型','*链接地址','*平台类型','*店铺类型','*外链数量(当外部链接的商品单位和咸亨商城的商品单位不一致时，需要填写计价单位转换，表明外部链接的商品数量和咸亨商城商品数量的换算关系。)','*咸亨数量','资质类型（1=安全生产许可证 2=生产许可证 3=3C认证 4=消防3C证书 5=特种劳动防护用品安全标志(LA) 6=MA认证（矿用产品安全标志） 7=船级社证书 8=品牌授权 9=检测报告 10=合格证 11=质量证明书 12=自愿性认证）','资质附件 OSS url地址','*协议价(pushPrice)','*品牌id(brandId)','商城价(mallPrice)','spu编码(spu)','*类目编码(categoryCode)','库存数量(stock)'];
@@ -409,15 +314,15 @@
   <div class="scp-demo-tips-section">
     <b>本期改造内容：</b><br>
     <ul>
-      <li>批量新增入口承接 OSS 客户端上传后的附件地址回填方案。</li>
-      <li>模板下载和导入流程保留，资质资料随物料附件信息一起进入批量处理链路。</li>
-      <li>上传附件后在任务结果中获取文件地址链接，用于批量导入模板维护。</li>
+      <li>批量新增入口已取消独立附件维护入口。</li>
+      <li>模板下载和导入流程保留，资质资料通过导入模板中的资质类型和资质附件 OSS url地址维护。</li>
+      <li>批量导入时按模板字段将资质信息随物料基础信息一起提交。</li>
     </ul>
   </div>
   <div class="scp-demo-tips-section">
     <b>操作说明：</b><br>
     1. 先选择关联项目并下载导入模板。<br>
-    2. 点击<span class="ti">上传附件</span>模拟维护资质文件。<br>
+    2. 在导入模板中填写资质类型和资质附件 OSS url地址。<br>
     3. 选择 Excel 后点击<span class="ti">开始导入</span>创建导入任务。
   </div>
 </div><script src="scp-demo-tips.js"></script>

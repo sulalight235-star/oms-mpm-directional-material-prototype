@@ -564,11 +564,11 @@
     </div>
   </div>
   <div class="op-bar-right">
-    <button class="btn btn-default btn-sm" onclick="showMsg('已分配归还')">分配归还</button>
     <button class="btn btn-default btn-sm" onclick="showMsg('已复制物料信息')">复制</button>
     <button class="btn btn-default btn-sm" onclick="go('待我审核.html')">关闭</button>
-    <button class="btn btn-danger btn-sm" onclick="openRejectModal()">驳回</button>
-    <button class="btn btn-success btn-sm" onclick="passAudit()">通过</button>
+    <button class="btn btn-primary btn-sm" onclick="showMsg('已提交')">提交</button>
+    <button class="btn btn-default btn-sm" onclick="showMsg('已暂存')">暂存</button>
+    <button class="btn btn-success btn-sm" onclick="showMsg('进入下一步')">下一步</button>
   </div>
 </div>
 
@@ -1117,8 +1117,8 @@
           <tr>
             <th style="width:240px;">图片资质类型</th>
             <th style="width:180px;">文件名称</th>
-            <th>图片</th>
-            <th style="width:200px;">操作</th>
+            <th>文件地址</th>
+            <th style="width:120px;">操作</th>
           </tr>
         </thead>
         <tbody id="qaTbody">
@@ -1131,7 +1131,6 @@
               <a class="oss-link" href="https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/1779963147676/CCC认证报告.pdf" target="_blank" rel="noopener">https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/1779963147676/CCC认证报告.pdf</a>
             </td>
             <td>
-              <span class="op" onclick="openQAUploadModal('CCC_TEST_REPORT', this)">编辑</span>
               <span class="op danger" onclick="onQADeleteRow(this, 'CCC')">删除</span>
             </td>
           </tr>
@@ -1144,7 +1143,6 @@
               <a class="oss-link" href="https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/1779963147677/LA标志证书.pdf" target="_blank" rel="noopener">https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/1779963147677/LA标志证书.pdf</a>
             </td>
             <td>
-              <span class="op" onclick="openQAUploadModal('LA', this)">编辑</span>
               <span class="op danger" onclick="onQADeleteRow(this, 'LA')">删除</span>
             </td>
           </tr>
@@ -1156,9 +1154,6 @@
         <span class="qa-alert-icon">⚠</span>
         <div>
           <strong>还需上传 1 项必传资质：</strong>产品质量检验检测报告
-        </div>
-        <div class="qa-alert-action">
-          <button class="btn btn-primary btn-sm" onclick="openQAUploadModal('QUALITY_INSPECTION')">立即上传</button>
         </div>
       </div>
 
@@ -1451,13 +1446,12 @@
   <div class="qa-demo-tips-section">
     <b>资料附件操作：</b><br/>
     1. 点击 <span class="ti">上传资质图片</span> 新增资质文件。<br/>
-    2. 表格内支持 <span class="ti">编辑</span>、<span class="ti">删除</span>；图片地址点击可在新浏览器标签页打开。<br/>
-    3. 缺失提示会展示还需补充的资质类型，可点 <span class="ti">立即上传</span> 快速补传。
+    2. 表格内仅保留 <span class="ti">删除</span> 操作；图片地址点击可在新浏览器标签页打开。<br/>
+    3. 缺失提示仅展示还需补充的资质类型，不提供快捷上传入口。
   </div>
   <div class="qa-demo-tips-section">
     <b>注意事项：</b><br/>
     • 图片资质类型仅可选本期 12 类。<br/>
-    • 编辑复用同一个上传弹窗，保存后覆盖当前资质文件地址。<br/>
     • 删除前会二次确认；删除后缺失提示会重新计算。<br/>
     • 本模块不展示上传人、上传时间、文件大小和“必传”标签。
   </div>
@@ -1499,29 +1493,17 @@
   });
 
   // ─── 资料附件模块(资质资料表格)交互 ───
-  let qaCurrentEditType = '';
   let qaPendingDeleteRow = null;
-  let qaEditingRow = null;
   let qaMockFiles = [];
 
-  function openQAUploadModal(presetType, rowEl) {
-    qaCurrentEditType = presetType;
-    qaEditingRow = rowEl ? rowEl.closest('tr') : null;
-    if (qaEditingRow) {
-      // 编辑模式:带出该行当前已上传的附件
-      const nameCell = qaEditingRow.querySelector('.qa-file-name');
-      const curName = nameCell ? nameCell.textContent.trim() : '';
-      qaMockFiles = curName ? [{ name: curName, existing: true }] : [];
-    } else {
-      // 新增模式
-      qaMockFiles = [];
-    }
-    document.getElementById('qaModalTitle').textContent = qaEditingRow ? '编辑资质文件' : '批量上传';
+  function openQAUploadModal(presetType) {
+    qaMockFiles = [];
+    document.getElementById('qaModalTitle').textContent = '批量上传';
     document.getElementById('qaTypeSelect').value = presetType || '';
     renderQAUploadList();
     document.getElementById('qaUploadModal').classList.add('open');
     if (presetType) {
-      setTimeout(() => showMsg('已自动选择资质类型,可删除原附件后重新上传以修改', 'info'), 100);
+      setTimeout(() => showMsg('已自动选择资质类型', 'info'), 100);
     }
   }
   function closeQAUploadModal() {
@@ -1554,19 +1536,9 @@
     if (qaMockFiles.length === 0) { showMsg('请至少上传 1 个文件', 'warn'); return; }
     const file = qaMockFiles[qaMockFiles.length - 1];
     closeQAUploadModal();
-    if (qaEditingRow) {
-      const url = 'https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/' + Date.now() + '/' + file.name;
-      const nameCell = qaEditingRow.querySelector('.qa-file-name');
-      if (nameCell) nameCell.textContent = file.name;
-      const link = qaEditingRow.querySelector('.oss-link');
-      if (link) { link.href = url; link.textContent = url; }
-      qaEditingRow = null;
-      showMsg('已更新附件:' + file.name + '(写入物料操作历史)', 'ok');
-    } else {
-      showMsg('已上传 ' + qaMockFiles.length + ' 个文件并关联到物料', 'ok');
-      addQARowToTable(type, file);
-      updateQAMissingAlert();
-    }
+    showMsg('已上传 ' + qaMockFiles.length + ' 个文件并关联到物料', 'ok');
+    addQARowToTable(type, file);
+    updateQAMissingAlert();
   }
   function addQARowToTable(type, file) {
     const typeLabels = {
@@ -1593,7 +1565,6 @@
         <a class="oss-link" href="https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/${Date.now()}/${file.name}" target="_blank" rel="noopener">https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/${Date.now()}/${file.name}</a>
       </td>
       <td>
-        <span class="op" onclick="openQAUploadModal('${type}', this)">编辑</span>
         <span class="op danger" onclick="onQADeleteRow(this, '${type}')">删除</span>
       </td>
     `;

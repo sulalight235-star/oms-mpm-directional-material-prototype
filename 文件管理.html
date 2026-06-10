@@ -495,21 +495,18 @@
         <button class="modal-close" onclick="closeModal('modalBatchAdd')">×</button>
       </div>
       <div class="modal-body">
-        <div class="tpl-line">
-          模板下载：<span class="tpl-link" id="dlTplLink">下载「批量新增文件模板.csv」</span>
-        </div>
         <div class="form-row">
           <span class="lbl lbl-req">上传方式</span>
           <div class="ctrl">
-            <label style="margin-right:16px;"><input type="radio" name="addMode" checked /> 走 MPM 文件上传组件(zip + 附件管理文档)</label>
+            <span style="color:#ff4d4f;font-size:12px;">仅支持压缩包，文件大小 ≤500MB</span>
           </div>
         </div>
         <div class="upload-dragger" onclick="onMockUpload()">
           <div class="upload-icon">📤</div>
           <div class="upload-text">点击或拖拽 zip 压缩包到此处</div>
           <div class="upload-hint">
-            zip 内含批量文件（单包 ≤ 500MB）<br/>
-            附件管理文档 Excel ≤ 5000 行 · 列：文件名称 / 文件类型
+            注意：上传附件压缩包（ZIP/RAR ≤500MB，单文件≤10MB，jpg/jpeg/png/svg/heic/avif/pdf）<br/>
+            文件命名（文件名称+资质附件类型）
           </div>
         </div>
         <div id="addFileList" style="margin-top:12px;font-size:13px;color:var(--text-body);"></div>
@@ -598,7 +595,6 @@
             <td>
               <span class="btn-link" onclick="onPreview('${r.url}')">预览</span>
               <span class="btn-link" onclick="onCopy('${r.url}')">复制 URL</span>
-              <span class="btn-link" style="color:var(--error);" onclick="onDelete(${i})">删除</span>
             </td>
           </tr>
         `;
@@ -666,13 +662,12 @@
         return;
       }
       const BOM = '﻿';
-      const headers = ['物料编码', '文件类型', '文件名称', '文件 URL 地址'];
+      const headers = ['文件类型', '文件名称', '文件 URL 地址', '新增时间', '新增人员'];
       const rows = [headers.join(',')];
       checked.forEach(cb => {
         const r = MOCK[cb.dataset.i];
-        const code = (r.url.match(/\/([A-Z0-9]+)\//) || [])[1] || '';
         const typeName = (TYPE_MAP[r.type] || {}).label || r.type;
-        rows.push([code, typeName, r.name, r.url].map(v => `"${v}"`).join(','));
+        rows.push([typeName, r.name, r.url, r.time, r.creator].map(v => `"${v}"`).join(','));
       });
       const blob = new Blob([BOM + rows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -704,24 +699,6 @@
       document.getElementById('addFileList').innerHTML = '';
       showMessage('已创建批量新增任务，可至「任务中心」查看进度', 'success');
     }
-
-    // 模板下载（真实触发）
-    document.getElementById('dlTplLink').addEventListener('click', () => {
-      const BOM = '﻿';
-      const headers = ['文件名称(必填)', '文件类型(必填,1=国家强制性产品认证试验报告 2=产品质量检验检测报告 3=检验检疫证明 4=特种劳动防护用品安全标志(LA) 5=其他自愿性认证)'];
-      const sample = ['CCC认证报告-QF-A5.pdf', '1'];
-      const csv = BOM + [headers.join(','), sample.join(',')].join('\r\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = '批量新增文件模板.csv';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 500);
-      showMessage('已下载: 批量新增文件模板.csv', 'success');
-    });
 
     // 初始化
     renderRows(MOCK);

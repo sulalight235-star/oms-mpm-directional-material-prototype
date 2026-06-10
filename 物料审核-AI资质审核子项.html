@@ -540,6 +540,7 @@
     .qa-table .op{color:var(--primary);cursor:pointer;margin-right:10px;}
     .qa-table .op:hover{color:var(--primary-hover);text-decoration:underline;}
     .qa-table .op.danger{color:var(--error);}
+    .qa-table .qa-empty-row td{text-align:center;color:var(--text-sub);padding:22px 14px;background:#fafafa;}
     .qa-type-badge{display:inline-block;padding:1px 6px;background:var(--error-bg);color:var(--error);border:1px solid #ffccc7;border-radius:3px;font-size:11px;margin-left:6px;}
     .qa-type-badge.voluntary{background:var(--primary-bg);color:var(--primary);border-color:#91caff;}
 
@@ -681,7 +682,7 @@
         </div>
       </div>
 
-      <!-- 子项 5：资质审核（本期新增） -->
+      <!-- 子项 5：资质审核（有结论样式） -->
       <div class="ai-item-row ai-item-new">
         <button class="ai-mini-btn ai-mini-btn-pass">通过</button>
         <div class="ai-item-content">
@@ -1240,8 +1241,8 @@
           <tr>
             <th style="width:240px;">图片资质类型</th>
             <th style="width:180px;">文件名称</th>
-            <th>图片</th>
-            <th style="width:200px;">操作</th>
+            <th>文件地址</th>
+            <th style="width:120px;">操作</th>
           </tr>
         </thead>
         <tbody id="qaTbody">
@@ -1254,7 +1255,6 @@
               <a class="oss-link" href="https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/1779963147676/CCC认证报告.pdf" target="_blank" rel="noopener">https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/1779963147676/CCC认证报告.pdf</a>
             </td>
             <td>
-              <span class="op" onclick="openQAUploadModal('CCC_TEST_REPORT', this)">编辑</span>
               <span class="op danger" onclick="onQADeleteRow(this, 'CCC')">删除</span>
             </td>
           </tr>
@@ -1267,7 +1267,6 @@
               <a class="oss-link" href="https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/1779963147677/LA标志证书.pdf" target="_blank" rel="noopener">https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/1779963147677/LA标志证书.pdf</a>
             </td>
             <td>
-              <span class="op" onclick="openQAUploadModal('LA', this)">编辑</span>
               <span class="op danger" onclick="onQADeleteRow(this, 'LA')">删除</span>
             </td>
           </tr>
@@ -1279,9 +1278,6 @@
         <span class="qa-alert-icon">⚠</span>
         <div>
           <strong>还需上传 1 项必传资质：</strong>产品质量检验检测报告
-        </div>
-        <div class="qa-alert-action">
-          <button class="btn btn-primary btn-sm" onclick="openQAUploadModal('QUALITY_INSPECTION')">立即上传</button>
         </div>
       </div>
 
@@ -1615,7 +1611,7 @@
   function go(url) { window.location.href = url; }
 
   // ─── 本期新增:AI 资质审核子项相关 ───
-  const AI_QUAL_DECISION = 'APPROVE'; // 模拟资质审核 AI 建议=APPROVE
+  const AI_QUAL_DECISION = 'APPROVE'; // 模拟当前有结论样式:资质审核 AI 建议=APPROVE
   let pendingDecision = null;
 
   function toggleAIBanner() {
@@ -1644,29 +1640,17 @@
   // ─── 本期新增结束 ───
 
   // ─── 资料附件模块(资质资料表格)交互 ───
-  let qaCurrentEditType = '';
   let qaPendingDeleteRow = null;
-  let qaEditingRow = null;
   let qaMockFiles = [];
 
-  function openQAUploadModal(presetType, rowEl) {
-    qaCurrentEditType = presetType;
-    qaEditingRow = rowEl ? rowEl.closest('tr') : null;
-    if (qaEditingRow) {
-      // 编辑模式:带出该行当前已上传的附件
-      const nameCell = qaEditingRow.querySelector('.qa-file-name');
-      const curName = nameCell ? nameCell.textContent.trim() : '';
-      qaMockFiles = curName ? [{ name: curName, existing: true }] : [];
-    } else {
-      // 新增模式
-      qaMockFiles = [];
-    }
-    document.getElementById('qaModalTitle').textContent = qaEditingRow ? '编辑资质文件' : '批量上传';
+  function openQAUploadModal(presetType) {
+    qaMockFiles = [];
+    document.getElementById('qaModalTitle').textContent = '批量上传';
     document.getElementById('qaTypeSelect').value = presetType || '';
     renderQAUploadList();
     document.getElementById('qaUploadModal').classList.add('open');
     if (presetType) {
-      setTimeout(() => showMsg('已自动选择资质类型,可删除原附件后重新上传以修改', 'info'), 100);
+      setTimeout(() => showMsg('已自动选择资质类型', 'info'), 100);
     }
   }
   function closeQAUploadModal() {
@@ -1699,19 +1683,9 @@
     if (qaMockFiles.length === 0) { showMsg('请至少上传 1 个文件', 'warn'); return; }
     const file = qaMockFiles[qaMockFiles.length - 1];
     closeQAUploadModal();
-    if (qaEditingRow) {
-      const url = 'https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/' + Date.now() + '/' + file.name;
-      const nameCell = qaEditingRow.querySelector('.qa-file-name');
-      if (nameCell) nameCell.textContent = file.name;
-      const link = qaEditingRow.querySelector('.oss-link');
-      if (link) { link.href = url; link.textContent = url; }
-      qaEditingRow = null;
-      showMsg('已更新附件:' + file.name + '(写入物料操作历史)', 'ok');
-    } else {
-      showMsg('已上传 ' + qaMockFiles.length + ' 个文件并关联到物料', 'ok');
-      addQARowToTable(type, file);
-      updateQAMissingAlert();
-    }
+    showMsg('已上传 ' + qaMockFiles.length + ' 个文件并关联到物料', 'ok');
+    addQARowToTable(type, file);
+    updateQAMissingAlert();
   }
   function addQARowToTable(type, file) {
     const typeLabels = {
@@ -1730,6 +1704,8 @@
     };
     const label = typeLabels[type] || type;
     const tbody = document.getElementById('qaTbody');
+    const emptyRow = tbody.querySelector('.qa-empty-row');
+    if (emptyRow) emptyRow.remove();
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${label}</td>
@@ -1738,7 +1714,6 @@
         <a class="oss-link" href="https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/${Date.now()}/${file.name}" target="_blank" rel="noopener">https://xhgj-xhmall-product.oss-cn-shanghai.aliyuncs.com/srm/upload/materialAptitude/${Date.now()}/${file.name}</a>
       </td>
       <td>
-        <span class="op" onclick="openQAUploadModal('${type}', this)">编辑</span>
         <span class="op danger" onclick="onQADeleteRow(this, '${type}')">删除</span>
       </td>
     `;
@@ -1797,8 +1772,7 @@
 
   // 通过审核（本期改为先做 AI 一致性检查）
   function passAudit() {
-    // 资质审核 AI 建议 = APPROVE,用户选通过 → 一致 → 直接弹通过确认
-    // 但其他子项(类目审核)AI 建议是 REJECT,这里以"资质审核子项"为不一致检查口径
+    // 资质审核有结论时参与 AI 一致性判断
     if (AI_QUAL_DECISION === 'REJECT') {
       pendingDecision = 'APPROVE';
       document.getElementById('aiMismatchText').innerHTML = 'AI建议【审核驳回】，您确认【审核通过】吗？';
@@ -1811,12 +1785,13 @@
 
   function finalPassAudit() {
     closeAIModal('aiPassConfirmModal');
-    showMsg('审核通过：A1901005067 (decision_consistent_with_ai = ' + (AI_QUAL_DECISION === 'APPROVE' ? 'true' : 'false') + ')', 'ok');
+    const consistentFlag = AI_QUAL_DECISION ? (AI_QUAL_DECISION === 'APPROVE' ? 'true' : 'false') : 'not_applicable';
+    showMsg('审核通过：A1901005067 (decision_consistent_with_ai = ' + consistentFlag + ')', 'ok');
   }
 
   // 驳回弹窗（本期改为先做 AI 一致性检查）
   function openRejectModal() {
-    // 资质审核 AI 建议 = APPROVE,用户选驳回 → 不一致 → 先弹提示
+    // 资质审核有结论时参与 AI 一致性判断
     if (AI_QUAL_DECISION === 'APPROVE') {
       pendingDecision = 'REJECT';
       document.getElementById('aiMismatchText').innerHTML = 'AI建议【审核通过】，您确认【审核驳回】吗？';
@@ -2366,7 +2341,7 @@
   <div class="demo-tips-section">
     <b>💡 演示操作：</b><br/>
     1. 顶部 <b>"AI审核建议"</b> 区点 <b>▼</b> 折叠/展开<br/>
-    2. <b>【资质审核】</b>子项直接展示建议结论和一段式审核详情<br/>
+    2. <b>【资质审核】</b>展示"有 AI 结论"样式<br/>
     3. 滚到 <span class="ti">§ 资料附件</span> 看本期改造的资质表格<br/>
     4. 表格行点 <b>"编辑"</b> 或 <b>"删除"</b> 试试；图片地址点击可在新标签页打开<br/>
     5. 底部点 <b>"驳回"</b> 触发 <b>不一致提示</b> → 驳回理由必填<br/>
@@ -2375,7 +2350,7 @@
   <div class="demo-tips-section">
     <b>🆕 本期新增内容：</b><br/>
     • 顶部 AI 审核建议区新增<span class="ti">【资质审核】子项</span><br/>
-    • 资质审核子项样式与类目审核保持一致，标题后展示建议结论，详情用一段话说明判断依据<br/>
+    • 资质审核子项保留有结论样式<br/>
     • <span class="ti">§ 资料附件</span>改造为资质表格（模块名保留）<br/>
     • 命中规则提示 + 缺失提示动态联动<br/>
     • 上传/编辑 复用同一「批量上传」弹窗<br/>
