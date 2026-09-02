@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>客户商品清单</title><link rel="stylesheet" href="mpm-dock-common.css"><style>
+/* Keep the wide data table inside the content column instead of stretching the page. */
+.page{padding:0 10px 18px}
+.filter-toolbar{min-height:54px;margin:0 -10px;padding:9px 12px;background:#fff;display:flex;align-items:center;gap:24px;border-bottom:1px solid #e5e7eb;box-shadow:0 5px 14px rgba(23,35,61,.12);position:relative;z-index:4}
+.filter-heading{display:flex;align-items:center;gap:5px;flex:0 0 auto;font-size:14px;font-weight:700;color:#1f2937;white-space:nowrap}
+.filter-icon{width:16px;height:16px;border:1.5px solid #1f2937;border-radius:50%;position:relative;display:inline-block}
+.filter-icon::after{content:"";position:absolute;width:6px;height:1.5px;background:#1f2937;right:-4px;bottom:-1px;transform:rotate(48deg);transform-origin:left center}
+.filter-field{min-width:0;display:flex;align-items:center;gap:10px;flex:1 1 0}
+.filter-field.material-code{flex-grow:1.2}
+.filter-field label{font-size:13px;font-weight:600;color:#303846;white-space:nowrap}
+.filter-control{height:32px;min-width:0;width:100%;border:1px solid #d6dbe3;border-radius:3px;background:#fff;padding:0 10px;color:#303846;font:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+.filter-control::placeholder{color:#b7bdc7}
+.filter-control:hover{border-color:#8db7f2}
+.filter-control:focus{border-color:#1677ff;box-shadow:0 0 0 2px rgba(22,119,255,.12)}
+.filter-select{appearance:none;padding-right:30px;background-image:linear-gradient(45deg,transparent 50%,#a3aab5 50%),linear-gradient(135deg,#a3aab5 50%,transparent 50%);background-position:calc(100% - 16px) 13px,calc(100% - 11px) 13px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;color:#9aa1ac}
+.filter-actions{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.filter-actions .btn{height:32px;padding:0 12px;font-weight:500}
+.filter-actions .btn.primary{background:#2f67e8;border-color:#2f67e8}
+.filter-actions .btn:hover{border-color:#1677ff;color:#1677ff}
+.filter-actions .btn.primary:hover{background:#2459d6;color:#fff}
+.expand-filter{width:32px;padding:0!important;display:grid;place-items:center;position:relative}
+.expand-filter::before,.expand-filter::after{content:"";position:absolute;width:8px;height:8px;border-right:1.5px solid #303846;border-bottom:1.5px solid #303846;transform:rotate(45deg)}
+.expand-filter::before{top:7px}
+.expand-filter::after{top:12px}
+.page>.btnbar{height:44px;margin:0 -10px 8px;padding:0 18px;background:#f3f6fc;border-bottom:1px solid #e6eaf0}
+.page>.btnbar .left{gap:22px;color:#2463e8}
+.page>.btnbar b{color:#2463e8}
+.page>.btnbar .right{gap:22px}
+.page>.btnbar .notice{color:#ff4d4f}
+.page>.btnbar a{font-weight:500;white-space:nowrap}
+.side-layout>section{min-width:0}
+.side-layout{grid-template-columns:210px minmax(0,1fr)}
+.side{min-height:700px}
+.table-wrap{width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-inline:contain;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:#aeb7c6 #f3f5f8;transition:box-shadow .2s ease}
+.table-wrap:focus-visible{outline:2px solid #1677ff;outline-offset:2px}
+.table-wrap.can-scroll-left{box-shadow:inset 14px 0 12px -14px rgba(23,35,61,.45)}
+.table-wrap.can-scroll-right{box-shadow:inset -14px 0 12px -14px rgba(23,35,61,.45)}
+.table-wrap.can-scroll-left.can-scroll-right{box-shadow:inset 14px 0 12px -14px rgba(23,35,61,.45),inset -14px 0 12px -14px rgba(23,35,61,.45)}
+.table-wrap::-webkit-scrollbar{height:10px}
+.table-wrap::-webkit-scrollbar-track{background:#f3f5f8}
+.table-wrap::-webkit-scrollbar-thumb{background:#aeb7c6;border:2px solid #f3f5f8;border-radius:5px}
+.table-wrap table{width:1820px;min-width:1820px}
+.table-wrap th:nth-child(1),.table-wrap td:nth-child(1){position:sticky;left:0;width:44px;min-width:44px;max-width:44px;text-align:center;background:#fff;z-index:2}
+.table-wrap th:nth-child(2),.table-wrap td:nth-child(2){position:sticky;left:44px;width:120px;min-width:120px;max-width:120px;background:#fff;z-index:2;box-shadow:6px 0 8px -8px rgba(23,35,61,.55)}
+.table-wrap th:last-child,.table-wrap td:last-child{position:sticky;right:0;width:70px;min-width:70px;max-width:70px;background:#fff;z-index:2;box-shadow:-6px 0 8px -8px rgba(23,35,61,.55)}
+.table-wrap thead th:nth-child(1),.table-wrap thead th:nth-child(2),.table-wrap thead th:last-child{background:#f7f7f7;z-index:3}
+@media (prefers-reduced-motion:reduce){.table-wrap{transition:none}}
+@media (max-width:1500px){.filter-toolbar{gap:14px}.filter-field{gap:7px}.page>.btnbar .right{gap:14px}}
+.import-mask{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.42)}.import-mask.show{display:flex}.import-dialog{width:min(920px,calc(100vw - 48px));max-height:calc(100vh - 48px);overflow:hidden;border-radius:4px;background:#fff;box-shadow:0 18px 48px rgba(15,35,66,.28);display:flex;flex-direction:column;animation:import-in .18s ease-out}@keyframes import-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.import-head{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid #e5e7eb}.import-title{font-size:20px;font-weight:600;color:#202938}.import-close{width:38px;height:38px;border:0;border-radius:3px;background:transparent;color:#7b8492;font-size:30px;line-height:1;cursor:pointer}.import-close:hover{background:#f3f4f6;color:#202938}.import-close:focus-visible,.import-action:focus-visible{outline:2px solid rgba(22,119,255,.32);outline-offset:2px}
+.import-body{padding:12px 20px 26px;overflow:auto}.import-table{width:100%;border-collapse:collapse;table-layout:fixed}.import-table th,.import-table td{height:58px;padding:10px 16px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:middle}.import-table th{height:52px;background:#eaf1ff;color:#202938;font-size:16px;font-weight:600}.import-table th:nth-child(1){width:36%}.import-table th:nth-child(2){width:23%;text-align:center}.import-table th:nth-child(3){width:41%;text-align:center}.import-table td:nth-child(2),.import-table td:nth-child(3){text-align:center}.import-item{font-size:15px;color:#202938}.import-action{border:0;background:transparent;color:#1677ff;font:inherit;font-size:15px;cursor:pointer;padding:6px 8px}.import-action:hover{text-decoration:underline;color:#0958d9}.import-operations{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}.import-file-name{display:block;max-width:260px;margin:3px auto 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#8a94a3;font-size:12px}.import-toast{position:fixed;left:50%;bottom:30px;z-index:1500;transform:translate(-50%,18px);padding:9px 18px;border-radius:4px;background:rgba(0,0,0,.82);color:#fff;opacity:0;pointer-events:none;transition:.2s}.import-toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){.import-dialog{animation:none}.import-toast{transition:none}}@media (max-width:640px){.import-dialog{width:calc(100vw - 20px)}.import-body{padding:10px}.import-table{min-width:680px}.import-body{overflow-x:auto}}
+</style></head><body>
+<div class="top"><div class="top-brand"><div class="brand-logo">咸</div><span class="brand-name">咸亨国际主数据管理平台</span><button class="switch-btn" type="button" onclick="window.location.href='index.html'">切换系统</button></div><div class="right"><span>消息通知<i class="badge-dot"></i></span><span>价格审核<i class="badge-dot"></i></span><span class="divider"></span><span>版本更新</span><span>推送ERP</span><span>管理模块</span><span>任务中心</span><span class="divider"></span><span><span class="user-avatar">管</span>管理员 ▾</span></div></div>
+<div class="tabs"><div class="tab">对接物料列表管理 <span class="x">×</span></div><div class="tab active">对接物料列表 <span class="x">×</span></div><div class="tab">物料列表 <span class="x">×</span></div><div class="tab">待推送物料列表 <span class="x">×</span></div><div class="tab">提报商品详情 <span class="x">×</span></div><div class="tab">客户商品清单 <span class="x">×</span></div><div class="tab">对接物料详情 <span class="x">×</span></div><div class="clear">清除</div></div>
+<main class="page"><form class="filter-toolbar" id="materialFilter"><div class="filter-heading"><span class="filter-icon" aria-hidden="true"></span><span>筛选:</span></div><div class="filter-field"><label for="materialName">物料名称</label><input class="filter-control" id="materialName" name="materialName" placeholder="请输入"></div><div class="filter-field material-code"><label for="materialCode">物料编码</label><input class="filter-control" id="materialCode" name="materialCode" placeholder="多个物料编码英文逗号间隔,或在表格中"></div><div class="filter-field"><label for="syncStatus">同步状态</label><select class="filter-control filter-select" id="syncStatus" name="syncStatus"><option value="">请选择</option><option>同步中</option><option>同步完成</option><option>同步失败</option></select></div><div class="filter-field"><label for="brand">品牌</label><select class="filter-control filter-select" id="brand" name="brand"><option value="">请选择</option><option>红旗/HONGQI</option><option>艾思欧/ISO</option><option>海康威视/HIKVISION</option></select></div><div class="filter-actions"><button class="btn primary" type="submit">查询</button><button class="btn" type="reset">重置</button><button class="btn expand-filter" type="button" aria-label="展开更多筛选条件" title="展开更多筛选条件"></button></div></form>
+<div class="btnbar"><div class="left"><b>操作:</b><a>刷新</a></div><div class="right"><a class="notice">点击查看物料推送注意事项</a><a>导入推送备用商品池</a><a href="javascript:void(0)" onclick="openBatchImport()">批量导入</a><a>选中批改⌄</a><a>物料导出</a></div></div>
+<div class="side-layout"><aside class="side"><h3>中国交建-工业品⌄</h3><div>商品资质管理</div><div>商品下单校验管理</div><div>客户属性值管理</div><div>分类管理</div><div>品牌管理</div><div>商品信息订阅池<span class="red">(1)</span></div><div>库存管理</div><div>定时调价</div><div>审核记录</div><div class="active">推送记录</div><div>单位管理</div><div>客户标准库管理</div></aside>
+  <section>
+  <div class="table-wrap" tabindex="0" role="region" aria-label="客户商品清单，可横向滚动查看全部字段"><table><thead><tr><th><span class="check"></span></th><th>编码</th><th>客户物料编码</th><th>客户SPU编码</th><th>名称</th><th>规格型号</th><th>品牌</th><th>基本单位</th><th>商城价</th><th>推送价</th><th>调拨价</th><th>项目期...</th><th>上下架</th><th>最后修改时间</th><th>同步状态</th><th>同步记录</th><th>操作</th></tr></thead><tbody>
+    <tr><td><span class="check"></span></td><td><a href="MPM-物料对接-对接物料列表-对接物料详情.html">B06010115...</a></td><td>-</td><td>-</td><td>真空表</td><td>Y60，-0.1~0...</td><td>红旗/HONGQI</td><td>个</td><td>33.33</td><td>25.00</td><td>-</td><td>-</td><td>上架</td><td>2026-06-01 10:56:14</td><td class="ok">同步完成</td><td><a>同步记录</a></td><td><a>改价</a></td></tr>
+    <tr><td><span class="check"></span></td><td><a href="MPM-物料对接-对接物料列表-对接物料详情.html">B18010240...</a></td><td>-</td><td>-</td><td>中国ISO标准砂</td><td>26小袋</td><td>艾思欧/ISO</td><td>袋</td><td>360.00</td><td>270.00</td><td>-</td><td>-</td><td>上架</td><td>2026-06-01 09:46:45</td><td class="ok">同步完成</td><td><a>同步记录</a></td><td><a>改价</a></td></tr>
+    <tr><td><span class="check"></span></td><td><a href="MPM-物料对接-对接物料列表-对接物料详情.html">B09060060...</a></td><td>-</td><td>-</td><td>反光背心</td><td>荧光绿</td><td>圣驰/SHENGC...</td><td>件</td><td>20.00</td><td>15.00</td><td>-</td><td>-</td><td>上架</td><td>2026-06-01 09:42:50</td><td class="ok">同步完成</td><td><a>同步记录</a></td><td><a>改价</a></td></tr>
+    <tr><td><span class="check"></span></td><td><a href="MPM-物料对接-对接物料列表-对接物料详情.html">B01010003...</a></td><td>-</td><td>-</td><td>动能拦截机体...</td><td>NTMJ-01</td><td>海康威视/HIK...</td><td>套</td><td>30000.00</td><td>22500.00</td><td>-</td><td>-</td><td>上架</td><td>2026-05-29 15:46:27</td><td class="ok">同步完成</td><td><a>同步记录</a></td><td><a>改价</a></td></tr>
+    <tr><td><span class="check"></span></td><td><a href="MPM-物料对接-对接物料列表-对接物料详情.html">B15070263...</a></td><td>-</td><td>-</td><td>不锈钢杯</td><td>高15cm</td><td>美厨/MAXCO...</td><td>个</td><td>57.33</td><td>43.00</td><td>-</td><td>-</td><td>上架</td><td>2026-05-29 15:46:23</td><td class="ok">同步完成</td><td><a>同步记录</a></td><td><a>改价</a></td></tr>
+  </tbody></table></div><div class="pager"><span>共 75477 条</span><span class="pg on">1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>...</span><span>3020</span><span class="pg">›</span><span class="select" style="width:100px">25条/页</span><span>跳至</span><span class="pg" style="width:60px"></span><span>页</span></div></section></div></main>
+<div class="import-mask" id="batchImportMask" onclick="closeBatchImportByMask(event)"><div class="import-dialog" role="dialog" aria-modal="true" aria-labelledby="batchImportTitle"><div class="import-head"><div class="import-title" id="batchImportTitle">批量导入</div><button class="import-close" id="batchImportClose" type="button" aria-label="关闭批量导入" onclick="closeBatchImport()">×</button></div><div class="import-body"><table class="import-table" aria-label="批量导入模板列表"><thead><tr><th>修改项</th><th>模板下载</th><th>操作</th></tr></thead><tbody><tr><td><span class="import-item">客户上下架状态</span></td><td><button class="import-action" type="button" onclick="downloadImportTemplate('status')">下载</button></td><td><div class="import-operations"><button class="import-action" type="button" onclick="selectImportFile('status')">选择文件</button><button class="import-action" type="button" onclick="executeImport('status')">执行</button></div><span class="import-file-name" id="statusFileName"></span><input id="statusFileInput" type="file" accept=".xlsx,.xls,.csv" hidden onchange="updateImportFileName('status',this)"></td></tr><tr><td><span class="import-item">客户物料信息批改</span></td><td><button class="import-action" type="button" onclick="downloadImportTemplate('material')">下载</button></td><td><div class="import-operations"><button class="import-action" type="button" onclick="selectImportFile('material')">选择文件</button><button class="import-action" type="button" onclick="executeImport('material')">执行</button></div><span class="import-file-name" id="materialFileName"></span><input id="materialFileInput" type="file" accept=".xlsx,.xls,.csv" hidden onchange="updateImportFileName('material',this)"></td></tr></tbody></table></div></div></div><div class="import-toast" id="importToast" role="status" aria-live="polite"></div>
+<script src="mpm-topnav-links.js"></script><script>
+document.getElementById('materialFilter').addEventListener('submit',event=>event.preventDefault());
+const tableWrap=document.querySelector('.table-wrap');
+const updateTableScrollState=()=>{const maxScrollLeft=tableWrap.scrollWidth-tableWrap.clientWidth;tableWrap.classList.toggle('can-scroll-left',tableWrap.scrollLeft>1);tableWrap.classList.toggle('can-scroll-right',tableWrap.scrollLeft<maxScrollLeft-1)};
+tableWrap.addEventListener('scroll',updateTableScrollState,{passive:true});
+window.addEventListener('resize',updateTableScrollState,{passive:true});
+updateTableScrollState();
+const importTemplates={status:{filename:'客户上下架状态批改模板.csv',rows:[['物料编码','客户上下架状态'],['B060101150001','上架'],['B180102400026','下架'],['B090600600015','上架']]},material:{filename:'客户物料信息批改模板.csv',rows:[['物料编码','控价金额','实供物料','联系方式','标准库编码/产品编码','最高可改价','最低价','销量','备注'],['B060101150001','32.50',1,'张三-13800138000','10010001','35.00','28.00','126.00','核心仪表物料，价格按项目协议执行'],['B180102400026','280.00',1,'李四-13900139000','10010002','300.00','250.00','58.50','标准砂项目供货，按月核对销量'],['B090600600015','18.00',0,'王五-13700137000','10010003','22.00','15.00','340.00','暂不作为实供物料，仅保留客户信息']]}};
+let importToastTimer;
+function showImportToast(message){const toast=document.getElementById('importToast');toast.textContent=message;toast.classList.add('show');clearTimeout(importToastTimer);importToastTimer=setTimeout(()=>toast.classList.remove('show'),2600)}
+function openBatchImport(){document.getElementById('batchImportMask').classList.add('show');document.body.style.overflow='hidden';setTimeout(()=>document.getElementById('batchImportClose').focus(),0)}
+function closeBatchImport(){document.getElementById('batchImportMask').classList.remove('show');document.body.style.overflow=''}function closeBatchImportByMask(event){if(event.target===event.currentTarget)closeBatchImport()}
+function csvCell(value){const text=String(value??'');return /[",\r\n]/.test(text)?`"${text.replace(/"/g,'""')}"`:text}
+function downloadImportTemplate(type){const template=importTemplates[type];if(!template)return;const csv='\ufeff'+template.rows.map(row=>row.map(csvCell).join(',')).join('\r\n'),url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),link=document.createElement('a');link.href=url;link.download=template.filename;document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);showImportToast(`${template.filename}已下载`)}
+function selectImportFile(type){document.getElementById(`${type}FileInput`).click()}function updateImportFileName(type,input){document.getElementById(`${type}FileName`).textContent=input.files?.[0]?.name||''}
+function executeImport(type){const input=document.getElementById(`${type}FileInput`),name=type==='status'?'客户上下架状态':'客户物料信息批改';if(!input.files?.length){showImportToast(`请先选择${name}文件`);return}showImportToast(`${name}文件已提交，正在执行导入校验`)}
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&document.getElementById('batchImportMask').classList.contains('show'))closeBatchImport()});
+</script>
+</body></html>
+
