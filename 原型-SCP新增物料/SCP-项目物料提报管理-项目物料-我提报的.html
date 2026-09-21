@@ -87,7 +87,7 @@
     .pool-status-tab:focus-visible{z-index:3;outline:2px solid rgba(49,70,211,.3);outline-offset:2px}
     .pool-table-wrap{overflow:auto;border:1px solid #d8dde6;scrollbar-color:#c4c8cf #f2f3f5;scrollbar-width:thin}
     .pool-table-wrap.view-hidden{display:none}
-    .pool-material-table{width:100%;min-width:2420px;border-collapse:separate;border-spacing:0;table-layout:fixed;background:#fff}
+    .pool-material-table{width:100%;min-width:3354px;border-collapse:separate;border-spacing:0;table-layout:fixed;background:#fff}
     .pool-material-table th,.pool-material-table td{height:38px;padding:0 10px;border-right:1px solid #e2e6ec;border-bottom:1px solid #e2e6ec;color:#1f2d3d;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .pool-material-table th{height:36px;background:#f7f7f7;color:#202938;font-weight:600}
     .pool-material-table tbody tr:hover td{background:#f3f7ff}
@@ -97,17 +97,23 @@
     .pool-material-table tbody td:nth-child(1),.pool-material-table tbody td:nth-child(2){background:#fff}
     .pool-material-table th:nth-child(3),.pool-material-table td:nth-child(3){width:190px}
     .pool-material-table th:nth-child(4),.pool-material-table td:nth-child(4){width:190px}
-    .pool-material-table th:nth-child(5),.pool-material-table td:nth-child(5){width:170px}
+    .pool-material-table th:nth-child(5),.pool-material-table td:nth-child(5){width:190px}
     .pool-material-table th:nth-child(6),.pool-material-table td:nth-child(6){width:170px}
-    .pool-material-table th:nth-child(7),.pool-material-table td:nth-child(7){width:90px}
-    .pool-material-table th:nth-child(8),.pool-material-table td:nth-child(8){width:110px}
-    .pool-material-table th:nth-child(9),.pool-material-table td:nth-child(9){width:100px}
-    .pool-material-table th:nth-child(10),.pool-material-table td:nth-child(10){width:200px}
-    .pool-material-table th:nth-child(11),.pool-material-table td:nth-child(11){width:110px}
-    .pool-material-table th:nth-child(12),.pool-material-table td:nth-child(12),.pool-material-table th:nth-child(13),.pool-material-table td:nth-child(13){width:130px}
-    .pool-material-table th:nth-child(14),.pool-material-table td:nth-child(14){width:190px}
-    .pool-material-table th:nth-child(15),.pool-material-table td:nth-child(15),.pool-material-table th:nth-child(16),.pool-material-table td:nth-child(16){width:110px}
-    .pool-material-table th:nth-child(17),.pool-material-table td:nth-child(17){width:80px}
+    .pool-material-table th:nth-child(7),.pool-material-table td:nth-child(7){width:170px}
+    .pool-material-table th:nth-child(8),.pool-material-table td:nth-child(8){width:90px}
+    .pool-material-table th:nth-child(9),.pool-material-table td:nth-child(9){width:110px}
+    .pool-material-table th:nth-child(10),.pool-material-table td:nth-child(10){width:100px}
+    .pool-material-table th:nth-child(11),.pool-material-table td:nth-child(11){width:200px}
+    .pool-material-table th:nth-child(12),.pool-material-table td:nth-child(12){width:110px}
+    .pool-material-table th:nth-child(13),.pool-material-table td:nth-child(13),.pool-material-table th:nth-child(14),.pool-material-table td:nth-child(14){width:130px}
+    .pool-material-table th:nth-child(15),.pool-material-table td:nth-child(15){width:180px}
+    .pool-material-table th:nth-child(16),.pool-material-table td:nth-child(16){width:190px}
+    .pool-material-table th:nth-child(17),.pool-material-table td:nth-child(17),.pool-material-table th:nth-child(18),.pool-material-table td:nth-child(18){width:110px}
+    .pool-material-table th:nth-child(19),.pool-material-table td:nth-child(19){width:80px}
+    .pool-material-table th:nth-child(20),.pool-material-table td:nth-child(20){width:280px}
+    .pool-material-table th:nth-child(21),.pool-material-table td:nth-child(21){width:130px}
+    .pool-material-table th:nth-child(22),.pool-material-table td:nth-child(22){width:90px}
+    .pool-material-table th:nth-child(23),.pool-material-table td:nth-child(23){width:160px}
     .pool-status-on{color:#52c41a!important}
     .pool-status-off{color:#ff4d4f!important}
     .pool-card-wrap{display:none;border:1px solid #d8dde6;background:#fff}
@@ -133,12 +139,12 @@
     .material-flag{position:relative;width:24px;height:24px;display:inline-grid;place-items:center;border-radius:50%;outline:0;color:transparent;font-size:12px;line-height:1;font-weight:600;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);transition:color .16s ease,background-color .16s ease,box-shadow .16s ease}
     .material-flag.factory{background:#f5222d}
     .material-flag.supply{background:#faad14}
-    .material-flag.off{background:#bfbfbf}
     .material-flag:hover,.material-flag:focus-visible{color:#fff}
-    .material-flag.supply:not(.off):hover,.material-flag.supply:not(.off):focus-visible{color:#6b4300}
+    .material-flag.supply:hover,.material-flag.supply:focus-visible{color:#6b4300}
     .material-flag:focus-visible{box-shadow:0 0 0 2px rgba(22,119,255,.28),inset 0 0 0 1px rgba(0,0,0,.05)}
     .pool-card-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;row-gap:10px;padding:14px;border-top:1px solid #f0f0f0}
     .pool-card-field{min-width:0;display:grid;grid-template-columns:64px minmax(0,1fr);align-items:center;gap:6px}
+    .pool-card-field.wide{grid-column:1/-1}
     .pool-card-label{color:rgba(0,0,0,.55);font-size:12px;font-weight:400;white-space:nowrap}
     .pool-card-value{min-width:0;overflow:hidden;color:rgba(0,0,0,.72);font-size:12px;line-height:20px;text-overflow:ellipsis;white-space:nowrap}
     .pool-card-value.price{color:#f5222d;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
@@ -258,7 +264,7 @@
       <div class="page project-page">
         <div class="content-tabs" role="tablist" aria-label="项目物料数据范围">
           <button class="content-tab active" id="submittedTab" type="button" role="tab" aria-selected="true" aria-controls="submittedPanel" onclick="switchMaterialView('submitted')">我提报的</button>
-          <button class="content-tab" id="projectTab" type="button" role="tab" aria-selected="false" aria-controls="projectPanel" onclick="switchMaterialView('project')">项目商品池</button>
+          <button class="content-tab" id="projectTab" type="button" role="tab" aria-selected="false" aria-controls="projectPanel" onclick="switchMaterialView('project')">项目物料池</button>
         </div>
 
         <section class="material-panel active" id="submittedPanel" role="tabpanel" aria-labelledby="submittedTab">
@@ -315,7 +321,7 @@
               <span class="pool-filter-heading">筛选：</span>
               <div class="pool-filter-field project">
                 <label for="poolProject"><span class="required">*</span>项目名称</label>
-                <select class="pool-control" id="poolProject">
+                <select class="pool-control" id="poolProject" onchange="changePoolProject()">
                   <option value="华电商城">华电商城</option>
                   <option value="政采云">政采云</option>
                   <option value="新点商城">新点商城</option>
@@ -327,50 +333,45 @@
                 <button class="btn pool-expand" id="poolExpandButton" type="button" title="展开更多筛选条件" aria-expanded="false" onclick="togglePoolFilters()">⌄</button>
               </div>
             </div>
-            <div class="pool-filter-more" aria-label="项目商品池更多筛选条件">
+            <div class="pool-filter-more" aria-label="项目物料池更多筛选条件">
               <div class="pool-filter-field"><label for="poolCode">咸亨编码</label><input class="pool-control" id="poolCode" placeholder="多个编码用逗号隔开"></div>
-              <div class="pool-filter-field"><label for="poolCustomerCode">客户编码（sku/spu）</label><input class="pool-control" id="poolCustomerCode" placeholder="请输入SKU或SPU编码"></div>
-              <div class="pool-filter-field"><label for="poolTitle">商品标题</label><input class="pool-control" id="poolTitle" placeholder="请输入"></div>
-              <div class="pool-filter-field"><label for="poolBrand">品牌名称</label><input class="pool-control" id="poolBrand" placeholder="请输入"></div>
-              <div class="pool-filter-field"><label for="poolCategory">客户类目</label><input class="pool-control" id="poolCategory" placeholder="请输入"></div>
-              <div class="pool-filter-field"><label for="poolUnit">单位名称</label><input class="pool-control" id="poolUnit" placeholder="请输入"></div>
-              <div class="pool-filter-field"><label for="poolPrice">项目售价</label><input class="pool-control" id="poolPrice" inputmode="decimal" placeholder="请输入金额"></div>
-              <div class="pool-filter-field"><label for="poolStatus">平台状态</label><select class="pool-control" id="poolStatus" onchange="changePoolStatusFilter(this.value)"><option value="">全部</option><option value="已上架">已上架</option><option value="已下架">已下架</option><option value="审核中">审核中</option><option value="已驳回">已驳回</option><option value="已冻结">已冻结</option></select></div>
-              <div class="pool-filter-field"><label for="poolSupplier">供应商名称</label><input class="pool-control" id="poolSupplier" placeholder="请输入"></div>
-              <div class="pool-filter-field"><label for="poolFactory">厂控物料（是/否）</label><select class="pool-control" id="poolFactory"><option value="">全部</option><option value="是">是</option><option value="否">否</option></select></div>
-              <div class="pool-filter-field"><label for="poolActual">实供物料（是/否）</label><select class="pool-control" id="poolActual"><option value="">全部</option><option value="是">是</option><option value="否">否</option></select></div>
+              <div class="pool-filter-field"><label for="poolCustomerTitle">客户标题</label><input class="pool-control" id="poolCustomerTitle" placeholder="请输入客户标题"></div>
+              <div class="pool-filter-field"><label for="poolBrandName">品牌名称</label><input class="pool-control" id="poolBrandName" placeholder="请输入品牌名称"></div>
+              <div class="pool-filter-field"><label for="poolCategoryName">类目名称</label><input class="pool-control" id="poolCategoryName" placeholder="请输入类目名称"></div>
+              <div class="pool-filter-field"><label for="poolManualRemark">备注（手动导入）</label><input class="pool-control" id="poolManualRemark" placeholder="请输入备注"></div>
               <div class="pool-filter-field"><label for="poolStandardCode">标准库编码/产品编码</label><input class="pool-control" id="poolStandardCode" placeholder="请输入"></div>
+              <div class="pool-filter-field"><label for="poolMaterialCode">物资编码</label><input class="pool-control" id="poolMaterialCode" placeholder="请输入物资编码"></div>
             </div>
           </form>
 
-          <section class="pool-toolbar" aria-label="项目商品池操作">
+          <section class="pool-toolbar" aria-label="项目物料池操作">
             <div class="pool-toolbar-left"><b>操作：</b><button class="text-action" type="button" onclick="refreshPoolMaterials()">刷新</button></div>
             <div class="pool-toolbar-right">
-              <button class="btn primary" type="button" onclick="exportMaterials('项目商品池')">物料导出</button>
-              <div class="view-switch" role="group" aria-label="项目商品池展示模式">
+              <button class="btn primary" type="button" onclick="exportMaterials('项目物料池')">物料导出</button>
+              <div class="view-switch" role="group" aria-label="项目物料池展示模式">
                 <button class="view-button active" id="poolListViewButton" type="button" title="列表模式" aria-label="列表模式" aria-pressed="true" onclick="setPoolView('list')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
                 <button class="view-button" id="poolCardViewButton" type="button" title="卡片模式" aria-label="卡片模式" aria-pressed="false" onclick="setPoolView('card')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
               </div>
             </div>
           </section>
 
-          <div class="pool-status-tabs" role="tablist" aria-label="项目商品池状态">
+          <div class="pool-status-tabs" role="tablist" aria-label="项目物料池状态">
             <button class="pool-status-tab" id="poolStatusAll" type="button" role="tab" aria-selected="false" onclick="setPoolStatusTab('all')">全部</button>
             <button class="pool-status-tab active" id="poolStatusOnline" type="button" role="tab" aria-selected="true" onclick="setPoolStatusTab('online')">已上架</button>
             <button class="pool-status-tab" id="poolStatusOther" type="button" role="tab" aria-selected="false" onclick="setPoolStatusTab('other')">其他状态</button>
           </div>
 
-          <div class="pool-table-wrap" id="poolTableWrap" tabindex="0" role="region" aria-label="项目商品池列表，可横向滚动查看全部字段">
+          <div class="pool-table-wrap" id="poolTableWrap" tabindex="0" role="region" aria-label="项目物料池列表，可横向滚动查看全部字段">
             <table class="pool-material-table">
               <thead><tr>
                 <th><input class="row-select" id="selectAllPool" type="checkbox" aria-label="全选当前项目商品" onchange="toggleAllPool(this.checked)"></th>
-                <th>咸亨编码</th><th>客户编码（sku/spu）</th><th>商品标题</th><th>品牌名称</th><th>客户类目</th><th>单位名称</th><th>项目售价</th><th>平台状态</th><th>供应商名称</th><th>控价金额</th><th>厂控物料（是/否）</th><th>实供物料（是/否）</th><th>标准库编码/产品编码</th><th>最高可改价</th><th>最低价</th><th>销量</th>
+                <th>咸亨编码</th><th>客户编码（sku/spu）</th><th>咸亨标题</th><th>客户标题</th><th>品牌名称</th><th>客户类目</th><th>单位名称</th><th>项目售价</th><th>平台状态</th><th>供应商名称</th><th>控价金额</th><th>厂控物料（是/否）</th><th>实供物料（是/否）</th><th>备注（手动导入）</th><th>标准库编码/产品编码</th><th>最高可改价</th><th>最低价</th><th>销量</th><th>销售区域&amp;库存</th><th>是否倍数下单</th><th>起订量</th><th>物资编码</th>
               </tr></thead>
               <tbody id="poolMaterialBody"></tbody>
             </table>
             <div class="empty-row" id="poolEmptyRow">暂无符合条件的项目商品</div>
           </div>
-          <div class="pool-card-wrap" id="poolCardWrap" role="region" aria-label="项目商品池卡片列表">
+          <div class="pool-card-wrap" id="poolCardWrap" role="region" aria-label="项目物料池卡片列表">
             <div class="pool-card-selectbar"><label><input class="row-select" id="selectAllPoolCards" type="checkbox" aria-label="全选当前项目商品" onchange="toggleAllPool(this.checked)"><span>全选当前页</span></label></div>
             <div class="pool-card-grid" id="poolCardGrid"></div>
             <div class="pool-card-empty" id="poolCardEmpty">暂无符合条件的项目商品</div>
@@ -447,6 +448,7 @@
     let poolView = 'list';
     let poolStatusTab = 'online';
     const poolOtherStatuses = new Set(['已下架','审核中','已驳回','已冻结']);
+    const poolSelectedIds = new Set();
     let materialDetailLastFocus = null;
     let previewGroups = { main: [], detail: [] };
     let activeMainImageIndex = 0;
@@ -525,41 +527,49 @@
       submittedPanel.hidden = view !== 'submitted';
       projectPanel.hidden = view !== 'project';
       if(view === 'project') applyPoolFilters();
-      showToast(`已切换至${view === 'submitted' ? '我提报的' : '项目商品池'}`);
+      showToast(`已切换至${view === 'submitted' ? '我提报的' : '项目物料池'}`);
     }
 
     function renderPoolMaterials(){
       document.getElementById('poolMaterialBody').innerHTML = poolFilteredRows.map(row => `<tr>
-        <td><input class="row-select pool-row-select" type="checkbox" aria-label="选择${escapeHtml(row.code)}"></td>
+        <td><input class="row-select pool-row-select" type="checkbox" aria-label="选择${escapeHtml(row.code)}" ${poolSelectedIds.has(row.id) ? 'checked' : ''} onchange="togglePoolSelection(${row.id},this.checked)"></td>
         <td><a href="#" onclick="openMaterialDetail(${row.id});return false;">${escapeHtml(row.code)}</a></td>
         <td title="${escapeHtml(row.customerCode)}">${escapeHtml(row.customerCode)}</td>
-        <td title="${escapeHtml(row.title)}"><a href="#" onclick="openMaterialDetail(${row.id});return false;">${escapeHtml(row.title)}</a></td>
+        <td title="${escapeHtml(row.xhTitle)}">${escapeHtml(row.xhTitle)}</td>
+        <td title="${escapeHtml(row.customerTitle)}"><a href="#" onclick="openMaterialDetail(${row.id});return false;">${escapeHtml(row.customerTitle)}</a></td>
         <td title="${escapeHtml(row.brand)}">${escapeHtml(row.brand)}</td>
         <td title="${escapeHtml(row.category)}">${escapeHtml(row.category)}</td>
         <td>${escapeHtml(row.unit)}</td><td>${escapeHtml(row.price)}</td>
         <td class="${row.status === '已上架' ? 'pool-status-on' : 'pool-status-off'}">${escapeHtml(row.status)}</td>
         <td title="${escapeHtml(row.supplier)}">${escapeHtml(row.supplier)}</td><td>${escapeHtml(row.controlPrice)}</td>
         <td>${escapeHtml(row.factoryControlled)}</td><td>${escapeHtml(row.actualSupply)}</td>
+        <td title="${escapeHtml(row.manualRemark)}">${escapeHtml(row.manualRemark)}</td>
         <td title="${escapeHtml(row.standardCode)}">${escapeHtml(row.standardCode)}</td><td>${escapeHtml(row.maxPrice)}</td><td>${escapeHtml(row.minPrice)}</td><td>${escapeHtml(row.sales)}</td>
+        <td title="${escapeHtml(row.salesRegionInventory)}">${escapeHtml(row.salesRegionInventory)}</td><td>${escapeHtml(row.multipleOrder)}</td><td>${escapeHtml(row.minimumOrderQty)}</td><td title="${escapeHtml(row.materialCode)}">${escapeHtml(row.materialCode)}</td>
       </tr>`).join('');
       document.getElementById('poolCardGrid').innerHTML = poolFilteredRows.map(row => {
         const thumbIndex = (row.id - 1) % 6 + 1;
         const statusOff = row.status !== '已上架';
-        const factoryOff = row.factoryControlled !== '是';
-        const supplyOff = row.actualSupply !== '是';
-        return `<article class="pool-card" role="button" tabindex="0" aria-label="查看${escapeHtml(row.title)}物料详情" onclick="handlePoolCardClick(event,${row.id})" onkeydown="handlePoolCardKeydown(event,${row.id})">
+        const factoryFlagHtml = row.factoryControlled === '是'
+          ? '<span class="material-flag factory" tabindex="0" role="img" aria-label="厂控：是">控</span>'
+          : '';
+        const supplyFlagHtml = row.actualSupply === '是'
+          ? '<span class="material-flag supply" tabindex="0" role="img" aria-label="实供：是">实</span>'
+          : '';
+        return `<article class="pool-card" role="button" tabindex="0" aria-label="查看${escapeHtml(row.customerTitle)}物料详情" onclick="handlePoolCardClick(event,${row.id})" onkeydown="handlePoolCardKeydown(event,${row.id})">
           <div class="pool-card-main">
-            <div class="pool-card-check"><input class="row-select pool-row-select" type="checkbox" aria-label="选择${escapeHtml(row.code)}"></div>
+            <div class="pool-card-check"><input class="row-select pool-row-select" type="checkbox" aria-label="选择${escapeHtml(row.code)}" ${poolSelectedIds.has(row.id) ? 'checked' : ''} onchange="togglePoolSelection(${row.id},this.checked)"></div>
             <div class="pool-card-media">
               <div class="pool-card-thumb"><img src="../assets/material-thumbs/material-${thumbIndex}.png" alt="${escapeHtml(row.title)}商品图" width="280" height="238" loading="lazy"></div>
-              <a class="pool-card-title" href="#" title="${escapeHtml(row.title)}" onclick="openMaterialDetail(${row.id});return false;">${escapeHtml(row.title)}</a>
+              <a class="pool-card-title" href="#" title="${escapeHtml(row.customerTitle)}" onclick="openMaterialDetail(${row.id});return false;">${escapeHtml(row.customerTitle)}</a>
               <div class="pool-card-status-row">
                 <span class="pool-card-status ${statusOff ? 'off' : ''}">平台状态：${escapeHtml(row.status)}</span>
-                <span class="material-flag factory ${factoryOff ? 'off' : ''}" tabindex="0" role="img" aria-label="厂控：${escapeHtml(row.factoryControlled)}">控</span>
-                <span class="material-flag supply ${supplyOff ? 'off' : ''}" tabindex="0" role="img" aria-label="实供：${escapeHtml(row.actualSupply)}">实</span>
+                ${factoryFlagHtml}
+                ${supplyFlagHtml}
               </div>
             </div>
             <div class="pool-card-meta">
+              <div class="pool-card-field wide"><span class="pool-card-label">咸亨标题</span><span class="pool-card-value" title="${escapeHtml(row.xhTitle)}">${escapeHtml(row.xhTitle)}</span></div>
               <div class="pool-card-field"><span class="pool-card-label">咸亨编码</span><a class="pool-card-value pool-card-code" href="#" onclick="openMaterialDetail(${row.id});return false;">${escapeHtml(row.code)}</a></div>
               <div class="pool-card-field"><span class="pool-card-label">客户编码</span><span class="pool-card-value" title="${escapeHtml(row.customerCode)}">${escapeHtml(row.customerCode)}</span></div>
               <div class="pool-card-field"><span class="pool-card-label">项目售价</span><span class="pool-card-value price">¥${escapeHtml(row.price)}</span></div>
@@ -574,8 +584,14 @@
       document.getElementById('poolCardEmpty').classList.toggle('show', poolFilteredRows.length === 0);
       document.getElementById('poolCardGrid').style.display = poolFilteredRows.length ? 'grid' : 'none';
       document.getElementById('poolTotal').textContent = poolFilteredRows.length;
-      document.getElementById('selectAllPool').checked = false;
-      document.getElementById('selectAllPoolCards').checked = false;
+      const allSelected = poolFilteredRows.length > 0 && poolFilteredRows.every(row => poolSelectedIds.has(row.id));
+      const someSelected = poolFilteredRows.some(row => poolSelectedIds.has(row.id));
+      const tableSelectAll = document.getElementById('selectAllPool');
+      const cardSelectAll = document.getElementById('selectAllPoolCards');
+      tableSelectAll.checked = allSelected;
+      tableSelectAll.indeterminate = !allSelected && someSelected;
+      cardSelectAll.checked = allSelected;
+      cardSelectAll.indeterminate = !allSelected && someSelected;
     }
 
     function setPoolView(view){
@@ -608,20 +624,23 @@
       const codeText = document.getElementById('poolCode').value.trim();
       const codes = codeText.split(/[,，\n]+/).map(value => value.trim().toLowerCase()).filter(Boolean);
       const values = {
-        customerCode: document.getElementById('poolCustomerCode').value.trim(), title: document.getElementById('poolTitle').value.trim(),
-        brand: document.getElementById('poolBrand').value.trim(), category: document.getElementById('poolCategory').value.trim(), unit: document.getElementById('poolUnit').value.trim(),
-        price: document.getElementById('poolPrice').value.trim(), status: document.getElementById('poolStatus').value, supplier: document.getElementById('poolSupplier').value.trim(),
-        factoryControlled: document.getElementById('poolFactory').value, actualSupply: document.getElementById('poolActual').value, standardCode: document.getElementById('poolStandardCode').value.trim()
+        customerTitle: document.getElementById('poolCustomerTitle').value.trim(),
+        brandName: document.getElementById('poolBrandName').value.trim(),
+        categoryName: document.getElementById('poolCategoryName').value.trim(),
+        manualRemark: document.getElementById('poolManualRemark').value.trim(),
+        standardCode: document.getElementById('poolStandardCode').value.trim(),
+        materialCode: document.getElementById('poolMaterialCode').value.trim()
       };
       const matchesStatusTab = row => poolStatusTab === 'all' || (poolStatusTab === 'online' ? row.status === '已上架' : poolOtherStatuses.has(row.status));
       poolFilteredRows = poolMaterialRows.filter(row => row.project === project
         && matchesStatusTab(row)
         && (!codes.length || codes.some(code => row.code.toLowerCase().includes(code)))
-        && includesValue(row.customerCode, values.customerCode) && includesValue(row.title, values.title)
-        && includesValue(row.brand, values.brand) && includesValue(row.category, values.category) && includesValue(row.unit, values.unit)
-        && includesValue(row.price, values.price) && (!values.status || row.status === values.status) && includesValue(row.supplier, values.supplier)
-        && (!values.factoryControlled || row.factoryControlled === values.factoryControlled)
-        && (!values.actualSupply || row.actualSupply === values.actualSupply) && includesValue(row.standardCode, values.standardCode));
+        && includesValue(row.customerTitle, values.customerTitle)
+        && includesValue(row.brand, values.brandName)
+        && includesValue(row.category, values.categoryName)
+        && includesValue(row.manualRemark, values.manualRemark)
+        && includesValue(row.standardCode, values.standardCode)
+        && includesValue(row.materialCode, values.materialCode));
       renderPoolMaterials();
     }
 
@@ -635,26 +654,29 @@
     }
 
     function setPoolStatusTab(tab){
+      clearPoolSelection();
       poolStatusTab = ['all','online','other'].includes(tab) ? tab : 'online';
-      document.getElementById('poolStatus').value = '';
       updatePoolStatusTabs();
       applyPoolFilters();
     }
 
-    function changePoolStatusFilter(value){
-      poolStatusTab = value === '已上架' ? 'online' : value ? 'other' : 'all';
-      updatePoolStatusTabs();
-      applyPoolFilters();
-    }
-
-    function searchPoolMaterials(event){ if(event) event.preventDefault(); applyPoolFilters(); showToast(`查询完成，共${poolFilteredRows.length}条`); }
-    function resetPoolMaterials(){
-      document.getElementById('poolFilter').reset();
-      document.getElementById('poolProject').value = '华电商城';
+    function clearPoolSelection(){ poolSelectedIds.clear(); }
+    function changePoolProject(){
+      clearPoolSelection();
       poolStatusTab = 'online';
       updatePoolStatusTabs();
       applyPoolFilters();
-      showToast('项目商品池筛选条件已重置');
+      showToast(`已加载${document.getElementById('poolProject').value}项目物料`);
+    }
+    function searchPoolMaterials(event){ if(event) event.preventDefault(); clearPoolSelection(); applyPoolFilters(); showToast(`查询完成，共${poolFilteredRows.length}条`); }
+    function resetPoolMaterials(){
+      const currentProject = document.getElementById('poolProject').value;
+      clearPoolSelection();
+      document.getElementById('poolFilter').reset();
+      document.getElementById('poolProject').value = currentProject;
+      updatePoolStatusTabs();
+      applyPoolFilters();
+      showToast('项目物料池筛选条件已重置');
     }
     function togglePoolFilters(){
       const filter = document.getElementById('poolFilter');
@@ -684,6 +706,12 @@
       const activeMainImage = previewGroups.main[0];
       const mainThumbsHtml = previewGroups.main.map((image,index) => `<button class="material-detail-main-thumb ${index === 0 ? 'active' : ''}" type="button" aria-label="切换为${escapeHtml(image.alt)}" aria-pressed="${index === 0 ? 'true' : 'false'}" onclick="selectMaterialMainImage(${index})"><img src="${image.src}" alt="" width="56" height="56" loading="lazy"></button>`).join('');
       const detailImagesHtml = previewGroups.detail.map((image,index) => `<button class="material-detail-long-image" type="button" aria-label="预览${escapeHtml(image.alt)}" onclick="openImagePreview('detail',${index})"><img src="${image.src}" alt="${escapeHtml(image.alt)}" width="760" height="560" loading="lazy"></button>`).join('');
+      const factoryFlagHtml = row.factoryControlled === '是'
+        ? '<span class="material-flag factory" tabindex="0" role="img" aria-label="厂控：是">控</span>'
+        : '';
+      const supplyFlagHtml = row.actualSupply === '是'
+        ? '<span class="material-flag supply" tabindex="0" role="img" aria-label="实供：是">实</span>'
+        : '';
       document.getElementById('materialDetailBody').innerHTML = `
         <section class="material-detail-overview" aria-label="物料核心信息">
           <div class="material-detail-gallery" aria-label="主图图库">
@@ -699,7 +727,7 @@
             <div class="material-detail-summary-row"><span class="material-detail-label">咸亨编码</span><span class="material-detail-value">${escapeHtml(row.code)}</span></div>
             <div class="material-detail-summary-row"><span class="material-detail-label">客户编码（sku/spu）</span><span class="material-detail-value">${escapeHtml(row.customerCode)}</span></div>
             <div class="material-detail-summary-row"><span class="material-detail-label">项目售价</span><span class="material-detail-value price">¥${escapeHtml(row.price)}</span></div>
-            <div class="material-detail-summary-row"><span class="material-detail-label">平台状态</span><span class="material-detail-status-group"><span class="material-detail-tag ${row.status === '已上架' ? '' : 'off'}">${escapeHtml(row.status)}</span><span class="material-flag factory ${row.factoryControlled === '是' ? '' : 'off'}" tabindex="0" role="img" aria-label="厂控：${escapeHtml(row.factoryControlled)}">控</span><span class="material-flag supply ${row.actualSupply === '是' ? '' : 'off'}" tabindex="0" role="img" aria-label="实供：${escapeHtml(row.actualSupply)}">实</span></span></div>
+            <div class="material-detail-summary-row"><span class="material-detail-label">平台状态</span><span class="material-detail-status-group"><span class="material-detail-tag ${row.status === '已上架' ? '' : 'off'}">${escapeHtml(row.status)}</span>${factoryFlagHtml}${supplyFlagHtml}</span></div>
           </div>
         </section>
         <section class="material-detail-section">
@@ -820,13 +848,26 @@
     function closeImagePreviewByMask(event){ if(event.target === event.currentTarget) closeImagePreview(); }
 
     function refreshSubmittedMaterials(){ applySubmittedFilters(); showToast('我提报的数据已刷新'); }
-    function refreshPoolMaterials(){ applyPoolFilters(); showToast('项目商品池数据已刷新'); }
-    function exportMaterials(scope){ showToast(scope + '导出任务已创建（原型）'); }
+    function refreshPoolMaterials(){ clearPoolSelection(); applyPoolFilters(); showToast('项目物料池数据已刷新'); }
+    function exportMaterials(scope){
+      if(scope === '项目物料池'){
+        showToast(poolSelectedIds.size ? `已按勾选范围导出${poolSelectedIds.size}条物料（原型）` : `已按当前查询条件导出${poolFilteredRows.length}条物料（原型）`);
+        return;
+      }
+      showToast(scope + '导出任务已创建（原型）');
+    }
     function toggleAllSubmitted(checked){ document.querySelectorAll('.submitted-row-select').forEach(item => { item.checked = checked; }); }
+    function togglePoolSelection(id,checked){
+      if(checked) poolSelectedIds.add(id);
+      else poolSelectedIds.delete(id);
+      renderPoolMaterials();
+    }
     function toggleAllPool(checked){
-      document.querySelectorAll('.pool-row-select').forEach(item => { item.checked = checked; });
-      document.getElementById('selectAllPool').checked = checked;
-      document.getElementById('selectAllPoolCards').checked = checked;
+      poolFilteredRows.forEach(row => {
+        if(checked) poolSelectedIds.add(row.id);
+        else poolSelectedIds.delete(row.id);
+      });
+      renderPoolMaterials();
     }
     function viewSyncRecord(sku){ showToast('查看' + sku + '同步记录（原型）'); }
     function showToast(text){

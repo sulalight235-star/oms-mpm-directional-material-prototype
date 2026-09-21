@@ -153,7 +153,7 @@
     }
     .filter-row {
       display: grid;
-      grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr) minmax(280px, 1.4fr) minmax(220px, 1fr) auto;
+      grid-template-columns: repeat(3, minmax(280px, 1fr));
       gap: 12px 16px;
       align-items: center;
     }
@@ -192,7 +192,7 @@
       padding: 0;
     }
     .f-daterange .arrow { color: var(--text-light); }
-    .filter-actions { display: flex; align-items: center; gap: 8px; justify-self: end; }
+    .filter-actions { display: flex; align-items: center; gap: 8px; justify-self: end; grid-column: 1 / -1; }
     .icon-btn {
       width: 32px;
       height: 32px;
@@ -257,11 +257,14 @@
 
     .table-wrap {
       overflow-x: auto;
+      scrollbar-color: #bfbfbf transparent;
     }
     table {
       width: 100%;
+      min-width: 1880px;
       border-collapse: collapse;
       font-size: 13px;
+      table-layout: fixed;
     }
     thead th {
       background: var(--bg-table-head);
@@ -273,6 +276,25 @@
       white-space: nowrap;
       position: sticky;
       top: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: col-resize;
+      user-select: none;
+    }
+    thead th:hover { background: #f0f5ff; color: var(--primary); }
+    thead th.is-expanded { background: #e6f4ff; color: var(--primary); }
+    thead th.is-expanded::after {
+      content: '已展开';
+      display: inline-block;
+      margin-left: 6px;
+      padding: 0 5px;
+      color: var(--primary);
+      background: #fff;
+      border: 1px solid #91caff;
+      border-radius: 8px;
+      font-size: 10px;
+      line-height: 16px;
+      vertical-align: 1px;
     }
     tbody td {
       padding: 11px 12px;
@@ -280,6 +302,8 @@
       color: var(--text-body);
       vertical-align: middle;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     tbody tr:hover td { background: #fafbfc; }
     .td-link {
@@ -311,6 +335,28 @@
     .status-fail::before { background: var(--error); }
     .status-running { background: var(--primary-bg); color: var(--primary); border-color: #91caff; }
     .status-running::before { background: var(--primary); }
+    .status-waiting { background: var(--warning-bg); color: #ad6800; border-color: var(--warning-border); }
+    .status-waiting::before { background: var(--warning); }
+    .status-review { background: #f9f0ff; color: #722ed1; border-color: #d3adf7; }
+    .status-review::before { background: #722ed1; }
+
+    .mode-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      line-height: 20px;
+      border: 1px solid;
+    }
+    .mode-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
+    .mode-fc { color: #0958d9; background: #e6f4ff; border-color: #91caff; }
+    .mode-fc::before { background: #1677ff; }
+    .mode-mq { color: #531dab; background: #f9f0ff; border-color: #d3adf7; }
+    .mode-mq::before { background: #722ed1; }
+    .mode-unknown { color: var(--text-sub); background: #fafafa; border-color: var(--border); }
+    .mode-unknown::before { background: #bfbfbf; }
 
     /* 分页 */
     .pagination {
@@ -323,6 +369,20 @@
       color: var(--text-sub);
     }
     .pagination-right { display: flex; align-items: center; gap: 4px; }
+    #pageNumbers { display: inline-flex; align-items: center; gap: 4px; }
+    .page-size-select {
+      height: 28px;
+      margin-left: 8px;
+      padding: 0 24px 0 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      color: var(--text-body);
+      font-size: 12px;
+      cursor: pointer;
+      outline: none;
+    }
+    .page-size-select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(22,119,255,.1); }
     .page-btn {
       min-width: 28px;
       height: 28px;
@@ -370,6 +430,122 @@
     .message-item.success { border-color: var(--success-border); color: var(--success); }
     .message-item.warning { border-color: var(--warning-border); color: var(--warning); }
     .message-item.error { border-color: var(--error-border); color: var(--error); }
+
+    /* ── 队列状态抽屉 ── */
+    .drawer-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 21, 41, .34);
+      z-index: 170;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .2s ease, visibility .2s ease;
+    }
+    .drawer-mask.open { opacity: 1; visibility: visible; }
+    .queue-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(640px, calc(100vw - 48px));
+      height: 100vh;
+      background: #fff;
+      box-shadow: -8px 0 28px rgba(0, 21, 41, .16);
+      z-index: 180;
+      transform: translateX(100%);
+      visibility: hidden;
+      pointer-events: none;
+      transition: transform .24s ease-out, visibility 0s linear .24s;
+      display: flex;
+      flex-direction: column;
+    }
+    .queue-drawer.open { transform: translateX(0); visibility: visible; pointer-events: auto; transition-delay: 0s; }
+    .drawer-head {
+      min-height: 64px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .drawer-title { color: var(--text-title); font-size: 16px; font-weight: 600; }
+    .drawer-subtitle { margin-top: 4px; color: var(--text-sub); font-size: 12px; }
+    .drawer-head-actions { display: flex; align-items: center; gap: 8px; }
+    .drawer-close {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--text-sub);
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+    .drawer-close:hover { background: #f5f5f5; color: var(--text-title); }
+    .drawer-body { flex: 1; min-height: 0; overflow-y: auto; padding: 16px 20px 24px; }
+    .queue-overview { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .queue-card {
+      position: relative;
+      border: 1px solid #d6e4ff;
+      border-radius: 8px;
+      padding: 14px 16px;
+      background: linear-gradient(145deg, #f7faff 0%, #fff 72%);
+      overflow: hidden;
+    }
+    .queue-card.mq { border-color: #efdbff; background: linear-gradient(145deg, #fbf7ff 0%, #fff 72%); }
+    .queue-card::after { content: ''; position: absolute; width: 68px; height: 68px; border-radius: 50%; right: -24px; top: -26px; background: rgba(22,119,255,.08); }
+    .queue-card.mq::after { background: rgba(114,46,209,.08); }
+    .queue-card-title { display: flex; align-items: center; gap: 8px; color: var(--text-title); font-weight: 600; }
+    .queue-card-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 4px rgba(22,119,255,.12); }
+    .queue-card.mq .queue-card-dot { background: #722ed1; box-shadow: 0 0 0 4px rgba(114,46,209,.12); }
+    .queue-metrics { display: grid; grid-template-columns: 1fr 1fr; margin-top: 14px; }
+    .queue-metric + .queue-metric { border-left: 1px solid var(--border-light); padding-left: 16px; }
+    .queue-metric-label { color: var(--text-sub); font-size: 12px; }
+    .queue-metric-value { margin-top: 3px; color: var(--text-title); font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; }
+    .queue-metric-unit { margin-left: 2px; color: var(--text-sub); font-size: 12px; font-weight: 400; }
+    .queue-note { margin-top: 10px; padding: 8px 10px; border-radius: 4px; background: #fffbe6; border: 1px solid #ffe58f; color: #874d00; font-size: 12px; line-height: 1.6; }
+    .queue-tabs { display: flex; align-items: center; margin-top: 16px; border-bottom: 1px solid var(--border-light); }
+    .queue-tab {
+      position: relative;
+      padding: 10px 16px;
+      border: 0;
+      background: transparent;
+      color: var(--text-sub);
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .queue-tab.active { color: var(--primary); font-weight: 600; }
+    .queue-tab.active::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; background: var(--primary); }
+    .queue-list { min-height: 270px; padding-top: 12px; }
+    .queue-task {
+      padding: 13px 14px;
+      border: 1px solid var(--border-light);
+      border-radius: 7px;
+      background: #fff;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .queue-task + .queue-task { margin-top: 10px; }
+    .queue-task:hover { border-color: #91caff; box-shadow: 0 2px 10px rgba(22,119,255,.08); }
+    .queue-task-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .queue-task-title { color: var(--text-title); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .queue-task-code { margin-top: 4px; color: var(--text-sub); font-size: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .queue-task-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border-light); font-size: 12px; }
+    .queue-task-meta dt { color: var(--text-sub); }
+    .queue-task-meta dd { margin-top: 2px; color: var(--text-title); font-variant-numeric: tabular-nums; }
+    .queue-position { color: #d46b08 !important; font-weight: 600; }
+    .queue-empty { display: grid; place-items: center; min-height: 260px; color: var(--text-sub); text-align: center; }
+    .queue-empty strong { display: block; color: var(--text-title); margin-bottom: 6px; font-weight: 600; }
+    .queue-skeleton { display: grid; gap: 10px; padding-top: 12px; }
+    .skeleton-line { height: 72px; border-radius: 7px; background: linear-gradient(90deg,#f5f5f5 25%,#fafafa 37%,#f5f5f5 63%); background-size: 400% 100%; animation: skeleton 1.4s ease infinite; }
+    @keyframes skeleton { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+    .btn[disabled] { cursor: not-allowed; opacity: .56; }
+    .toolbar-btn { display: inline-flex; align-items: center; gap: 6px; }
+    .toolbar-btn svg { width: 14px; height: 14px; }
+    :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
 
     /* 右下角修订提示：对齐工作台演示提示样式 */
     .change-tip {
@@ -535,6 +711,8 @@
             <option>成功</option>
             <option>失败</option>
             <option>处理中</option>
+            <option>待开始</option>
+            <option>待审核</option>
           </select>
         </div>
         <div class="filter-item">
@@ -543,18 +721,28 @@
             <input type="text" placeholder="请选择" id="filterStart" />
             <span class="arrow">→</span>
             <input type="text" placeholder="请选择" id="filterEnd" />
-            <span style="font-size:14px;">📅</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
           </div>
         </div>
         <div class="filter-item">
           <span class="lbl">文件名</span>
           <input class="f-input" placeholder="请输入" id="filterFileName" />
         </div>
+        <div class="filter-item">
+          <span class="lbl">创建人</span>
+          <input class="f-input" placeholder="请输入姓名" id="filterCreator" autocomplete="off" />
+        </div>
+        <div class="filter-item">
+          <span class="lbl">执行方式</span>
+          <select id="filterExecuteMode" class="f-select">
+            <option value="">请选择</option>
+            <option value="FC">云上FC执行</option>
+            <option value="MQ">本地MQ队列执行</option>
+          </select>
+        </div>
         <div class="filter-actions">
-          <button class="icon-btn" type="button" title="高级筛选">✎</button>
           <button class="btn btn-primary" type="button" id="searchBtn">查 询</button>
           <button class="btn" type="button" id="resetBtn">重 置</button>
-          <button class="icon-btn" type="button" title="收起" style="border:0;background:transparent;">⌃</button>
         </div>
       </form>
     </section>
@@ -564,25 +752,47 @@
       <div class="sub-toolbar">
         <div class="sub-toolbar-left">操作：</div>
         <div class="sub-toolbar-right">
-          <button class="btn-link" type="button" id="refreshBtn">刷新</button>
+          <button class="btn-link toolbar-btn" type="button" id="queueStatusBtn">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h10M4 12h16M4 17h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="7" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
+            队列状态
+          </button>
+          <button class="btn-link toolbar-btn" type="button" id="refreshBtn">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6v5h-5M4 18v-5h5M6.1 8.5A7 7 0 0 1 18.4 7M17.9 15.5A7 7 0 0 1 5.6 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            刷新
+          </button>
         </div>
       </div>
 
       <div class="table-wrap">
-        <table>
+        <table id="taskTable">
+          <colgroup>
+            <col data-col="status" style="width:90px" />
+            <col data-col="type" style="width:220px" />
+            <col data-col="code" style="width:190px" />
+            <col data-col="start" style="width:170px" />
+            <col data-col="used" style="width:100px" />
+            <col data-col="remain" style="width:130px" />
+            <col data-col="progress" style="width:105px" />
+            <col data-col="done" style="width:170px" />
+            <col data-col="executeMode" style="width:150px" />
+            <col data-col="creator" style="width:100px" />
+            <col data-col="importFile" style="width:230px" />
+            <col data-col="exportFile" style="width:230px" />
+          </colgroup>
           <thead>
             <tr>
-              <th>状态</th>
-              <th>类型</th>
-              <th>任务编码</th>
-              <th>开始时间</th>
-              <th>已用时</th>
-              <th>预估剩余时间</th>
-              <th>任务进度</th>
-              <th>完成时间</th>
-              <th>创建人</th>
-              <th>导入文件</th>
-              <th>导出文件</th>
+              <th data-key="status" title="双击展开当前列">状态</th>
+              <th data-key="type" title="双击展开当前列">类型</th>
+              <th data-key="code" title="双击展开当前列">任务编码</th>
+              <th data-key="start" title="双击展开当前列">开始时间</th>
+              <th data-key="used" title="双击展开当前列">已用时</th>
+              <th data-key="remain" title="双击展开当前列">预估剩余时间</th>
+              <th data-key="progress" title="双击展开当前列">任务进度</th>
+              <th data-key="done" title="双击展开当前列">完成时间</th>
+              <th data-key="executeMode" title="双击展开当前列">执行方式</th>
+              <th data-key="creator" title="双击展开当前列">创建人</th>
+              <th data-key="importFile" title="双击展开当前列">导入文件</th>
+              <th data-key="exportFile" title="双击展开当前列">导出文件</th>
             </tr>
           </thead>
           <tbody id="taskTableBody">
@@ -596,14 +806,22 @@
         <div class="pagination-left">共 <strong id="totalCount">284,654</strong> 条</div>
         <div class="pagination-right">
           <button class="page-btn" type="button" data-page="prev">‹</button>
-          <button class="page-btn active" type="button">1</button>
-          <button class="page-btn" type="button">2</button>
-          <button class="page-btn" type="button">3</button>
-          <button class="page-btn" type="button">4</button>
-          <button class="page-btn" type="button">5</button>
+          <span id="pageNumbers">
+            <button class="page-btn active" type="button" data-page-number="1">1</button>
+            <button class="page-btn" type="button" data-page-number="2">2</button>
+            <button class="page-btn" type="button" data-page-number="3">3</button>
+            <button class="page-btn" type="button" data-page-number="4">4</button>
+            <button class="page-btn" type="button" data-page-number="5">5</button>
+          </span>
           <span class="page-ellipsis">…</span>
-          <button class="page-btn" type="button">14233</button>
+          <button class="page-btn" type="button" id="lastPageBtn">11387</button>
           <button class="page-btn" type="button" data-page="next">›</button>
+          <select id="pageSizeSelect" class="page-size-select" aria-label="每页条数">
+            <option value="25">25条/页</option>
+            <option value="100">100条/页</option>
+            <option value="200">200条/页</option>
+            <option value="500">500条/页</option>
+          </select>
         </div>
       </div>
     </section>
@@ -611,9 +829,32 @@
 
   <div class="message-wrap" id="messageWrap"></div>
 
+  <div class="drawer-mask" id="queueDrawerMask"></div>
+  <aside class="queue-drawer" id="queueDrawer" role="dialog" aria-modal="true" aria-labelledby="queueDrawerTitle" aria-hidden="true">
+    <div class="drawer-head">
+      <div>
+        <div class="drawer-title" id="queueDrawerTitle">队列状态</div>
+        <div class="drawer-subtitle">数据更新时间：<span id="queueUpdatedAt">--</span></div>
+      </div>
+      <div class="drawer-head-actions">
+        <button class="btn" type="button" id="queueRefreshBtn">立即刷新</button>
+        <button class="drawer-close" type="button" id="queueCloseBtn" aria-label="关闭队列状态">×</button>
+      </div>
+    </div>
+    <div class="drawer-body">
+      <div id="queueOverview" class="queue-overview"></div>
+      <div class="queue-note">预计时间根据当前队列、有效并发数和历史任务耗时估算，实际时间可能变化。</div>
+      <div class="queue-tabs" role="tablist" aria-label="队列任务视图">
+        <button class="queue-tab" type="button" role="tab" aria-selected="false" data-queue-tab="running">全部执行中 <span id="runningCount">4</span></button>
+        <button class="queue-tab active" type="button" role="tab" aria-selected="true" data-queue-tab="mine">我的任务 <span id="myCount">3</span></button>
+      </div>
+      <div class="queue-list" id="queueList" role="tabpanel"></div>
+    </div>
+  </aside>
+
   <aside class="change-tip" id="changeTip">
     <div class="change-tip-head" onclick="toggleChangeTip()">
-      <span class="change-tip-title">本页新增内容提示</span>
+        <span class="change-tip-title">任务中心优化说明</span>
       <span class="change-tip-actions">
         <span class="change-tip-toggle" id="changeTipToggle">收起 ▾</span>
         <button class="change-tip-close" type="button" onclick="event.stopPropagation();document.getElementById('changeTip').style.display='none'" aria-label="关闭">×</button>
@@ -621,33 +862,32 @@
     </div>
     <div class="change-tip-body">
       <div class="change-tip-section">
-        <span class="change-tip-label">新增任务类型</span>
+        <span class="change-tip-label">新增能力</span>
         <ul>
-          <li><code>IQS每日同步-项目调拨结算价格/库存地址</code></li>
-          <li><code>SAP每月-对内最新成本价</code></li>
+          <li>管理员支持按创建人姓名模糊查询。</li>
+          <li>新增实际执行方式展示及枚举筛选：云上FC执行、本地MQ队列执行。</li>
+          <li>新增队列状态抽屉，查询系统概览和本人排位。</li>
         </ul>
       </div>
       <div class="change-tip-section">
-        <span class="change-tip-label">导出文件模版</span>
+        <span class="change-tip-label">列表交互</span>
         <ul>
-          <li>IQS：物料编码、项目调拨结算价、状态、成本是否含运费、收货地址、状态</li>
-          <li>SAP：物料编码、对内最新成本价、状态</li>
+          <li>双击任意表头展开当前页整列，再次双击恢复。</li>
+          <li>每页条数支持25、100、200、500，默认25条。</li>
         </ul>
       </div>
       <div class="change-tip-section">
         <span class="change-tip-label">交互说明</span>
         <ul>
-          <li>两条示例任务状态均为成功，包含导入文件和导出 CSV 文件。</li>
-          <li>点击“导出文件”直接下载 CSV，不再弹窗预览。</li>
+          <li>队列状态仅手动刷新，不自动轮询。</li>
+          <li>FC排位为MPM侧可观测估算，实际以云端调度为准。</li>
         </ul>
       </div>
     </div>
   </aside>
 
   <script>
-    function goPage(path) {
-      window.location.href = path;
-    }
+    function goPage(path) { window.location.href = path; }
 
     function toggleChangeTip() {
       const tip = document.getElementById('changeTip');
@@ -660,220 +900,129 @@
       const wrap = document.getElementById('messageWrap');
       const el = document.createElement('div');
       el.className = `message-item ${type}`;
+      el.setAttribute('role', 'status');
       el.textContent = text;
       wrap.appendChild(el);
       requestAnimationFrame(() => el.classList.add('show'));
       setTimeout(() => {
         el.classList.remove('show');
         setTimeout(() => el.remove(), 250);
-      }, 2200);
+      }, 2600);
     }
 
-    /* ── Mock 数据（参考企业现网"任务中心"列表） ── */
-    const taskMock = [
-      {
-        status: '成功', type: 'IQS每日同步-项目调拨结算价格/库存地址',
-        code: 'IQS202607070001',
-        start: '2026-07-07 02:00:00', used: '18.6 秒', remain: '0.0 秒',
-        progress: '128/128', done: '2026-07-07 02:00:19', creator: '系统管理员',
-        importFile: 'IQS每日同步-项目调拨结算价格库存地址_20260707.xlsx',
-        exportFile: 'IQS每日同步结果-项目调拨结算价格库存地址_20260707.csv'
-      },
-      {
-        status: '成功', type: 'SAP每月-对内最新成本价',
-        code: 'SAP202607070001',
-        start: '2026-07-07 03:00:00', used: '12.4 秒', remain: '0.0 秒',
-        progress: '96/96', done: '2026-07-07 03:00:13', creator: '系统管理员',
-        importFile: 'SAP每月同步-对内最新成本价_20260707.xlsx',
-        exportFile: 'SAP每月同步结果-对内最新成本价_20260707.csv'
-      },
-      {
-        status: '成功', type: '平台物料 - 导入推送 (光大电商)',
-        code: 'xhgj0037220260522150601',
-        start: '2026-05-22 15:06:08', used: '4.0 秒', remain: '0.0 秒',
-        progress: '1/1', done: '2026-05-22 15:06:13', creator: '凌慧',
-        importFile: '光大平台物料推送模板 (重新...', exportFile: ''
-      },
-      {
-        status: '成功', type: '导入批改 - 修改商城价',
-        code: 'xhgj0037220260522150505',
-        start: '2026-05-22 15:05:50', used: '0.7 秒', remain: '0.0 秒',
-        progress: '1/1', done: '2026-05-22 15:05:51', creator: '凌慧',
-        importFile: '批改商城价（物料列表咸亨商...', exportFile: ''
-      },
-      {
-        status: '成功', type: '批量上传资质图片',
-        code: 'xhgj0024962026052215040',
-        start: '2026-05-22 15:04:23', used: '1.3 秒', remain: '0.0 秒',
-        progress: '0/0', done: '2026-05-22 15:04:25', creator: '马红梅',
-        importFile: '', exportFile: '商品资质图片_20260522150425.zip'
-      },
-      {
-        status: '成功', type: '批量上传资质图片',
-        code: 'xhgj0024962026052215028',
-        start: '2026-05-22 15:02:47', used: '0.1 秒', remain: '0.0 秒',
-        progress: '0/0', done: '2026-05-22 15:02:48', creator: '马红梅',
-        importFile: '', exportFile: '商品资质图片_20260522150248.zip'
-      },
-      {
-        status: '成功', type: '平台物料 - 导入更新价格 (华电)',
-        code: 'xhgj0012842026052215021',
-        start: '2026-05-22 15:02:34', used: '2.2 秒', remain: '0.0 秒',
-        progress: '5/5', done: '2026-05-22 15:02:42', creator: '陈方琳',
-        importFile: '华电更新价格.xlsx', exportFile: ''
-      },
-      {
-        status: '失败', type: '平台物料 - 回调价格导入 (华电)',
-        code: 'xhgj0012842026052215022',
-        start: '2026-05-22 15:02:24', used: '0.1 秒', remain: '0.0 秒',
-        progress: '0/0', done: '2026-05-22 15:02:39', creator: '陈方琳',
-        importFile: '华电更新价格.xlsx', exportFile: ''
-      },
-      {
-        status: '成功', type: '批量上传资质图片',
-        code: 'xhgj0024962026052215015',
-        start: '2026-05-22 15:01:55', used: '1.3 秒', remain: '0.0 秒',
-        progress: '0/0', done: '2026-05-22 15:02:39', creator: '马红梅',
-        importFile: '', exportFile: '商品资质图片_20260522150239.zip'
-      },
-      {
-        status: '成功', type: '平台物料 - 导入推送 (电能e购)',
-        code: 'xhgj0010162026052214530',
-        start: '2026-05-22 14:53:20', used: '30.8 秒', remain: '0.0 秒',
-        progress: '17/17', done: '2026-05-22 14:53:52', creator: '薛明玉',
-        importFile: '电能E购推送模板.xlsx', exportFile: ''
-      },
-      {
-        status: '成功', type: '批量上传资质图片',
-        code: 'xhgj0024962026052214530',
-        start: '2026-05-22 14:53:04', used: '0.4 秒', remain: '0.0 秒',
-        progress: '0/0', done: '2026-05-22 14:53:06', creator: '马红梅',
-        importFile: '', exportFile: '商品资质图片_20260522145306.zip'
-      },
-      {
-        status: '成功', type: '导入批改 - 修改商城价',
-        code: 'xhgj0010162026052214521',
-        start: '2026-05-22 14:52:09', used: '3.2 秒', remain: '0.0 秒',
-        progress: '17/17', done: '2026-05-22 14:52:13', creator: '薛明玉',
-        importFile: '批改商城价-v4.3.2.xlsx', exportFile: ''
-      },
-      {
-        status: '成功', type: '导入批改 - 商城隐藏',
-        code: 'xhgj0037220260522145109',
-        start: '2026-05-22 14:51:08', used: '0.4 秒', remain: '0.0 秒',
-        progress: '16/16', done: '2026-05-22 14:51:18', creator: '凌慧',
-        importFile: '绿色动力批改商城隐藏模板.xlsx', exportFile: ''
-      },
-      {
-        status: '成功', type: '平台物料 - 导入推送 (绿色动力)',
-        code: 'xhgj0037220260522145052',
-        start: '2026-05-22 14:50:53', used: '23.8 秒', remain: '0.0 秒',
-        progress: '16/16', done: '2026-05-22 14:51:18', creator: '凌慧',
-        importFile: '绿色动力推送模板.xlsx', exportFile: ''
-      },
-      {
-        status: '处理中', type: '咸亨奖励 - 导出全部',
-        code: 'xhgj0037220260522144914',
-        start: '2026-05-22 14:49:15', used: '2.1 秒', remain: '8.3 秒',
-        progress: '12/186', done: '', creator: '王云龙',
-        importFile: '', exportFile: '咸亨奖励-导出全部_2026-05-22.xlsx'
-      }
-    ];
-
-    const exportPreviewMap = {
-      'IQS202607070001': {
-        title: 'IQS每日同步结果-项目调拨结算价格/库存地址',
-        fileName: 'IQS每日同步结果-项目调拨结算价格库存地址_20260707.csv',
-        summary: ['任务状态：成功', '导出文件：IQS每日同步结果-项目调拨结算价格库存地址_20260707.csv'],
-        headers: ['物料编码', '项目调拨结算价', '状态（成功/失败）', '成本是否含运费', '收货地址', '状态（成功/失败）'],
-        rows: [
-          ['B060101150001', '128.50', '成功', '是', '海宁库', '成功'],
-          ['B180102400018', '360.00', '成功', '是', '浙江省嘉兴市海宁市斜桥镇仓库', '成功']
-        ]
-      },
-      'SAP202607070001': {
-        title: 'SAP每月同步结果-对内最新成本价',
-        fileName: 'SAP每月同步结果-对内最新成本价_20260707.csv',
-        summary: ['任务状态：成功', '导出文件：SAP每月同步结果-对内最新成本价_20260707.csv'],
-        headers: ['物料编码', '对内最新成本价', '状态（成功/失败）'],
-        rows: [
-          ['B060101150001', '92.30', '成功'],
-          ['B180102400018', '270.00', '成功']
-        ]
-      }
-    };
-
-    /* ── 渲染 ── */
-    function statusTagHtml(status) {
-      if (status === '成功') return '<span class="status-tag status-success">成功</span>';
-      if (status === '失败') return '<span class="status-tag status-fail">失败</span>';
-      return '<span class="status-tag status-running">处理中</span>';
-    }
     function escapeHtml(text) {
       return String(text ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
     }
+
+    const taskMock = [
+      { status:'待开始', type:'导入批改 - 修改商城价', code:'xhgj0037220260917143001', start:'2026-09-17 14:30:01', used:'0.0 秒', remain:'暂无法估算', progress:'0/186', done:'', executeMode:'FC', creator:'王云龙', importFile:'物料商城价批改模板_华东区域_20260917.xlsx', exportFile:'' },
+      { status:'待开始', type:'导入 - 修改采购员', code:'xhgj0037220260917142908', start:'2026-09-17 14:29:08', used:'0.0 秒', remain:'约 8～15 分钟', progress:'0/82', done:'', executeMode:'MQ', creator:'王云龙', importFile:'采购员批量调整_20260917.xlsx', exportFile:'' },
+      { status:'处理中', type:'咸亨奖励 - 导出全部', code:'xhgj0037220260917142502', start:'2026-09-17 14:25:02', used:'4分18秒', remain:'约 3～5 分钟', progress:'60/100', done:'', executeMode:'MQ', creator:'王云龙', importFile:'', exportFile:'咸亨奖励-导出全部_2026-09-17.xlsx' },
+      { status:'处理中', type:'导入批改 - 商城隐藏', code:'xhgj0037220260917142017', start:'2026-09-17 14:20:17', used:'9分03秒', remain:'约 2 分钟', progress:'620/800', done:'', executeMode:'FC', creator:'凌慧', importFile:'绿色动力批改商城隐藏模板_全量.xlsx', exportFile:'' },
+      { status:'待审核', type:'物料导出 - 当前查询', code:'xhgj00128420260917141803', start:'2026-09-17 14:18:03', used:'0.0 秒', remain:'-', progress:'0/0', done:'', executeMode:'', creator:'陈方琳', importFile:'', exportFile:'' },
+      { status:'成功', type:'IQS每日同步-项目调拨结算价格/库存地址', code:'IQS202609170001', start:'2026-09-17 02:00:00', used:'18.6 秒', remain:'0.0 秒', progress:'128/128', done:'2026-09-17 02:00:19', executeMode:'FC', creator:'系统管理员', importFile:'IQS每日同步-项目调拨结算价格库存地址_20260917.xlsx', exportFile:'IQS每日同步结果-项目调拨结算价格库存地址_20260917.csv' },
+      { status:'成功', type:'SAP每月-对内最新成本价', code:'SAP202609170001', start:'2026-09-17 03:00:00', used:'12.4 秒', remain:'0.0 秒', progress:'96/96', done:'2026-09-17 03:00:13', executeMode:'MQ', creator:'系统管理员', importFile:'SAP每月同步-对内最新成本价_20260917.xlsx', exportFile:'SAP每月同步结果-对内最新成本价_20260917.csv' },
+      { status:'成功', type:'平台物料 - 导入推送 (光大电商)', code:'xhgj0037220260916150601', start:'2026-09-16 15:06:08', used:'4.0 秒', remain:'0.0 秒', progress:'1/1', done:'2026-09-16 15:06:13', executeMode:'FC', creator:'凌慧', importFile:'光大平台物料推送模板（重新推送失败数据）_20260916.xlsx', exportFile:'' },
+      { status:'成功', type:'导入批改 - 修改商城价', code:'xhgj0037220260916150505', start:'2026-09-16 15:05:50', used:'0.7 秒', remain:'0.0 秒', progress:'1/1', done:'2026-09-16 15:05:51', executeMode:'FC', creator:'凌慧', importFile:'批改商城价（物料列表咸亨商城批量维护）_20260916.xlsx', exportFile:'' },
+      { status:'失败', type:'平台物料 - 回调价格导入 (华电)', code:'xhgj0012842026091615022', start:'2026-09-16 15:02:24', used:'0.1 秒', remain:'0.0 秒', progress:'0/0', done:'2026-09-16 15:02:39', executeMode:'MQ', creator:'陈方琳', importFile:'华电更新价格.xlsx', exportFile:'' },
+      { status:'成功', type:'批量上传资质图片', code:'xhgj0024962026091615015', start:'2026-09-16 15:01:55', used:'1.3 秒', remain:'0.0 秒', progress:'0/0', done:'2026-09-16 15:02:39', executeMode:'MQ', creator:'马红梅', importFile:'', exportFile:'商品资质图片_20260916150239.zip' },
+      { status:'成功', type:'平台物料 - 导入推送 (电能e购)', code:'xhgj0010162026091614530', start:'2026-09-16 14:53:20', used:'30.8 秒', remain:'0.0 秒', progress:'17/17', done:'2026-09-16 14:53:52', executeMode:'FC', creator:'薛明玉', importFile:'电能E购推送模板.xlsx', exportFile:'' },
+      { status:'成功', type:'导入批改 - 修改商城价', code:'xhgj0010162026091614521', start:'2026-09-16 14:52:09', used:'3.2 秒', remain:'0.0 秒', progress:'17/17', done:'2026-09-16 14:52:13', executeMode:'', creator:'薛明玉', importFile:'批改商城价-v4.3.2.xlsx', exportFile:'' }
+    ];
+
+    const queueData = {
+      overview: { fc: { running: 3, waiting: 12 }, mq: { running: 1, waiting: 8 } },
+      running: [
+        { type:'导入批改 - 商城隐藏', code:'xhgj0037220260917142017', creator:'凌慧', mode:'FC', status:'处理中', used:'9分03秒', remain:'约2分钟', progress:'620/800' },
+        { type:'平台物料 - 批量推送', code:'xhgj00249620260917142108', creator:'马红梅', mode:'FC', status:'处理中', used:'7分12秒', remain:'约4～6分钟', progress:'310/920' },
+        { type:'导入批改 - 物料标签类型', code:'xhgj00101620260917142316', creator:'薛明玉', mode:'FC', status:'处理中', used:'5分40秒', remain:'暂无法估算', progress:'88/500' },
+        { type:'咸亨奖励 - 导出全部', code:'xhgj0037220260917142502', creator:'王云龙', mode:'MQ', status:'处理中', used:'4分18秒', remain:'约3～5分钟', progress:'60/100' }
+      ],
+      mine: [
+        { type:'咸亨奖励 - 导出全部', code:'xhgj0037220260917142502', mode:'MQ', status:'处理中', used:'4分18秒', remain:'约3～5分钟', progress:'60/100' },
+        { type:'导入批改 - 修改商城价', code:'xhgj0037220260917143001', mode:'FC', status:'待开始', ahead:6, wait:'约10～20分钟', startAt:'14:42～14:52' },
+        { type:'物料导出 - 当前查询', code:'xhgj00128420260917141803', mode:'', status:'待审核', note:'任务尚未进入执行队列，审核通过后重新计算排位' }
+      ]
+    };
+
+    const exportPreviewMap = {
+      'IQS202609170001': { fileName:'IQS每日同步结果-项目调拨结算价格库存地址_20260917.csv', headers:['物料编码','项目调拨结算价','状态'], rows:[['B060101150001','128.50','成功'],['B180102400018','360.00','成功']] },
+      'SAP202609170001': { fileName:'SAP每月同步结果-对内最新成本价_20260917.csv', headers:['物料编码','对内最新成本价','状态'], rows:[['B060101150001','92.30','成功'],['B180102400018','270.00','成功']] }
+    };
+
+    let currentRows = [...taskMock];
+    let currentPage = 1;
+    let pageSize = 25;
+    let isFiltered = false;
+    const expandedColumns = new Set();
+    const tbody = document.getElementById('taskTableBody');
+
+    function statusTagHtml(status) {
+      const map = {
+        '成功':'status-success', '失败':'status-fail', '处理中':'status-running',
+        '待开始':'status-waiting', '待审核':'status-review'
+      };
+      return `<span class="status-tag ${map[status] || 'status-running'}">${escapeHtml(status)}</span>`;
+    }
+
+    function modeTagHtml(mode) {
+      if (mode === 'FC') return '<span class="mode-tag mode-fc">云上FC执行</span>';
+      if (mode === 'MQ') return '<span class="mode-tag mode-mq">本地MQ队列执行</span>';
+      return '<span class="mode-tag mode-unknown">—</span>';
+    }
+
     function linkOrDash(text, taskCode, kind) {
       if (!text) return '<span class="muted-light">无</span>';
       return `<a class="td-link file-link" href="javascript:void(0)" data-task-code="${escapeHtml(taskCode)}" data-kind="${kind}" title="${escapeHtml(text)}">${escapeHtml(text)}</a>`;
     }
 
-    const tbody = document.getElementById('taskTableBody');
+    function cell(content, title = '') {
+      return `<td${title ? ` title="${escapeHtml(title)}"` : ''}>${content}</td>`;
+    }
+
     function renderRows(rows) {
       if (!rows.length) {
-        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:48px 0;color:var(--text-sub);">没有符合条件的任务</td></tr>`;
+        tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:48px 0;color:var(--text-sub);">没有符合条件的任务</td></tr>';
         return;
       }
       tbody.innerHTML = rows.map(t => `
         <tr>
-          <td>${statusTagHtml(t.status)}</td>
-          <td><a class="td-link" href="javascript:void(0)">${t.type}</a></td>
-          <td><span class="muted">${t.code}</span></td>
-          <td>${t.start}</td>
-          <td>${t.used}</td>
-          <td>${t.remain}</td>
-          <td>${t.progress}</td>
-          <td>${t.done || '<span class="muted-light">-</span>'}</td>
-          <td>${t.creator}</td>
-          <td>${linkOrDash(t.importFile, t.code, 'import')}</td>
-          <td>${linkOrDash(t.exportFile, t.code, 'export')}</td>
+          ${cell(statusTagHtml(t.status), t.status)}
+          ${cell(`<a class="td-link" href="javascript:void(0)">${escapeHtml(t.type)}</a>`, t.type)}
+          ${cell(`<span class="muted">${escapeHtml(t.code)}</span>`, t.code)}
+          ${cell(escapeHtml(t.start), t.start)}
+          ${cell(escapeHtml(t.used), t.used)}
+          ${cell(escapeHtml(t.remain), t.remain)}
+          ${cell(escapeHtml(t.progress), t.progress)}
+          ${cell(t.done ? escapeHtml(t.done) : '<span class="muted-light">-</span>', t.done || '-')}
+          ${cell(modeTagHtml(t.executeMode), t.executeMode === 'FC' ? '云上FC执行' : t.executeMode === 'MQ' ? '本地MQ队列执行' : '历史任务执行方式未知')}
+          ${cell(escapeHtml(t.creator), t.creator)}
+          ${cell(linkOrDash(t.importFile, t.code, 'import'), t.importFile || '无')}
+          ${cell(linkOrDash(t.exportFile, t.code, 'export'), t.exportFile || '无')}
         </tr>
       `).join('');
       bindFileLinks();
+      requestAnimationFrame(() => expandedColumns.forEach(applyExpandedWidth));
     }
-    renderRows(taskMock);
 
     function bindFileLinks() {
       document.querySelectorAll('.file-link').forEach(link => {
         link.addEventListener('click', () => {
           const code = link.dataset.taskCode;
-          const kind = link.dataset.kind;
-          if (kind === 'export' && exportPreviewMap[code]) {
-            downloadCsv(code);
-          } else {
-            showMessage('原型演示：已触发文件下载', 'success');
-          }
+          if (link.dataset.kind === 'export' && exportPreviewMap[code]) downloadCsv(code);
+          else showMessage('原型演示：已触发文件下载', 'success');
         });
       });
     }
 
-    function csvCell(value) {
-      const text = String(value ?? '');
-      return `"${text.replace(/"/g, '""')}"`;
-    }
-
+    function csvCell(value) { return `"${String(value ?? '').replace(/"/g, '""')}"`; }
     function downloadCsv(code) {
       const data = exportPreviewMap[code];
-      if (!data) return;
-      const lines = [
-        data.headers.map(csvCell).join(','),
-        ...data.rows.map(row => row.map(csvCell).join(','))
-      ];
-      const csv = '\uFEFF' + lines.join('\r\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
+      const lines = [data.headers.map(csvCell).join(','), ...data.rows.map(row => row.map(csvCell).join(','))];
+      const url = URL.createObjectURL(new Blob(['\uFEFF' + lines.join('\r\n')], { type:'text/csv;charset=utf-8;' }));
       const a = document.createElement('a');
       a.href = url;
-      a.download = data.fileName || '导出结果.csv';
+      a.download = data.fileName;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -881,46 +1030,257 @@
       showMessage('CSV 文件已开始下载', 'success');
     }
 
-    /* ── 筛选 ── */
-    document.getElementById('searchBtn').addEventListener('click', () => {
+    function setupExpandableColumns() {
+      document.querySelectorAll('#taskTable col[data-col]').forEach(col => col.dataset.defaultWidth = col.style.width);
+      document.querySelectorAll('#taskTable thead th[data-key]').forEach((th, index) => {
+        th.addEventListener('dblclick', () => {
+          const key = th.dataset.key;
+          const col = document.querySelector(`#taskTable col[data-col="${key}"]`);
+          if (expandedColumns.has(key)) {
+            expandedColumns.delete(key);
+            col.style.width = col.dataset.defaultWidth;
+            th.classList.remove('is-expanded');
+            showMessage(`已恢复“${th.childNodes[0].textContent.trim()}”默认列宽`, 'info');
+          } else {
+            expandedColumns.add(key);
+            th.classList.add('is-expanded');
+            applyExpandedWidth(key, index);
+            showMessage(`已展开“${th.childNodes[0].textContent.trim()}”列，再次双击可恢复`, 'success');
+          }
+        });
+      });
+    }
+
+    function applyExpandedWidth(key, knownIndex) {
+      const ths = [...document.querySelectorAll('#taskTable thead th[data-key]')];
+      const index = knownIndex ?? ths.findIndex(th => th.dataset.key === key);
+      if (index < 0) return;
+      const th = ths[index];
+      const col = document.querySelector(`#taskTable col[data-col="${key}"]`);
+      th.classList.add('is-expanded');
+      const cells = [...document.querySelectorAll(`#taskTable tbody tr td:nth-child(${index + 1})`)];
+      const measured = Math.max(th.scrollWidth + 30, ...cells.map(td => td.scrollWidth + 28), 100);
+      col.style.width = `${measured}px`;
+    }
+
+    function updatePagination(filtered = false) {
+      const total = filtered ? currentRows.length : 284654;
+      const totalPages = Math.max(1, Math.ceil(total / pageSize));
+      document.getElementById('totalCount').textContent = total.toLocaleString('zh-CN');
+      const lastPage = document.getElementById('lastPageBtn');
+      const ellipsis = document.querySelector('.pagination-right .page-ellipsis');
+      lastPage.textContent = totalPages;
+      lastPage.style.display = totalPages > 5 ? '' : 'none';
+      ellipsis.style.display = totalPages > 5 ? '' : 'none';
+      document.querySelectorAll('[data-page-number]').forEach(btn => {
+        const page = Number(btn.dataset.pageNumber);
+        btn.style.display = page <= totalPages ? '' : 'none';
+        btn.classList.toggle('active', page === currentPage);
+      });
+    }
+
+    function executeSearch() {
       const type = document.getElementById('filterType').value;
       const status = document.getElementById('filterStatus').value;
       const fileName = document.getElementById('filterFileName').value.trim();
-      const filtered = taskMock.filter(t => {
+      const creator = document.getElementById('filterCreator').value.trim();
+      const executeMode = document.getElementById('filterExecuteMode').value;
+      currentRows = taskMock.filter(t => {
         if (type && t.type !== type) return false;
         if (status && t.status !== status) return false;
+        if (creator && !t.creator.includes(creator)) return false;
+        if (executeMode && t.executeMode !== executeMode) return false;
         if (fileName && !(t.importFile.includes(fileName) || t.exportFile.includes(fileName))) return false;
         return true;
       });
-      renderRows(filtered);
-      showMessage(`查询完成，命中 ${filtered.length} 条`, 'success');
-    });
+      isFiltered = Boolean(type || status || fileName || creator || executeMode);
+      currentPage = 1;
+      renderRows(currentRows);
+      updatePagination(isFiltered);
+      showMessage(`查询完成，命中 ${currentRows.length} 条`, 'success');
+    }
+
+    document.getElementById('searchBtn').addEventListener('click', executeSearch);
+    document.getElementById('filterCreator').addEventListener('keydown', e => { if (e.key === 'Enter') executeSearch(); });
     document.getElementById('resetBtn').addEventListener('click', () => {
-      document.getElementById('filterType').value = '';
-      document.getElementById('filterStatus').value = '';
-      document.getElementById('filterStart').value = '';
-      document.getElementById('filterEnd').value = '';
-      document.getElementById('filterFileName').value = '';
-      renderRows(taskMock);
+      ['filterType','filterStatus','filterStart','filterEnd','filterFileName','filterCreator','filterExecuteMode'].forEach(id => document.getElementById(id).value = '');
+      currentRows = [...taskMock];
+      isFiltered = false;
+      currentPage = 1;
+      renderRows(currentRows);
+      updatePagination(false);
       showMessage('已重置筛选条件', 'info');
     });
     document.getElementById('refreshBtn').addEventListener('click', () => {
-      renderRows(taskMock);
+      renderRows(currentRows);
       showMessage('已刷新任务列表', 'success');
     });
-
-    /* ── 页签 / 顶部导航 跳转 ── */
-    document.getElementById('clearTabs').addEventListener('click', () => {
-      showMessage('已清除其它页签', 'success');
+    document.getElementById('pageSizeSelect').addEventListener('change', e => {
+      pageSize = Number(e.target.value);
+      currentPage = 1;
+      updatePagination(isFiltered);
+      showMessage(`已切换为每页 ${pageSize} 条`, 'success');
     });
+    document.querySelectorAll('[data-page-number]').forEach(btn => btn.addEventListener('click', () => {
+      currentPage = Number(btn.dataset.pageNumber);
+      updatePagination(isFiltered);
+      showMessage(`已切换至第 ${currentPage} 页`, 'info');
+    }));
+    document.getElementById('lastPageBtn').addEventListener('click', e => {
+      currentPage = Number(e.currentTarget.textContent);
+      updatePagination(isFiltered);
+      showMessage(`已切换至第 ${currentPage} 页`, 'info');
+    });
+    document.querySelector('[data-page="next"]').addEventListener('click', () => { currentPage += 1; updatePagination(isFiltered); showMessage(`已切换至第 ${currentPage} 页`, 'info'); });
+    document.querySelector('[data-page="prev"]').addEventListener('click', () => { currentPage = Math.max(1, currentPage - 1); updatePagination(isFiltered); showMessage(`已切换至第 ${currentPage} 页`, 'info'); });
+
+    /* ── 队列状态抽屉 ── */
+    const drawer = document.getElementById('queueDrawer');
+    const drawerMask = document.getElementById('queueDrawerMask');
+    const queueList = document.getElementById('queueList');
+    const queueRefreshBtn = document.getElementById('queueRefreshBtn');
+    let activeQueueTab = 'mine';
+    let drawerLastFocus = null;
+    let queueRefreshRound = 0;
+
+    function nowText() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+    }
+
+    function renderQueueOverview() {
+      const o = queueData.overview;
+      document.getElementById('queueOverview').innerHTML = `
+        <section class="queue-card" aria-label="云上FC执行队列">
+          <div class="queue-card-title"><span class="queue-card-dot"></span>云上FC执行</div>
+          <div class="queue-metrics">
+            <div class="queue-metric"><div class="queue-metric-label">执行中</div><div class="queue-metric-value">${o.fc.running}<span class="queue-metric-unit">个</span></div></div>
+            <div class="queue-metric"><div class="queue-metric-label">待开始</div><div class="queue-metric-value">${o.fc.waiting}<span class="queue-metric-unit">个</span></div></div>
+          </div>
+        </section>
+        <section class="queue-card mq" aria-label="本地MQ队列执行">
+          <div class="queue-card-title"><span class="queue-card-dot"></span>本地MQ队列执行</div>
+          <div class="queue-metrics">
+            <div class="queue-metric"><div class="queue-metric-label">执行中</div><div class="queue-metric-value">${o.mq.running}<span class="queue-metric-unit">个</span></div></div>
+            <div class="queue-metric"><div class="queue-metric-label">待开始</div><div class="queue-metric-value">${o.mq.waiting}<span class="queue-metric-unit">个</span></div></div>
+          </div>
+        </section>`;
+    }
+
+    function renderQueueTask(task, scope) {
+      const waitingMeta = task.status === '待开始' ? `
+        <div><dt>当前排位</dt><dd class="queue-position">前方还有 ${task.ahead} 个待执行任务</dd></div>
+        <div><dt>预计等待</dt><dd>${escapeHtml(task.wait)}</dd></div>
+        <div><dt>预计开始</dt><dd>${escapeHtml(task.startAt)}</dd></div>
+        <div><dt>排位口径</dt><dd>${task.mode === 'FC' ? 'MPM侧可观测排位' : '本地队列排位'}</dd></div>` : '';
+      const runningMeta = task.status === '处理中' ? `
+        <div><dt>已运行</dt><dd>${escapeHtml(task.used)}</dd></div>
+        <div><dt>预计剩余</dt><dd>${escapeHtml(task.remain)}</dd></div>
+        <div><dt>任务进度</dt><dd>${escapeHtml(task.progress)}</dd></div>
+        ${scope === 'running' ? `<div><dt>创建人</dt><dd>${escapeHtml(task.creator)}</dd></div>` : ''}` : '';
+      const reviewMeta = task.status === '待审核' ? `<div style="grid-column:1/-1"><dt>状态说明</dt><dd>${escapeHtml(task.note)}</dd></div>` : '';
+      return `<article class="queue-task">
+        <div class="queue-task-head">
+          <div style="min-width:0"><div class="queue-task-title" title="${escapeHtml(task.type)}">${escapeHtml(task.type)}</div><div class="queue-task-code">${escapeHtml(task.code)}</div></div>
+          ${statusTagHtml(task.status)}
+        </div>
+        <div style="margin-top:10px">${modeTagHtml(task.mode)}</div>
+        <dl class="queue-task-meta">${waitingMeta}${runningMeta}${reviewMeta}</dl>
+      </article>`;
+    }
+
+    function renderQueueList() {
+      const data = queueData[activeQueueTab];
+      queueList.innerHTML = data.length ? data.map(item => renderQueueTask(item, activeQueueTab)).join('') : '<div class="queue-empty"><div><strong>当前暂无任务</strong>队列空闲，无需等待</div></div>';
+    }
+
+    function renderQueueSkeleton() {
+      document.getElementById('queueOverview').innerHTML = '<div class="skeleton-line"></div><div class="skeleton-line"></div>';
+      queueList.innerHTML = '<div class="queue-skeleton"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>';
+    }
+
+    function finishQueueLoad() {
+      renderQueueOverview();
+      renderQueueList();
+      document.getElementById('queueUpdatedAt').textContent = nowText();
+      queueRefreshBtn.disabled = false;
+      queueRefreshBtn.textContent = '立即刷新';
+    }
+
+    function openQueueDrawer() {
+      drawerLastFocus = document.activeElement;
+      drawer.classList.add('open');
+      drawerMask.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      renderQueueSkeleton();
+      queueRefreshBtn.disabled = true;
+      queueRefreshBtn.textContent = '加载中…';
+      setTimeout(() => { finishQueueLoad(); document.getElementById('queueCloseBtn').focus(); }, 420);
+    }
+
+    function closeQueueDrawer() {
+      drawer.classList.remove('open');
+      drawerMask.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      drawerLastFocus?.focus();
+    }
+
+    document.getElementById('queueStatusBtn').addEventListener('click', openQueueDrawer);
+    document.getElementById('queueCloseBtn').addEventListener('click', closeQueueDrawer);
+    drawerMask.addEventListener('click', closeQueueDrawer);
+    document.addEventListener('keydown', e => {
+      if (!drawer.classList.contains('open')) return;
+      if (e.key === 'Escape') {
+        closeQueueDrawer();
+        return;
+      }
+      if (e.key === 'Tab') {
+        const focusable = [...drawer.querySelectorAll('button:not([disabled]), select, input, [tabindex]:not([tabindex="-1"])')].filter(el => el.offsetParent !== null);
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+    document.querySelectorAll('[data-queue-tab]').forEach(tab => tab.addEventListener('click', () => {
+      activeQueueTab = tab.dataset.queueTab;
+      document.querySelectorAll('[data-queue-tab]').forEach(item => {
+        const active = item === tab;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-selected', String(active));
+      });
+      renderQueueList();
+    }));
+    queueRefreshBtn.addEventListener('click', () => {
+      queueRefreshBtn.disabled = true;
+      queueRefreshBtn.textContent = '刷新中…';
+      queueRefreshRound += 1;
+      setTimeout(() => {
+        if (queueRefreshRound === 1) {
+          const waiting = queueData.mine.find(t => t.status === '待开始');
+          waiting.ahead = 4;
+          waiting.wait = '约8～15分钟';
+          waiting.startAt = '14:40～14:47';
+          queueData.overview.fc.waiting = 10;
+        }
+        finishQueueLoad();
+        showMessage('队列状态已更新', 'success');
+      }, 620);
+    });
+
+    document.getElementById('clearTabs').addEventListener('click', () => showMessage('已清除其它页签', 'success'));
     document.querySelectorAll('.nav-item').forEach(nav => {
       const name = nav.dataset.name;
       if (name === '管理员') return;
-      nav.addEventListener('click', () => {
-        if (name === '任务中心') return; // 当前页
-        showMessage(`「${name}」入口暂未在原型中实现`, 'info');
-      });
+      nav.addEventListener('click', () => { if (name !== '任务中心') showMessage(`「${name}」入口暂未在原型中实现`, 'info'); });
     });
+
+    setupExpandableColumns();
+    renderRows(currentRows);
+    updatePagination(false);
   </script>
 <script src="mpm-topnav-links.js"></script>
 </body>

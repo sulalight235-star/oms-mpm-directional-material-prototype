@@ -1004,11 +1004,8 @@
     }
 
     .pm-toolbar-group { display: flex; align-items: center; gap: 22px; }
-    .pm-toolbar b, .pm-toolbar a, .pm-toolbar-action { color: #2463e8; font-weight: 500; cursor: pointer; white-space: nowrap; }
+    .pm-toolbar b, .pm-toolbar a { color: #2463e8; font-weight: 500; cursor: pointer; white-space: nowrap; }
     .pm-toolbar .notice { color: #ff4d4f; }
-    .pm-toolbar-action { border: 0; padding: 5px 0; background: transparent; font: inherit; }
-    .pm-toolbar-action:hover { color: #0958d9; }
-    .pm-toolbar-action:focus-visible { outline: 2px solid rgba(47,103,232,.28); outline-offset: 2px; }
     .pm-view-switch { display: inline-flex; align-items: center; gap: 0; border: 1px solid #ccd3df; border-radius: 3px; overflow: hidden; background: #fff; }
     .pm-view-button { width: 34px; height: 30px; display: grid; place-items: center; border: 0; border-right: 1px solid #dce1e9; background: #fff; color: #657184; cursor: pointer; }
     .pm-view-button:last-child { border-right: 0; }
@@ -1021,79 +1018,6 @@
     .pm-status-tab:hover { z-index: 1; color: #2463e8; background: #fff; }
     .pm-status-tab.active { z-index: 2; border-top-color: #2f67e8; background: #fff; color: #263449; font-weight: 500; }
     .pm-status-tab:focus-visible { z-index: 3; outline: 2px solid rgba(47,103,232,.28); outline-offset: 2px; }
-
-    .pm-import-mask {
-      position: fixed;
-      inset: 0;
-      z-index: 1200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: rgba(0, 0, 0, .42);
-    }
-    .pm-import-mask.active { display: flex; }
-    .pm-import-dialog {
-      width: min(920px, calc(100vw - 48px));
-      max-height: calc(100vh - 48px);
-      overflow: hidden;
-      border-radius: 4px;
-      background: #fff;
-      box-shadow: 0 18px 48px rgba(15, 35, 66, .28);
-      display: flex;
-      flex-direction: column;
-      animation: pm-import-in .18s ease-out;
-    }
-    @keyframes pm-import-in {
-      from { opacity: 0; transform: translateY(-8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .pm-import-head {
-      height: 58px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 22px;
-      border-bottom: 1px solid #e5e7eb;
-    }
-    .pm-import-title { color: #202938; font-size: 20px; font-weight: 600; }
-    .pm-import-close {
-      width: 38px;
-      height: 38px;
-      border: 0;
-      border-radius: 3px;
-      background: transparent;
-      color: #7b8492;
-      font-size: 30px;
-      line-height: 1;
-      cursor: pointer;
-    }
-    .pm-import-close:hover { color: #202938; background: #f3f4f6; }
-    .pm-import-close:focus-visible,
-    .pm-import-action:focus-visible { outline: 2px solid rgba(22, 119, 255, .32); outline-offset: 2px; }
-    .pm-import-body { padding: 12px 20px 26px; overflow: auto; }
-    .pm-import-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-    .pm-import-table th,
-    .pm-import-table td { height: 58px; padding: 10px 16px; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: middle; }
-    .pm-import-table th { height: 52px; color: #202938; background: #eaf1ff; font-size: 16px; font-weight: 600; }
-    .pm-import-table th:nth-child(1) { width: 36%; }
-    .pm-import-table th:nth-child(2) { width: 23%; text-align: center; }
-    .pm-import-table th:nth-child(3) { width: 41%; text-align: center; }
-    .pm-import-table td:nth-child(2),
-    .pm-import-table td:nth-child(3) { text-align: center; }
-    .pm-import-item { color: #202938; font-size: 15px; }
-    .pm-import-action { border: 0; padding: 6px 8px; background: transparent; color: #1677ff; font: inherit; font-size: 15px; cursor: pointer; }
-    .pm-import-action:hover { color: #0958d9; text-decoration: underline; }
-    .pm-import-operations { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
-    .pm-import-file-name { display: block; max-width: 260px; margin: 3px auto 0; overflow: hidden; color: #687386; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-    .pm-import-toast { position: fixed; left: 50%; bottom: 30px; z-index: 1500; transform: translate(-50%, 18px); padding: 9px 18px; border-radius: 4px; background: rgba(0,0,0,.82); color: #fff; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
-    .pm-import-toast.show { opacity: 1; transform: translate(-50%, 0); }
-    @media (prefers-reduced-motion: reduce) { .pm-import-dialog { animation: none; } .pm-import-toast { transition: none; } }
-    @media (max-width: 640px) {
-      .pm-import-dialog { width: calc(100vw - 20px); }
-      .pm-import-body { padding: 10px; overflow-x: auto; }
-      .pm-import-table { min-width: 680px; }
-    }
 
     .pm-table-wrap {
       width: calc(100% - 20px);
@@ -1110,8 +1034,8 @@
     .pm-table-wrap.view-hidden { display: none; }
 
     .pm-table {
-      width: 2240px;
-      min-width: 2240px;
+      width: 3324px;
+      min-width: 3324px;
       border-collapse: separate;
       border-spacing: 0;
       table-layout: fixed;
@@ -1144,19 +1068,25 @@
     .pm-table th:nth-child(2), .pm-table td:nth-child(2) { position: sticky; left: 44px; width: 120px; z-index: 2; box-shadow: 6px 0 8px -8px rgba(23, 35, 61, .55); }
     .pm-table th:nth-child(3), .pm-table td:nth-child(3) { width: 190px; }
     .pm-table th:nth-child(4), .pm-table td:nth-child(4) { width: 190px; }
-    .pm-table th:nth-child(5), .pm-table td:nth-child(5) { width: 170px; }
-    .pm-table th:nth-child(6), .pm-table td:nth-child(6) { width: 150px; }
-    .pm-table th:nth-child(7), .pm-table td:nth-child(7) { width: 90px; }
-    .pm-table th:nth-child(8), .pm-table td:nth-child(8) { width: 110px; }
-    .pm-table th:nth-child(9), .pm-table td:nth-child(9) { width: 100px; }
-    .pm-table th:nth-child(10), .pm-table td:nth-child(10) { width: 190px; }
-    .pm-table th:nth-child(11), .pm-table td:nth-child(11) { width: 110px; }
-    .pm-table th:nth-child(12), .pm-table td:nth-child(12),
-    .pm-table th:nth-child(13), .pm-table td:nth-child(13) { width: 130px; }
-    .pm-table th:nth-child(14), .pm-table td:nth-child(14) { width: 190px; }
-    .pm-table th:nth-child(15), .pm-table td:nth-child(15),
-    .pm-table th:nth-child(16), .pm-table td:nth-child(16) { width: 110px; }
-    .pm-table th:nth-child(17), .pm-table td:nth-child(17) { width: 80px; }
+    .pm-table th:nth-child(5), .pm-table td:nth-child(5) { width: 190px; }
+    .pm-table th:nth-child(6), .pm-table td:nth-child(6) { width: 170px; }
+    .pm-table th:nth-child(7), .pm-table td:nth-child(7) { width: 150px; }
+    .pm-table th:nth-child(8), .pm-table td:nth-child(8) { width: 90px; }
+    .pm-table th:nth-child(9), .pm-table td:nth-child(9) { width: 110px; }
+    .pm-table th:nth-child(10), .pm-table td:nth-child(10) { width: 100px; }
+    .pm-table th:nth-child(11), .pm-table td:nth-child(11) { width: 190px; }
+    .pm-table th:nth-child(12), .pm-table td:nth-child(12) { width: 110px; }
+    .pm-table th:nth-child(13), .pm-table td:nth-child(13),
+    .pm-table th:nth-child(14), .pm-table td:nth-child(14) { width: 130px; }
+    .pm-table th:nth-child(15), .pm-table td:nth-child(15) { width: 180px; }
+    .pm-table th:nth-child(16), .pm-table td:nth-child(16) { width: 190px; }
+    .pm-table th:nth-child(17), .pm-table td:nth-child(17),
+    .pm-table th:nth-child(18), .pm-table td:nth-child(18) { width: 110px; }
+    .pm-table th:nth-child(19), .pm-table td:nth-child(19) { width: 80px; }
+    .pm-table th:nth-child(20), .pm-table td:nth-child(20) { width: 280px; }
+    .pm-table th:nth-child(21), .pm-table td:nth-child(21) { width: 130px; }
+    .pm-table th:nth-child(22), .pm-table td:nth-child(22) { width: 90px; }
+    .pm-table th:nth-child(23), .pm-table td:nth-child(23) { width: 160px; }
     .pm-table tbody td:nth-child(1), .pm-table tbody td:nth-child(2) { background: #fff; background-clip: padding-box; }
     .pm-table tbody tr:hover td:nth-child(1), .pm-table tbody tr:hover td:nth-child(2) { background: #f3f7ff; }
     .pm-table thead th:nth-child(1), .pm-table thead th:nth-child(2) { background: #f7f7f7; z-index: 3; }
@@ -1192,9 +1122,8 @@
     .pm-material-flag { position: relative; width: 24px; height: 24px; display: inline-grid; place-items: center; border-radius: 50%; outline: 0; color: transparent; font-size: 12px; line-height: 1; font-weight: 600; flex: 0 0 auto; box-shadow: inset 0 0 0 1px rgba(0,0,0,.05); transition: color .16s ease,background-color .16s ease,box-shadow .16s ease; }
     .pm-material-flag.factory { background: #f5222d; }
     .pm-material-flag.supply { background: #faad14; }
-    .pm-material-flag.off { background: #bfbfbf; }
     .pm-material-flag:hover,.pm-material-flag:focus-visible { color: #fff; }
-    .pm-material-flag.supply:not(.off):hover,.pm-material-flag.supply:not(.off):focus-visible { color: #6b4300; }
+    .pm-material-flag.supply:hover,.pm-material-flag.supply:focus-visible { color: #6b4300; }
     .pm-material-flag:focus-visible { box-shadow: 0 0 0 2px rgba(22,119,255,.28),inset 0 0 0 1px rgba(0,0,0,.05); }
     .pm-card-meta { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 18px; row-gap: 10px; padding: 14px; border-top: 1px solid #f0f0f0; }
     .pm-card-field { min-width: 0; display: grid; grid-template-columns: 64px minmax(0,1fr); align-items: center; gap: 6px; }
@@ -2703,7 +2632,7 @@
             <a class="link" href="javascript:void(0)">违禁词列表管理</a>
             <a class="link" href="javascript:void(0)">对接物料筛选工具</a>
             <a class="link center-link" href="MPM-物料对接-客户商品清单.html">客户推送管理</a>
-            <a class="link center-link" href="javascript:void(0)">项目价格监管中心</a>
+            <a class="link center-link" href="MPM-物料对接-项目价格监控中心.html">项目价格监控中心</a>
             <a class="link link-with-badge" href="#" onclick="openProjectMaterialList(event)"><span>项目物料池</span><span class="new-feature-badge">新增</span></a>
           </div>
         </div>
@@ -2890,10 +2819,10 @@
         <div class="pm-filter-heading"><span class="pm-filter-icon" aria-hidden="true"></span><span>筛选:</span></div>
         <div class="pm-filter-field project">
           <label for="pmProjectName"><span class="pm-required">*</span>项目名称</label>
-          <select class="pm-filter-control pm-filter-select" id="pmProjectName" name="projectName" onchange="searchProjectMaterials(event)">
-            <option value="中国交建-工业品" selected>中国交建-工业品</option>
-            <option value="国网商城项目">国网商城项目</option>
-            <option value="政采云项目">政采云项目</option>
+          <select class="pm-filter-control pm-filter-select" id="pmProjectName" name="projectName" onchange="changeProjectMaterialProject()">
+            <option value="中国交建-工业品" data-integrated="true" selected>中国交建-工业品</option>
+            <option value="国网商城项目" data-integrated="false">国网商城项目</option>
+            <option value="政采云项目" data-integrated="true">政采云项目</option>
           </select>
         </div>
         <div class="pm-filter-actions">
@@ -2910,63 +2839,38 @@
           <input class="pm-filter-control" id="pmMaterialCode" name="materialCode" placeholder="多个编码用逗号隔开">
         </div>
         <div class="pm-filter-field more-field">
-          <label for="pmCustomerSkuSpu">客户编码（sku/spu）</label>
-          <input class="pm-filter-control" id="pmCustomerSkuSpu" name="customerSkuSpu" placeholder="请输入SKU或SPU编码">
+          <label for="pmCustomerTitle">客户标题</label>
+          <input class="pm-filter-control" id="pmCustomerTitle" name="customerTitle" placeholder="请输入客户标题">
         </div>
         <div class="pm-filter-field more-field">
-          <label for="pmProductTitle">商品标题</label>
-          <input class="pm-filter-control" id="pmProductTitle" name="productTitle" placeholder="请输入">
+          <label for="pmBrandName">品牌名称</label>
+          <input class="pm-filter-control" id="pmBrandName" name="brandName" placeholder="请输入品牌名称">
         </div>
         <div class="pm-filter-field more-field">
-          <label for="pmBrand">品牌名称</label>
-          <input class="pm-filter-control" id="pmBrand" name="brand" placeholder="请输入">
+          <label for="pmCategoryName">类目名称</label>
+          <input class="pm-filter-control" id="pmCategoryName" name="categoryName" placeholder="请输入类目名称">
         </div>
         <div class="pm-filter-field more-field">
-          <label for="pmCustomerCategory">客户类目</label>
-          <input class="pm-filter-control" id="pmCustomerCategory" name="customerCategory" placeholder="请输入">
-        </div>
-        <div class="pm-filter-field more-field">
-          <label for="pmUnitName">单位名称</label>
-          <input class="pm-filter-control" id="pmUnitName" name="unitName" placeholder="请输入">
-        </div>
-        <div class="pm-filter-field more-field">
-          <label for="pmProjectPrice">项目售价</label>
-          <input class="pm-filter-control" id="pmProjectPrice" name="projectPrice" placeholder="请输入金额" inputmode="decimal">
-        </div>
-        <div class="pm-filter-field more-field">
-          <label for="pmPlatformStatus">平台状态</label>
-          <select class="pm-filter-control pm-filter-select" id="pmPlatformStatus" name="platformStatus" onchange="changeProjectMaterialStatusFilter(this.value)">
-            <option value="">请选择</option><option value="已上架">已上架</option><option value="已下架">已下架</option><option value="审核中">审核中</option><option value="已驳回">已驳回</option><option value="已冻结">已冻结</option>
-          </select>
-        </div>
-        <div class="pm-filter-field more-field">
-          <label for="pmSupplierName">供应商名称</label>
-          <input class="pm-filter-control" id="pmSupplierName" name="supplierName" placeholder="请输入">
-        </div>
-        <div class="pm-filter-field more-field">
-          <label for="pmFactoryControlled">厂控物料（是/否）</label>
-          <select class="pm-filter-control pm-filter-select" id="pmFactoryControlled" name="factoryControlled">
-            <option value="">请选择</option><option value="是">是</option><option value="否">否</option>
-          </select>
-        </div>
-        <div class="pm-filter-field more-field">
-          <label for="pmActualSupply">实供物料（是/否）</label>
-          <select class="pm-filter-control pm-filter-select" id="pmActualSupply" name="actualSupply">
-            <option value="">请选择</option><option value="是">是</option><option value="否">否</option>
-          </select>
+          <label for="pmManualRemark">备注（手动导入）</label>
+          <input class="pm-filter-control" id="pmManualRemark" name="manualRemark" placeholder="请输入备注">
         </div>
         <div class="pm-filter-field more-field">
           <label for="pmStandardProductCode">标准库编码/产品编码</label>
           <input class="pm-filter-control" id="pmStandardProductCode" name="standardProductCode" placeholder="请输入">
         </div>
+        <div class="pm-filter-field more-field">
+          <label for="pmMaterialBusinessCode">物资编码</label>
+          <input class="pm-filter-control" id="pmMaterialBusinessCode" name="materialBusinessCode" placeholder="请输入物资编码">
+        </div>
       </div>
     </form>
 
     <div class="pm-toolbar">
-      <div class="pm-toolbar-group"><b>操作:</b><a onclick="refreshProjectMaterials()">刷新</a></div>
       <div class="pm-toolbar-group">
-        <button class="pm-toolbar-action" id="pmImportCorrectionTrigger" type="button" onclick="openProjectMaterialImportCorrection()">导入批改</button>
-        <a onclick="showToast('物料导出（原型）')">物料导出</a>
+        <b>操作:</b><a onclick="refreshProjectMaterials()">刷新</a>
+      </div>
+      <div class="pm-toolbar-group">
+        <a onclick="exportProjectMaterials()">物料导出</a>
         <div class="pm-view-switch" role="group" aria-label="物料展示模式">
           <button class="pm-view-button" id="pmListViewButton" type="button" title="列表模式" aria-label="列表模式" aria-pressed="false" onclick="setProjectMaterialView('list')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
           <button class="pm-view-button active" id="pmCardViewButton" type="button" title="卡片模式" aria-label="卡片模式" aria-pressed="true" onclick="setProjectMaterialView('card')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
@@ -2985,7 +2889,7 @@
         <thead>
           <tr>
             <th><input id="pmSelectAll" type="checkbox" aria-label="选择当前页全部物料" onchange="toggleAllProjectMaterials(this.checked)"></th>
-            <th>咸亨编码</th><th>客户编码（sku/spu）</th><th>商品标题</th><th>品牌名称</th><th>客户类目</th><th>单位名称</th><th>项目售价</th><th>平台状态</th><th>供应商名称</th><th>控价金额</th><th>厂控物料（是/否）</th><th>实供物料（是/否）</th><th>标准库编码/产品编码</th><th>最高可改价</th><th>最低价</th><th>销量</th>
+            <th>咸亨编码</th><th>客户编码（sku/spu）</th><th>咸亨标题</th><th>客户标题</th><th>品牌名称</th><th>客户类目</th><th>单位名称</th><th>项目售价</th><th>平台状态</th><th>供应商名称</th><th>控价金额</th><th>厂控物料（是/否）</th><th>实供物料（是/否）</th><th>备注（手动导入）</th><th>标准库编码/产品编码</th><th>最高可改价</th><th>最低价</th><th>销量</th><th>销售区域&amp;库存</th><th>是否倍数下单</th><th>起订量</th><th>物资编码</th>
           </tr>
         </thead>
         <tbody id="pmTableBody"></tbody>
@@ -3008,32 +2912,6 @@
       <span>跳至</span><input class="pm-page-jump" id="pmPageJump" type="number" min="1" aria-label="跳转页码" onchange="changeProjectMaterialPage(this.value)"><span>页</span>
     </div>
   </main>
-
-  <div class="pm-import-mask" id="pmImportCorrectionMask" aria-hidden="true" onclick="closeProjectMaterialImportCorrectionByMask(event)">
-    <div class="pm-import-dialog" role="dialog" aria-modal="true" aria-labelledby="pmImportCorrectionTitle">
-      <div class="pm-import-head">
-        <h2 class="pm-import-title" id="pmImportCorrectionTitle">导入批改</h2>
-        <button class="pm-import-close" id="pmImportCorrectionClose" type="button" aria-label="关闭导入批改" onclick="closeProjectMaterialImportCorrection()">×</button>
-      </div>
-      <div class="pm-import-body">
-        <table class="pm-import-table" aria-label="项目物料导入批改模板列表">
-          <thead><tr><th>修改项</th><th>模板下载</th><th>操作</th></tr></thead>
-          <tbody>
-            <tr>
-              <td><span class="pm-import-item">客户物料信息批改</span></td>
-              <td><button class="pm-import-action" type="button" onclick="downloadProjectMaterialImportTemplate('material')">下载</button></td>
-              <td>
-                <div class="pm-import-operations"><button class="pm-import-action" type="button" onclick="selectProjectMaterialImportFile('material')">选择文件</button><button class="pm-import-action" type="button" onclick="executeProjectMaterialImport('material')">执行</button></div>
-                <span class="pm-import-file-name" id="pmMaterialFileName"></span>
-                <input id="pmMaterialFileInput" type="file" accept=".xlsx,.xls,.csv" hidden onchange="updateProjectMaterialImportFileName('material',this)">
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div class="pm-import-toast" id="pmImportToast" role="status" aria-live="polite"></div>
 
   <main class="project-management-page" id="projectManagementPage" aria-label="项目管理">
     <form class="account-filterbar" aria-label="项目筛选" onsubmit="searchProjects(event)">
@@ -4303,7 +4181,6 @@
       listViewButton.setAttribute("aria-pressed", "false");
       cardViewButton.setAttribute("aria-pressed", "true");
       pmStatusTab = "online";
-      document.getElementById("pmPlatformStatus").value = "";
       updateProjectMaterialStatusTabs();
       pmPage = 1;
       filterProjectMaterialRows();
@@ -4956,42 +4833,46 @@
         return;
       }
       projectSelect.classList.remove("invalid");
+      clearProjectMaterialSelection();
       pmPage = 1;
       filterProjectMaterialRows();
       showToast(`已加载${projectSelect.value}项目物料`);
     }
 
+    function clearProjectMaterialSelection() {
+      pmSelectedIds.clear();
+    }
+
+    function changeProjectMaterialProject() {
+      clearProjectMaterialSelection();
+      pmStatusTab = "online";
+      updateProjectMaterialStatusTabs();
+      pmPage = 1;
+      filterProjectMaterialRows();
+      showToast(`已加载${document.getElementById("pmProjectName").value}项目物料`);
+    }
+
     function filterProjectMaterialRows() {
       const project = document.getElementById("pmProjectName").value;
-      const name = document.getElementById("pmProductTitle").value.trim().toLowerCase();
+      const customerTitle = document.getElementById("pmCustomerTitle").value.trim().toLowerCase();
+      const brandName = document.getElementById("pmBrandName").value.trim().toLowerCase();
+      const categoryName = document.getElementById("pmCategoryName").value.trim().toLowerCase();
       const codeText = document.getElementById("pmMaterialCode").value.trim().toLowerCase();
       const codes = codeText.split(/[,，\s]+/).filter(Boolean);
-      const customerSkuSpu = document.getElementById("pmCustomerSkuSpu").value.trim().toLowerCase();
-      const brand = document.getElementById("pmBrand").value.trim().toLowerCase();
-      const customerCategory = document.getElementById("pmCustomerCategory").value.trim().toLowerCase();
-      const unitName = document.getElementById("pmUnitName").value.trim().toLowerCase();
-      const projectPrice = document.getElementById("pmProjectPrice").value.trim();
-      const platformStatus = document.getElementById("pmPlatformStatus").value;
-      const supplierName = document.getElementById("pmSupplierName").value.trim().toLowerCase();
-      const factoryControlled = document.getElementById("pmFactoryControlled").value;
-      const actualSupply = document.getElementById("pmActualSupply").value;
+      const manualRemark = document.getElementById("pmManualRemark").value.trim().toLowerCase();
       const standardProductCode = document.getElementById("pmStandardProductCode").value.trim().toLowerCase();
+      const materialBusinessCode = document.getElementById("pmMaterialBusinessCode").value.trim().toLowerCase();
       const matchesStatusTab = row => pmStatusTab === "all" || (pmStatusTab === "online" ? row.shelfStatus === "已上架" : pmOtherStatuses.has(row.shelfStatus));
       pmFilteredRows = pmMaterialRows.filter(row =>
         row.project === project &&
         matchesStatusTab(row) &&
-        (!name || row.name.toLowerCase().includes(name)) &&
+        (!customerTitle || row.customerTitle.toLowerCase().includes(customerTitle)) &&
+        (!brandName || row.brand.toLowerCase().includes(brandName)) &&
+        (!categoryName || row.customerCategory.toLowerCase().includes(categoryName)) &&
         (!codes.length || codes.some(code => row.code.toLowerCase().includes(code))) &&
-        (!customerSkuSpu || row.customerCode.toLowerCase().includes(customerSkuSpu) || row.spuCode.toLowerCase().includes(customerSkuSpu)) &&
-        (!brand || row.brand.toLowerCase().includes(brand)) &&
-        (!customerCategory || row.customerCategory.toLowerCase().includes(customerCategory)) &&
-        (!unitName || row.unit.toLowerCase().includes(unitName)) &&
-        (!projectPrice || row.projectPrice === projectPrice) &&
-        (!platformStatus || row.shelfStatus === platformStatus) &&
-        (!supplierName || row.supplierName.toLowerCase().includes(supplierName)) &&
-        (!factoryControlled || row.factoryControlled === factoryControlled) &&
-        (!actualSupply || row.actualSupply === actualSupply) &&
-        (!standardProductCode || row.standardProductCode.toLowerCase().includes(standardProductCode))
+        (!manualRemark || row.manualRemark.toLowerCase().includes(manualRemark)) &&
+        (!standardProductCode || row.standardProductCode.toLowerCase().includes(standardProductCode)) &&
+        (!materialBusinessCode || row.materialCode.toLowerCase().includes(materialBusinessCode))
       );
       renderProjectMaterials();
     }
@@ -5006,36 +4887,23 @@
     }
 
     function setProjectMaterialStatusTab(tab) {
+      clearProjectMaterialSelection();
       pmStatusTab = ["all", "online", "other"].includes(tab) ? tab : "online";
-      document.getElementById("pmPlatformStatus").value = "";
-      updateProjectMaterialStatusTabs();
-      pmPage = 1;
-      filterProjectMaterialRows();
-    }
-
-    function changeProjectMaterialStatusFilter(value) {
-      pmStatusTab = value === "已上架" ? "online" : value ? "other" : "all";
       updateProjectMaterialStatusTabs();
       pmPage = 1;
       filterProjectMaterialRows();
     }
 
     function resetProjectMaterialFilters() {
-      document.getElementById("pmProjectName").value = "中国交建-工业品";
+      clearProjectMaterialSelection();
       document.getElementById("pmMaterialCode").value = "";
-      document.getElementById("pmCustomerSkuSpu").value = "";
-      document.getElementById("pmProductTitle").value = "";
-      document.getElementById("pmBrand").value = "";
-      document.getElementById("pmCustomerCategory").value = "";
-      document.getElementById("pmUnitName").value = "";
-      document.getElementById("pmProjectPrice").value = "";
-      document.getElementById("pmPlatformStatus").value = "";
-      document.getElementById("pmSupplierName").value = "";
-      document.getElementById("pmFactoryControlled").value = "";
-      document.getElementById("pmActualSupply").value = "";
+      document.getElementById("pmCustomerTitle").value = "";
+      document.getElementById("pmBrandName").value = "";
+      document.getElementById("pmCategoryName").value = "";
+      document.getElementById("pmManualRemark").value = "";
       document.getElementById("pmStandardProductCode").value = "";
+      document.getElementById("pmMaterialBusinessCode").value = "";
       document.getElementById("pmProjectName").classList.remove("invalid");
-      pmStatusTab = "online";
       updateProjectMaterialStatusTabs();
       pmPage = 1;
       filterProjectMaterialRows();
@@ -5043,90 +4911,17 @@
     }
 
     function refreshProjectMaterials() {
+      clearProjectMaterialSelection();
       filterProjectMaterialRows();
       showToast("项目物料已刷新");
     }
 
-    const projectMaterialImportTemplates = {
-      material: {
-        filename: "客户物料信息批改模板.csv",
-        rows: [
-          ["咸亨编码", "客户编码（sku/spu）", "商品标题", "品牌名称", "客户类目", "单位名称", "控价金额", "厂控物料（是/否）", "实供物料（是/否）", "厂控备注（手动导入）", "标准库编码/产品编码", "最高可改价", "最低价", "销量", "备注（人工导入，50个字）", "物资编码"],
-          ["必填，不可为空", "字母、数字编码，长度最长50个字符", "格式不限，长度最长100个字符", "格式不限，长度最长50个字符", "格式不限，长度最长50个字符", "格式不限，长度最长50个字符", "最大不限，保留两位，正数", "0-否；1-是", "0-否；1-是", "支持维护人员名称、手机号等文字；长度50个字；", "字母、数字编码，长度最长50个字符", "最大不限，保留两位，正数", "最大不限，保留两位，正数", "大于0，支持2位小数", "字母、数字编码，长度最长50个字符", "字母、数字编码，长度最长50个字符"],
-          ["B060101150001", "CJJSKU0001", "真空压力表 Y60 -0.1～0MPa", "红旗/HONGQI", "工业仪表/压力仪表", "个", "32.50", 1, 1, "张伟 13800138000 项目价格联系人", "STD10010001", "35.00", "28.00", "126.50", "项目协议价物料", "WZ0601010001"],
-          ["B180102400026", "CJJSPU0026", "中国ISO标准砂 26小袋装", "艾思欧/ISO", "实验耗材/标准砂", "袋", "280.00", 1, 1, "李娜 13900139000 月度销量核对", "STD10010002", "300.00", "250.00", "58.25", "按月核对销量", "WZ1801020026"],
-          ["B090600600015", "CJJSKU0015", "高可视反光背心 荧光绿色", "圣驰/SHENGCHI", "安全防护/反光服", "件", "18.00", 0, 0, "王强 13700137000 商品信息维护", "STD10010003", "22.00", "15.00", "340.00", "暂不作为实供物料", "WZ0906000015"]
-        ]
-      }
-    };
-    let projectMaterialImportLastFocus = null;
-    let projectMaterialImportToastTimer = null;
-
-    function showProjectMaterialImportToast(message) {
-      const toast = document.getElementById("pmImportToast");
-      toast.textContent = message;
-      toast.classList.add("show");
-      clearTimeout(projectMaterialImportToastTimer);
-      projectMaterialImportToastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
-    }
-
-    function openProjectMaterialImportCorrection() {
-      const mask = document.getElementById("pmImportCorrectionMask");
-      projectMaterialImportLastFocus = document.activeElement;
-      mask.classList.add("active");
-      mask.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
-      requestAnimationFrame(() => document.getElementById("pmImportCorrectionClose").focus());
-    }
-
-    function closeProjectMaterialImportCorrection() {
-      const mask = document.getElementById("pmImportCorrectionMask");
-      mask.classList.remove("active");
-      mask.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
-      if (projectMaterialImportLastFocus && typeof projectMaterialImportLastFocus.focus === "function") projectMaterialImportLastFocus.focus();
-    }
-
-    function closeProjectMaterialImportCorrectionByMask(event) {
-      if (event.target === event.currentTarget) closeProjectMaterialImportCorrection();
-    }
-
-    function projectMaterialCsvCell(value) {
-      const text = String(value ?? "");
-      return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-    }
-
-    function downloadProjectMaterialImportTemplate(type) {
-      const template = projectMaterialImportTemplates[type];
-      if (!template) return;
-      const csv = "\ufeff" + template.rows.map(row => row.map(projectMaterialCsvCell).join(",")).join("\r\n");
-      const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = template.filename;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-      showProjectMaterialImportToast(`${template.filename}已下载`);
-    }
-
-    function selectProjectMaterialImportFile(type) {
-      document.getElementById("pmMaterialFileInput").click();
-    }
-
-    function updateProjectMaterialImportFileName(type, input) {
-      document.getElementById("pmMaterialFileName").textContent = input.files?.[0]?.name || "";
-    }
-
-    function executeProjectMaterialImport(type) {
-      const name = "客户物料信息批改";
-      const input = document.getElementById("pmMaterialFileInput");
-      if (!input.files?.length) {
-        showProjectMaterialImportToast(`请先选择${name}文件`);
+    function exportProjectMaterials() {
+      if (pmSelectedIds.size) {
+        showToast(`已按勾选范围导出${pmSelectedIds.size}条物料（原型）`);
         return;
       }
-      showProjectMaterialImportToast(`${name}文件已提交，正在执行导入校验`);
+      showToast(`已按当前查询条件导出${pmFilteredRows.length}条物料（原型）`);
     }
 
     function setProjectMaterialView(mode) {
@@ -5160,7 +4955,8 @@
             <td><input type="checkbox" aria-label="选择物料${escapeAccountText(row.code)}" ${pmSelectedIds.has(row.id) ? "checked" : ""} onchange="toggleProjectMaterialSelection(${row.id},this.checked)"></td>
             <td><a href="#" onclick="openProjectMaterialDetail(${row.id});return false;">${escapeAccountText(row.code)}</a></td>
             <td title="${escapeAccountText(customerSkuSpu)}">${escapeAccountText(customerSkuSpu)}</td>
-            <td title="${escapeAccountText(row.name)}">${escapeAccountText(row.name)}</td>
+            <td title="${escapeAccountText(row.xhTitle)}">${escapeAccountText(row.xhTitle)}</td>
+            <td title="${escapeAccountText(row.customerTitle)}"><a href="#" onclick="openProjectMaterialDetail(${row.id});return false;">${escapeAccountText(row.customerTitle)}</a></td>
             <td title="${escapeAccountText(row.brand)}">${escapeAccountText(row.brand)}</td>
             <td title="${escapeAccountText(row.customerCategory)}">${escapeAccountText(row.customerCategory)}</td>
             <td>${escapeAccountText(row.unit)}</td>
@@ -5170,21 +4966,30 @@
             <td>${row.controlPrice}</td>
             <td>${escapeAccountText(row.factoryControlled)}</td>
             <td>${escapeAccountText(row.actualSupply)}</td>
+            <td title="${escapeAccountText(row.manualRemark)}">${escapeAccountText(row.manualRemark)}</td>
             <td title="${escapeAccountText(row.standardProductCode)}">${escapeAccountText(row.standardProductCode)}</td>
             <td>${row.maxEditablePrice}</td>
             <td>${row.minimumPrice}</td>
             <td>${escapeAccountText(row.salesVolume)}</td>
+            <td title="${escapeAccountText(row.salesRegionInventory)}">${escapeAccountText(row.salesRegionInventory)}</td>
+            <td>${escapeAccountText(row.multipleOrder)}</td>
+            <td>${escapeAccountText(row.minimumOrderQty)}</td>
+            <td title="${escapeAccountText(row.materialCode)}">${escapeAccountText(row.materialCode)}</td>
           </tr>`;
       }).join("");
       cardGrid.innerHTML = pageRows.map(row => {
         const customerSkuSpu = [row.customerCode, row.spuCode].filter(code => code && code !== "-").join(" / ") || "-";
         const statusOff = row.shelfStatus !== "已上架";
         const thumbIndex = (row.id - 1) % 6 + 1;
-        const cardTitle = row.name;
-        const factoryOff = row.factoryControlled !== "是";
-        const supplyOff = row.actualSupply !== "是";
+        const cardTitle = row.customerTitle;
+        const factoryFlagHtml = row.factoryControlled === "是"
+          ? '<span class="pm-material-flag factory" tabindex="0" role="img" aria-label="厂控：是">控</span>'
+          : "";
+        const supplyFlagHtml = row.actualSupply === "是"
+          ? '<span class="pm-material-flag supply" tabindex="0" role="img" aria-label="实供：是">实</span>'
+          : "";
         return `
-          <article class="pm-material-card" role="button" tabindex="0" aria-label="查看${escapeAccountText(row.name)}物料详情" onclick="handleProjectMaterialCardClick(event,${row.id})" onkeydown="handleProjectMaterialCardKeydown(event,${row.id})">
+          <article class="pm-material-card" role="button" tabindex="0" aria-label="查看${escapeAccountText(row.customerTitle)}物料详情" onclick="handleProjectMaterialCardClick(event,${row.id})" onkeydown="handleProjectMaterialCardKeydown(event,${row.id})">
             <div class="pm-card-main">
               <div class="pm-card-check"><input type="checkbox" aria-label="选择物料${escapeAccountText(row.code)}" ${pmSelectedIds.has(row.id) ? "checked" : ""} onchange="toggleProjectMaterialSelection(${row.id},this.checked)"></div>
               <div class="pm-card-media">
@@ -5192,11 +4997,12 @@
                 <a class="pm-card-title pm-card-ellipsis" href="#" onclick="openProjectMaterialDetail(${row.id});return false;" data-full-text="${escapeAccountText(cardTitle)}">${escapeAccountText(cardTitle)}</a>
                 <div class="pm-card-status-row">
                   <span class="pm-card-status pm-card-ellipsis ${statusOff ? "off" : ""}" data-full-text="平台状态：${escapeAccountText(row.shelfStatus)}">平台状态：${escapeAccountText(row.shelfStatus)}</span>
-                  <span class="pm-material-flag factory ${factoryOff ? "off" : ""}" tabindex="0" role="img" aria-label="厂控：${escapeAccountText(row.factoryControlled)}">控</span>
-                  <span class="pm-material-flag supply ${supplyOff ? "off" : ""}" tabindex="0" role="img" aria-label="实供：${escapeAccountText(row.actualSupply)}">实</span>
+                  ${factoryFlagHtml}
+                  ${supplyFlagHtml}
                 </div>
               </div>
               <div class="pm-card-meta">
+                <div class="pm-card-field wide"><span class="pm-card-label">咸亨标题</span><span class="pm-card-value pm-card-ellipsis" data-full-text="${escapeAccountText(row.xhTitle)}">${escapeAccountText(row.xhTitle)}</span></div>
                 <div class="pm-card-field"><span class="pm-card-label">咸亨编码</span><span class="pm-card-value pm-card-ellipsis" data-full-text="${escapeAccountText(row.code)}">${escapeAccountText(row.code)}</span></div>
                 <div class="pm-card-field"><span class="pm-card-label">客户编码</span><span class="pm-card-value pm-card-ellipsis" data-full-text="${escapeAccountText(customerSkuSpu)}">${escapeAccountText(customerSkuSpu)}</span></div>
                 <div class="pm-card-field"><span class="pm-card-label">项目售价</span><span class="pm-card-value price pm-card-ellipsis" data-full-text="¥${row.projectPrice}">¥${row.projectPrice}</span></div>
@@ -5271,6 +5077,12 @@
       const activeMainImage = pmPreviewGroups.main[0];
       const mainThumbsHtml = pmPreviewGroups.main.map((image, index) => `<button class="pm-detail-main-thumb ${index === 0 ? "active" : ""}" type="button" aria-label="切换为${escapeAccountText(image.alt)}" aria-pressed="${index === 0 ? "true" : "false"}" onclick="selectProjectMaterialMainImage(${index})"><img src="${image.src}" alt="" width="56" height="56" loading="lazy"></button>`).join("");
       const detailImagesHtml = pmPreviewGroups.detail.map((image, index) => `<button class="pm-detail-image-item" type="button" aria-label="预览${escapeAccountText(image.alt)}" onclick="openMaterialImagePreview('detail',${index})"><img src="${image.src}" alt="${escapeAccountText(image.alt)}" width="760" height="560" loading="lazy"></button>`).join("");
+      const factoryFlagHtml = row.factoryControlled === "是"
+        ? '<span class="pm-material-flag factory" tabindex="0" role="img" aria-label="厂控：是">控</span>'
+        : "";
+      const supplyFlagHtml = row.actualSupply === "是"
+        ? '<span class="pm-material-flag supply" tabindex="0" role="img" aria-label="实供：是">实</span>'
+        : "";
       document.getElementById("pmDetailBody").innerHTML = `
         <section class="pm-detail-overview" aria-label="物料核心信息">
           <div class="pm-detail-gallery" aria-label="主图图库">
@@ -5286,7 +5098,7 @@
             <div class="pm-detail-overview-row"><span class="pm-detail-label">咸亨编码</span><span class="pm-detail-value">${escapeAccountText(row.code)}</span></div>
             <div class="pm-detail-overview-row"><span class="pm-detail-label">客户编码（sku/spu）</span><span class="pm-detail-value">${escapeAccountText(customerSkuSpu)}</span></div>
             <div class="pm-detail-overview-row"><span class="pm-detail-label">项目售价</span><span class="pm-detail-value price">¥${row.projectPrice}</span></div>
-            <div class="pm-detail-overview-row"><span class="pm-detail-label">平台状态</span><span class="pm-detail-status-group"><span class="pm-detail-status ${statusOff ? "off" : ""}">${escapeAccountText(row.shelfStatus)}</span><span class="pm-material-flag factory ${row.factoryControlled === "是" ? "" : "off"}" tabindex="0" role="img" aria-label="厂控：${escapeAccountText(row.factoryControlled)}">控</span><span class="pm-material-flag supply ${row.actualSupply === "是" ? "" : "off"}" tabindex="0" role="img" aria-label="实供：${escapeAccountText(row.actualSupply)}">实</span></span></div>
+            <div class="pm-detail-overview-row"><span class="pm-detail-label">平台状态</span><span class="pm-detail-status-group"><span class="pm-detail-status ${statusOff ? "off" : ""}">${escapeAccountText(row.shelfStatus)}</span>${factoryFlagHtml}${supplyFlagHtml}</span></div>
           </div>
         </section>
         <section class="pm-detail-section" aria-labelledby="pmDetailBaseTitle">
@@ -5420,10 +5232,6 @@
         else if (event.key === "-") changeMaterialPreviewScale(-.25);
         return;
       }
-      if (event.key === "Escape" && document.getElementById("pmImportCorrectionMask").classList.contains("active")) {
-        closeProjectMaterialImportCorrection();
-        return;
-      }
       if (event.key === "Escape" && document.getElementById("pmDetailMask").classList.contains("active")) closeProjectMaterialDetail();
     });
 
@@ -5509,7 +5317,9 @@
 
     function changeProjectMaterialPage(page) {
       const totalPages = Math.max(1, Math.ceil(pmFilteredRows.length / pmPageSize));
-      pmPage = Math.min(Math.max(1, Number(page) || 1), totalPages);
+      const targetPage = Math.min(Math.max(1, Number(page) || 1), totalPages);
+      if (targetPage !== pmPage) clearProjectMaterialSelection();
+      pmPage = targetPage;
       renderProjectMaterials();
       document.getElementById("pmTableWrap").scrollTop = 0;
     }
