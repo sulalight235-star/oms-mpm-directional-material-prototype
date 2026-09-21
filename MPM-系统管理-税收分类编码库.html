@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>税收分类编码库 - 咸亨国际主数据管理平台</title>
+  <style>
+    :root {
+      --primary: #2f66e8;
+      --primary-hover: #2458d3;
+      --primary-bg: #e6f4ff;
+      --text: #303133;
+      --muted: #697386;
+      --line: #d9dee7;
+      --page: #f3f6fb;
+      --surface: #fff;
+      --header: #001529;
+      --success: #16803c;
+      --danger: #d92d20;
+      --z-header: 20;
+      --z-toast: 40;
+      --z-modal: 50;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    body {
+      min-width: 1080px;
+      min-height: 100vh;
+      background: var(--page);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    button, input { font: inherit; }
+    button { touch-action: manipulation; }
+
+    .topbar {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: var(--header);
+      color: rgba(255,255,255,.85);
+      position: sticky;
+      top: 0;
+      z-index: var(--z-header);
+    }
+    .brand, .top-actions, .account-trigger { display: flex; align-items: center; }
+    .brand { gap: 12px; }
+    .brand-logo {
+      width: 28px; height: 28px; display: grid; place-items: center;
+      border-radius: 6px; background: #1677ff; color: #fff; font-size: 13px; font-weight: 700;
+    }
+    .brand-name { color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; }
+    .switch-system {
+      min-height: 30px; padding: 0 10px; border: 1px solid rgba(255,255,255,.25);
+      border-radius: 4px; background: transparent; color: rgba(255,255,255,.78); cursor: pointer;
+    }
+    .switch-system:hover { border-color: #1677ff; color: #fff; }
+    .top-actions { height: 100%; gap: 4px; }
+    .top-link { height: 100%; display: flex; align-items: center; padding: 0 12px; color: rgba(255,255,255,.75); }
+    .account { position: relative; height: 100%; }
+    .account-trigger {
+      height: 100%; gap: 7px; padding: 0 10px; border: 0; background: transparent;
+      color: rgba(255,255,255,.84); cursor: pointer;
+    }
+    .account-trigger:hover, .account-trigger[aria-expanded="true"] { color: #fff; background: rgba(255,255,255,.08); }
+    .avatar { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: #1677ff; color: #fff; font-size: 11px; font-weight: 700; }
+    .account-menu {
+      position: absolute; top: calc(100% + 6px); right: 0; width: 190px; padding: 6px;
+      border: 1px solid #e5e9ef; border-radius: 4px; background: #fff; box-shadow: 0 10px 26px rgba(20,35,60,.18);
+    }
+    .account-option {
+      width: 100%; min-height: 40px; display: flex; align-items: center; gap: 10px;
+      border: 0; border-radius: 3px; padding: 6px 9px; background: transparent; color: var(--text); text-align: left; cursor: pointer;
+    }
+    .account-option:hover, .account-option.active { background: #eaf3ff; color: #1677ff; }
+    .account-copy { display: grid; }
+    .account-copy small { color: #8a94a3; }
+
+    .tabs {
+      height: 36px; display: flex; align-items: stretch; justify-content: space-between; background: #fff; border-bottom: 1px solid #f0f0f0;
+      position: sticky; top: 48px; z-index: 10;
+    }
+    .tab { min-width: 150px; display: flex; align-items: center; gap: 9px; padding: 0 14px; color: var(--primary); background: var(--primary-bg); border-top: 2px solid var(--primary); }
+    .tab a { color: inherit; text-decoration: none; }
+    .tab-close { margin-left: auto; color: #8c8c8c; }
+    .tabs-clear { padding: 0 14px; display: flex; align-items: center; color: #8c8c8c; cursor: pointer; }
+
+    .page { height: calc(100vh - 84px); display: flex; flex-direction: column; overflow: hidden; }
+    .page-head {
+      min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 8px 16px; background: var(--surface); border-bottom: 1px solid #e6eaf0;
+    }
+    .breadcrumb { display: flex; align-items: center; gap: 8px; color: #788396; }
+    .breadcrumb a { color: #566176; text-decoration: none; }
+    .breadcrumb a:hover { color: var(--primary); }
+    .breadcrumb strong { color: #1f2937; font-weight: 600; }
+    .sync-btn {
+      min-width: 104px; height: 34px; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 0 14px; border: 1px solid var(--primary); border-radius: 3px; background: var(--primary); color: #fff;
+      font-weight: 600; cursor: pointer; transition: background .18s, border-color .18s, opacity .18s;
+    }
+    .sync-btn:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+    .sync-btn:disabled { cursor: not-allowed; opacity: .55; }
+    .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .filter-panel {
+      min-height: 54px; display: flex; align-items: center; gap: 26px; padding: 10px 8px;
+      background: var(--surface); border-bottom: 1px solid #f0f0f0;
+    }
+    .filter-title { color: #262626; font-weight: 600; white-space: nowrap; }
+    .filter-field { display: flex; align-items: center; gap: 8px; }
+    .filter-field label { white-space: nowrap; }
+    .input-wrap { position: relative; }
+    .filter-field input {
+      width: 220px; height: 30px; border: 1px solid #d9d9d9; border-radius: 2px; padding: 0 30px 0 10px;
+      color: var(--text); outline: none; transition: border-color .18s, box-shadow .18s;
+    }
+    .filter-field input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(47,102,232,.12); }
+    .filter-field input::placeholder { color: #a6afbd; }
+    .input-clear { position: absolute; right: 7px; top: 50%; width: 18px; height: 18px; display: grid; place-items: center; transform: translateY(-50%); border: 0; background: transparent; color: #bfbfbf; cursor: pointer; }
+    .input-clear:hover { color: #595959; }
+    .filter-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    .btn {
+      min-width: 0; height: 32px; border: 1px solid #d9d9d9; border-radius: 3px; padding: 0 13px;
+      background: #fff; color: #434343; cursor: pointer; transition: color .18s, border-color .18s, background .18s;
+    }
+    .btn:hover { color: var(--primary); border-color: var(--primary); }
+    .btn.primary { color: #fff; border-color: var(--primary); background: var(--primary); }
+    .btn.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+    .btn.icon-only { width: 32px; padding: 0; display: grid; place-items: center; color: var(--primary); border-color: var(--primary); }
+
+    .table-toolbar {
+      min-height: 44px; display: flex; align-items: center; justify-content: flex-end; padding: 0 8px;
+      background: #f5f8ff; border-bottom: 1px solid #e6ebf2; color: var(--muted);
+    }
+    .tree-actions { display: flex; align-items: center; gap: 16px; }
+
+    .table-wrap { min-height: 0; flex: 1; overflow: auto; background: #fff; }
+    table { width: 100%; min-width: 960px; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+    th, td { height: 38px; padding: 0 14px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    th { position: sticky; top: 0; z-index: 2; height: 40px; background: #f7f8fa; color: #303133; font-weight: 700; }
+    tbody tr:hover { background: #f2f6ff; }
+    .code-col { width: 27%; font-variant-numeric: tabular-nums; }
+    .name-col { width: 27%; }
+    .short-col { width: 18%; }
+    .rate-col { width: 10%; text-align: right; font-variant-numeric: tabular-nums; }
+    .time-col { width: 18%; font-variant-numeric: tabular-nums; }
+    .tree-cell { display: flex; align-items: center; min-width: 0; }
+    .tree-toggle, .tree-spacer { width: 24px; height: 32px; flex: 0 0 24px; margin-right: 4px; }
+    .tree-toggle { display: grid; place-items: center; border: 0; border-radius: 3px; background: transparent; color: #5e6879; cursor: pointer; }
+    .tree-toggle:hover { color: var(--primary); background: #eaf1ff; }
+    .tree-toggle svg { width: 14px; height: 14px; transition: transform .18s; }
+    .tree-toggle[aria-expanded="true"] svg { transform: rotate(90deg); }
+    .code-text { overflow: hidden; text-overflow: ellipsis; }
+    .level-tag { margin-left: 8px; padding: 1px 5px; border-radius: 2px; background: #edf2f7; color: #657084; font-size: 11px; }
+    .empty { min-height: 280px; display: grid; place-items: center; color: #7f8999; text-align: center; }
+    .empty svg { display: block; width: 48px; height: 48px; margin: 0 auto 12px; color: #b7c0cd; }
+    .footer { min-height: 44px; display: flex; align-items: center; padding: 0 16px; background: #f7f9fd; border-top: 1px solid var(--line); color: var(--muted); }
+
+    .modal-mask {
+      position: fixed; inset: 0; z-index: var(--z-modal); display: flex; align-items: center; justify-content: center;
+      padding: 20px; background: rgba(15,23,42,.48); opacity: 0; visibility: hidden; transition: opacity .18s, visibility .18s;
+    }
+    .modal-mask.active { opacity: 1; visibility: visible; }
+    .modal {
+      width: min(520px, calc(100vw - 40px)); border-radius: 6px; background: #fff; box-shadow: 0 20px 50px rgba(15,23,42,.24);
+      transform: translateY(8px); transition: transform .18s;
+    }
+    .modal-mask.active .modal { transform: translateY(0); }
+    .modal-head { height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #edf0f4; }
+    .modal-title { font-size: 16px; font-weight: 700; color: #1f2937; }
+    .modal-close { width: 36px; height: 36px; border: 0; border-radius: 3px; background: transparent; color: #667085; cursor: pointer; }
+    .modal-close:hover { color: #111827; background: #f3f4f6; }
+    .modal-body { display: flex; gap: 14px; padding: 22px 20px; color: #475467; line-height: 1.75; }
+    .warn-icon { width: 38px; height: 38px; flex: 0 0 38px; display: grid; place-items: center; border-radius: 50%; background: #fff7e6; color: #d97706; }
+    .modal-body strong { display: block; margin-bottom: 3px; color: #1f2937; font-size: 15px; }
+    .modal-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px; border-top: 1px solid #edf0f4; }
+
+    .toast {
+      position: fixed; left: 50%; top: 102px; z-index: var(--z-toast); display: flex; align-items: center; gap: 8px;
+      max-width: 560px; padding: 10px 16px; border: 1px solid #d0d5dd; border-radius: 4px; background: #fff;
+      color: #344054; box-shadow: 0 8px 24px rgba(15,23,42,.16); opacity: 0; pointer-events: none;
+      transform: translate(-50%, -10px); transition: opacity .2s, transform .2s;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .toast.success { border-color: #a6e3b6; color: var(--success); }
+    .toast.error { border-color: #f4b9b5; color: var(--danger); }
+
+    :focus-visible { outline: 2px solid rgba(47,102,232,.55); outline-offset: 2px; }
+    @media (max-width: 1280px) {
+      .filter-panel { gap: 12px; }
+      .filter-field input { width: 150px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true">咸</div>
+      <a class="brand-name" href="MPM-工作台-首页.html">咸亨国际主数据管理平台</a>
+      <button class="switch-system" type="button" onclick="location.href='index.html'">切换系统</button>
+    </div>
+    <div class="top-actions">
+      <span class="top-link">消息通知</span><span class="top-link">版本更新</span><span class="top-link">任务中心</span>
+      <div class="account">
+        <button class="account-trigger" id="accountTrigger" type="button" aria-haspopup="menu" aria-expanded="false" onclick="toggleAccountMenu(event)">
+          <span class="avatar" id="accountAvatar">管</span><span id="accountName">管理员</span><span aria-hidden="true">▾</span>
+        </button>
+        <div class="account-menu" id="accountMenu" role="menu" hidden>
+          <button class="account-option active" data-role="admin" type="button" role="menuitem" onclick="switchAccount('admin')"><span class="avatar">管</span><span class="account-copy"><strong>管理员</strong><small>系统管理账户</small></span></button>
+          <button class="account-option" data-role="buyer" type="button" role="menuitem" onclick="switchAccount('buyer')"><span class="avatar">王</span><span class="account-copy"><strong>王云龙</strong><small>采购员角色</small></span></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <div class="tab"><span>税收分类编码库</span><a class="tab-close" href="MPM-工作台-首页.html" aria-label="关闭税收分类编码库页签"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></a></div>
+    <div class="tabs-clear" onclick="location.href='MPM-工作台-首页.html'">清除</div>
+  </div>
+
+  <main class="page" id="mainContent" tabindex="-1">
+    <form class="filter-panel" aria-label="税收分类编码查询" onsubmit="searchTaxCodes(event)">
+      <span class="filter-title">筛选：</span>
+      <div class="filter-field"><label for="codeFilter">税收分类编码</label><span class="input-wrap"><input id="codeFilter" type="text" placeholder="请输入" autocomplete="off"><button class="input-clear" type="button" aria-label="清空税收分类编码" onclick="clearTaxCodeFilter('codeFilter')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></span></div>
+      <div class="filter-field"><label for="nameFilter">税收分类名称</label><span class="input-wrap"><input id="nameFilter" type="text" placeholder="请输入" autocomplete="off"><button class="input-clear" type="button" aria-label="清空税收分类名称" onclick="clearTaxCodeFilter('nameFilter')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></span></div>
+      <div class="filter-field"><label for="shortFilter">税收分类简称</label><span class="input-wrap"><input id="shortFilter" type="text" placeholder="请输入" autocomplete="off"><button class="input-clear" type="button" aria-label="清空税收分类简称" onclick="clearTaxCodeFilter('shortFilter')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></span></div>
+      <div class="filter-actions"><button class="btn icon-only" type="button" aria-label="编辑筛选条件" title="编辑筛选条件" onclick="document.getElementById('codeFilter').focus()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button class="btn primary" type="submit">查询</button><button class="btn" type="button" onclick="resetTaxCodeFilters()">重置</button><button class="btn" type="button" aria-label="展开更多筛选" onclick="showToast('暂无更多筛选条件')">⌄</button></div>
+    </form>
+
+    <div class="table-toolbar">
+      <div class="tree-actions"><button class="sync-btn" id="syncButton" type="button" onclick="openSyncConfirm()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 12a8 8 0 0 1-14.9 4M4 12A8 8 0 0 1 18.9 8"/><path d="m5 20 .1-4.1L9 16M19 4l-.1 4.1L15 8"/></svg><span>手动同步</span></button></div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="taxTable" aria-label="税收分类编码树形列表">
+        <thead><tr><th class="code-col">税收分类编码</th><th class="name-col">税收分类名称</th><th class="short-col">税收分类简称</th><th class="rate-col">税率</th><th class="time-col">同步时间</th></tr></thead>
+        <tbody id="taxTableBody"></tbody>
+      </table>
+      <div class="empty" id="emptyState" hidden>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg><strong>未找到符合条件的税收分类编码</strong><br><span>请调整查询条件后重试，或点击“重置”恢复全量数据。</span></div>
+      </div>
+    </div>
+    <footer class="footer">数据来源：H0 · 页面仅展示当前已生效的本地税编数据 · 最近同步：<span id="lastSyncTime">2026-09-13 09:30:18</span></footer>
+  </main>
+
+  <div class="modal-mask" id="syncModal" role="dialog" aria-modal="true" aria-labelledby="syncTitle" aria-describedby="syncDesc" onclick="closeSyncByMask(event)">
+    <div class="modal">
+      <div class="modal-head"><h2 class="modal-title" id="syncTitle">确认手动同步</h2><button class="modal-close" type="button" aria-label="关闭" onclick="closeSyncConfirm()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+      <div class="modal-body">
+        <span class="warn-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3 2.8 19h18.4L12 3Z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+        <div id="syncDesc"><strong>将从 H0 获取并替换当前全量税编库</strong>同步采用全量替换方式。任务成功后刷新为最新数据；若失败，当前完整数据不会发生变化。</div>
+      </div>
+      <div class="modal-foot"><button class="btn" type="button" onclick="closeSyncConfirm()">取消</button><button class="btn primary" id="confirmSyncButton" type="button" onclick="startSync()">确认同步</button></div>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const initialTaxCodes = [
+      { code: "1000000000000000000", name: "货物", shortName: "货物", rate: "—", children: [
+        { code: "1010000000000000000", name: "农、林、牧、渔业产品", shortName: "农产品", rate: "9%", children: [
+          { code: "1010100000000000000", name: "农业产品", shortName: "农业产品", rate: "9%", children: [
+            { code: "1010101000000000000", name: "谷物", shortName: "谷物", rate: "9%" },
+            { code: "1010102000000000000", name: "薯类", shortName: "薯类", rate: "9%" }
+          ]},
+          { code: "1010200000000000000", name: "林业产品", shortName: "林业产品", rate: "9%", children: [
+            { code: "1010201000000000000", name: "原木", shortName: "原木", rate: "9%" }
+          ]}
+        ]},
+        { code: "1060000000000000000", name: "化学原料及化学制品", shortName: "化工产品", rate: "13%", children: [
+          { code: "1060400000000000000", name: "日用化学产品", shortName: "日化产品", rate: "13%" },
+          { code: "1060500000000000000", name: "胶粘剂", shortName: "胶粘剂", rate: "13%" }
+        ]},
+        { code: "1090000000000000000", name: "机械、设备类产品", shortName: "机械设备", rate: "13%", children: [
+          { code: "1090100000000000000", name: "通用设备", shortName: "通用设备", rate: "13%", children: [
+            { code: "1090101000000000000", name: "泵及真空设备", shortName: "泵", rate: "13%" },
+            { code: "1090102000000000000", name: "气体压缩机械", shortName: "压缩机", rate: "13%" }
+          ]},
+          { code: "1090200000000000000", name: "专用设备", shortName: "专用设备", rate: "13%" }
+        ]}
+      ]},
+      { code: "2000000000000000000", name: "劳务", shortName: "劳务", rate: "13%", children: [
+        { code: "2010000000000000000", name: "加工劳务", shortName: "加工", rate: "13%" },
+        { code: "2020000000000000000", name: "修理修配劳务", shortName: "修理修配", rate: "13%" }
+      ]},
+      { code: "3000000000000000000", name: "服务", shortName: "服务", rate: "6%", children: [
+        { code: "3040000000000000000", name: "现代服务", shortName: "现代服务", rate: "6%", children: [
+          { code: "3040500000000000000", name: "文化创意服务", shortName: "文化创意", rate: "6%" },
+          { code: "3040600000000000000", name: "物流辅助服务", shortName: "物流辅助", rate: "6%" }
+        ]}
+      ]}
+    ];
+
+    let taxCodes = structuredClone(initialTaxCodes);
+    let filteredCodes = taxCodes;
+    const expanded = new Set();
+    let isFiltering = false;
+    let syncRunning = false;
+    let currentRole = "admin";
+    let toastTimer;
+    let currentSyncTime = "2026-09-13 09:30:18";
+    const syncLockKey = "mpm-tax-code-full-sync-lock";
+
+    function formatDateTime(date) {
+      const pad = value => String(value).padStart(2, "0");
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    }
+
+    function isGlobalSyncLocked() {
+      try {
+        const startedAt = Number(localStorage.getItem(syncLockKey));
+        if (!startedAt) return false;
+        if (Date.now() - startedAt > 5 * 60 * 1000) { localStorage.removeItem(syncLockKey); return false; }
+        return true;
+      } catch (error) { return syncRunning; }
+    }
+
+    function setSyncButtonState(running, external = false) {
+      const button = document.getElementById("syncButton");
+      button.disabled = running;
+      if (running) {
+        button.setAttribute("aria-busy", "true");
+        button.innerHTML = `<span class="spinner" aria-hidden="true"></span><span>${external ? "任务执行中" : "同步中..."}</span>`;
+      } else {
+        button.removeAttribute("aria-busy");
+        button.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 12a8 8 0 0 1-14.9 4M4 12A8 8 0 0 1 18.9 8"/><path d="m5 20 .1-4.1L9 16M19 4l-.1 4.1L15 8"/></svg><span>手动同步</span>';
+      }
+    }
+
+    function flatten(nodes, level = 0, parentCode = "", result = []) {
+      nodes.forEach(node => {
+        result.push({ ...node, level, parentCode });
+        if (node.children) flatten(node.children, level + 1, node.code, result);
+      });
+      return result;
+    }
+
+    function collectExpandable(nodes) {
+      nodes.forEach(node => { if (node.children?.length) { expanded.add(node.code); collectExpandable(node.children); } });
+    }
+
+    function filterTree(nodes, filters) {
+      return nodes.reduce((result, node) => {
+        const ownMatch = (!filters.code || node.code.includes(filters.code)) &&
+          (!filters.name || node.name.toLowerCase().includes(filters.name)) &&
+          (!filters.shortName || node.shortName.toLowerCase().includes(filters.shortName));
+        const matchingChildren = node.children ? filterTree(node.children, filters) : [];
+        if (ownMatch || matchingChildren.length) result.push({ ...node, children: ownMatch ? node.children : matchingChildren });
+        return result;
+      }, []);
+    }
+
+    function getVisibleRows(nodes, level = 0, result = []) {
+      nodes.forEach(node => {
+        result.push({ ...node, level });
+        if (node.children?.length && (isFiltering || expanded.has(node.code))) getVisibleRows(node.children, level + 1, result);
+      });
+      return result;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+    }
+
+    function renderTable() {
+      const rows = getVisibleRows(filteredCodes);
+      const body = document.getElementById("taxTableBody");
+      body.innerHTML = rows.map(row => {
+        const hasChildren = Boolean(row.children?.length);
+        const toggle = hasChildren ? `<button class="tree-toggle" type="button" aria-label="${expanded.has(row.code) ? "收起" : "展开"}${escapeHtml(row.name)}" aria-expanded="${isFiltering || expanded.has(row.code)}" onclick="toggleNode('${row.code}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>` : '<span class="tree-spacer"></span>';
+        return `<tr><td class="code-col"><div class="tree-cell" style="padding-left:${row.level * 24}px">${toggle}<span class="code-text" title="${escapeHtml(row.code)}">${escapeHtml(row.code)}</span><span class="level-tag">${row.level + 1}级</span></div></td><td class="name-col" title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</td><td class="short-col" title="${escapeHtml(row.shortName)}">${escapeHtml(row.shortName)}</td><td class="rate-col">${escapeHtml(row.rate)}</td><td class="time-col">${escapeHtml(row.syncTime || currentSyncTime)}</td></tr>`;
+      }).join("");
+      document.getElementById("taxTable").hidden = !rows.length;
+      document.getElementById("emptyState").hidden = Boolean(rows.length);
+    }
+
+    function toggleNode(code) {
+      if (isFiltering) return;
+      expanded.has(code) ? expanded.delete(code) : expanded.add(code);
+      renderTable();
+    }
+
+    function searchTaxCodes(event) {
+      event.preventDefault();
+      const filters = {
+        code: document.getElementById("codeFilter").value.trim(),
+        name: document.getElementById("nameFilter").value.trim().toLowerCase(),
+        shortName: document.getElementById("shortFilter").value.trim().toLowerCase()
+      };
+      isFiltering = Boolean(filters.code || filters.name || filters.shortName);
+      filteredCodes = isFiltering ? filterTree(taxCodes, filters) : taxCodes;
+      if (!isFiltering) { expanded.clear(); collectExpandable(taxCodes); }
+      renderTable();
+      showToast(`查询完成，共找到 ${getVisibleRows(filteredCodes).length} 条数据`, "success");
+    }
+
+    function resetTaxCodeFilters() {
+      ["codeFilter", "nameFilter", "shortFilter"].forEach(id => document.getElementById(id).value = "");
+      isFiltering = false; filteredCodes = taxCodes; expanded.clear(); collectExpandable(taxCodes); renderTable();
+      showToast("已重置并恢复全量树形展示", "success");
+    }
+
+    function clearTaxCodeFilter(id) {
+      const input = document.getElementById(id);
+      input.value = "";
+      input.focus();
+    }
+
+    function openSyncConfirm() {
+      if (syncRunning || currentRole !== "admin") return;
+      if (isGlobalSyncLocked()) { setSyncButtonState(true, true); showToast("全系统已有税编同步任务正在执行，请稍后再试", "error"); return; }
+      const modal = document.getElementById("syncModal");
+      modal.classList.add("active");
+      document.getElementById("confirmSyncButton").focus();
+    }
+    function closeSyncConfirm() { document.getElementById("syncModal").classList.remove("active"); document.getElementById("syncButton").focus(); }
+    function closeSyncByMask(event) { if (event.target === event.currentTarget) closeSyncConfirm(); }
+
+    function startSync() {
+      if (syncRunning) return;
+      if (isGlobalSyncLocked()) { closeSyncConfirm(); setSyncButtonState(true, true); showToast("全系统已有税编同步任务正在执行，请稍后再试", "error"); return; }
+      syncRunning = true; closeSyncConfirm();
+      const button = document.getElementById("syncButton");
+      try { localStorage.setItem(syncLockKey, String(Date.now())); } catch (error) {}
+      setSyncButtonState(true);
+      setTimeout(() => {
+        const failDemo = new URLSearchParams(location.search).get("sync") === "fail";
+        if (failDemo) {
+          showToast("同步失败：H0 接口连接超时，已保留同步前完整数据", "error");
+        } else {
+          taxCodes = structuredClone(initialTaxCodes);
+          taxCodes[0].children[2].children.push({ code: "1090300000000000000", name: "电气机械和器材", shortName: "电气器材", rate: "13%" });
+          currentSyncTime = formatDateTime(new Date());
+          document.getElementById("lastSyncTime").textContent = currentSyncTime;
+          resetTaxCodeFilters();
+          showToast("同步成功，已刷新最新全量税编数据", "success");
+        }
+        syncRunning = false;
+        try { localStorage.removeItem(syncLockKey); } catch (error) {}
+        setSyncButtonState(false);
+      }, 1500);
+    }
+
+    function showToast(message, type = "success") {
+      const toast = document.getElementById("toast");
+      clearTimeout(toastTimer); toast.textContent = message; toast.className = `toast ${type} show`;
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3800);
+    }
+
+    function toggleAccountMenu(event) {
+      event.stopPropagation(); const menu = document.getElementById("accountMenu"); const trigger = document.getElementById("accountTrigger");
+      menu.hidden = !menu.hidden; trigger.setAttribute("aria-expanded", String(!menu.hidden));
+    }
+    function closeAccountMenu() { document.getElementById("accountMenu").hidden = true; document.getElementById("accountTrigger").setAttribute("aria-expanded", "false"); }
+    function switchAccount(role) {
+      currentRole = role; const admin = role === "admin";
+      document.getElementById("accountAvatar").textContent = admin ? "管" : "王";
+      document.getElementById("accountName").textContent = admin ? "管理员" : "王云龙";
+      document.getElementById("syncButton").hidden = !admin;
+      document.querySelectorAll(".account-option").forEach(item => item.classList.toggle("active", item.dataset.role === role));
+      closeAccountMenu(); showToast(admin ? "已切换至管理员账户" : "已切换至采购员账户，手动同步不可用", "success");
+    }
+
+    document.addEventListener("click", closeAccountMenu);
+    window.addEventListener("storage", event => {
+      if (event.key === syncLockKey && !syncRunning) setSyncButtonState(Boolean(event.newValue), true);
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") { closeAccountMenu(); if (document.getElementById("syncModal").classList.contains("active")) closeSyncConfirm(); }
+    });
+    collectExpandable(taxCodes); renderTable();
+    if (isGlobalSyncLocked()) setSyncButtonState(true, true);
+    document.getElementById("mainContent").focus();
+  </script>
+</body>
+</html>

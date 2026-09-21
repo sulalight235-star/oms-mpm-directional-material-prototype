@@ -1,0 +1,3664 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>新增物料｜智能新增物料</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 12px;
+    color: #333;
+    background: #f5f6f8;
+  }
+  .platform-header {
+    height: 40px; background: #fff; border-bottom: 1px solid #e8e8e8;
+    display: flex; align-items: center; padding: 0 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .platform-header .logo { font-weight: 600; color: #1677ff; font-size: 14px; }
+  .platform-header .switch { color: #888; margin-left: 8px; font-size: 11px; }
+  .platform-header .right { margin-left: auto; display: flex; gap: 16px; color: #666; font-size: 12px; }
+  .platform-header .right span { cursor: pointer; }
+  .platform-header .right span:hover { color: #1677ff; }
+  .red-dot::after { content:""; display:inline-block; width:6px; height:6px; background:#ff4d4f; border-radius:50%; margin-left:4px; vertical-align: top; }
+
+  /* 工作台同款顶部导航 */
+  .topbar {
+    height: 48px;
+    background: #001529;
+    color: rgba(255,255,255,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+    z-index: 120;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo {
+    width: 28px;
+    height: 28px;
+    background: #1677ff;
+    border-radius: 6px;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .brand-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .switch-btn {
+    border: 1px solid rgba(255,255,255,0.25);
+    background: transparent;
+    color: rgba(255,255,255,0.75);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    line-height: 22px;
+    transition: all .2s;
+  }
+  .switch-btn:hover { border-color: #1677ff; color: #fff; }
+  .nav-menu { display: flex; align-items: center; height: 100%; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 13px;
+    height: 100%;
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+    transition: .2s;
+  }
+  .nav-item:hover { color: #fff; background: rgba(255,255,255,0.08); }
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ff4d4f;
+    position: absolute;
+    top: 10px;
+    right: 7px;
+    border: 1.5px solid #001529;
+  }
+  .nav-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); margin: 0 3px; }
+  .user-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #1677ff;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    display: grid;
+    place-items: center;
+  }
+  .tabs-bar {
+    height: 36px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    padding: 0 8px 0 0;
+    position: sticky;
+    top: 48px;
+    z-index: 110;
+  }
+  .tabs-list { display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
+  .tabs-list::-webkit-scrollbar { display: none; }
+
+  /* Tabs */
+  .tabs {
+    background: #fff; height: 36px; display: flex; align-items: end;
+    padding: 0 16px; border-bottom: 1px solid #e8e8e8;
+  }
+  .tab {
+    height: 30px; line-height: 30px; padding: 0 14px; font-size: 12px;
+    background: #f0f2f5; border: 1px solid #e8e8e8; border-bottom: none;
+    border-radius: 4px 4px 0 0; margin-right: 2px; cursor: pointer; color: #666;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tab.active { background: #fff; color: #1677ff; height: 31px; border-bottom: 1px solid #fff; position: relative; top: 1px; }
+  .tab .close { color: #aaa; font-size: 13px; }
+  .tab .close:hover { color: #ff4d4f; }
+  .tab .badge { background: #ff4d4f; color: #fff; font-size: 10px; padding: 0 5px; border-radius: 8px; line-height: 14px; }
+  .tabs-bar .tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: auto;
+    line-height: normal;
+    padding: 0 14px;
+    font-size: 12px;
+    color: rgba(0,0,0,0.45);
+    cursor: pointer;
+    border: 0;
+    border-right: 1px solid #f0f0f0;
+    border-radius: 0;
+    margin-right: 0;
+    background: #fff;
+    white-space: nowrap;
+    transition: .2s;
+    position: relative;
+  }
+  .tabs-bar .tab:hover { color: rgba(0,0,0,0.65); background: #fafafa; }
+  .tabs-bar .tab.active { color: #1677ff; background: #e6f4ff; top: 0; height: auto; border-bottom: 0; }
+  .tabs-bar .tab.active::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #1677ff;
+  }
+  .tabs-bar .tab .cls { font-size: 10px; opacity: .5; padding: 2px; border-radius: 2px; }
+  .tabs-bar .tab:hover .cls { opacity: .85; }
+  .tabs-bar .tab .cls:hover { background: rgba(0,0,0,0.08); color: #ff4d4f; }
+  .tabs-clear {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 12px;
+    color: rgba(0,0,0,0.45);
+    cursor: pointer;
+    border-left: 1px solid #f0f0f0;
+  }
+  .tabs-clear:hover { color: #1677ff; }
+
+  /* Action Bar */
+  .action-bar {
+    background: #fff; padding: 8px 16px; display: flex; align-items: center; gap: 16px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .action-bar .left, .action-bar .right { display: flex; align-items: center; gap: 12px; }
+  .action-bar .right { margin-left: auto; }
+  .link-btn { color: #1677ff; cursor: pointer; font-size: 12px; }
+  .link-btn:hover { text-decoration: underline; }
+  .reject-link { color: #ff4d4f; }
+  .btn {
+    height: 28px; padding: 0 14px; border-radius: 4px; font-size: 12px;
+    border: 1px solid transparent; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .btn-primary { background: #1677ff; color: #fff; border-color: #1677ff; }
+  .btn-primary:hover { background: #4096ff; }
+  .btn-danger { background: #fff; color: #ff4d4f; border-color: #ff4d4f; }
+  .btn-danger:hover { background: #fff1f0; }
+
+  /* AI Banner */
+  .ai-banner {
+    margin: 8px 16px; padding: 8px 14px;
+    background: #fffbe6; border-left: 4px solid #faad14; border-radius: 2px;
+    font-size: 12px; color: #614700;
+  }
+  .ai-banner b { color: #d48806; margin: 0 4px; }
+
+  /* Card */
+  .card {
+    background: #fff; margin: 8px 16px; border-radius: 4px;
+    border: 1px solid #f0f0f0;
+  }
+  .card-header {
+    display: flex; align-items: center; padding: 10px 14px;
+    border-bottom: 1px solid #f5f5f5; font-weight: 600; font-size: 13px; color: #1f1f1f;
+    cursor: pointer; user-select: none;
+  }
+  .card-header::before {
+    content:""; width: 3px; height: 12px; background: #1677ff;
+    margin-right: 8px; border-radius: 1px;
+  }
+  .card-header .right-actions { margin-left: auto; display: flex; gap: 14px; font-weight: 400; font-size: 12px; }
+  .card-header .arrow { margin-left: 8px; color: #aaa; transition: transform 0.2s; }
+  .card-header.collapsed .arrow { transform: rotate(-90deg); }
+  .card-body { padding: 14px; }
+  .card.collapsed .card-body { display: none; }
+
+  /* Form Grid */
+  .row { display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 10px; }
+  .field {
+    flex: 0 0 25%; padding: 4px 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .field.full { flex: 0 0 100%; }
+  .field.half { flex: 0 0 50%; }
+  .field.three-q { flex: 0 0 75%; }
+  .label {
+    width: 86px; text-align: right; font-size: 12px; color: #555;
+    flex-shrink: 0;
+  }
+  .label.req::before { content: "* "; color: #ff4d4f; }
+  .control { flex: 1; min-width: 0; display: flex; align-items: center; gap: 4px; }
+  .input, .select {
+    height: 26px; padding: 0 8px; border: 1px solid #d9d9d9; border-radius: 3px;
+    font-size: 12px; width: 100%; background: #fff;
+    transition: border-color 0.15s;
+  }
+  .input:focus, .select:focus { outline: none; border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.1); }
+  .input[readonly] { background: #fafafa; color: #999; }
+  .input.dim { color: #aaa; }
+  .input-suffix {
+    height: 26px; padding: 0 8px; border: 1px solid #d9d9d9; border-left: none;
+    background: #fafafa; color: #888; line-height: 26px; font-size: 12px;
+    border-radius: 0 3px 3px 0; flex-shrink: 0;
+  }
+  .input.with-suffix { border-radius: 3px 0 0 3px; }
+  .ctrl-suffix { display: flex; flex: 1; }
+  .radio-group, .checkbox-group { display: flex; gap: 12px; align-items: center; }
+  .radio-group label, .checkbox-group label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; font-size: 12px; }
+  input[type="radio"], input[type="checkbox"] { accent-color: #1677ff; }
+
+  /* Tag */
+  .tag {
+    display: inline-block; padding: 1px 8px; font-size: 11px;
+    border-radius: 2px; line-height: 18px;
+  }
+  .tag-rec { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; }
+  .tag-sug { background: #fffbe6; color: #d48806; border: 1px solid #ffe58f; }
+  .tag-warn { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; }
+  .tag-blue { background: #e6f4ff; color: #1677ff; border: 1px solid #91caff; }
+
+  .ai-trigger {
+    color: #1677ff; cursor: pointer; font-size: 11px; white-space: nowrap;
+    padding: 2px 6px; border: 1px dashed #91caff; border-radius: 2px;
+  }
+  .ai-trigger:hover { background: #f0f7ff; }
+
+  .smart-fill {
+    color: #1677ff; cursor: pointer; font-size: 11px; padding: 0 6px;
+    border-left: 1px solid #d9d9d9; height: 26px; line-height: 26px;
+    background: #fafafa; border: 1px solid #d9d9d9; border-left: none;
+    border-radius: 0 3px 3px 0;
+  }
+
+  /* Required field with helper */
+  .helper {
+    font-size: 11px; color: #888; flex-shrink: 0;
+    cursor: pointer;
+  }
+  .helper:hover { color: #1677ff; }
+
+  /* Tags row (label-like) */
+  .tags-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+  .tags-row .tag-item {
+    padding: 2px 10px; border: 1px solid #d9d9d9; border-radius: 11px;
+    font-size: 11px; color: #666; cursor: pointer; background: #fff;
+  }
+  .tags-row .tag-item.active { border-color: #1677ff; color: #1677ff; background: #f0f7ff; }
+  .tags-row .tag-item.required { border-color: #ff7875; color: #ff4d4f; background: #fff; }
+
+  /* Upload */
+  .upload-box {
+    width: 88px; height: 88px; border: 1px dashed #d9d9d9; border-radius: 4px;
+    display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #999; cursor: pointer; gap: 4px; vertical-align: top; margin-right: 8px;
+    background: #fafafa; transition: all 0.15s;
+  }
+  .upload-box:hover { border-color: #1677ff; color: #1677ff; }
+  .upload-plus { font-size: 22px; line-height: 1; }
+  .img-thumb {
+    width: 88px; height: 88px; border-radius: 4px; vertical-align: top;
+    margin-right: 8px; position: relative; border: 1px solid #f0f0f0;
+    background-size: cover; background-position: center;
+  }
+  .img-thumb .del {
+    position: absolute; top: -6px; right: -6px; width: 16px; height: 16px;
+    background: #ff4d4f; color: #fff; border-radius: 50%; font-size: 11px;
+    line-height: 16px; text-align: center; cursor: pointer;
+  }
+  .img-helper { color: #888; font-size: 11px; margin-left: 12px; }
+
+  .clear-img { color: #1677ff; font-size: 11px; cursor: pointer; margin-left: 6px; }
+
+  .file-upload-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border: 1px solid #d9d9d9; border-radius: 3px;
+    font-size: 12px; color: #555; cursor: pointer; background: #fff;
+  }
+  .file-upload-btn:hover { border-color: #1677ff; color: #1677ff; }
+
+  /* Preview */
+  .preview-area {
+    background: #fafafa; border: 1px solid #f0f0f0; border-radius: 4px;
+    padding: 16px; min-height: 200px; text-align: center;
+  }
+  .preview-area .ph {
+    width: 100%; max-width: 580px; height: 380px; margin: 0 auto;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    border: 1px solid #f0f0f0; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: #aaa; font-size: 13px;
+    background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f0f0f0 75%), linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    background-color: #f8f8f8;
+  }
+
+  /* Right side toolbar dots */
+  .floating-dots {
+    position: fixed;
+    right: 18px;
+    bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 90;
+  }
+  .floating-dots .dot {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    border: 1px solid #d6e4ff;
+    background: rgba(255,255,255,0.96);
+    color: #1677ff;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(22,119,255,0.12);
+    transition: all .2s;
+  }
+  .floating-dots .dot:hover { border-color: #1677ff; transform: translateY(-1px); }
+
+  .audit-workbench {
+    display: grid;
+    grid-template-columns: minmax(250px, 15%) minmax(0, 1fr);
+    gap: 16px;
+    padding: 8px 16px 24px;
+    align-items: start;
+  }
+  .audit-workbench.sidebar-collapsed { grid-template-columns: 76px minmax(0, 1fr); }
+  .audit-sidebar {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+  }
+  .audit-sidebar-panel {
+    position: relative;
+    background: #fff;
+    border: 1px solid #e8eef5;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(15,23,42,0.06);
+  }
+  .audit-sidebar-header {
+    padding: 16px;
+    background: linear-gradient(180deg, #f2f7ff 0%, #ffffff 100%);
+    border-bottom: 1px solid #edf2f7;
+  }
+  .audit-sidebar-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f1f1f;
+  }
+  .audit-sidebar-desc {
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #666;
+    padding-right: 56px;
+  }
+  .audit-sidebar-toggle {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+  .audit-risk-list {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f4f8;
+    display: grid;
+    gap: 8px;
+  }
+  .audit-risk-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #4b5563;
+  }
+  .audit-summary-nav {
+    max-height: calc(100vh - 280px);
+    overflow: auto;
+    padding: 12px;
+    display: grid;
+    gap: 10px;
+  }
+  .audit-summary-item {
+    width: 100%;
+    border: 1px solid #ebf1f6;
+    border-radius: 12px;
+    background: #fff;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    cursor: pointer;
+    text-align: left;
+    transition: all .2s;
+  }
+  .audit-summary-item:hover {
+    border-color: #bcd4ff;
+    background: #f8fbff;
+  }
+  .audit-summary-item.active {
+    border-color: #91caff;
+    background: #f5f9ff;
+    box-shadow: inset 0 0 0 1px rgba(22,119,255,0.06);
+  }
+  .audit-summary-index {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #e6f4ff;
+    color: #1677ff;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .audit-summary-copy {
+    flex: 1;
+    min-width: 0;
+  }
+  .audit-summary-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1f1f1f;
+  }
+  .audit-summary-values {
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #667085;
+  }
+  .audit-summary-short { display: none; }
+  .audit-main { min-width: 0; }
+  .audit-main .card {
+    margin: 0 0 12px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(15,23,42,0.04);
+  }
+  .audit-main .card-header {
+    padding: 12px 16px;
+    background: #fcfdff;
+  }
+  .audit-main .card-body { padding: 16px; }
+  .audit-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+    padding: 10px 16px;
+    background: #fff;
+    border: 1px solid #e8eef5;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(15,23,42,0.04);
+  }
+  .audit-toolbar-actions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .audit-toolbar-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f1f1f;
+  }
+  .audit-toolbar-desc {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #666;
+  }
+  .audit-toolbar-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .audit-toolbar-tip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    color: #1677ff;
+    background: #f0f7ff;
+    border: 1px solid #d6e4ff;
+  }
+  .audit-section { scroll-margin-top: 104px; }
+  .supply-table-wrap {
+    width: 100%;
+    overflow: auto;
+    border: 1px solid #eef2f7;
+    border-radius: 4px;
+  }
+  .supply-table {
+    width: 100%;
+    min-width: 1220px;
+    border-collapse: collapse;
+    background: #fff;
+    font-size: 12px;
+  }
+  .supply-table th {
+    height: 34px;
+    padding: 0 10px;
+    text-align: left;
+    color: #555;
+    font-weight: 600;
+    background: #fafafa;
+    border-bottom: 1px solid #eef2f7;
+    white-space: nowrap;
+  }
+  .supply-table td {
+    padding: 8px 10px;
+    color: #333;
+    border-bottom: 1px solid #f5f5f5;
+    vertical-align: middle;
+  }
+  .supply-table tr:last-child td { border-bottom: 0; }
+  .supply-table .input,
+  .supply-table .select {
+    min-width: 96px;
+  }
+  .supply-table .supplier-name { min-width: 160px; }
+  .supply-fee {
+    min-width: 220px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .supply-fee .select {
+    flex: 0 0 108px;
+    min-width: 108px;
+  }
+  .supply-fee .input {
+    min-width: 84px;
+  }
+  .supply-radio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .audit-action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .audit-action-tile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border: 1px dashed #cfe1ff;
+    border-radius: 10px;
+    background: #f8fbff;
+  }
+  .field-note {
+    margin-top: 4px;
+    font-size: 11px;
+    color: #8c8c8c;
+  }
+  .field-detail-hidden,
+  .row-detail-hidden,
+  .card-detail-hidden { display: none; }
+  #traditionalMode.show-all-fields .field-detail-hidden { display: flex; }
+  #traditionalMode.show-all-fields .row-detail-hidden { display: flex; }
+  #traditionalMode.show-all-fields .card-detail-hidden { display: block; }
+  .audit-workbench.sidebar-collapsed .audit-sidebar-desc,
+  .audit-workbench.sidebar-collapsed .audit-risk-list,
+  .audit-workbench.sidebar-collapsed .audit-summary-copy { display: none; }
+  .audit-workbench.sidebar-collapsed .audit-sidebar-header {
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .audit-workbench.sidebar-collapsed .audit-sidebar-title {
+    font-size: 12px;
+    margin-bottom: 36px;
+  }
+  .audit-workbench.sidebar-collapsed .audit-sidebar-toggle {
+    top: 44px;
+    right: 50%;
+    transform: translateX(50%);
+    min-width: 44px;
+    padding: 0 8px;
+  }
+  .audit-workbench.sidebar-collapsed .audit-summary-nav { padding: 10px 8px; }
+  .audit-workbench.sidebar-collapsed .audit-summary-item {
+    align-items: center;
+    justify-content: center;
+    padding: 10px 6px;
+  }
+  .audit-workbench.sidebar-collapsed .audit-summary-index {
+    width: 30px;
+    height: 30px;
+    font-size: 10px;
+  }
+  .audit-workbench.sidebar-collapsed .audit-summary-short {
+    display: block;
+    writing-mode: vertical-rl;
+    font-size: 11px;
+    line-height: 1.2;
+    color: #1677ff;
+    font-weight: 600;
+  }
+
+  /* Modal */
+  .modal-mask {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    display: none; align-items: center; justify-content: center; z-index: 100;
+  }
+  .modal-mask.show { display: flex; }
+  .modal {
+    width: 480px; background: #fff; border-radius: 6px; overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+  .modal-header {
+    padding: 14px 18px; border-bottom: 1px solid #f0f0f0;
+    display: flex; align-items: center; font-weight: 600; font-size: 14px;
+  }
+  .modal-header .x { margin-left: auto; cursor: pointer; color: #888; font-size: 18px; line-height: 1; }
+  .modal-body { padding: 18px; font-size: 12px; line-height: 1.8; }
+  .modal-body .row-mod { display: flex; margin-bottom: 8px; }
+  .modal-body .row-mod .k { width: 80px; color: #888; }
+  .modal-body .row-mod .v { flex: 1; color: #1f1f1f; }
+  .modal-body .reason {
+    background: #fafafa; padding: 8px 10px; border-radius: 3px;
+    border-left: 3px solid #1677ff; color: #555; margin-top: 6px;
+  }
+  .confidence-bar { display: flex; align-items: center; gap: 4px; }
+  .confidence-bar .seg { width: 18px; height: 6px; background: #e8e8e8; border-radius: 1px; }
+  .confidence-bar .seg.on { background: #52c41a; }
+  .modal-footer {
+    padding: 12px 18px; border-top: 1px solid #f0f0f0; display: flex;
+    justify-content: flex-end; gap: 8px;
+  }
+  .btn-default {
+    height: 28px; padding: 0 14px; border-radius: 3px; border: 1px solid #d9d9d9;
+    background: #fff; color: #555; cursor: pointer; font-size: 12px;
+  }
+  .btn-default:hover { border-color: #1677ff; color: #1677ff; }
+
+  /* AI category field highlight */
+  .field.cat-rec .input { background: #f6ffed; border-color: #b7eb8f; }
+  .field.cat-sug .input { background: #fffbe6; border-color: #ffe58f; }
+
+  .small-tag {
+    font-size: 10px; padding: 0 4px; border-radius: 2px;
+    line-height: 14px; height: 14px; display: inline-block;
+  }
+
+  hr.split { border: none; border-top: 1px dashed #f0f0f0; margin: 12px 0; }
+
+  .badge-default {
+    display: inline-block; padding: 0 5px; font-size: 10px;
+    background: #f0f0f0; color: #888; border-radius: 2px; line-height: 16px;
+  }
+
+  /* Tooltip-like hint */
+  .ext-link-row {
+    display: flex; align-items: center; padding: 14px;
+  }
+  .ext-link-row .left { color: #1677ff; cursor: pointer; }
+  .ext-link-row .right { margin-left: auto; }
+
+  /* No data */
+  .empty-tip {
+    padding: 16px; color: #aaa; font-size: 12px; text-align: center;
+    border: 1px dashed #f0f0f0; border-radius: 3px;
+  }
+
+  /* ===== 本次修改动态引导 ===== */
+  .change-badge{
+    display:inline-flex;align-items:center;gap:4px;
+    height:16px;padding:0 5px;margin-right:4px;
+    font-size:10px;line-height:16px;color:#fff;
+    background:linear-gradient(90deg,#ff7a45,#ff4d4f);
+    border-radius:8px;cursor:help;position:relative;
+    animation:changePulse 1.8s ease-in-out infinite;
+    box-shadow:0 0 0 0 rgba(255,77,79,.55);
+    vertical-align:middle;
+  }
+  .change-badge::before{content:"●";font-size:7px;}
+  @keyframes changePulse{
+    0%   {box-shadow:0 0 0 0 rgba(255,77,79,.55);}
+    70%  {box-shadow:0 0 0 6px rgba(255,77,79,0);}
+    100% {box-shadow:0 0 0 0 rgba(255,77,79,0);}
+  }
+  .change-badge .change-tip{
+    visibility:hidden;opacity:0;transition:all .18s;
+    position:absolute;left:0;top:22px;z-index:50;
+    width:260px;padding:10px 12px;
+    background:#1f1f1f;color:#fff;border-radius:6px;
+    font-size:12px;line-height:1.65;text-align:left;
+    box-shadow:0 6px 18px rgba(0,0,0,.18);
+    pointer-events:none;white-space:normal;
+  }
+  .change-badge .change-tip::before{
+    content:"";position:absolute;left:14px;top:-5px;
+    border:5px solid transparent;border-bottom-color:#1f1f1f;
+  }
+  .change-badge .change-tip b{color:#ffd666;font-weight:500;}
+  .change-badge .change-tip s{color:#bbb;text-decoration:line-through;}
+  .change-badge:hover .change-tip{visibility:visible;opacity:1;}
+
+  /* 新增方式切换 */
+  .mode-switch-card{
+    margin:8px 16px;
+    padding:12px 14px;
+    background:#fff;
+    border:1px solid #e8edf5;
+    border-radius:4px;
+    box-shadow:0 1px 2px rgba(15,35,65,.04);
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+  .mode-switch-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex:1;
+  }
+  .mode-switch-title{
+    font-size:13px;
+    font-weight:600;
+    color:#1f1f1f;
+  }
+  .mode-switch-tip{
+    font-size:12px;
+    color:#8c8c8c;
+    margin-top:4px;
+  }
+  .mode-toggle-btn{min-width:168px;justify-content:center;}
+  .mode-options{
+    display:flex;
+    gap:10px;
+  }
+  .mode-option{
+    flex:1;
+    min-height:58px;
+    padding:10px 12px;
+    text-align:left;
+    background:#fafafa;
+    border:1px solid #d9d9d9;
+    border-radius:4px;
+    cursor:pointer;
+    transition:all .18s ease;
+  }
+  .mode-option:hover{
+    border-color:#1677ff;
+    background:#f5faff;
+  }
+  .mode-option.active{
+    background:#e6f4ff;
+    border-color:#1677ff;
+    box-shadow:0 0 0 2px rgba(22,119,255,.08);
+  }
+  .mode-title{
+    display:block;
+    margin-bottom:4px;
+    font-size:13px;
+    font-weight:600;
+    color:#1f1f1f;
+  }
+  .mode-desc{
+    display:block;
+    font-size:12px;
+    color:#666;
+    line-height:1.5;
+  }
+  .mode-content{animation:modeFade .18s ease-out;}
+  @keyframes modeFade{
+    from{opacity:0;transform:translateY(4px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  /* 智能解析创建物料 */
+  .smart-mode-panel{
+    margin:8px 16px 20px;
+    background:#f5f8ff;
+    border:1px solid #d6e7ff;
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .smart-hero{
+    padding:16px 18px;
+    background:linear-gradient(135deg,#eef6ff 0%,#ffffff 54%,#f7fbff 100%);
+    border-bottom:1px solid #d6e7ff;
+  }
+  .smart-hero-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:8px;
+    font-size:16px;
+    font-weight:600;
+    color:#102a43;
+  }
+  .smart-hero-desc{
+    max-width:920px;
+    font-size:12px;
+    line-height:1.7;
+    color:#42526e;
+  }
+  .smart-step-list{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:0;
+    margin-top:16px;
+    padding-top:4px;
+  }
+  .smart-step-list::before{
+    content:"";
+    position:absolute;
+    left:12.5%;
+    right:12.5%;
+    top:20px;
+    height:2px;
+    background:#d6e7ff;
+  }
+  .smart-step{
+    position:relative;
+    min-height:96px;
+    padding:42px 12px 8px;
+    text-align:center;
+    background:transparent;
+    border:0;
+    border-radius:0;
+    color:#42526e;
+    transition:all .18s ease;
+    z-index:1;
+  }
+  .smart-step-no{
+    position:absolute;
+    left:50%;
+    top:4px;
+    transform:translateX(-50%);
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    font-size:12px;
+    font-weight:600;
+    color:#8c8c8c;
+    background:#fff;
+    border:2px solid #d9d9d9;
+    box-shadow:0 0 0 4px #f7fbff;
+  }
+  .smart-step-title{
+    margin-bottom:4px;
+    font-size:13px;
+    font-weight:600;
+    color:#1f1f1f;
+  }
+  .smart-step-desc{
+    font-size:12px;
+    line-height:1.55;
+  }
+  .smart-step.active{
+    color:#1f1f1f;
+  }
+  .smart-step.active .smart-step-no{
+    color:#fff;
+    background:#1677ff;
+    border-color:#1677ff;
+    box-shadow:0 0 0 5px rgba(22,119,255,.14);
+  }
+  .smart-step.done{
+    color:#389e0d;
+  }
+  .smart-step.done .smart-step-no{
+    color:#fff;
+    background:#52c41a;
+    border-color:#52c41a;
+  }
+  .ai-prefill-tag{
+    display:inline-flex;
+    align-items:center;
+    height:22px;
+    padding:0 8px;
+    color:#1677ff;
+    background:#e6f4ff;
+    border:1px solid #91caff;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:400;
+  }
+  .smart-layout{
+    display:grid;
+    grid-template-columns:minmax(360px,1fr) minmax(420px,1.35fr);
+    gap:12px;
+    padding:12px;
+  }
+  .smart-card{
+    background:#fff;
+    border:1px solid #e8edf5;
+    border-radius:5px;
+    overflow:hidden;
+  }
+  .smart-card-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 12px;
+    background:#fbfcff;
+    border-bottom:1px solid #eef2f7;
+    font-size:13px;
+    font-weight:600;
+    color:#1f1f1f;
+  }
+  .smart-card-body{padding:12px;}
+  .smart-flow-viewport{
+    margin:12px;
+    overflow:hidden;
+    border-radius:6px;
+  }
+  .smart-flow-track{
+    display:flex;
+    gap:0;
+    align-items:stretch;
+    transform:translateX(0);
+    transition:transform .46s cubic-bezier(.22,.61,.36,1);
+    will-change:transform;
+  }
+  .flow-panel{
+    flex:0 0 100%;
+    min-height:430px;
+  }
+  .flow-panel .smart-card{
+    height:100%;
+    box-shadow:0 4px 14px rgba(24,40,72,.05);
+  }
+  .flow-panel-preview{
+    opacity:.92;
+  }
+  .flow-panel-preview .smart-card{
+    border-style:dashed;
+    background:linear-gradient(135deg,#fff 0%,#f8fbff 100%);
+  }
+  .flow-panel-preview .smart-card-body{
+    max-height:360px;
+    overflow:hidden;
+  }
+  .flow-panel.is-active{
+    opacity:1;
+  }
+  .flow-panel.is-active .smart-card{
+    border-style:solid;
+    background:#fff;
+  }
+  .flow-panel.is-active .smart-card-body{
+    max-height:none;
+    overflow:visible;
+  }
+  .smart-textarea{
+    width:100%;
+    min-height:120px;
+    padding:10px;
+    resize:vertical;
+    border:1px solid #d9d9d9;
+    border-radius:4px;
+    outline:none;
+    font-size:12px;
+    line-height:1.7;
+    color:#1f1f1f;
+    background:#fff;
+  }
+  .smart-textarea:focus{
+    border-color:#1677ff;
+    box-shadow:0 0 0 2px rgba(22,119,255,.1);
+  }
+  .parse-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+  }
+  .parse-item{
+    min-height:54px;
+    padding:8px 10px;
+    background:#fafafa;
+    border:1px solid #f0f0f0;
+    border-radius:4px;
+  }
+  .parse-item .k{
+    display:block;
+    margin-bottom:4px;
+    font-size:12px;
+    color:#8c8c8c;
+  }
+  .parse-item .v{
+    font-size:13px;
+    color:#1f1f1f;
+    font-weight:500;
+  }
+  .parse-table-wrap{
+    width:100%;
+    overflow:auto;
+    border:1px solid #eef2f7;
+    border-radius:4px;
+  }
+  .parse-table{
+    width:100%;
+    min-width:1280px;
+    border-collapse:collapse;
+    background:#fff;
+    font-size:12px;
+  }
+  .parse-table th{
+    height:34px;
+    padding:0 10px;
+    text-align:left;
+    color:#666;
+    font-weight:600;
+    background:#fafafa;
+    border-bottom:1px solid #eef2f7;
+    white-space:nowrap;
+  }
+  .parse-table td{
+    padding:8px 10px;
+    color:#333;
+    line-height:1.55;
+    border-bottom:1px solid #f5f5f5;
+    vertical-align:top;
+  }
+  .parse-table tr:last-child td{border-bottom:0;}
+  .parse-table tr:hover td{background:#f8fbff;}
+  .parse-op{
+    color:#1677ff;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .parse-op:hover{text-decoration:underline;}
+  .recommend-code-cell{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    white-space:nowrap;
+  }
+  .recommend-code{
+    color:#0b3f91;
+    font-weight:600;
+  }
+  .more-link{
+    color:#1677ff;
+    cursor:pointer;
+    font-size:12px;
+  }
+  .more-link:hover{text-decoration:underline;}
+  .recommend-score{
+    display:inline-flex;
+    align-items:center;
+    height:20px;
+    padding:0 8px;
+    border-radius:10px;
+    color:#389e0d;
+    background:#f6ffed;
+    border:1px solid #b7eb8f;
+    font-size:12px;
+    font-weight:600;
+  }
+  .current-selected-tag{
+    display:inline-block;
+    margin-top:4px;
+    padding:1px 6px;
+    color:#1677ff;
+    background:#e6f4ff;
+    border:1px solid #91caff;
+    border-radius:10px;
+    font-size:11px;
+    font-weight:500;
+  }
+  .supplier-action-cell{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    white-space:nowrap;
+  }
+  .supplier-status{
+    display:inline-flex;
+    align-items:center;
+    height:20px;
+    padding:0 7px;
+    border-radius:10px;
+    font-size:11px;
+    color:#d46b08;
+    background:#fff7e6;
+    border:1px solid #ffd591;
+  }
+  .supplier-status.done{
+    color:#389e0d;
+    background:#f6ffed;
+    border-color:#b7eb8f;
+  }
+  .reason-cell{
+    min-width:180px;
+    color:#42526e;
+    line-height:1.6;
+  }
+  .reason-hit{color:#389e0d;font-weight:600;}
+  .reason-diff{color:#d46b08;font-weight:600;}
+  .parse-edit-input,.parse-edit-area{
+    width:100%;
+    min-width:80px;
+    border:1px solid transparent;
+    border-radius:3px;
+    background:#fff;
+    color:#1f1f1f;
+    font-size:12px;
+    line-height:1.5;
+    outline:none;
+  }
+  .parse-edit-input{
+    height:26px;
+    padding:0 6px;
+  }
+  .parse-edit-area{
+    min-height:44px;
+    padding:4px 6px;
+    resize:vertical;
+  }
+  .parse-edit-input:hover,.parse-edit-area:hover,
+  .parse-edit-input:focus,.parse-edit-area:focus{
+    border-color:#1677ff;
+    box-shadow:0 0 0 2px rgba(22,119,255,.08);
+  }
+  .supply-preview-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    margin-top:10px;
+  }
+  .supply-preview-item{
+    padding:10px;
+    background:#fafafa;
+    border:1px solid #eef2f7;
+    border-radius:4px;
+  }
+  .supply-preview-item .k{
+    display:block;
+    margin-bottom:4px;
+    color:#8c8c8c;
+    font-size:12px;
+  }
+  .supply-preview-item .v{
+    color:#1f1f1f;
+    font-size:13px;
+    font-weight:500;
+  }
+  .audit-summary{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  }
+  .audit-summary .item{
+    padding:12px;
+    background:#fafafa;
+    border:1px solid #eef2f7;
+    border-radius:4px;
+  }
+  .audit-summary .num{
+    display:block;
+    margin-top:6px;
+    font-size:18px;
+    font-weight:600;
+    color:#1677ff;
+  }
+  .smart-success-state{
+    display:none;
+    min-height:260px;
+    padding:44px 24px;
+    text-align:center;
+    background:#fff;
+    border:1px solid #e8f5e9;
+    border-radius:6px;
+  }
+  .smart-success-state.show{display:block;}
+  .preaudit-summary{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:12px;
+    padding:12px 14px;
+    border:1px solid #d6e7ff;
+    background:#f7fbff;
+    border-radius:4px;
+  }
+  .preaudit-summary-title{
+    font-size:14px;
+    font-weight:600;
+    color:#1f1f1f;
+  }
+  .preaudit-summary-desc{
+    margin-top:4px;
+    font-size:12px;
+    color:#42526e;
+  }
+  .preaudit-result{
+    display:inline-flex;
+    align-items:center;
+    height:24px;
+    padding:0 10px;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .preaudit-result.pass{color:#389e0d;background:#f6ffed;border:1px solid #b7eb8f;}
+  .preaudit-result.fail{color:#d4380d;background:#fff2e8;border:1px solid #ffbb96;}
+  .preaudit-table{
+    width:100%;
+    min-width:1120px;
+    border-collapse:collapse;
+    background:#fff;
+    font-size:12px;
+  }
+  .preaudit-table th{
+    height:34px;
+    padding:0 10px;
+    text-align:left;
+    color:#666;
+    font-weight:600;
+    background:#fafafa;
+    border-bottom:1px solid #eef2f7;
+    white-space:nowrap;
+  }
+  .preaudit-table td{
+    padding:9px 10px;
+    color:#333;
+    line-height:1.6;
+    border-bottom:1px solid #f5f5f5;
+    vertical-align:top;
+  }
+  .preaudit-table tr:last-child td{border-bottom:0;}
+  .preaudit-status{
+    display:inline-flex;
+    align-items:center;
+    height:22px;
+    padding:0 8px;
+    border-radius:11px;
+    font-size:12px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .preaudit-status.pass{color:#389e0d;background:#f6ffed;border:1px solid #b7eb8f;}
+  .preaudit-status.fail{color:#d4380d;background:#fff2e8;border:1px solid #ffbb96;}
+  .issue-tags{display:flex;gap:6px;flex-wrap:wrap;min-width:180px;}
+  .issue-tag{
+    display:inline-flex;
+    align-items:center;
+    height:22px;
+    padding:0 7px;
+    border-radius:4px;
+    font-size:12px;
+    color:#d46b08;
+    background:#fff7e6;
+    border:1px solid #ffd591;
+    white-space:nowrap;
+  }
+  .issue-tag.pass{color:#389e0d;background:#f6ffed;border-color:#b7eb8f;}
+  .material-edit-modal{
+    width:760px;
+    max-width:94vw;
+  }
+  .material-edit-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px 18px;
+  }
+  .material-edit-grid .field{display:block;padding:0;}
+  .material-edit-grid .field.col2{grid-column:span 2;}
+  .material-edit-grid .flabel{
+    margin-bottom:6px;
+    color:#666;
+    font-size:12px;
+  }
+  .success-check{
+    width:54px;
+    height:54px;
+    margin:0 auto 14px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:#fff;
+    background:#52c41a;
+    font-size:30px;
+    font-weight:700;
+  }
+  .success-title{
+    margin-bottom:10px;
+    color:#1f1f1f;
+    font-size:18px;
+    font-weight:600;
+  }
+  .success-desc{
+    color:#42526e;
+    font-size:13px;
+  }
+  .success-link{
+    color:#1677ff;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .success-link:hover{text-decoration:underline;}
+  .recommend-mask{
+    position:fixed;
+    inset:0;
+    z-index:2100;
+    display:none;
+    background:rgba(0,0,0,.38);
+  }
+  .recommend-mask.open{display:block;}
+  .recommend-drawer{
+    position:absolute;
+    top:0;
+    right:0;
+    width:760px;
+    max-width:92vw;
+    height:100%;
+    background:#fff;
+    box-shadow:-8px 0 24px rgba(0,0,0,.16);
+    transform:translateX(100%);
+    transition:transform .28s ease;
+    display:flex;
+    flex-direction:column;
+  }
+  .recommend-mask.open .recommend-drawer{transform:translateX(0);}
+  .recommend-drawer-header{
+    height:56px;
+    padding:0 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid #f0f0f0;
+    font-size:16px;
+    font-weight:600;
+    color:#1f1f1f;
+  }
+  .drawer-close{
+    border:0;
+    background:transparent;
+    color:#666;
+    font-size:24px;
+    line-height:1;
+    cursor:pointer;
+  }
+  .recommend-drawer-body{
+    flex:1;
+    overflow:auto;
+    padding:14px 18px 20px;
+    background:#f7f8fa;
+  }
+  .drawer-readonly-card{
+    padding:14px 16px;
+    margin-bottom:14px;
+    background:#fffbe6;
+    border:1px solid #ffe58f;
+    border-radius:4px;
+  }
+  .drawer-readonly-card.supplier-base-card{
+    background:#fff7e6;
+    border-color:#ffd591;
+  }
+  .drawer-section-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:12px;
+    color:#d48806;
+    font-size:14px;
+    font-weight:600;
+  }
+  .drawer-info-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:12px 18px;
+  }
+  .drawer-info-item .k{
+    display:block;
+    margin-bottom:5px;
+    color:#666;
+    font-size:12px;
+  }
+  .drawer-info-item .v{
+    color:#1f1f1f;
+    line-height:1.5;
+    word-break:break-all;
+  }
+  .drawer-ai-card{
+    padding:14px;
+    background:#eef5ff;
+    border:1px solid #91caff;
+    border-radius:4px;
+  }
+  .drawer-ai-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+    color:#1677ff;
+    font-size:15px;
+    font-weight:600;
+  }
+  .ai-trace{
+    padding:10px 12px;
+    margin-bottom:12px;
+    background:#f5f7fa;
+    border:1px solid #d9e2ef;
+    border-radius:4px;
+    color:#42526e;
+  }
+  .recommend-table{
+    width:100%;
+    min-width:700px;
+    border-collapse:collapse;
+    background:#fff;
+    font-size:12px;
+  }
+  .recommend-table th{
+    height:34px;
+    padding:0 10px;
+    text-align:left;
+    color:#555;
+    background:#fafafa;
+    border:1px solid #f0f0f0;
+    white-space:nowrap;
+  }
+  .recommend-table td{
+    padding:9px 10px;
+    border:1px solid #f0f0f0;
+    color:#333;
+    line-height:1.5;
+  }
+  .recommend-table tr.selected td{
+    background:#f0f7ff;
+  }
+  .recommend-table-wrap{overflow:auto;}
+  .drawer-match-loading{
+    display:none;
+    padding:10px 12px;
+    margin-bottom:12px;
+    color:#1677ff;
+    background:#e6f4ff;
+    border:1px solid #91caff;
+    border-radius:4px;
+  }
+  .drawer-match-loading.show{display:block;}
+  .drawer-supplier-card{
+    display:none;
+    padding:14px;
+    background:#fff;
+    border:1px solid #eef2f7;
+    border-radius:4px;
+  }
+  .supplier-field-list{
+    display:grid;
+    gap:10px;
+  }
+  .supplier-field{
+    display:grid;
+    grid-template-columns:108px minmax(0,1fr);
+    align-items:center;
+    gap:10px;
+  }
+  .supplier-field .k{
+    color:#666;
+    text-align:right;
+    font-size:12px;
+  }
+  .supplier-field .v{
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .supplier-field .input,
+  .supplier-field .select{
+    height:28px;
+    min-width:0;
+  }
+  .supplier-field .radio-group{
+    min-height:28px;
+  }
+  .drawer-footer{
+    height:56px;
+    padding:0 18px;
+    border-top:1px solid #f0f0f0;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .drawer-footer-left,.drawer-footer-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .candidate-list{
+    display:grid;
+    gap:10px;
+  }
+  .candidate-card{
+    border:1px solid #e8edf5;
+    border-radius:5px;
+    background:#fff;
+    transition:all .18s ease;
+  }
+  .candidate-card:hover{
+    border-color:#91caff;
+    box-shadow:0 4px 12px rgba(22,119,255,.08);
+  }
+  .candidate-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 12px;
+    background:#fbfcff;
+    border-bottom:1px solid #eef2f7;
+  }
+  .candidate-name{
+    font-size:13px;
+    font-weight:600;
+    color:#1f1f1f;
+  }
+  .match-tag{
+    display:inline-flex;
+    align-items:center;
+    height:20px;
+    padding:0 7px;
+    border-radius:10px;
+    font-size:12px;
+    font-weight:500;
+  }
+  .match-tag.high{color:#389e0d;background:#f6ffed;border:1px solid #b7eb8f;}
+  .match-tag.mid{color:#d46b08;background:#fff7e6;border:1px solid #ffd591;}
+  .match-tag.low{color:#0958d9;background:#e6f4ff;border:1px solid #91caff;}
+  .candidate-body{
+    padding:10px 12px;
+    font-size:12px;
+    color:#42526e;
+    line-height:1.8;
+  }
+  .candidate-meta{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:4px 12px;
+    margin-bottom:8px;
+  }
+  .field-hit,.field-diff{
+    display:inline-flex;
+    align-items:center;
+    margin:2px 4px 2px 0;
+    padding:1px 6px;
+    border-radius:10px;
+    font-size:12px;
+  }
+  .field-hit{color:#389e0d;background:#f6ffed;}
+  .field-diff{color:#d46b08;background:#fff7e6;}
+  .candidate-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    padding:0 12px 12px;
+  }
+  .not-match-box{
+    margin-top:12px;
+    padding:12px;
+    background:#fff;
+    border:1px dashed #91caff;
+    border-radius:5px;
+    font-size:12px;
+    color:#42526e;
+    line-height:1.7;
+  }
+  .attr-followup{
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px dashed #d6e7ff;
+  }
+  .attr-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px 12px;
+    margin-top:10px;
+  }
+  .attr-field label{
+    display:block;
+    margin-bottom:4px;
+    font-size:12px;
+    color:#666;
+  }
+  .attr-field input,.attr-field select{
+    width:100%;
+    height:28px;
+    padding:0 8px;
+    border:1px solid #d9d9d9;
+    border-radius:3px;
+    font-size:12px;
+  }
+  .radio-inline{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    height:28px;
+    font-size:12px;
+    color:#333;
+  }
+  .smart-note{
+    margin-top:8px;
+    font-size:12px;
+    color:#8c8c8c;
+    line-height:1.6;
+  }
+  .smart-toast{
+    position:fixed;
+    left:50%;
+    top:72px;
+    z-index:2000;
+    transform:translateX(-50%);
+    padding:8px 14px;
+    color:#fff;
+    background:rgba(0,0,0,.72);
+    border-radius:4px;
+    font-size:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,.18);
+  }
+  @media (max-width:1100px){
+    .mode-switch-card{align-items:flex-start;flex-direction:column;}
+    .mode-toggle-btn{width:100%;}
+    .smart-layout{grid-template-columns:1fr;}
+    .flow-panel{flex-basis:100%;}
+    .smart-step-list{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .smart-step-list::before{display:none;}
+    .candidate-meta,.parse-grid,.attr-grid,.supply-preview-grid,.audit-summary{grid-template-columns:1fr;}
+    .audit-workbench,
+    .audit-workbench.sidebar-collapsed{grid-template-columns:1fr;}
+    .audit-sidebar{position:static;}
+    .audit-toolbar{flex-direction:column;}
+    .audit-action-grid{grid-template-columns:1fr;}
+    .audit-workbench.sidebar-collapsed .audit-sidebar-desc,
+    .audit-workbench.sidebar-collapsed .audit-risk-list,
+    .audit-workbench.sidebar-collapsed .audit-summary-copy{display:block;}
+    .audit-workbench.sidebar-collapsed .audit-summary-short{display:none;}
+    .audit-workbench.sidebar-collapsed .audit-summary-item{justify-content:flex-start;padding:12px;}
+    .audit-workbench.sidebar-collapsed .audit-sidebar-header{text-align:left;padding:16px;}
+    .audit-workbench.sidebar-collapsed .audit-sidebar-title{font-size:15px;margin-bottom:0;}
+    .audit-workbench.sidebar-collapsed .audit-sidebar-toggle{top:16px;right:16px;transform:none;}
+    .floating-dots{right:12px;bottom:18px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-logo">咸</div>
+    <span class="brand-name" style="cursor:pointer;" onclick="location.href='MPM-工作台-首页.html'">咸亨国际主数据管理平台</span>
+    <button class="switch-btn" type="button" onclick="window.location.href='index.html'">切换系统</button>
+  </div>
+  <nav class="nav-menu">
+    <div class="nav-item">消息通知<span class="badge-dot"></span></div>
+    <div class="nav-item">价格审核<span class="badge-dot"></span></div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">版本更新</div>
+    <div class="nav-item">推送ERP</div>
+    <div class="nav-item">管理模块</div>
+    <div class="nav-item">任务中心</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item"><div class="user-avatar">管</div>管理员 ▾</div>
+  </nav>
+</header>
+
+<div class="tabs-bar">
+  <div class="tabs-list">
+    <div class="tab" onclick="location.href='MPM-工作台-首页.html'">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    <div class="tab" onclick="location.href='MPM-物料-物料列表.html'">物料列表 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    <div class="tab active" onclick="location.href='MPM-物料-物料列表-新增物料.html'">新增物料 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+  </div>
+  <div class="tabs-clear">清除</div>
+</div>
+
+<!-- 新增方式切换 -->
+<div class="mode-switch-card">
+  <div class="mode-switch-head">
+    <div>
+      <div class="mode-switch-title">当前新增方式：<span id="currentModeName">智能新增物料</span></div>
+      <div id="currentModeDesc" class="mode-switch-tip">通过文本描述触发智能解析，推荐咸亨标准物料编码后再补充供应信息。</div>
+    </div>
+  </div>
+  <button type="button" id="modeToggleBtn" class="btn btn-default mode-toggle-btn" onclick="toggleCreateMode()">切换为【传统新增物料】</button>
+</div>
+
+<!-- 智能解析创建物料 -->
+<div id="smartMode" class="mode-content">
+  <div class="smart-mode-panel">
+    <div class="smart-hero">
+      <div class="smart-hero-title">
+        <span>操作说明</span>
+        <span class="ai-prefill-tag">当前步骤：<b id="currentSmartStepText" style="margin-left:4px;">第一步：输入关键信息</b></span>
+      </div>
+      <div class="smart-hero-desc">
+        智能新增物料用于将供应商或采购人员输入的简单描述转为结构化物料数据。用户确认识别结果后，继续维护供应渠道信息，再进入预审并提交。
+      </div>
+      <div class="smart-step-list">
+        <div class="smart-step active" data-step="1">
+          <div class="smart-step-no">1</div>
+          <div class="smart-step-title">文本输入物料关键信息</div>
+          <div class="smart-step-desc">提交后触发系统智能解析物料数据。</div>
+        </div>
+        <div class="smart-step" data-step="2">
+          <div class="smart-step-no">2</div>
+          <div class="smart-step-title">识别结果和候选展示</div>
+          <div class="smart-step-desc">展示结构化字段和 3 个标准物料候选。</div>
+        </div>
+        <div class="smart-step" data-step="3">
+          <div class="smart-step-no">3</div>
+          <div class="smart-step-title">维护供应渠道信息</div>
+          <div class="smart-step-desc">维护供应商、供货价、附加费（类型/金额）和库存状态。</div>
+        </div>
+        <div class="smart-step" data-step="4">
+          <div class="smart-step-no">4</div>
+          <div class="smart-step-title">预审物料信息</div>
+          <div class="smart-step-desc">前置审核相关字段和必传校验信息。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="smart-flow-viewport">
+      <div id="smartFlowTrack" class="smart-flow-track">
+        <section class="flow-panel is-active" data-flow-step="1">
+          <div class="smart-card">
+            <div class="smart-card-header">
+              <span>1. 输入物料描述</span>
+              <span style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:12px;color:#8c8c8c;font-weight:400;">支持多个物料数据新增，换行即可</span>
+                <button type="button" class="btn btn-primary" onclick="runSmartParse()">提交并智能解析</button>
+                <button type="button" class="btn-default" onclick="clearSmartParse()">清空描述</button>
+              </span>
+            </div>
+            <div class="smart-card-body">
+              <textarea id="smartMaterialText" class="smart-textarea" style="min-height:220px;" placeholder="请输入物料名称、品牌、型号、规格、用途等信息。支持多个物料数据新增，一行一个物料，例如：&#10;3M 防尘口罩 9501+ KN95 白色 头戴式&#10;公牛插座 GN-B3440 8位 3米 白色"></textarea>
+              <div class="smart-note">点击提交后，系统提示提交成功，并从右向左滑动进入第二步识别结果。若传统字段已有值，不允许静默覆盖。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="flow-panel" data-flow-step="2">
+          <div class="smart-card">
+            <div class="smart-card-header">
+              <span>2. AI 结构化识别结果</span>
+              <span style="display:flex;align-items:center;gap:10px;">
+                <button type="button" class="btn-default" onclick="updateSmartStep(1)">返回上一步</button>
+                <span id="parseStatus" style="font-size:12px;color:#1677ff;font-weight:400;">待解析</span>
+                <span id="smartSubmitActions" style="display:flex;align-items:center;gap:8px;">
+                  <button type="button" class="btn-default" onclick="submitToBatchAdd()">提交到批量新增</button>
+                  <button type="button" class="btn-default" onclick="saveSmartDraft()">保存到我的暂存</button>
+                  <button type="button" class="btn btn-primary" onclick="goSupplyStep()">下一步：维护供应渠道</button>
+                </span>
+              </span>
+            </div>
+            <div class="smart-card-body">
+              <div id="parseResultWrap" class="parse-table-wrap">
+                <table class="parse-table">
+                  <thead>
+                    <tr>
+                      <th>名称</th>
+                      <th>推荐品牌</th>
+                      <th>推荐类目</th>
+                      <th>型号</th>
+                      <th>规格</th>
+                      <th>市场价</th>
+                      <th>描述</th>
+                      <th>推荐咸亨编码</th>
+                      <th>推荐度</th>
+                      <th>供应商</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr data-parse-row="1">
+                      <td><input class="parse-edit-input" value="防尘口罩"></td>
+                      <td><input class="parse-edit-input" list="brandLibraryOptions" value="3M" placeholder="输入关键词搜索品牌库"></td>
+                      <td><input class="parse-edit-input" list="categoryLibraryOptions" value="呼吸防护用品" placeholder="输入关键词搜索类目库"></td>
+                      <td><input class="parse-edit-input" value="9501+"></td>
+                      <td><input class="parse-edit-input" value="KN95 / 白色 / 头戴式 / 无呼吸阀"></td>
+                      <td><input class="parse-edit-input" value="12.80"></td>
+                      <td><textarea class="parse-edit-area">3M 防尘口罩 KN95 / 白色 / 头戴式 / 无呼吸阀 9501+</textarea></td>
+                      <td>
+                        <span class="recommend-code-cell">
+                          <span class="recommend-code">B0401025928</span>
+                          <span class="more-link" onclick="openRecommendDrawer(1)">【更多】</span>
+                        </span>
+                      </td>
+                      <td><span class="recommend-score">92%</span></td>
+                      <td>
+                        <span class="supplier-action-cell">
+                          <span class="supplier-status" data-supplier-status="1">未维护</span>
+                          <span class="more-link" onclick="openSupplierDrawer(1)">新增</span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr data-parse-row="2">
+                      <td><input class="parse-edit-input" value="插座"></td>
+                      <td><input class="parse-edit-input" list="brandLibraryOptions" value="公牛" placeholder="输入关键词搜索品牌库"></td>
+                      <td><input class="parse-edit-input" list="categoryLibraryOptions" value="插座/排插" placeholder="输入关键词搜索类目库"></td>
+                      <td><input class="parse-edit-input" value="GN-B3440"></td>
+                      <td><input class="parse-edit-input" value="8位 / 3米 / 白色 / 总控开关"></td>
+                      <td><input class="parse-edit-input" value="68.00"></td>
+                      <td><textarea class="parse-edit-area">公牛 插座 8位 / 3米 / 白色 / 总控开关 GN-B3440</textarea></td>
+                      <td>
+                        <span class="recommend-code-cell">
+                          <span class="recommend-code">B0803012048</span>
+                          <span class="more-link" onclick="openRecommendDrawer(2)">【更多】</span>
+                        </span>
+                      </td>
+                      <td><span class="recommend-score">89%</span></td>
+                      <td>
+                        <span class="supplier-action-cell">
+                          <span class="supplier-status" data-supplier-status="2">未维护</span>
+                          <span class="more-link" onclick="openSupplierDrawer(2)">新增</span>
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <datalist id="brandLibraryOptions">
+                  <option value="3M">
+                  <option value="公牛">
+                  <option value="霍尼韦尔">
+                  <option value="得力">
+                  <option value="钢炬/GANGJU">
+                </datalist>
+                <datalist id="categoryLibraryOptions">
+                  <option value="呼吸防护用品">
+                  <option value="插座/排插">
+                  <option value="气体检测仪">
+                  <option value="电工工具">
+                  <option value="劳保防护用品">
+                </datalist>
+              </div>
+              <div id="parseResultNote" class="smart-note">结构化字段支持直接编辑；推荐品牌、推荐类目输入时支持关键词搜索品牌库和类目库；推荐咸亨编码旁点击【更多】可在右侧抽屉查看 3-5 个推荐编码；供应商点击【新增】可维护供应渠道信息。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="flow-panel" data-flow-step="3">
+          <div class="smart-card">
+            <div class="smart-card-header">
+              <span>3. 维护供应渠道信息</span>
+              <span style="display:flex;align-items:center;gap:10px;">
+                <button type="button" class="btn-default" onclick="updateSmartStep(2)">返回识别结果</button>
+                <button type="button" class="btn btn-primary" onclick="submitSupplyInfo()">提交下一步</button>
+              </span>
+            </div>
+            <div class="smart-card-body">
+              <div class="parse-table-wrap">
+                <table class="parse-table">
+                  <thead>
+                    <tr>
+                      <th>名称</th>
+                      <th>推荐咸亨编码</th>
+                      <th>供应商</th>
+                      <th>供应价</th>
+                      <th>附加费（类型/金额）</th>
+                      <th>是否可议价</th>
+                      <th>供应范围</th>
+                      <th>发货仓库</th>
+                      <th>计划库存</th>
+                      <th>状态</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr data-supply-row="1">
+                      <td>防尘口罩</td>
+                      <td>B0401025928</td>
+                      <td data-supply-summary="supplier">-</td>
+                      <td data-supply-summary="price">-</td>
+                      <td data-supply-summary="fee">-</td>
+                      <td data-supply-summary="negotiable">-</td>
+                      <td data-supply-summary="scope">-</td>
+                      <td data-supply-summary="warehouse">-</td>
+                      <td data-supply-summary="stock">-</td>
+                      <td><span class="supplier-status" data-supply-state="1">未维护</span></td>
+                      <td><span class="more-link" onclick="openSupplierDrawer(1)">维护</span></td>
+                    </tr>
+                    <tr data-supply-row="2">
+                      <td>插座</td>
+                      <td>B0803012048</td>
+                      <td data-supply-summary="supplier">-</td>
+                      <td data-supply-summary="price">-</td>
+                      <td data-supply-summary="fee">-</td>
+                      <td data-supply-summary="negotiable">-</td>
+                      <td data-supply-summary="scope">-</td>
+                      <td data-supply-summary="warehouse">-</td>
+                      <td data-supply-summary="stock">-</td>
+                      <td><span class="supplier-status" data-supply-state="2">未维护</span></td>
+                      <td><span class="more-link" onclick="openSupplierDrawer(2)">维护</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="smart-note">供应渠道信息维护完成后，点击【提交下一步】进入预审物料信息。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="flow-panel" data-flow-step="4">
+          <div class="smart-card">
+            <div class="smart-card-header">
+              <span>4. 预审物料信息</span>
+              <span style="display:flex;align-items:center;gap:10px;">
+                <button type="button" class="btn-default" onclick="updateSmartStep(3)">返回上一步</button>
+                <button type="button" class="btn-default" onclick="runPreAudit(false)">重新预审</button>
+                <button type="button" class="btn-default" onclick="markAllPreAuditPass()">全部标记通过</button>
+                <button type="button" class="btn btn-primary" onclick="submitPreAudit()">提交审核</button>
+              </span>
+            </div>
+            <div class="smart-card-body">
+              <div id="preAuditWrap">
+                <div class="preaudit-summary">
+                  <div>
+                    <div class="preaudit-summary-title">预审结果</div>
+                    <div id="preAuditSummaryDesc" class="preaudit-summary-desc">系统将依据每个物料逐条校验基础信息、供应渠道、资质附件和价格风险。</div>
+                  </div>
+                  <span id="preAuditOverallStatus" class="preaudit-result fail">待预审</span>
+                </div>
+                <div class="parse-table-wrap">
+                  <table class="preaudit-table">
+                    <thead>
+                      <tr>
+                        <th>物料</th>
+                        <th>推荐咸亨编码</th>
+                        <th>预审状态</th>
+                        <th>问题类型</th>
+                        <th>问题说明</th>
+                        <th>操作</th>
+                      </tr>
+                    </thead>
+                    <tbody id="preAuditTbody"></tbody>
+                  </table>
+                </div>
+                <div class="smart-note">没有问题时整体标记为【预审通过】；存在问题时按物料展示具体问题类型，可点击【编辑详情】进入物料详情编辑后重新预审。</div>
+              </div>
+              <div id="smartSuccessState" class="smart-success-state">
+                <div class="success-check">✓</div>
+                <div class="success-title">提交成功</div>
+                <div id="smartSuccessDesc" class="success-desc">提交成功 0 条数据；请在【-】点击查看。</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="traditionalMode" class="mode-content" style="display:none;">
+  <div id="auditWorkbench" class="audit-workbench">
+    <aside class="audit-sidebar">
+      <div class="audit-sidebar-panel">
+        <div class="audit-sidebar-header">
+          <div class="audit-sidebar-title">审核摘要</div>
+          <div class="audit-sidebar-desc">默认只展示关键字段，先核对编码、价格、状态、附件和图片，再按需展开全部字段。</div>
+          <button type="button" id="auditSidebarToggle" class="btn-default audit-sidebar-toggle" onclick="toggleAuditSidebar()">收起摘要</button>
+        </div>
+        <div class="audit-summary-nav">
+          <button type="button" class="audit-summary-item active" data-target="section-key-info" title="一、关键信息">
+            <span class="audit-summary-index">01</span>
+            <div class="audit-summary-copy">
+              <div class="audit-summary-title">一、关键信息</div>
+              <div class="audit-summary-values">货主：咸亨国际科技股份有限公司<br>编码：B2002079386<br>品牌/名称：钢炬/GANGJU / PVC管<br>类目/型号：PVC管道 / DN110*4m<br>单位/价格：米 / 21.00 元<br>运费：不含运费</div>
+            </div>
+            <span class="audit-summary-short">关键</span>
+          </button>
+          <button type="button" class="audit-summary-item" data-target="section-secondary-info" title="二、次要信息">
+            <span class="audit-summary-index">02</span>
+            <div class="audit-summary-copy">
+              <div class="audit-summary-title">二、次要信息</div>
+              <div class="audit-summary-values">条形码：待补充<br>助记码：20260427电建-四川钢炬<br>毛重：1 kg<br>净重/尺寸：待补充</div>
+            </div>
+            <span class="audit-summary-short">次要</span>
+          </button>
+          <button type="button" class="audit-summary-item" data-target="section-supply-info" title="三、供应信息">
+            <span class="audit-summary-index">03</span>
+            <div class="audit-summary-copy">
+              <div class="audit-summary-title">三、供应信息</div>
+              <div class="audit-summary-values">供应商：四川钢炬商贸有限公司<br>供货价：18.60 元<br>可议价：是<br>状态：启用</div>
+            </div>
+            <span class="audit-summary-short">供应</span>
+          </button>
+          <button type="button" class="audit-summary-item" data-target="section-tags-status" title="四、标签和状态">
+            <span class="audit-summary-index">04</span>
+            <div class="audit-summary-copy">
+              <div class="audit-summary-title">四、标签和状态</div>
+              <div class="audit-summary-values">标签：电商服务商、非代理品牌<br>项目：暂无<br>动销：无动销<br>状态：可售、上架、未停产、非有效期管理</div>
+            </div>
+            <span class="audit-summary-short">状态</span>
+          </button>
+          <button type="button" class="audit-summary-item" data-target="section-links-evidence" title="五、外链和佐证">
+            <span class="audit-summary-index">05</span>
+            <div class="audit-summary-copy">
+              <div class="audit-summary-title">五、外链和佐证</div>
+              <div class="audit-summary-values">外链：支持新增并查看历史<br>佐证：当前待补充<br>操作：新增外链、新增佐证</div>
+            </div>
+            <span class="audit-summary-short">外链</span>
+          </button>
+          <button type="button" class="audit-summary-item" data-target="section-extensions" title="六、拓展属性">
+            <span class="audit-summary-index">06</span>
+            <div class="audit-summary-copy">
+              <div class="audit-summary-title">六、拓展属性</div>
+              <div class="audit-summary-values">等级：零量<br>必填：外径、壁厚<br>按项目要求补充拓展字段</div>
+            </div>
+            <span class="audit-summary-short">拓展</span>
+          </button>
+          <button type="button" class="audit-summary-item" data-target="section-attachments" title="七、资料附件">
+            <span class="audit-summary-index">07</span>
+            <div class="audit-summary-copy">
+              <div class="audit-summary-title">七、资料附件</div>
+              <div class="audit-summary-values">产品资料：待上传<br>检测报告：待上传<br>质量证明：待上传</div>
+            </div>
+            <span class="audit-summary-short">附件</span>
+          </button>
+          <button type="button" class="audit-summary-item" data-target="section-images" title="八、图片">
+            <span class="audit-summary-index">08</span>
+            <div class="audit-summary-copy">
+              <div class="audit-summary-title">八、图片</div>
+              <div class="audit-summary-values">主图：2 张<br>详情图：2 张<br>支持链接取图</div>
+            </div>
+            <span class="audit-summary-short">图片</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="audit-main">
+      <div class="audit-toolbar">
+        <div class="audit-toolbar-actions">
+          <button type="button" id="toggleAllFieldsBtn" class="btn-default" onclick="toggleAllFields()">查看全部字段</button>
+          <button type="button" class="btn-default" onclick="smartToast('已保存当前物料信息')">保存</button>
+          <button type="button" class="btn btn-primary" onclick="smartToast('已提交审核')">提交审核</button>
+          <button type="button" class="btn-default" onclick="smartToast('已打开分配组织')">分配组织</button>
+        </div>
+      </div>
+
+      <div id="section-key-info" class="card audit-section">
+        <div class="card-header">
+          一、关键信息
+          <div class="right-actions">
+            <span class="link-btn">价格记录</span>
+            <span class="link-btn">操作记录</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="field"><span class="label req">货主</span><div class="control"><input class="input" value="咸亨国际科技股份有限公司" readonly></div></div>
+            <div class="field"><span class="label">是否维保</span><div class="control"><input type="checkbox"></div></div>
+            <div class="field three-q field-detail-hidden" style="flex: 0 0 50%;">
+              <span class="label req">物料标签</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="mlabel"> 自营物料</label>
+                <label><input type="radio" name="mlabel"> 定向物料</label>
+                <label><input type="radio" name="mlabel" checked> 电商服务商</label>
+              </div>
+            </div>
+          </div>
+          <div class="row row-detail-hidden">
+            <div class="field"><span class="label">数据类型</span><div class="control"><input class="input dim" value="-" readonly></div></div>
+            <div class="field"><span class="label">标品物料</span><div class="control"><input class="input dim" value="-" readonly></div></div>
+          </div>
+          <div class="row">
+            <div class="field"><span class="label req">编码</span><div class="control"><input class="input" value="B2002079386" readonly></div></div>
+            <div class="field"><span class="label req">品牌</span><div class="control"><input class="input" value="钢炬/GANGJU"></div></div>
+            <div class="field"><span class="label req">名称</span><div class="control"><input class="input" value="PVC管"></div></div>
+            <div class="field"><span class="label req">型号</span><div class="control"><input class="input" value="DN110*4m"></div></div>
+          </div>
+          <div class="row">
+            <div class="field"><span class="label req">基本单位</span><div class="control"><input class="input" value="米"></div></div>
+            <div class="field cat-rec">
+              <span class="label req">类别</span>
+              <div class="control">
+                <input class="input" value="PVC管道">
+                <span class="ai-trigger" onclick="document.getElementById('aiModal').classList.add('show')">重新获取 AI</span>
+              </div>
+            </div>
+            <div class="field field-detail-hidden"><span class="label req">订单执行员</span><div class="control"><input class="input" value="郭佳蕾-订单履约三组-周..."><span class="link-btn" style="font-size:11px;">取消</span></div></div>
+            <div class="field field-detail-hidden"><span class="label req">采购部门</span><div class="control"><input class="input" value="电商管理部"></div></div>
+          </div>
+          <div class="row row-detail-hidden">
+            <div class="field"><span class="label req">项目报价员</span><div class="control"><input class="input" value="郭佳蕾-18767169579"></div></div>
+            <div class="field"><span class="label">产品经理</span><div class="control"><select class="select"><option>请选择</option></select></div></div>
+            <div class="field"><span class="label req">加价系数(%)</span><div class="control"><input class="input" value="2"><span class="link-btn" style="font-size:11px;">取消</span></div></div>
+            <div class="field"><span class="label req">起订量</span><div class="control"><input class="input" value="1"></div></div>
+          </div>
+          <div class="row row-detail-hidden">
+            <div class="field"><span class="label">是否倍数下单</span><div class="control"><input type="checkbox"></div></div>
+            <div class="field"><span class="label req">毛重</span><div class="control ctrl-suffix"><input class="input with-suffix" value="1"><span class="input-suffix">kg</span></div></div>
+            <div class="field"><span class="label">别名</span><div class="control"><input class="input" placeholder=""></div></div>
+            <div class="field"><span class="label req">物料税率</span><div class="control"><input class="input" value="13%增值税"></div></div>
+          </div>
+          <div class="row">
+            <div class="field"><span class="label req">市场价</span><div class="control ctrl-suffix"><input class="input with-suffix" value="21.00"><span class="input-suffix">元</span></div></div>
+            <div class="field">
+              <span class="label req">商城价</span>
+              <div class="control ctrl-suffix">
+                <input class="input with-suffix" value="21.00"><span class="input-suffix">元</span>
+              </div>
+            </div>
+            <div class="field field-detail-hidden" style="padding-left:0">
+              <span class="label" style="width:auto"></span>
+              <div class="control"><span class="link-btn" style="font-size:11px;">查询</span> <label style="font-size:11px;"><input type="checkbox" checked> 自动计算</label></div>
+            </div>
+            <div class="field field-detail-hidden"><span class="label"><span class="change-badge">本次修改<span class="change-tip"><b>字段改名</b><br/><s>结算价</s> → <b>固定结算价</b><br/>来源：PRD V1.4（2026-05-11）</span></span>固定结算价</span><div class="control ctrl-suffix"><input class="input with-suffix dim" value="待询价" readonly><span class="input-suffix">元</span></div></div>
+          </div>
+          <div class="row">
+            <div class="field field-detail-hidden"><span class="label">项目调拨参考价</span><div class="control ctrl-suffix"><input class="input with-suffix dim" value="待询价" readonly><span class="input-suffix">元</span></div></div>
+            <div class="field field-detail-hidden"><span class="label">参考供货价</span><div class="control ctrl-suffix"><input class="input with-suffix dim" value="待询价" readonly><span class="input-suffix">元</span></div></div>
+            <div class="field"><span class="label">规格</span><div class="control"><input class="input"></div></div>
+            <div class="field field-detail-hidden"><span class="label">对外最高成交价</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">元</span></div></div>
+          </div>
+          <div class="row row-detail-hidden">
+            <div class="field"><span class="label"><span class="change-badge">本次修改<span class="change-tip"><b>字段改名</b><br/><s>对内最新成本价</s> → <b>对内最新成本价（组织间开票价）</b><br/>来源：SAP 接口每月结账之后凌晨批次同步<br/>变更依据：PRD V1.5（2026-05-13）</span></span>对内最新成本价（组织间开票价）</span><div class="control ctrl-suffix"><input class="input with-suffix dim" placeholder="待 SAP 月同步" readonly><span class="input-suffix">元</span></div></div>
+            <div class="field"><span class="label">品牌限价最低价</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">元</span></div></div>
+            <div class="field"><span class="label">品牌限价最高价</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">元</span></div></div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <span class="label req">成本是否含运费</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="ship" checked> 不含</label>
+                <label><input type="radio" name="ship"> 含运费</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field half"><span class="label">描述</span><div class="control"><textarea class="input" style="height:50px; padding:6px 8px;">4米/根</textarea></div></div>
+            <div class="field half"><span class="label">内部备注</span><div class="control"><textarea class="input" style="height:50px; padding:6px 8px;" placeholder="定向函编码：DX202604240001"></textarea></div></div>
+          </div>
+          <div class="row">
+            <div class="field half">
+              <span class="label">成本是否含检测费</span>
+              <div class="control checkbox-group">
+                <label><input type="checkbox"> 不含检测费</label>
+                <label><input type="checkbox"> 含第三方检测费</label>
+                <label><input type="checkbox"> 含出厂检测费</label>
+              </div>
+            </div>
+            <div class="field half">
+              <span class="label">成本是否含安装费</span>
+              <div class="control checkbox-group">
+                <label><input type="checkbox"> 含</label>
+                <label><input type="checkbox"> 不含</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-secondary-info" class="card audit-section">
+        <div class="card-header">二、次要信息</div>
+        <div class="card-body">
+          <div class="row">
+            <div class="field"><span class="label">条形码</span><div class="control"><input class="input" placeholder="请输入"></div></div>
+            <div class="field"><span class="label">助记码</span><div class="control"><input class="input" value="20260427电建-四川钢炬"></div></div>
+            <div class="field"><span class="label">毛重</span><div class="control ctrl-suffix"><input class="input with-suffix" value="1"><span class="input-suffix">kg</span></div></div>
+            <div class="field"><span class="label">净重</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">kg</span></div></div>
+          </div>
+          <div class="row">
+            <div class="field"><span class="label">长</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">mm</span></div></div>
+            <div class="field"><span class="label">宽</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">mm</span></div></div>
+            <div class="field"><span class="label">高</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">mm</span></div></div>
+            <div class="field"><span class="label">体积</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">mm³</span></div></div>
+          </div>
+          <div class="row row-detail-hidden">
+            <div class="field"><span class="label">旧料码</span><div class="control"><input class="input" placeholder="请输入"></div></div>
+            <div class="field"><span class="label req">供应商</span><div class="control"><input class="input" value="四川钢炬商贸有限公司"></div></div>
+            <div class="field three-q" style="flex: 0 0 50%">
+              <span class="label">发货日</span>
+              <div class="control ctrl-suffix">
+                <input class="input with-suffix" placeholder="请输入"><span class="input-suffix">天</span>
+                <label style="margin-left:8px; font-size:11px; white-space:nowrap;"><input type="checkbox" checked> 详询客服</label>
+              </div>
+            </div>
+          </div>
+          <div class="row row-detail-hidden">
+            <div class="field"><span class="label req">税收分类名称</span><div class="control"><input class="input" value="其他塑料制品"></div></div>
+            <div class="field">
+              <span class="label req">税收分类编码</span>
+              <div class="control" style="display:flex">
+                <input class="input" value="1070601990000000000" style="border-radius: 3px 0 0 3px">
+                <span class="smart-fill">智能赋码</span>
+              </div>
+            </div>
+            <div class="field"><span class="label req">简称</span><div class="control"><input class="input" value="塑料制品"></div></div>
+            <div class="field"><span class="label req">税率</span><div class="control"><input class="input" value="0.13"></div></div>
+          </div>
+          <div class="row row-detail-hidden">
+            <div class="field"><span class="label">报关关税税率</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">%</span></div></div>
+            <div class="field"><span class="label">厂家订货号</span><div class="control"><input class="input" placeholder="请输入"></div></div>
+            <div class="field"><span class="label">产品线</span><div class="control"><select class="select"><option>请选择</option></select></div></div>
+            <div class="field">
+              <span class="label">是否开票</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="kp"> 是</label>
+                <label><input type="radio" name="kp" checked> 否</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-supply-info" class="card audit-section">
+        <div class="card-header">
+          三、供应信息
+          <div class="right-actions">
+            <button type="button" class="btn-default" onclick="smartToast('已新增供应商')">+ 新增供应商</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="supply-table-wrap">
+            <table class="supply-table">
+              <thead>
+                <tr>
+                  <th>供应商名称</th>
+                  <th>供货价</th>
+                  <th>附加费（类型/金额）</th>
+                  <th>是否可议价</th>
+                  <th>供应范围</th>
+                  <th>发货仓库</th>
+                  <th>计划库存</th>
+                  <th>状态</th>
+                  <th>操作（历史记录）</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input class="input supplier-name" value="四川钢炬商贸有限公司"></td>
+                  <td>
+                    <div class="control ctrl-suffix">
+                      <input class="input with-suffix" value="18.60"><span class="input-suffix">元</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="supply-fee">
+                      <select class="select">
+                        <option>物流费</option>
+                        <option>检测费</option>
+                        <option>包装费</option>
+                        <option>安装费</option>
+                      </select>
+                      <div class="control ctrl-suffix">
+                        <input class="input with-suffix" value="0.00"><span class="input-suffix">元</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="supply-radio">
+                      <label><input type="radio" name="nego1" checked> 是</label>
+                      <label><input type="radio" name="nego1"> 否</label>
+                    </div>
+                  </td>
+                  <td><input class="input" value="全国"></td>
+                  <td>
+                    <select class="select">
+                      <option>成都仓</option>
+                      <option>杭州仓</option>
+                      <option>供应商直发</option>
+                    </select>
+                  </td>
+                  <td>
+                    <div class="control ctrl-suffix">
+                      <input class="input with-suffix" value="120"><span class="input-suffix">件</span>
+                    </div>
+                  </td>
+                  <td>
+                    <select class="select">
+                      <option>启用</option>
+                      <option>停用</option>
+                    </select>
+                  </td>
+                  <td><span class="link-btn">历史记录</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-tags-status" class="card audit-section">
+        <div class="card-header">四、标签和状态</div>
+        <div class="card-body">
+          <div class="row">
+            <div class="field full" style="align-items: flex-start;">
+              <span class="label">项目</span>
+              <div class="control"><span class="empty-tip" style="padding:6px 12px; flex:0 0 auto;">暂无</span></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <span class="label">标签</span>
+              <div class="control" style="gap:6px; flex-wrap:wrap;">
+                <span class="tag tag-blue">电商服务商</span>
+                <span class="tag tag-warn">非代理品牌</span>
+              </div>
+            </div>
+            <div class="field"><span class="label">行业</span><div class="control"><select class="select"><option>请选择</option></select></div></div>
+            <div class="field"><span class="label">厂控物料</span><div class="control"><select class="select"><option>请选择</option><option>是</option><option>否</option></select></div></div>
+            <div class="field"><span class="label">动销</span><div class="control"><select class="select"><option>请选择</option><option>超高动销</option><option>高动销</option><option>低动销</option><option>无动销</option></select></div></div>
+            <div class="field field-detail-hidden"><span class="label">推荐</span><div class="control"><select class="select" multiple aria-label="推荐多选"><option>核心主推</option><option>主推</option><option>常规</option><option>零星</option></select></div></div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <span class="label">是否允许自动开票</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="autokp" checked> 是</label>
+                <label><input type="radio" name="autokp"> 否</label>
+              </div>
+            </div>
+            <div class="field">
+              <span class="label req">物料类型</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="mtype" checked> 货物类</label>
+                <label><input type="radio" name="mtype"> 服务类</label>
+              </div>
+            </div>
+            <div class="field">
+              <span class="label req">商城上下架</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="online" checked> 上架</label>
+                <label><input type="radio" name="online"> 下架</label>
+              </div>
+            </div>
+            <div class="field">
+              <span class="label req">商城是否可售</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="onsale" checked> 是</label>
+                <label><input type="radio" name="onsale"> 否</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <span class="label req">商城是否隐藏</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="hide" checked> 是</label>
+                <label><input type="radio" name="hide"> 否</label>
+              </div>
+            </div>
+            <div class="field">
+              <span class="label req">是否停产</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="stop"> 是</label>
+                <label><input type="radio" name="stop" checked> 否</label>
+              </div>
+            </div>
+            <div class="field">
+              <span class="label req">是否有效期管理</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="exp"> 是</label>
+                <label><input type="radio" name="exp" checked> 否</label>
+              </div>
+            </div>
+            <div class="field"><span class="label">有效期</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">天</span></div></div>
+          </div>
+          <div class="row row-detail-hidden">
+            <div class="field"><span class="label req">是否物料清洗</span><div class="control"><select class="select"><option>否</option><option>是</option></select></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-links-evidence" class="card audit-section">
+        <div class="card-header">五、外链和佐证</div>
+        <div class="card-body">
+          <div class="audit-action-grid">
+            <div class="audit-action-tile">
+              <div>
+                <div>外部链接</div>
+                <div class="field-note">支持查看历史记录并新增外链。</div>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <span class="link-btn">查看历史记录</span>
+                <span class="link-btn">+ 新增外链</span>
+              </div>
+            </div>
+            <div class="audit-action-tile">
+              <div>
+                <div>价格佐证</div>
+                <div class="field-note">当前未补充佐证，可直接上传或新增。</div>
+              </div>
+              <span class="link-btn">+ 新增佐证</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-detail-hidden">
+        <div class="card-header">
+          价格佐证明细
+          <span class="arrow" style="margin-left:6px">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="ext-link-row" style="padding:0;">
+            <span class="right link-btn">+ 新增佐证</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-extensions" class="card audit-section">
+        <div class="card-header">
+          六、拓展属性 <span style="margin-left:8px;font-size:11px;font-weight:normal;color:#888;">拓展属性标题为<span style="color:#1677ff;">蓝色</span>代表平台项目对该拓展属性有要求,鼠标移到拓展属性标题即可查看具体平台项目</span>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="field full" style="align-items:center;">
+              <span class="label">等级</span>
+              <div class="control tags-row">
+                <span class="tag-item">主推</span>
+                <span class="tag-item">常规</span>
+                <span class="tag-item active">零量</span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field"><span class="label" style="color:#1677ff;">外径</span><div class="control"><input class="input" placeholder="请输入"></div></div>
+            <div class="field"><span class="label" style="color:#1677ff;">壁厚</span><div class="control"><input class="input" placeholder="请输入"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-attachments" class="card audit-section">
+        <div class="card-header">七、资料附件</div>
+        <div class="card-body">
+          <div style="margin-bottom:10px;">
+            <div style="font-size:12px;color:#555;margin-bottom:6px;">产品资料</div>
+            <span class="file-upload-btn">上传文件</span>
+          </div>
+          <div style="margin-bottom:10px;">
+            <div style="font-size:12px;color:#555;margin-bottom:6px;">检测报告</div>
+            <span class="file-upload-btn">上传文件</span>
+          </div>
+          <div>
+            <div style="font-size:12px;color:#555;margin-bottom:6px;">质量证明</div>
+            <span class="file-upload-btn">上传文件</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-images" class="card audit-section">
+        <div class="card-header">
+          八、图片
+          <span class="img-helper" style="margin-left:8px;font-weight:normal;">建议:主推物料3~5张、常规物料1~3张、零星物料1张、图片大小800*800及以上</span>
+          <div class="right-actions">
+            <span class="link-btn">链接取图</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div style="margin-bottom:14px;">
+            <div style="font-size:12px;color:#555;margin-bottom:8px;">主图 <span class="clear-img">清空图片</span></div>
+            <div class="upload-box">
+              <span class="upload-plus">+</span>
+              <span style="font-size:11px;">上传</span>
+            </div>
+            <div class="img-thumb" style="background:#fafafa; display:inline-flex; align-items:center; justify-content:center; color:#aaa; font-size:11px;">
+              PVC管<br>主图
+              <span class="del">×</span>
+            </div>
+            <div class="img-thumb" style="background:#fafafa; display:inline-flex; align-items:center; justify-content:center; color:#aaa; font-size:11px;">
+              PVC管<br>侧视
+              <span class="del">×</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:#555;margin-bottom:8px;">详情图 <span class="clear-img">清空图片</span></div>
+            <div class="upload-box">
+              <span class="upload-plus">+</span>
+              <span style="font-size:11px;">上传</span>
+            </div>
+            <div class="img-thumb" style="background:#f5f5f5; display:inline-flex; align-items:center; justify-content:center; color:#aaa; font-size:11px;">
+              详情1
+              <span class="del">×</span>
+            </div>
+            <div class="img-thumb" style="background:#f5f5f5; display:inline-flex; align-items:center; justify-content:center; color:#aaa; font-size:11px;">
+              详情2
+              <span class="del">×</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-detail-hidden" style="margin-bottom:20px;">
+        <div class="card-header">
+          补充系统默认信息
+          <span class="arrow" style="margin-left:6px">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="field">
+              <span class="label req">是否可销售</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="csl" checked> 是</label>
+                <label><input type="radio" name="csl"> 否</label>
+              </div>
+            </div>
+            <div class="field">
+              <span class="label req">可用性检查</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="cyc" checked> 是</label>
+                <label><input type="radio" name="cyc"> 否</label>
+              </div>
+            </div>
+            <div class="field">
+              <span class="label req">是否可采购</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="ccg" checked> 是</label>
+                <label><input type="radio" name="ccg"> 否</label>
+              </div>
+            </div>
+            <div class="field">
+              <span class="label">是否启用批次管理</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="pcgl"> 是</label>
+                <label><input type="radio" name="pcgl" checked> 否</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field"><span class="label">最短剩余货架寿命</span><div class="control"><input class="input" placeholder="请输入"></div></div>
+            <div class="field"><span class="label">总货架寿命(天)</span><div class="control"><input class="input" placeholder="请输入"></div></div>
+            <div class="field">
+              <span class="label">是否启用安全库存</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="aqkc"> 是</label>
+                <label><input type="radio" name="aqkc" checked> 否</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field"><span class="label">最大库存(天)</span><div class="control"><input class="input" placeholder="请输入"></div></div>
+            <div class="field"><span class="label">最小库存(天)</span><div class="control"><input class="input" placeholder="请输入"></div></div>
+            <div class="field">
+              <span class="label">是否质检</span>
+              <div class="control radio-group">
+                <label><input type="radio" name="zj"> 是</label>
+                <label><input type="radio" name="zj" checked> 否</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-detail-hidden" style="margin-bottom:20px;">
+        <div class="card-header">预览窗</div>
+        <div class="card-body">
+          <div class="preview-area">
+            <div class="ph">
+              <div>
+                <div style="font-size:32px; margin-bottom:8px;">预览</div>
+                <div>PVC管 DN110*4m 商城展示效果预览区</div>
+                <div style="margin-top:6px;font-size:11px;">（主图 + 详情图自动渲染最终展示效果）</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="floating-dots">
+    <button type="button" class="dot" onclick="scrollToTopPage()" title="一键置顶">↑</button>
+    <button type="button" class="dot" onclick="scrollToBottomPage()" title="一键到底">↓</button>
+  </div>
+</div>
+
+<!-- 推荐咸亨编码抽屉 -->
+<div class="recommend-mask" id="recommendDrawerMask" onclick="closeRecommendDrawer(event)">
+  <div class="recommend-drawer" onclick="event.stopPropagation()">
+    <div class="recommend-drawer-header">
+      <span id="drawerTitle">推荐咸亨物料编码</span>
+      <button type="button" class="drawer-close" onclick="closeRecommendDrawer()">×</button>
+    </div>
+    <div class="recommend-drawer-body">
+      <div id="drawerReadonlyCard" class="drawer-readonly-card">
+        <div id="drawerReadonlyTitle" class="drawer-section-title">客户原始需求 / AI 识别结果（只读）</div>
+        <div class="drawer-info-grid">
+          <div class="drawer-info-item"><span class="k">名称</span><span id="drawerName" class="v">-</span></div>
+          <div class="drawer-info-item"><span class="k">推荐品牌</span><span id="drawerBrand" class="v">-</span></div>
+          <div class="drawer-info-item"><span class="k">推荐类目</span><span id="drawerCategory" class="v">-</span></div>
+          <div class="drawer-info-item"><span class="k">型号</span><span id="drawerModel" class="v">-</span></div>
+          <div class="drawer-info-item"><span class="k">规格</span><span id="drawerSpec" class="v">-</span></div>
+          <div class="drawer-info-item"><span class="k">市场价</span><span id="drawerMarketPrice" class="v">-</span></div>
+          <div class="drawer-info-item" style="grid-column:1 / -1;"><span class="k">描述</span><span id="drawerDesc" class="v">-</span></div>
+        </div>
+      </div>
+
+      <div id="drawerAiCard" class="drawer-ai-card">
+        <div class="drawer-ai-title">
+          <span>AI 智能匹配</span>
+          <span style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:12px;color:#666;font-weight:400;">展示近似度最高的 3-5 个咸亨物料编码</span>
+            <button type="button" class="btn-default" onclick="rematchDrawerRecommendations()">重新匹配</button>
+          </span>
+        </div>
+        <div id="drawerMatchLoading" class="drawer-match-loading">AI 匹配中，请稍候...</div>
+        <div class="ai-trace">AI 分析流程回溯：依据名称、品牌、型号、规格、推荐类目与标准库进行语义相似度和字段命中匹配。</div>
+        <div class="recommend-table-wrap">
+          <table class="recommend-table">
+            <thead>
+              <tr>
+                <th>操作</th>
+                <th>匹配度</th>
+                <th>物料编码</th>
+                <th>名称</th>
+                <th>品牌</th>
+                <th>规格型号</th>
+                <th>单位</th>
+                <th>参考调拨价</th>
+                <th>市场价</th>
+                <th>四级类目</th>
+                <th>推荐原因</th>
+              </tr>
+            </thead>
+            <tbody id="drawerRecommendRows">
+              <tr><td colspan="11" style="text-align:center;color:#999;">暂无 AI 推荐结果</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="drawerSupplierCard" class="drawer-supplier-card">
+        <div class="drawer-ai-title">
+          <span>供应商信息</span>
+          <span style="font-size:12px;color:#666;font-weight:400;">维护后回填至识别结果和供应渠道步骤</span>
+        </div>
+        <div class="supplier-field-list">
+          <div class="supplier-field">
+            <span class="k">供应商名称</span>
+            <span class="v"><input id="supplierNameInput" class="input" value="杭州安防用品有限公司"></span>
+          </div>
+          <div class="supplier-field">
+            <span class="k">供应价</span>
+            <span class="v">
+              <input id="supplierPriceInput" class="input with-suffix" value="10.80"><span class="input-suffix">元</span>
+            </span>
+          </div>
+          <div class="supplier-field">
+            <span class="k">附加费（类型/金额）</span>
+            <span class="v">
+              <select id="supplierFeeTypeInput" class="select">
+                <option>无</option>
+                <option>运费</option>
+                <option>检测费</option>
+                <option>包装费</option>
+                <option>安装费</option>
+              </select>
+              <input id="supplierFeeAmountInput" class="input with-suffix" value="0.00"><span class="input-suffix">元</span>
+            </span>
+          </div>
+          <div class="supplier-field">
+            <span class="k">是否可议价</span>
+            <span class="v radio-group">
+              <label><input type="radio" name="supplierNegotiable" value="是" checked> 是</label>
+              <label><input type="radio" name="supplierNegotiable" value="否"> 否</label>
+            </span>
+          </div>
+          <div class="supplier-field">
+            <span class="k">供应范围</span>
+            <span class="v"><input id="supplierScopeInput" class="input" value="全国"></span>
+          </div>
+          <div class="supplier-field">
+            <span class="k">发货仓库</span>
+            <span class="v">
+              <select id="supplierWarehouseInput" class="select">
+                <option>供应商直发</option>
+                <option>杭州仓</option>
+                <option>成都仓</option>
+                <option>长沙仓</option>
+              </select>
+            </span>
+          </div>
+          <div class="supplier-field">
+            <span class="k">计划库存</span>
+            <span class="v"><input id="supplierStockInput" class="input" value="200"></span>
+          </div>
+          <div class="supplier-field">
+            <span class="k">状态</span>
+            <span class="v">
+              <select id="supplierStatusInput" class="select">
+                <option>启用</option>
+                <option>停用</option>
+                <option>待询价</option>
+              </select>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <div class="drawer-footer-left">
+        <button id="drawerPrevBtn" type="button" class="btn-default" onclick="switchDrawerItem(-1)">上一条</button>
+        <button id="drawerNextBtn" type="button" class="btn-default" onclick="switchDrawerItem(1)">下一条</button>
+      </div>
+      <div class="drawer-footer-right">
+        <button id="drawerPrimaryBtn" type="button" class="btn btn-primary" onclick="handleDrawerPrimaryAction()">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 智能新增物料详情编辑 -->
+<div class="modal-mask" id="materialEditModal">
+  <div class="modal material-edit-modal">
+    <div class="modal-header">
+      <span id="materialEditTitle">物料详情编辑</span>
+      <span class="x" onclick="closeMaterialEditModal()">×</span>
+    </div>
+    <div class="modal-body">
+      <div class="material-edit-grid">
+        <div class="field">
+          <div class="flabel">名称</div>
+          <input class="input" id="editMaterialName">
+        </div>
+        <div class="field">
+          <div class="flabel">推荐品牌</div>
+          <input class="input" id="editMaterialBrand">
+        </div>
+        <div class="field">
+          <div class="flabel">推荐类目</div>
+          <input class="input" id="editMaterialCategory">
+        </div>
+        <div class="field">
+          <div class="flabel">型号</div>
+          <input class="input" id="editMaterialModel">
+        </div>
+        <div class="field">
+          <div class="flabel">推荐咸亨编码</div>
+          <input class="input" id="editMaterialCode">
+        </div>
+        <div class="field">
+          <div class="flabel">供应商</div>
+          <input class="input" id="editMaterialSupplier">
+        </div>
+        <div class="field col2">
+          <div class="flabel">当前问题类型</div>
+          <div id="editMaterialIssues" class="issue-tags"></div>
+        </div>
+        <div class="field col2">
+          <div class="flabel">问题处理说明</div>
+          <textarea class="input" id="editMaterialRemark" style="height:70px;padding:8px;" placeholder="补充处理说明，保存后可重新预审"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-default" onclick="closeMaterialEditModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveMaterialEdit()">保存并返回预审</button>
+    </div>
+  </div>
+</div>
+
+<!-- 预审问题弹窗 -->
+<div class="modal-mask" id="preAuditIssueModal">
+  <div class="modal">
+    <div class="modal-header">
+      预审发现问题
+      <span class="x" onclick="document.getElementById('preAuditIssueModal').classList.remove('show')">×</span>
+    </div>
+    <div class="modal-body">
+      <div class="row-mod"><span class="k">问题字段</span><span class="v"><b>资料附件 / 供应商状态</b></span></div>
+      <div class="row-mod"><span class="k">问题说明</span><span class="v">检测报告未上传，且存在供应商状态为待询价的数据，不满足提交审核条件。</span></div>
+      <div class="row-mod"><span class="k">处理建议</span><span class="v">补齐必传附件，并确认供应商状态后重新预审。</span></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-default" onclick="document.getElementById('preAuditIssueModal').classList.remove('show')">返回修改</button>
+      <button class="btn btn-primary" onclick="document.getElementById('preAuditIssueModal').classList.remove('show'); smartToast('已定位到需补充字段（原型演示）')">知道了</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI 弹窗 -->
+<div class="modal-mask" id="aiModal">
+  <div class="modal">
+    <div class="modal-header">
+      🤖 AI 类目重新匹配结果
+      <span class="x" onclick="document.getElementById('aiModal').classList.remove('show')">×</span>
+    </div>
+    <div class="modal-body">
+      <div class="row-mod"><span class="k">推荐类目</span><span class="v"><b>PVC管道</b></span></div>
+      <div class="row-mod"><span class="k">类目编码</span><span class="v">10706019</span></div>
+      <div class="row-mod">
+        <span class="k">置信度</span>
+        <span class="v">
+          <div class="confidence-bar">
+            <div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div>
+            <span style="margin-left:6px;color:#52c41a;">0.95（高置信）</span>
+          </div>
+        </span>
+      </div>
+      <div class="row-mod" style="display:block;">
+        <span class="k" style="display:block; margin-bottom:4px;">AI 判定理由</span>
+        <div class="reason">
+          商品名称为"PVC管"，与候选 1"PVC管道"的示例商品词条（如"PVC管"、"DN管"）高度一致；规格型号"DN110*4m"符合 PVC 给排水管道的常规规格；描述"4米/根"与该类目典型商品描述一致。其他候选如 PE 管材、HDPE 管材需明确材质标记，均不满足。
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-default" onclick="document.getElementById('aiModal').classList.remove('show')">继续手动选择</button>
+      <button class="btn btn-primary" onclick="document.getElementById('aiModal').classList.remove('show')">一键采用</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 折叠展开
+  document.querySelectorAll('.card-header').forEach(h => {
+    h.addEventListener('click', e => {
+      if (e.target.closest('.right-actions') || e.target.closest('a') || e.target.classList.contains('link-btn')) return;
+      h.classList.toggle('collapsed');
+      h.parentElement.classList.toggle('collapsed');
+    });
+  });
+  const auditNavItems = Array.from(document.querySelectorAll('.audit-summary-item'));
+  const auditSections = Array.from(document.querySelectorAll('.audit-section'));
+
+  function setCardCollapsedByTitle(title, collapsed) {
+    document.querySelectorAll('.card-header').forEach(h => {
+      if (h.textContent.trim().startsWith(title)) {
+        h.classList.toggle('collapsed', collapsed);
+        h.parentElement.classList.toggle('collapsed', collapsed);
+      }
+    });
+  }
+
+  function applyDefaultCollapsedCards() {
+    ['补充系统默认信息', '价格佐证明细'].forEach(title => setCardCollapsedByTitle(title, true));
+  }
+
+  function setActiveAuditNav(targetId) {
+    auditNavItems.forEach(item => {
+      item.classList.toggle('active', item.dataset.target === targetId);
+    });
+  }
+
+  function scrollToAuditSection(targetId) {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setActiveAuditNav(targetId);
+  }
+
+  function syncAuditNav() {
+    if (currentCreateMode !== 'traditional' || !auditSections.length) return;
+    const offset = 150;
+    let currentId = auditSections[0].id;
+    auditSections.forEach(section => {
+      if (section.getBoundingClientRect().top - offset <= 0) currentId = section.id;
+    });
+    setActiveAuditNav(currentId);
+  }
+
+  function toggleAuditSidebar() {
+    const workbench = document.getElementById('auditWorkbench');
+    const toggleBtn = document.getElementById('auditSidebarToggle');
+    if (!workbench || !toggleBtn) return;
+    const collapsed = !workbench.classList.contains('sidebar-collapsed');
+    workbench.classList.toggle('sidebar-collapsed', collapsed);
+    toggleBtn.textContent = collapsed ? '展开摘要' : '收起摘要';
+  }
+
+  function toggleAllFields() {
+    const traditional = document.getElementById('traditionalMode');
+    const btn = document.getElementById('toggleAllFieldsBtn');
+    if (!traditional || !btn) return;
+    const showAll = !traditional.classList.contains('show-all-fields');
+    traditional.classList.toggle('show-all-fields', showAll);
+    btn.textContent = showAll ? '收起非关键字段' : '查看全部字段';
+    setCardCollapsedByTitle('补充系统默认信息', !showAll);
+    setCardCollapsedByTitle('价格佐证明细', !showAll);
+    smartToast(showAll ? '已展开全部字段' : '已收起非关键字段');
+    if (!showAll) scrollToAuditSection('section-key-info');
+  }
+
+  function scrollToTopPage() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function scrollToBottomPage() {
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+  }
+
+  function initAuditWorkbench() {
+    applyDefaultCollapsedCards();
+    auditNavItems.forEach(item => {
+      item.addEventListener('click', () => scrollToAuditSection(item.dataset.target));
+    });
+    setActiveAuditNav('section-key-info');
+  }
+
+  // 自动计算市场价 demo
+  const marketPriceInput = document.querySelectorAll('.input')[/* 简单demo 不绑定 */ 0];
+  let currentCreateMode = 'smart';
+  let drawerCurrentIndex = 1;
+  let drawerMode = 'recommend';
+  let drawerSelectedCode = '';
+  let drawerSelectedRecommend = null;
+  const recommendData = {
+    1: [
+      { score: '92%', code: 'B0401025928', name: '3M 防尘口罩 9501+ KN95', brand: '3M', spec: '9501+ / KN95 / 白色 / 头戴式', unit: '只', transfer: '10.80', market: '12.80', category: '呼吸防护用品', reason: '命中：品牌、名称、型号、类目、防护等级；差异：包装规格未明确。' },
+      { score: '84%', code: 'B0401025931', name: '3M 防尘口罩 9502+ KN95', brand: '3M', spec: '9502+ / KN95 / 白色 / 耳戴式', unit: '只', transfer: '9.90', market: '11.60', category: '呼吸防护用品', reason: '命中：品牌、类目、防护等级、颜色；差异：型号、佩戴方式。' },
+      { score: '78%', code: 'B0401026175', name: '霍尼韦尔 H950V KN95 防护口罩', brand: '霍尼韦尔', spec: 'H950V / KN95 / 带呼吸阀', unit: '只', transfer: '11.20', market: '13.50', category: '呼吸防护用品', reason: '命中：类目、防护等级；差异：品牌、型号、呼吸阀。' },
+      { score: '73%', code: 'B0401026018', name: '3M 防颗粒物口罩 9001V', brand: '3M', spec: '9001V / KN90 / 耳戴式', unit: '只', transfer: '8.60', market: '10.20', category: '呼吸防护用品', reason: '命中：品牌、类目；差异：型号、防护等级、佩戴方式。' }
+    ],
+    2: [
+      { score: '89%', code: 'B0803012048', name: '公牛插座 GN-B3440 8位 3米', brand: '公牛', spec: 'GN-B3440 / 8位 / 3米 / 白色', unit: '个', transfer: '58.00', market: '68.00', category: '插座/排插', reason: '命中：品牌、型号、位数、线长、颜色；差异：是否带独立开关未明确。' },
+      { score: '83%', code: 'B0803012051', name: '公牛插座 GN-B3440 8位 5米', brand: '公牛', spec: 'GN-B3440 / 8位 / 5米 / 白色', unit: '个', transfer: '65.00', market: '76.00', category: '插座/排插', reason: '命中：品牌、型号、位数、颜色；差异：线长。' },
+      { score: '79%', code: 'B0803011986', name: '公牛插座 GN-109K 6位 3米', brand: '公牛', spec: 'GN-109K / 6位 / 3米 / 总控', unit: '个', transfer: '49.00', market: '59.00', category: '插座/排插', reason: '命中：品牌、线长、总控；差异：型号、位数。' },
+      { score: '74%', code: 'B0803012102', name: '得力插座 8位 3米', brand: '得力', spec: '8位 / 3米 / 白色 / 总控', unit: '个', transfer: '42.00', market: '55.00', category: '插座/排插', reason: '命中：位数、线长、颜色、类目；差异：品牌、型号。' },
+      { score: '70%', code: 'B0803012077', name: '公牛插座 GN-B3043 4位 3米', brand: '公牛', spec: 'GN-B3043 / 4位 / 3米', unit: '个', transfer: '38.00', market: '46.00', category: '插座/排插', reason: '命中：品牌、线长、类目；差异：型号、位数。' }
+    ]
+  };
+  const supplierDefaultData = {
+    1: { supplier: '杭州安防用品有限公司', price: '10.80', feeType: '无', feeAmount: '0.00', negotiable: '是', scope: '全国', warehouse: '供应商直发', stock: '200', status: '启用' },
+    2: { supplier: '浙江公牛供应链有限公司', price: '58.00', feeType: '运费', feeAmount: '6.00', negotiable: '是', scope: '华东、华南', warehouse: '杭州仓', stock: '80', status: '启用' }
+  };
+  const supplierData = {};
+  const preAuditResolved = {};
+  let currentMaterialEditIndex = null;
+
+  function toggleCreateMode() {
+    switchCreateMode(currentCreateMode === 'smart' ? 'traditional' : 'smart');
+  }
+
+  function switchCreateMode(mode) {
+    const traditional = document.getElementById('traditionalMode');
+    const smart = document.getElementById('smartMode');
+    const modeName = document.getElementById('currentModeName');
+    const modeDesc = document.getElementById('currentModeDesc');
+    const toggleBtn = document.getElementById('modeToggleBtn');
+    const isSmart = mode === 'smart';
+
+    currentCreateMode = mode;
+    traditional.style.display = isSmart ? 'none' : 'block';
+    smart.style.display = isSmart ? 'block' : 'none';
+    modeName.textContent = isSmart ? '智能新增物料' : '传统新增物料字段';
+    modeDesc.textContent = isSmart
+      ? '通过文本描述触发智能解析，推荐咸亨标准物料编码后再补充供应信息。'
+      : '按现有 MPM 字段逐项维护，适用于已明确物料信息或需要人工精细录入的场景。';
+    toggleBtn.textContent = isSmart ? '切换为【传统新增物料】' : '切换为【智能新增物料】';
+    toggleBtn.classList.toggle('btn-primary', !isSmart);
+    toggleBtn.classList.toggle('btn-default', isSmart);
+    if (isSmart) updateSmartStep(window.__smartStep || 1);
+    if (!isSmart) setTimeout(syncAuditNav, 80);
+    smartToast(isSmart ? '已切换至智能解析创建物料模式' : '已切换至传统新增物料字段模式');
+  }
+
+  function runSmartParse() {
+    const textarea = document.getElementById('smartMaterialText');
+    const status = document.getElementById('parseStatus');
+    if (!textarea.value.trim()) {
+      textarea.value = '3M 防尘口罩 9501+ KN95 白色 头戴式，用于工业粉尘防护，无呼吸阀。\n公牛插座 GN-B3440 8位 3米 白色。';
+    }
+    resetSmartResultState();
+    status.textContent = '已解析 2 条，待匹配标品';
+    updateSmartStep(2);
+    smartToast('提交成功，系统已完成智能解析');
+  }
+
+  function clearSmartParse() {
+    document.getElementById('smartMaterialText').value = '';
+    document.getElementById('parseStatus').textContent = '待解析';
+    resetSmartResultState();
+    updateSmartStep(1);
+    smartToast('已清空智能解析描述，候选示例保留用于演示');
+  }
+
+  function toggleAttrFollowup() {
+    const panel = document.getElementById('attrFollowup');
+    const show = panel.style.display === 'none' || !panel.style.display;
+    panel.style.display = show ? 'block' : 'none';
+    smartToast(show ? '已展开类目属性模板，请补充关键属性' : '已收起补充属性区域');
+  }
+
+  function smartToTraditional() {
+    switchCreateMode('traditional');
+    smartToast('已根据智能解析结果预填部分字段；已有值不会被静默覆盖，请继续完善后提交');
+  }
+
+  function viewCandidate(code) {
+    smartToast('打开标准物料详情预览：' + code + '（原型模拟）');
+  }
+
+  function setupDrawerMode(mode) {
+    drawerMode = mode;
+    const isSupplier = mode === 'supplier';
+    document.getElementById('drawerTitle').textContent = isSupplier ? '维护供应渠道信息' : '推荐咸亨物料编码';
+    document.getElementById('drawerReadonlyTitle').textContent = isSupplier ? '物料基础信息' : '客户原始需求 / AI 识别结果（只读）';
+    document.getElementById('drawerReadonlyCard').classList.toggle('supplier-base-card', isSupplier);
+    document.getElementById('drawerAiCard').style.display = isSupplier ? 'none' : 'block';
+    document.getElementById('drawerSupplierCard').style.display = isSupplier ? 'block' : 'none';
+    document.getElementById('drawerPrimaryBtn').textContent = isSupplier ? '保存供应商信息' : '确定';
+  }
+
+  function openRecommendDrawer(index) {
+    setupDrawerMode('recommend');
+    drawerCurrentIndex = index;
+    const rows = recommendData[index] || [];
+    drawerSelectedRecommend = rows[0] || null;
+    drawerSelectedCode = drawerSelectedRecommend ? drawerSelectedRecommend.code : '';
+    updateSmartStep(2);
+    loadDrawerRecognizedItem(index);
+    renderDrawerRecommendRows(index);
+    document.getElementById('recommendDrawerMask').classList.add('open');
+  }
+
+  function openSupplierDrawer(index) {
+    setupDrawerMode('supplier');
+    drawerCurrentIndex = index;
+    loadDrawerRecognizedItem(index);
+    loadSupplierDrawerData(index);
+    document.getElementById('recommendDrawerMask').classList.add('open');
+  }
+
+  function loadDrawerRecognizedItem(index) {
+    const row = document.querySelector('[data-parse-row="' + index + '"]');
+    if (!row) return;
+    const values = Array.from(row.querySelectorAll('.parse-edit-input,.parse-edit-area')).map(el => el.value.trim() || '-');
+    const [name, brand, category, model, spec, marketPrice, desc] = values;
+    document.getElementById('drawerName').textContent = name;
+    document.getElementById('drawerBrand').textContent = brand;
+    document.getElementById('drawerCategory').textContent = category;
+    document.getElementById('drawerModel').textContent = model;
+    document.getElementById('drawerSpec').textContent = spec;
+    document.getElementById('drawerMarketPrice').textContent = marketPrice === '-' ? '-' : marketPrice + ' 元';
+    document.getElementById('drawerDesc').textContent = desc;
+  }
+
+  function loadSupplierDrawerData(index) {
+    const data = supplierData[index] || supplierDefaultData[index] || supplierDefaultData[1];
+    document.getElementById('supplierNameInput').value = data.supplier || '';
+    document.getElementById('supplierPriceInput').value = data.price || '';
+    document.getElementById('supplierFeeTypeInput').value = data.feeType || '无';
+    document.getElementById('supplierFeeAmountInput').value = data.feeAmount || '0.00';
+    document.querySelectorAll('input[name="supplierNegotiable"]').forEach(item => {
+      item.checked = item.value === (data.negotiable || '是');
+    });
+    document.getElementById('supplierScopeInput').value = data.scope || '';
+    document.getElementById('supplierWarehouseInput').value = data.warehouse || '供应商直发';
+    document.getElementById('supplierStockInput').value = data.stock || '';
+    document.getElementById('supplierStatusInput').value = data.status || '启用';
+  }
+
+  function getSupplierFormData() {
+    const negotiable = document.querySelector('input[name="supplierNegotiable"]:checked');
+    return {
+      supplier: document.getElementById('supplierNameInput').value.trim() || '-',
+      price: document.getElementById('supplierPriceInput').value.trim() || '-',
+      feeType: document.getElementById('supplierFeeTypeInput').value,
+      feeAmount: document.getElementById('supplierFeeAmountInput').value.trim() || '0.00',
+      negotiable: negotiable ? negotiable.value : '-',
+      scope: document.getElementById('supplierScopeInput').value.trim() || '-',
+      warehouse: document.getElementById('supplierWarehouseInput').value,
+      stock: document.getElementById('supplierStockInput').value.trim() || '-',
+      status: document.getElementById('supplierStatusInput').value
+    };
+  }
+
+  function updateSupplierStatus(index, data) {
+    document.querySelectorAll('[data-supplier-status="' + index + '"],[data-supply-state="' + index + '"]').forEach(item => {
+      item.textContent = '已维护';
+      item.classList.add('done');
+    });
+    const summaryRow = document.querySelector('[data-supply-row="' + index + '"]');
+    if (summaryRow) {
+      const summaryMap = {
+        supplier: data.supplier,
+        price: data.price === '-' ? '-' : data.price + ' 元',
+        fee: data.feeType + ' / ' + data.feeAmount + ' 元',
+        negotiable: data.negotiable,
+        scope: data.scope,
+        warehouse: data.warehouse,
+        stock: data.stock,
+        status: data.status
+      };
+      Object.keys(summaryMap).forEach(key => {
+        const target = summaryRow.querySelector('[data-supply-summary="' + key + '"]');
+        if (target) target.textContent = summaryMap[key];
+      });
+    }
+  }
+
+  function confirmSupplierInfo() {
+    const data = getSupplierFormData();
+    supplierData[drawerCurrentIndex] = data;
+    updateSupplierStatus(drawerCurrentIndex, data);
+    smartToast('已保存第 ' + drawerCurrentIndex + ' 条供应商信息');
+    closeRecommendDrawer();
+  }
+
+  function renderDrawerRecommendRows(index) {
+    const rows = recommendData[index] || [];
+    const body = document.getElementById('drawerRecommendRows');
+    body.innerHTML = rows.map(item => `
+      <tr data-recommend-code="${item.code}" class="${drawerSelectedCode === item.code ? 'selected' : ''}">
+        <td><span class="parse-op" onclick="selectDrawerRecommend('${item.code}')">选用</span></td>
+        <td><span class="recommend-score">${item.score}</span></td>
+        <td><b>${item.code}</b>${drawerSelectedCode === item.code ? '<div class="current-selected-tag">当前选中</div>' : ''}</td>
+        <td>${item.name}</td>
+        <td>${item.brand}</td>
+        <td>${item.spec}</td>
+        <td>${item.unit}</td>
+        <td>${item.transfer}</td>
+        <td>${item.market}</td>
+        <td>${item.category}</td>
+        <td class="reason-cell">${formatReason(item.reason)}</td>
+      </tr>
+    `).join('');
+  }
+
+  function selectDrawerRecommend(code) {
+    const rows = recommendData[drawerCurrentIndex] || [];
+    drawerSelectedCode = code;
+    drawerSelectedRecommend = rows.find(item => item.code === code) || null;
+    renderDrawerRecommendRows(drawerCurrentIndex);
+    smartToast('已选中推荐咸亨物料编码 ' + code + '，请点击确定');
+  }
+
+  function formatReason(reason) {
+    if (!reason) return '-';
+    return reason
+      .replace('命中：', '<span class="reason-hit">命中：</span>')
+      .replace('差异：', '<span class="reason-diff">差异：</span>');
+  }
+
+  function handleDrawerPrimaryAction() {
+    if (drawerMode === 'supplier') {
+      confirmSupplierInfo();
+      return;
+    }
+    confirmDrawerRecommend();
+  }
+
+  function confirmDrawerRecommend() {
+    if (!drawerSelectedCode) {
+      smartToast('请先选用一条推荐咸亨物料编码');
+      return;
+    }
+    const row = document.querySelector('[data-parse-row="' + drawerCurrentIndex + '"]');
+    if (row) {
+      const codeEl = row.querySelector('.recommend-code');
+      const scoreEl = row.querySelector('.recommend-score');
+      if (codeEl) codeEl.textContent = drawerSelectedCode;
+      if (scoreEl && drawerSelectedRecommend) scoreEl.textContent = drawerSelectedRecommend.score;
+    }
+    smartToast('已确认第 ' + drawerCurrentIndex + ' 条推荐编码 ' + drawerSelectedCode);
+    const nextIndex = getNextDrawerIndex(drawerCurrentIndex);
+    if (nextIndex && nextIndex !== drawerCurrentIndex) {
+      openRecommendDrawer(nextIndex);
+    } else {
+      closeRecommendDrawer();
+      document.getElementById('parseStatus').textContent = '推荐编码已确认，待提交';
+      updateSmartStep(2);
+    }
+  }
+
+  function switchDrawerItem(delta) {
+    const rows = Array.from(document.querySelectorAll('[data-parse-row]'));
+    const indexes = rows.map(row => Number(row.dataset.parseRow)).sort((a, b) => a - b);
+    const currentPos = indexes.indexOf(drawerCurrentIndex);
+    if (currentPos === -1) return;
+    const target = indexes[currentPos + delta];
+    if (!target) {
+      smartToast(delta > 0 ? '已经是最后一条' : '已经是第一条');
+      return;
+    }
+    if (drawerMode === 'supplier') {
+      openSupplierDrawer(target);
+    } else {
+      openRecommendDrawer(target);
+    }
+  }
+
+  function getNextDrawerIndex(current) {
+    const indexes = Array.from(document.querySelectorAll('[data-parse-row]')).map(row => Number(row.dataset.parseRow)).sort((a, b) => a - b);
+    const currentPos = indexes.indexOf(current);
+    return indexes[currentPos + 1] || current;
+  }
+
+  function rematchDrawerRecommendations() {
+    const loading = document.getElementById('drawerMatchLoading');
+    loading.classList.add('show');
+    smartToast('AI 匹配中');
+    setTimeout(() => {
+      const rows = recommendData[drawerCurrentIndex] || [];
+      recommendData[drawerCurrentIndex] = rows.map((item, idx) => {
+        const scoreNumber = Math.max(68, Math.min(96, parseInt(item.score, 10) + (idx === 0 ? 2 : -1)));
+        return { ...item, score: scoreNumber + '%' };
+      });
+      drawerSelectedCode = '';
+      drawerSelectedRecommend = null;
+      if (recommendData[drawerCurrentIndex] && recommendData[drawerCurrentIndex][0]) {
+        drawerSelectedRecommend = recommendData[drawerCurrentIndex][0];
+        drawerSelectedCode = drawerSelectedRecommend.code;
+      }
+      renderDrawerRecommendRows(drawerCurrentIndex);
+      loading.classList.remove('show');
+      smartToast('AI 匹配完成，推荐结果已刷新');
+    }, 2000);
+  }
+
+  function closeRecommendDrawer(event) {
+    if (event && event.target !== document.getElementById('recommendDrawerMask')) return;
+    const loading = document.getElementById('drawerMatchLoading');
+    if (loading) loading.classList.remove('show');
+    document.getElementById('recommendDrawerMask').classList.remove('open');
+  }
+
+  function matchParsedItem(index) {
+    updateSmartStep(2);
+    document.getElementById('parseStatus').textContent = '第 ' + index + ' 行已匹配标品';
+    smartToast('已触发第 ' + index + ' 行物料的标准库匹配，候选标品已展示');
+  }
+
+  function batchMatchParsedItems() {
+    updateSmartStep(2);
+    document.getElementById('parseStatus').textContent = '已批量匹配 2 条标品';
+    smartToast('已批量触发 2 条识别结果的标准库匹配');
+  }
+
+  function goSupplyStep() {
+    updateSmartStep(3);
+    document.getElementById('parseStatus').textContent = '待维护供应渠道';
+    smartToast('请维护供应渠道信息后提交下一步');
+  }
+
+  function submitSupplyInfo() {
+    const total = getParsedCount();
+    const maintained = Object.keys(supplierData).length;
+    if (maintained < total) {
+      const firstPending = Array.from(document.querySelectorAll('[data-parse-row]'))
+        .map(row => Number(row.dataset.parseRow))
+        .find(index => !supplierData[index]);
+      smartToast('还有供应商信息未维护，请先补齐');
+      if (firstPending) openSupplierDrawer(firstPending);
+      return;
+    }
+    updateSmartStep(4);
+    runPreAudit(false);
+    smartToast('供应渠道信息已维护完成，进入预审');
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[char]));
+  }
+
+  function getParsedIndexes() {
+    return Array.from(document.querySelectorAll('[data-parse-row]'))
+      .map(row => Number(row.dataset.parseRow))
+      .filter(Boolean)
+      .sort((a, b) => a - b);
+  }
+
+  function getParsedItem(index) {
+    const row = document.querySelector('[data-parse-row="' + index + '"]');
+    if (!row) return {};
+    const values = Array.from(row.querySelectorAll('.parse-edit-input,.parse-edit-area')).map(el => el.value.trim());
+    return {
+      index,
+      name: values[0] || '',
+      brand: values[1] || '',
+      category: values[2] || '',
+      model: values[3] || '',
+      spec: values[4] || '',
+      marketPrice: values[5] || '',
+      desc: values[6] || '',
+      code: (row.querySelector('.recommend-code')?.textContent || '').trim()
+    };
+  }
+
+  function getSupplyItem(index) {
+    return supplierData[index] || {};
+  }
+
+  function setSupplyField(index, field, value) {
+    supplierData[index] = { ...(supplierData[index] || supplierDefaultData[index] || {}), [field]: value };
+    updateSupplierStatus(index, supplierData[index]);
+  }
+
+  function buildPreAuditMessage(issues) {
+    const map = {
+      '基础信息': '基础字段不完整，请补充名称、品牌、类目、型号或推荐咸亨编码。',
+      '供应渠道': '供应商、供应价、附加费（类型/金额）、计划库存或状态信息不完整。',
+      '资质附件': '当前类目命中资质规则，需要补充或确认检测报告、质量证明等附件。',
+      '价格风险': '供应价与参考市场价差异较大，需要确认价格合理性并补充说明。'
+    };
+    return issues.map(issue => map[issue] || issue).join('；');
+  }
+
+  function collectPreAuditRows(allPass) {
+    return getParsedIndexes().map(index => {
+      const material = getParsedItem(index);
+      const supply = getSupplyItem(index);
+      const issues = [];
+      if (!material.name || !material.brand || !material.category || !material.model || !material.code) issues.push('基础信息');
+      if (!supply.supplier || !supply.price || !supply.feeType || !supply.feeAmount || !supply.stock || !supply.status) issues.push('供应渠道');
+      if (index === 2 && !preAuditResolved[index] && !allPass) {
+        issues.push('资质附件');
+        issues.push('价格风险');
+      }
+      const uniqueIssues = Array.from(new Set(issues));
+      const status = allPass || uniqueIssues.length === 0 ? 'pass' : 'fail';
+      return {
+        index,
+        status,
+        issues: status === 'pass' ? [] : uniqueIssues,
+        material,
+        message: status === 'pass'
+          ? '基础信息、供应渠道、资质附件和价格风险校验通过。'
+          : buildPreAuditMessage(uniqueIssues)
+      };
+    });
+  }
+
+  function renderIssueTags(issues) {
+    if (!issues || !issues.length) return '<span class="issue-tag pass">无问题</span>';
+    return issues.map(issue => '<span class="issue-tag">' + escapeHtml(issue) + '</span>').join('');
+  }
+
+  function renderPreAuditRows(rows) {
+    const body = document.getElementById('preAuditTbody');
+    if (!body) return;
+    body.innerHTML = rows.map(row => `
+      <tr data-preaudit-row="${row.index}">
+        <td><b>${escapeHtml(row.material.name || '-')}</b><div style="color:#8c8c8c;">${escapeHtml(row.material.brand || '-')} / ${escapeHtml(row.material.model || '-')}</div></td>
+        <td>${escapeHtml(row.material.code || '-')}</td>
+        <td><span class="preaudit-status ${row.status}">${row.status === 'pass' ? '预审通过' : '预审异常'}</span></td>
+        <td><div class="issue-tags">${renderIssueTags(row.issues)}</div></td>
+        <td>${escapeHtml(row.message)}</td>
+        <td><span class="parse-op" onclick="openMaterialEdit(${row.index})">编辑详情</span></td>
+      </tr>
+    `).join('');
+  }
+
+  function updatePreAuditSummary(rows) {
+    const status = document.getElementById('preAuditOverallStatus');
+    const desc = document.getElementById('preAuditSummaryDesc');
+    const failCount = rows.filter(row => row.status === 'fail').length;
+    if (status) {
+      status.className = 'preaudit-result ' + (failCount ? 'fail' : 'pass');
+      status.textContent = failCount ? '预审异常 ' + failCount + ' 条' : '整体预审通过';
+    }
+    if (desc) {
+      desc.textContent = failCount
+        ? '系统已按物料逐条校验，发现 ' + failCount + ' 条存在问题，请进入详情编辑后重新预审。'
+        : '系统已按物料逐条校验，全部物料基础信息、供应渠道、资质附件和价格风险均通过。';
+    }
+  }
+
+  function runPreAudit(allPass) {
+    const preAuditWrap = document.getElementById('preAuditWrap');
+    const success = document.getElementById('smartSuccessState');
+    if (preAuditWrap) preAuditWrap.style.display = 'block';
+    if (success) success.classList.remove('show');
+    const rows = collectPreAuditRows(Boolean(allPass));
+    renderPreAuditRows(rows);
+    updatePreAuditSummary(rows);
+    return rows;
+  }
+
+  function markAllPreAuditPass() {
+    getParsedIndexes().forEach(index => {
+      preAuditResolved[index] = true;
+      if (!supplierData[index]) {
+        supplierData[index] = supplierDefaultData[index] || supplierDefaultData[1];
+        updateSupplierStatus(index, supplierData[index]);
+      }
+    });
+    runPreAudit(false);
+    smartToast('已将全部物料标记为预审通过');
+  }
+
+  function showPreAuditIssue() {
+    document.getElementById('preAuditIssueModal').classList.add('show');
+  }
+
+  function submitPreAudit() {
+    const rows = runPreAudit(false);
+    const failCount = rows.filter(row => row.status === 'fail').length;
+    if (failCount > 0) {
+      smartToast('预审存在 ' + failCount + ' 条问题，请进入详情编辑后重新提交');
+      return;
+    }
+    showSmartSuccess('审核任务');
+  }
+
+  function openMaterialEdit(index) {
+    currentMaterialEditIndex = Number(index);
+    const material = getParsedItem(currentMaterialEditIndex);
+    const supply = getSupplyItem(currentMaterialEditIndex);
+    const row = collectPreAuditRows(false).find(item => item.index === currentMaterialEditIndex);
+    const setValue = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.value = value || '';
+    };
+    const title = document.getElementById('materialEditTitle');
+    const issues = document.getElementById('editMaterialIssues');
+    if (title) title.textContent = '物料详情编辑 - 第 ' + currentMaterialEditIndex + ' 条';
+    setValue('editMaterialName', material.name);
+    setValue('editMaterialBrand', material.brand);
+    setValue('editMaterialCategory', material.category);
+    setValue('editMaterialModel', material.model);
+    setValue('editMaterialCode', material.code);
+    setValue('editMaterialSupplier', supply.supplier);
+    setValue('editMaterialRemark', '');
+    if (issues) issues.innerHTML = renderIssueTags(row ? row.issues : []);
+    document.getElementById('materialEditModal').classList.add('show');
+  }
+
+  function closeMaterialEditModal() {
+    document.getElementById('materialEditModal').classList.remove('show');
+    currentMaterialEditIndex = null;
+  }
+
+  function saveMaterialEdit() {
+    if (!currentMaterialEditIndex) {
+      closeMaterialEditModal();
+      return;
+    }
+    const index = currentMaterialEditIndex;
+    const row = document.querySelector('[data-parse-row="' + index + '"]');
+    if (row) {
+      const inputs = Array.from(row.querySelectorAll('.parse-edit-input'));
+      const editValues = [
+        document.getElementById('editMaterialName')?.value.trim(),
+        document.getElementById('editMaterialBrand')?.value.trim(),
+        document.getElementById('editMaterialCategory')?.value.trim(),
+        document.getElementById('editMaterialModel')?.value.trim()
+      ];
+      editValues.forEach((value, idx) => {
+        if (inputs[idx] && value) inputs[idx].value = value;
+      });
+      const codeValue = document.getElementById('editMaterialCode')?.value.trim();
+      const codeEl = row.querySelector('.recommend-code');
+      if (codeEl && codeValue) codeEl.textContent = codeValue;
+    }
+    const supplierValue = document.getElementById('editMaterialSupplier')?.value.trim();
+    if (supplierValue) setSupplyField(index, 'supplier', supplierValue);
+    if (!supplierData[index]) {
+      supplierData[index] = supplierDefaultData[index] || supplierDefaultData[1];
+      updateSupplierStatus(index, supplierData[index]);
+    }
+    if (!supplierData[index].feeAmount) setSupplyField(index, 'feeAmount', '0.00');
+    preAuditResolved[index] = true;
+    closeMaterialEditModal();
+    runPreAudit(false);
+    smartToast('物料详情已保存，预审结果已刷新');
+  }
+
+  function submitToBatchAdd() {
+    showSmartSuccess('批量新增任务');
+  }
+
+  function saveSmartDraft() {
+    showSmartSuccess('我的暂存');
+  }
+
+  function submitParsedAudit() {
+    if ((window.__smartStep || 1) < 3) {
+      goSupplyStep();
+      return;
+    }
+    if ((window.__smartStep || 1) < 4) {
+      submitSupplyInfo();
+      return;
+    }
+    submitPreAudit();
+  }
+
+  function getParsedCount() {
+    return document.querySelectorAll('[data-parse-row]').length;
+  }
+
+  function resetSmartResultState() {
+    const wrap = document.getElementById('parseResultWrap');
+    const note = document.getElementById('parseResultNote');
+    const success = document.getElementById('smartSuccessState');
+    const actions = document.getElementById('smartSubmitActions');
+    const preAudit = document.getElementById('preAuditWrap');
+    if (wrap) wrap.style.display = 'block';
+    if (note) note.style.display = 'block';
+    if (actions) actions.style.display = 'flex';
+    if (preAudit) preAudit.style.display = 'block';
+    if (success) success.classList.remove('show');
+  }
+
+  function showSmartSuccess(entryName) {
+    const count = getParsedCount();
+    const wrap = document.getElementById('parseResultWrap');
+    const note = document.getElementById('parseResultNote');
+    const success = document.getElementById('smartSuccessState');
+    const desc = document.getElementById('smartSuccessDesc');
+    const status = document.getElementById('parseStatus');
+    const actions = document.getElementById('smartSubmitActions');
+    const preAudit = document.getElementById('preAuditWrap');
+
+    if (wrap) wrap.style.display = 'none';
+    if (note) note.style.display = 'none';
+    if (actions) actions.style.display = 'none';
+    if (preAudit) preAudit.style.display = 'none';
+    if (success) success.classList.add('show');
+    if (desc) {
+      desc.innerHTML = '提交成功 ' + count + ' 条数据；请在<span class="success-link" onclick="smartToast(\'打开' + entryName + '（原型演示）\')">【' + entryName + '】</span>点击查看。';
+    }
+    if (status) status.textContent = '提交成功';
+    updateSmartStep(4);
+    smartToast('提交成功，共 ' + count + ' 条数据');
+  }
+
+  function selectCandidate(code) {
+    document.querySelectorAll('.candidate-card').forEach(card => {
+      card.style.borderColor = '#e8edf5';
+      card.style.boxShadow = 'none';
+    });
+    const btn = Array.from(document.querySelectorAll('.candidate-actions button')).find(item => item.textContent.includes('选中') && item.getAttribute('onclick').includes(code));
+    if (btn) {
+      const card = btn.closest('.candidate-card');
+      card.style.borderColor = '#1677ff';
+      card.style.boxShadow = '0 0 0 2px rgba(22,119,255,.12)';
+    }
+    updateSmartStep(2);
+    smartToast('已选中标准物料编码 ' + code + '，可继续提交识别结果');
+  }
+
+  function submitSmartAudit() {
+    showSmartSuccess('审核任务');
+  }
+
+  function updateSmartStep(step) {
+    const normalizedStep = Math.max(1, Math.min(4, Number(step) || 1));
+    window.__smartStep = normalizedStep;
+    const stepTextMap = {
+      1: '第一步：输入关键信息',
+      2: '第二步：识别与推荐',
+      3: '第三步：维护供应渠道信息',
+      4: '第四步：预审物料信息'
+    };
+    document.querySelectorAll('.smart-step').forEach(item => {
+      const itemStep = Number(item.dataset.step);
+      item.classList.toggle('active', itemStep === normalizedStep);
+      item.classList.toggle('done', itemStep < normalizedStep);
+    });
+    document.querySelectorAll('.flow-panel').forEach(item => {
+      item.classList.toggle('is-active', Number(item.dataset.flowStep) === normalizedStep);
+    });
+    const text = document.getElementById('currentSmartStepText');
+    if (text) text.textContent = stepTextMap[normalizedStep] || stepTextMap[1];
+    slideSmartFlow(normalizedStep);
+    if (normalizedStep === 4 && document.getElementById('preAuditTbody') && !document.getElementById('preAuditTbody').innerHTML.trim()) {
+      runPreAudit(false);
+    }
+  }
+
+  function slideSmartFlow(step) {
+    const track = document.getElementById('smartFlowTrack');
+    if (!track) return;
+    const panel = track.querySelector('[data-flow-step="' + step + '"]');
+    if (!panel) return;
+    track.style.transform = 'translateX(-' + panel.offsetLeft + 'px)';
+  }
+
+  function smartToast(text) {
+    let toast = document.getElementById('smartToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'smartToast';
+      toast.className = 'smart-toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = text;
+    toast.style.display = 'block';
+    clearTimeout(window.__smartToastTimer);
+    window.__smartToastTimer = setTimeout(() => {
+      toast.style.display = 'none';
+    }, 2600);
+  }
+
+  initAuditWorkbench();
+  window.addEventListener('scroll', syncAuditNav, { passive: true });
+  window.addEventListener('resize', () => {
+    if (currentCreateMode === 'smart') slideSmartFlow(window.__smartStep || 1);
+    if (currentCreateMode === 'traditional') syncAuditNav();
+  });
+</script>
+
+<script src="mpm-topnav-links.js"></script>
+</body>
+</html>
+

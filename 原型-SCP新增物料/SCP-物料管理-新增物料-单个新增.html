@@ -1,0 +1,2644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>新增物料 · 咸亨国际供应商协同平台（SCP）</title>
+<style>
+  :root{
+    --primary:#1677ff; --primary-hover:#4096ff; --primary-active:#0958d9;
+    --header-bg:#1f2b5b; --error:#ff4d4f; --link:#1677ff;
+    --text-title:#1f2329; --text-body:#333; --text-sub:#86909c; --border:#e5e6eb;
+    --nav-active-bg:#eaf2ff; --info-bg:#eef3ff; --info-border:#c7d8ff; --section-bg:#fafbfc;
+    --primary-bg:#e6f4ff; --success:#52c41a; --warning:#faad14;
+    --border-light:#f0f0f0; --bg-table-head:#fafafa; --radius:6px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;color:var(--text-body);background:#f0f2f5;}
+  /* 顶部条 */
+  .topbar{height:48px;background:var(--header-bg);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 0 0 16px;position:fixed;top:0;left:0;right:0;z-index:30;}
+  .topbar .brand{font-size:16px;font-weight:600;letter-spacing:.5px;}
+  .topbar .right{display:flex;align-items:center;height:100%;}
+  .topbar .right .item{display:flex;align-items:center;gap:5px;padding:0 12px;height:100%;color:#dfe6f5;cursor:pointer;}
+  .topbar .right .item:hover{color:#fff;}
+  .topbar .right .icon{position:relative;font-size:15px;}
+  .topbar .right .dot{position:absolute;top:-3px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--error);border:1.5px solid var(--header-bg);}
+  .topbar .clear{background:#e34d4d;height:100%;display:flex;align-items:center;padding:0 18px;cursor:pointer;font-weight:500;}
+  .topbar .clear:hover{background:#d83b3b;}
+  /* 布局 */
+  .layout{display:flex;padding-top:48px;height:100%;}
+  .sider{width:176px;background:#fff;border-right:1px solid var(--border);height:calc(100vh - 48px);overflow-y:auto;position:fixed;left:0;top:48px;bottom:0;}
+  .sider::-webkit-scrollbar{width:6px;} .sider::-webkit-scrollbar-thumb{background:#d9d9d9;border-radius:3px;}
+  .nav-item{display:flex;align-items:center;gap:8px;height:42px;padding:0 16px;color:var(--text-body);cursor:pointer;position:relative;}
+  .nav-item .ic{width:16px;text-align:center;color:#8a94a6;}
+  .nav-item.group{font-weight:500;}
+  .nav-item.group .chev{margin-left:auto;color:#b0b6c0;font-size:11px;transition:.2s;}
+  .nav-item.group.open .chev{transform:rotate(180deg);}
+  .nav-item:hover{background:#f5f7fa;}
+  .sub{display:none;} .sub.open{display:block;}
+  .sub .nav-item{padding-left:40px;height:38px;color:#4e5969;}
+  .sub .nav-item.active{background:var(--nav-active-bg);color:var(--primary);font-weight:500;}
+  .sub .nav-item.active::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary);}
+  /* 主区 */
+  .main{margin-left:176px;width:calc(100% - 176px);min-width:0;flex:none;display:flex;flex-direction:column;height:calc(100vh - 48px);}
+  .tabbar{display:flex;align-items:center;gap:2px;background:#eef1f7;padding:6px 10px 0;border-bottom:1px solid var(--border);}
+  .tab{display:flex;align-items:center;gap:8px;height:30px;padding:0 14px;background:#f7f8fa;border:1px solid var(--border);border-bottom:none;border-radius:4px 4px 0 0;color:#4e5969;cursor:pointer;}
+  .tab .x{color:#b0b6c0;} .tab .x:hover{color:var(--error);}
+  .tab.active{background:#fff;color:var(--primary);font-weight:500;}
+  .tab.plain{background:transparent;border:none;color:#4e5969;}
+  .actionbar{display:flex;justify-content:flex-end;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid var(--border);}
+  .actionbar .act{color:var(--link);cursor:pointer;font-size:14px;}
+  .actionbar .act:hover{text-decoration:underline;}
+  .actionbar .act-strong{font-weight:600;color:var(--primary-active);}
+  .content{flex:1;overflow-y:auto;background:#fff;padding:18px 28px 40px;}
+  .mode-switch-card{max-width:1180px;margin:0 0 16px;padding:12px 16px;border:1px solid #d6e7ff;background:#f5f8ff;border-radius:6px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .mode-switch-title{font-size:14px;font-weight:600;color:var(--text-title);}
+  .mode-switch-title span{color:var(--primary);}
+  .mode-switch-tip{margin-top:4px;color:var(--text-sub);font-size:12px;line-height:1.6;}
+  .mode-toggle-btn{min-width:148px;}
+  .mode-content{animation:modeFade .18s ease-out;}
+  @keyframes modeFade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+  /* 智能新增物料 */
+  .smart-mode-panel{max-width:1180px;margin-bottom:70px;background:#f5f8ff;border:1px solid #d6e7ff;border-radius:6px;overflow:hidden;}
+  .smart-hero{padding:16px 18px;background:linear-gradient(135deg,#eef6ff 0%,#fff 54%,#f7fbff 100%);border-bottom:1px solid #d6e7ff;}
+  .smart-hero-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;font-size:16px;font-weight:600;color:#102a43;}
+  .smart-hero-desc{max-width:920px;font-size:12px;line-height:1.7;color:#42526e;}
+  .ai-prefill-tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;color:var(--primary);background:#e6f4ff;border:1px solid #91caff;border-radius:12px;font-size:12px;font-weight:400;white-space:nowrap;}
+  .smart-step-list{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-top:16px;padding-top:4px;}
+  .smart-step-list::before{content:"";position:absolute;left:10%;right:10%;top:20px;height:2px;background:#d6e7ff;}
+  .smart-step{position:relative;min-height:92px;padding:42px 12px 8px;text-align:center;color:#42526e;z-index:1;}
+  .smart-step-no{position:absolute;left:50%;top:4px;transform:translateX(-50%);width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;color:#8c8c8c;background:#fff;border:2px solid #d9d9d9;box-shadow:0 0 0 4px #f7fbff;}
+  .smart-step-title{margin-bottom:4px;font-size:13px;font-weight:600;color:var(--text-title);}
+  .smart-step-desc{font-size:12px;line-height:1.55;}
+  .smart-step.active .smart-step-no{color:#fff;background:var(--primary);border-color:var(--primary);box-shadow:0 0 0 5px rgba(22,119,255,.14);}
+  .smart-step.done{color:#389e0d;}
+  .smart-step.done .smart-step-no{color:#fff;background:var(--success);border-color:var(--success);}
+  .smart-flow-viewport{margin:12px;overflow:hidden;border-radius:6px;}
+  .smart-flow-track{display:flex;align-items:stretch;transform:translateX(0);transition:transform .42s cubic-bezier(.22,.61,.36,1);will-change:transform;}
+  .flow-panel{flex:0 0 100%;min-width:0;min-height:430px;}
+  .smart-card{height:100%;min-width:0;background:#fff;border:1px solid #e8edf5;border-radius:5px;overflow:hidden;box-shadow:0 4px 14px rgba(24,40,72,.05);}
+  .smart-card-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 12px;background:#fbfcff;border-bottom:1px solid #eef2f7;font-size:13px;font-weight:600;color:var(--text-title);}
+  .smart-card-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;}
+  .smart-card-header > .smart-card-actions{flex:1;justify-content:flex-end;}
+  .smart-card-body{min-width:0;padding:12px;}
+  .smart-textarea{width:100%;min-height:220px;padding:10px;resize:vertical;border:1px solid var(--border);border-radius:4px;outline:none;font-size:13px;line-height:1.7;color:var(--text-title);background:#fff;}
+  .smart-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1);}
+  .smart-note{margin-top:10px;padding:8px 10px;color:#42526e;background:#f7fbff;border:1px solid #d6e7ff;border-radius:4px;font-size:12px;line-height:1.6;}
+  .parse-table-wrap{width:100%;overflow:auto;border:1px solid #eef2f7;border-radius:4px;}
+  .parse-table{width:100%;min-width:1180px;border-collapse:collapse;background:#fff;font-size:12px;}
+  .parse-table th{height:34px;padding:0 10px;text-align:left;color:#666;font-weight:600;background:#fafafa;border-bottom:1px solid #eef2f7;white-space:nowrap;}
+  .parse-table td{padding:8px 10px;color:#333;line-height:1.55;border-bottom:1px solid #f5f5f5;vertical-align:top;}
+  .parse-table tr:last-child td{border-bottom:0;}
+  .parse-table tr:hover td{background:#f8fbff;}
+  .parse-edit-input,.parse-edit-area{width:100%;min-width:80px;border:1px solid transparent;border-radius:3px;background:#fff;color:#1f1f1f;font-size:12px;line-height:1.5;outline:none;}
+  .parse-edit-input{height:26px;padding:0 6px;}
+  .parse-edit-area{min-height:44px;padding:4px 6px;resize:vertical;}
+  .parse-edit-input:hover,.parse-edit-area:hover,.parse-edit-input:focus,.parse-edit-area:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.08);}
+  .recommend-code-cell{display:flex;align-items:center;gap:8px;white-space:nowrap;}
+  .recommend-code{color:#0b3f91;font-weight:600;}
+  .more-link,.parse-op{color:var(--primary);cursor:pointer;white-space:nowrap;}
+  .more-link:hover,.parse-op:hover{text-decoration:underline;}
+  .recommend-score{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:10px;color:#389e0d;background:#f6ffed;border:1px solid #b7eb8f;font-size:12px;font-weight:600;}
+  .current-selected-tag{display:inline-block;margin-top:4px;padding:1px 6px;color:var(--primary);background:#e6f4ff;border:1px solid #91caff;border-radius:10px;font-size:11px;font-weight:500;}
+  .reason-cell{min-width:180px;color:#42526e;line-height:1.6;}
+  .reason-hit{color:#389e0d;font-weight:600;}
+  .reason-diff{color:#d46b08;font-weight:600;}
+  .supplier-input{height:28px;width:100%;min-width:86px;border:1px solid var(--border);border-radius:3px;padding:0 6px;font-size:12px;color:var(--text-title);}
+  .supplier-input:focus{border-color:var(--primary);outline:none;box-shadow:0 0 0 2px rgba(22,119,255,.08);}
+  .supplier-status{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:10px;font-size:12px;font-weight:500;color:#0958d9;background:#e6f4ff;border:1px solid #91caff;white-space:nowrap;}
+  .supplier-status.done{color:#389e0d;background:#f6ffed;border-color:#b7eb8f;}
+  .preaudit-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;padding:12px 14px;border:1px solid #d6e7ff;background:#f7fbff;border-radius:4px;}
+  .preaudit-summary-title{font-size:14px;font-weight:600;color:var(--text-title);}
+  .preaudit-summary-desc{margin-top:4px;font-size:12px;color:#42526e;}
+  .preaudit-result{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:12px;font-size:12px;font-weight:600;white-space:nowrap;}
+  .preaudit-result.pass{color:#389e0d;background:#f6ffed;border:1px solid #b7eb8f;}
+  .preaudit-result.fail{color:#d4380d;background:#fff2e8;border:1px solid #ffbb96;}
+  .preaudit-table{width:100%;min-width:1120px;border-collapse:collapse;background:#fff;font-size:12px;}
+  .preaudit-table th{height:34px;padding:0 10px;text-align:left;color:#666;font-weight:600;background:#fafafa;border-bottom:1px solid #eef2f7;white-space:nowrap;}
+  .preaudit-table td{padding:9px 10px;color:#333;line-height:1.6;border-bottom:1px solid #f5f5f5;vertical-align:top;}
+  .preaudit-table tr:last-child td{border-bottom:0;}
+  .preaudit-status{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:11px;font-size:12px;font-weight:600;white-space:nowrap;}
+  .preaudit-status.pass{color:#389e0d;background:#f6ffed;border:1px solid #b7eb8f;}
+  .preaudit-status.fail{color:#d4380d;background:#fff2e8;border:1px solid #ffbb96;}
+  .issue-tags{display:flex;gap:6px;flex-wrap:wrap;min-width:180px;}
+  .issue-tag{display:inline-flex;align-items:center;height:22px;padding:0 7px;border-radius:4px;font-size:12px;color:#d46b08;background:#fff7e6;border:1px solid #ffd591;white-space:nowrap;}
+  .issue-tag.pass{color:#389e0d;background:#f6ffed;border-color:#b7eb8f;}
+  .smart-success-state{display:none;min-height:260px;padding:44px 24px;text-align:center;background:#fff;border:1px solid #e8f5e9;border-radius:6px;}
+  .smart-success-state.show{display:block;}
+  .success-check{width:54px;height:54px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--success);font-size:30px;font-weight:700;}
+  .success-title{margin-bottom:10px;color:var(--text-title);font-size:18px;font-weight:600;}
+  .success-desc{color:#42526e;font-size:13px;}
+  .success-link{color:var(--primary);cursor:pointer;font-weight:600;}
+  .success-link:hover{text-decoration:underline;}
+  .recommend-mask{position:fixed;inset:0;z-index:1600;display:none;background:rgba(0,0,0,.38);}
+  .recommend-mask.open{display:block;}
+  .recommend-drawer{position:absolute;top:0;right:0;width:760px;max-width:92vw;height:100%;background:#fff;box-shadow:-8px 0 24px rgba(0,0,0,.16);transform:translateX(100%);transition:transform .28s ease;display:flex;flex-direction:column;}
+  .recommend-mask.open .recommend-drawer{transform:translateX(0);}
+  .recommend-drawer-header{height:56px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border-light);font-size:16px;font-weight:600;color:var(--text-title);}
+  .drawer-close{border:0;background:transparent;color:#666;font-size:24px;line-height:1;cursor:pointer;}
+  .recommend-drawer-body{flex:1;overflow:auto;padding:14px 18px 20px;background:#f7f8fa;}
+  .drawer-readonly-card{padding:14px 16px;margin-bottom:14px;background:#fffbe6;border:1px solid #ffe58f;border-radius:4px;}
+  .drawer-section-title{margin-bottom:12px;color:#d48806;font-size:14px;font-weight:600;}
+  .drawer-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 18px;}
+  .drawer-info-item .k{display:block;margin-bottom:5px;color:#666;font-size:12px;}
+  .drawer-info-item .v{color:var(--text-title);font-size:13px;font-weight:500;word-break:break-word;}
+  .drawer-ai-card{background:#fff;border:1px solid #eef2f7;border-radius:4px;overflow:hidden;}
+  .drawer-ai-title{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 12px;background:#fbfcff;border-bottom:1px solid #eef2f7;font-size:13px;font-weight:600;color:var(--text-title);}
+  .ai-trace{margin:12px;padding:8px 10px;color:#42526e;background:#f7fbff;border:1px solid #d6e7ff;border-radius:4px;font-size:12px;line-height:1.6;}
+  .drawer-match-loading{display:none;margin:12px;padding:10px 12px;color:var(--primary);background:#e6f4ff;border:1px solid #91caff;border-radius:4px;font-size:12px;}
+  .drawer-match-loading.show{display:block;}
+  .recommend-table-wrap{margin:12px;overflow:auto;border:1px solid #eef2f7;border-radius:4px;}
+  .recommend-table{width:100%;min-width:980px;border-collapse:collapse;background:#fff;font-size:12px;}
+  .recommend-table th,.recommend-table td{padding:9px 10px;text-align:left;border-bottom:1px solid #f0f0f0;vertical-align:top;}
+  .recommend-table th{background:#fafafa;color:#666;font-weight:600;white-space:nowrap;}
+  .recommend-table tr.selected td{background:#f0f7ff;}
+  .drawer-footer{height:56px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border-light);background:#fff;}
+  .drawer-footer-left,.drawer-footer-right{display:flex;align-items:center;gap:8px;}
+  .smart-mode-panel .btn-default,.recommend-drawer .btn-default{height:32px;padding:0 12px;border:1px solid var(--border);background:#fff;border-radius:4px;color:var(--text-body);cursor:pointer;}
+  .smart-mode-panel .btn-default:hover,.recommend-drawer .btn-default:hover{border-color:var(--primary);color:var(--primary);}
+  .material-edit-modal{width:760px;max-width:94vw;}
+  .material-edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px;}
+  .material-edit-grid .field.col2{grid-column:span 2;}
+  /* 操作流程 */
+  .flow{background:var(--info-bg);border:1px solid var(--info-border);border-radius:6px;padding:16px 20px;display:flex;gap:12px;max-width:1180px;}
+  .flow .ic{color:var(--primary);font-size:20px;flex-shrink:0;line-height:1.4;}
+  .flow .title{font-weight:600;color:var(--text-title);margin-bottom:8px;font-size:14px;}
+  .flow .step{color:#4e5969;line-height:2;}
+  .link{color:var(--link);cursor:pointer;} .link:hover{text-decoration:underline;}
+  /* 物料类型行 */
+  .mtype-row{display:flex;align-items:center;gap:10px;max-width:1180px;margin:18px 2px;}
+  .mtype-row .req{color:var(--error);}
+  .radio{display:inline-flex;align-items:center;gap:6px;cursor:pointer;}
+  .radio input{accent-color:var(--primary);width:15px;height:15px;}
+  /* section */
+  .section{max-width:1180px;border:1px solid var(--border);border-radius:6px;padding:18px 22px 6px;margin-top:16px;background:#fff;}
+  .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .section-title{font-weight:600;color:var(--text-title);font-size:14px;border-left:3px solid var(--primary);padding-left:8px;display:flex;align-items:center;gap:10px;}
+  .section-title .sub-note{font-weight:400;font-size:12px;color:var(--text-sub);border:none;}
+  .section-title .req-note{font-weight:400;font-size:12px;color:var(--error);}
+  .hot{color:#fa541c;cursor:pointer;font-size:13px;}
+  .hot:hover{text-decoration:underline;}
+  .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 30px;}
+  .field{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .field.col2{grid-column:span 2;}
+  .field.col3{grid-column:span 3;}
+  .flabel{color:var(--text-body);} .flabel .req{color:var(--error);margin-right:2px;}
+  .input{height:32px;border:1px solid var(--border);border-radius:4px;padding:0 10px;width:100%;font-size:13px;background:#fff;}
+  .input:focus{border-color:var(--primary);outline:none;}
+  .input[readonly]{background:#f5f5f5;color:#86909c;}
+  .input.invalid{border-color:var(--error);}
+  textarea.input{height:84px;padding:8px 10px;resize:vertical;line-height:1.6;}
+  .unit{display:flex;align-items:center;border:1px solid var(--border);border-radius:4px;overflow:hidden;background:#fff;}
+  .unit:focus-within{border-color:var(--primary);}
+  .unit.invalid{border-color:var(--error);}
+  .unit input{border:none;flex:1;height:30px;padding:0 10px;font-size:13px;min-width:0;}
+  .unit input:focus{outline:none;}
+  .unit .u{background:#f7f8fa;padding:0 10px;color:var(--text-sub);line-height:30px;border-left:1px solid var(--border);white-space:nowrap;}
+  .clearable{position:relative;}
+  .clearable .clr{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:#c0c4cc;cursor:pointer;font-size:14px;}
+  .clearable .clr:hover{color:var(--error);}
+  .project-picker{position:relative;max-width:620px;}
+  .project-picker-input{display:none;}
+  .project-select{position:relative;min-height:36px;border:1px solid var(--border);border-radius:4px;background:#fff;padding:4px 58px 4px 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;cursor:pointer;transition:.2s;}
+  .project-select:hover,.project-select.open{border-color:var(--primary);}
+  .project-select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1);}
+  .project-select.invalid{border-color:var(--error);}
+  .project-placeholder{color:#b0b6c0;line-height:26px;}
+  #projectTags{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0;}
+  .project-tag{display:inline-flex;align-items:center;gap:5px;max-width:100%;height:24px;padding:0 6px;background:#f0f5ff;border:1px solid #adc6ff;border-radius:3px;color:#1d39c4;}
+  .project-tag-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .project-tag-remove{border:0;background:transparent;padding:0;color:#597ef7;cursor:pointer;font-size:14px;line-height:1;}
+  .project-tag-remove:hover{color:var(--error);}
+  .project-select-actions{position:absolute;right:9px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:8px;color:#b0b6c0;pointer-events:none;}
+  .project-clear{display:none;border:0;background:transparent;padding:2px;color:#b0b6c0;cursor:pointer;font-size:15px;line-height:1;pointer-events:auto;}
+  .project-clear.show{display:inline-block;}
+  .project-clear:hover{color:var(--error);}
+  .project-arrow{font-size:12px;transition:transform .2s;}
+  .project-select.open .project-arrow{transform:rotate(180deg);}
+  .project-menu{position:absolute;z-index:120;top:calc(100% + 4px);left:0;width:100%;max-height:260px;overflow:auto;background:#fff;border:1px solid var(--border-light);border-radius:4px;box-shadow:0 6px 16px rgba(0,0,0,.12);padding:4px 0;display:none;}
+  .project-menu.open{display:block;}
+  .project-option{min-height:36px;padding:7px 12px;display:flex;align-items:center;gap:9px;cursor:pointer;color:var(--text-body);}
+  .project-option:hover{background:#f5f9ff;}
+  .project-option.selected{background:#eaf3ff;color:var(--primary);}
+  .project-option input{width:14px;height:14px;accent-color:var(--primary);}
+  .project-picker-hint{margin-top:6px;font-size:12px;color:var(--text-sub);}
+  .fhint{color:var(--text-sub);font-size:12px;line-height:1.6;}
+  .fhint.red{color:var(--error);}
+  .inline{display:flex;align-items:center;gap:18px;flex-wrap:wrap;height:32px;}
+  .check{display:inline-flex;align-items:center;gap:6px;cursor:pointer;}
+  .check input{accent-color:var(--primary);width:14px;height:14px;}
+  .with-btn{display:flex;gap:8px;}
+  .mini-btn{height:32px;padding:0 12px;border:1px solid var(--border);background:#fff;border-radius:4px;cursor:pointer;white-space:nowrap;color:var(--text-body);}
+  .mini-btn:hover{border-color:var(--primary);color:var(--primary);}
+  .tax-code-trigger.input[readonly]{background:#fff;color:var(--text-body);cursor:pointer;}
+  .tax-code-trigger.input[readonly]:hover{border-color:var(--primary);}
+  .tax-code-trigger.input[readonly]:focus-visible{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1);outline:none;}
+  .tax-readonly.input[readonly]{background:#f5f5f5;color:#86909c;cursor:not-allowed;}
+  /* 资质资料 */
+  .qual-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px dashed #eee;}
+  .qual-row:last-child{border-bottom:none;}
+  .qual-name{width:240px;color:var(--text-body);}
+  .qual-name .tag{display:inline-block;margin-left:6px;font-size:11px;color:#0958d9;background:#e6f0ff;border:1px solid #bcd6ff;border-radius:2px;padding:0 4px;}
+  .up-btn{height:30px;padding:0 14px;border:1px solid var(--border);background:#fff;border-radius:4px;cursor:pointer;color:var(--text-body);}
+  .up-btn:hover{border-color:var(--primary);color:var(--primary);}
+  .file-chip{display:inline-flex;align-items:center;gap:6px;color:var(--primary);}
+  .file-chip .rm{color:#b0b6c0;cursor:pointer;} .file-chip .rm:hover{color:var(--error);}
+  /* 外部链接 */
+  .ext-add{border:1px dashed var(--border);border-radius:4px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--primary);cursor:pointer;max-width:560px;}
+  .ext-add:hover{border-color:var(--primary);background:#f5f9ff;}
+  .ext-item{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:10px;max-width:920px;padding:12px 14px;border:1px solid var(--border);border-radius:4px;background:#fff;}
+  .ext-item:hover{border-color:#b7d4ff;background:#fbfdff;}
+  .ext-item-main{min-width:0;flex:1;}
+  .ext-item-title{display:flex;align-items:center;gap:8px;margin-bottom:7px;color:var(--text-title);font-weight:600;}
+  .ext-item-tag{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:10px;background:var(--primary-bg);color:var(--primary);font-size:12px;font-weight:500;}
+  .ext-item-meta{display:flex;flex-wrap:wrap;gap:6px 18px;color:var(--text-sub);font-size:12px;line-height:1.7;}
+  .ext-item-url{margin-top:5px;color:var(--primary);font-size:12px;line-height:1.6;word-break:break-all;}
+  .ext-item-remove{flex-shrink:0;color:var(--error);cursor:pointer;font-size:13px;line-height:22px;}
+  .ext-item-remove:hover{text-decoration:underline;}
+  /* 图文 */
+  .img-block{margin-bottom:18px;}
+  .img-block .cap{color:var(--text-body);margin-bottom:8px;line-height:1.7;}
+  .img-block .cap b{color:var(--text-title);}
+  .up-box{width:96px;height:96px;border:1px dashed #9db8ff;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--primary);cursor:pointer;background:#f7faff;gap:4px;}
+  .up-box:hover{border-color:var(--primary);background:#eef4ff;}
+  .thumbs{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .thumb{width:96px;height:96px;border-radius:6px;border:1px solid var(--border);background:#eef1f7 center/cover;display:flex;align-items:center;justify-content:center;color:var(--text-sub);position:relative;font-size:12px;text-align:center;padding:4px;}
+  .thumb .rm{position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;}
+  /* 底部 */
+  .footer{position:fixed;right:0;bottom:0;left:176px;height:58px;background:#fff;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:0 28px;box-shadow:0 -2px 8px rgba(0,0,0,.04);z-index:20;}
+  .btn{height:34px;padding:0 22px;border-radius:4px;cursor:pointer;font-size:13px;border:1px solid var(--border);background:#fff;color:var(--text-body);}
+  .btn:hover{border-color:var(--primary);color:var(--primary);}
+  .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff;}
+  .btn-primary:hover{background:var(--primary-hover);color:#fff;}
+  .pad-bottom{height:70px;}
+  /* Toast / tooltip */
+  .toast-wrap{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:99;display:flex;flex-direction:column;gap:8px;align-items:center;}
+  .toast{background:#fff;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.16);padding:9px 16px;display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(-8px);transition:.25s;}
+  .toast.show{opacity:1;transform:translateY(0);}
+  .toast .ti{font-weight:700;}
+  .toast.success .ti{color:#52c41a;} .toast.error .ti{color:var(--error);} .toast.info .ti{color:var(--primary);}
+  [data-tip]{position:relative;}
+  [data-tip]:hover::after{content:attr(data-tip);position:absolute;left:0;top:130%;background:#1f2329;color:#fff;font-size:12px;padding:5px 9px;border-radius:4px;white-space:nowrap;z-index:40;font-weight:400;}
+  /* ── 资料附件（资质附件，完全复用 物料审核详情 样式）── */
+  .sec-upload-btn{height:28px;padding:0 12px;border:1px solid var(--primary);background:var(--primary);color:#fff;border-radius:var(--radius);cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:4px;}
+  .sec-upload-btn:hover{background:var(--primary-hover);}
+  .qa-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .qa-table thead th{background:var(--bg-table-head);text-align:left;padding:10px 14px;color:var(--text-title);font-weight:600;border-bottom:1px solid var(--border-light);}
+  .qa-table tbody td{padding:14px 14px;border-bottom:1px solid var(--border-light);color:var(--text-body);vertical-align:top;}
+  .qa-table tbody tr:hover{background:#fafbfc;}
+  .qa-table .oss-link{color:var(--primary);cursor:pointer;word-break:break-all;text-decoration:none;}
+  .qa-table .oss-link:hover{text-decoration:underline;}
+  .qa-table .op{color:var(--primary);cursor:pointer;margin-right:10px;}
+  .qa-table .op:hover{color:var(--primary-hover);text-decoration:underline;}
+  .qa-table .op.danger{color:var(--error);}
+  .qa-alert{padding:9px 16px;border-radius:var(--radius);display:flex;align-items:flex-start;gap:8px;margin-top:12px;font-size:13px;line-height:1.7;}
+  .qa-alert-warning{background:#fffbe6;border:1px solid #ffe58f;}
+  .qa-alert-icon{font-size:14px;flex-shrink:0;line-height:22px;color:var(--warning);}
+  .qa-alert-action{margin-left:auto;flex-shrink:0;}
+  .qa-alert-action .btn{height:26px;padding:0 10px;font-size:12px;}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;display:none;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:#fff;border-radius:8px;width:480px;max-width:94vw;box-shadow:0 6px 16px rgba(0,0,0,0.12);}
+  .modal-header{padding:16px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;}
+  .modal-header-title{font-size:16px;font-weight:600;color:var(--text-title);}
+  .modal-close{cursor:pointer;font-size:20px;color:var(--text-sub);line-height:1;}
+  .modal-close:hover{color:var(--text-title);}
+  .modal-body{padding:24px;}
+  .modal-footer{padding:12px 24px;border-top:1px solid var(--border-light);display:flex;gap:8px;justify-content:flex-end;}
+  /* 税收分类选择 / 智能赋码 */
+  .tax-modal{box-sizing:border-box;width:1000px;height:584px;max-width:calc(100vw - 12px);max-height:calc(100vh - 12px);border-radius:0;border-top:3px solid #8c8c8c;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 24px rgba(0,0,0,.24);animation:popIn .2s ease;}
+  @keyframes popIn{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+  .tax-modal .modal-header{box-sizing:border-box;height:31px;min-height:31px;padding:0 8px;border-bottom:1px solid #e8e8e8;}
+  .tax-modal .modal-header-title{font-size:16px;font-weight:400;color:#2388bd;}
+  .tax-modal .modal-close{width:32px;height:30px;margin-right:-6px;border:0;background:transparent;display:grid;place-items:center;font-size:24px;font-weight:300;color:#999;cursor:pointer;}
+  .tax-modal .modal-close:hover,.tax-modal .modal-close:focus-visible{color:#262626;background:#f5f5f5;outline:none;}
+  .tax-modal .modal-body{padding:0;display:flex;flex:1;min-height:0;flex-direction:column;}
+  .tax-filter{box-sizing:border-box;height:50px;min-height:50px;display:flex;gap:16px;align-items:center;padding:0 14px;border-bottom:1px solid #ededed;}
+  .tax-filter[hidden],.tax-name-hint[hidden]{display:none;}
+  .tax-filter-item{display:flex;align-items:center;gap:7px;min-width:0;}
+  .tax-filter-item label{flex:none;color:#333;font-size:14px;white-space:nowrap;}
+  .tax-filter-item input{box-sizing:border-box;width:180px;min-width:0;height:24px;padding:0 8px;border:1px solid #d9d9d9;border-radius:0;font:inherit;outline:none;}
+  .tax-filter-item input:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1);}
+  .tax-name-hint{padding:10px 16px;color:#595959;background:#f7fbff;border-bottom:1px solid #e6f4ff;font-size:13px;}
+  .tax-name-hint strong{color:var(--primary);font-weight:500;}
+  .tax-filter>.btn{box-sizing:border-box;width:48px;min-width:48px;height:26px;padding:0;justify-content:center;border-radius:0;}
+  .tax-table-wrap{height:auto;min-height:0;flex:1;overflow:auto;}
+  .tax-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:14px;}
+  .tax-table th{box-sizing:border-box;height:39px;padding:0 9px;background:#fafafa;color:#222;font-weight:600;text-align:left;border-right:1px solid #ededed;border-bottom:1px solid #e5e5e5;white-space:nowrap;}
+  .tax-table td{box-sizing:border-box;height:44px;padding:0 9px;color:#555;border-bottom:1px solid #e8e8e8;line-height:1.45;word-break:break-word;}
+  .tax-table tbody tr{cursor:pointer;transition:background .15s;}
+  .tax-table tbody tr:hover{background:#f5f8ff;}
+  .tax-table tbody tr.selected{background:#eaf2ff;}
+  .tax-table tbody tr.tax-parent-row{cursor:not-allowed;}
+  .tax-table tbody tr.tax-parent-row:hover{background:transparent;}
+  .tax-table tbody tr.tax-parent-row input[type="radio"]{opacity:.45;cursor:not-allowed;}
+  .tax-table .radio-col{width:40px;text-align:center;}
+  .tax-table .name-col{width:40%;}
+  .tax-table .short-col{width:13%;}
+  .tax-table .code-col{width:30%;font-variant-numeric:tabular-nums;}
+  .tax-table .rate-col{width:13%;}
+  .tax-table input[type="radio"]{width:16px;height:16px;margin:0;accent-color:var(--primary);cursor:pointer;vertical-align:middle;}
+  .tax-tree-name{display:flex;align-items:center;min-height:43px;}
+  .tax-tree-toggle{width:16px;height:16px;margin-right:8px;border:1px solid #e5e5e5;background:#fff;color:#555;display:inline-grid;place-items:center;font-size:14px;line-height:1;flex:none;}
+  .tax-tree-spacer{width:24px;flex:none;}
+  .tax-empty{text-align:center!important;color:var(--text-sub)!important;height:120px!important;}
+  .tax-modal .modal-footer{box-sizing:border-box;height:53px;min-height:53px;align-items:center;justify-content:center;gap:50px;padding:0;border-top:1px solid #e8e8e8;}
+  .tax-modal .modal-footer .btn{box-sizing:border-box;width:100px;height:32px;padding:0;justify-content:center;border-radius:2px;}
+  .tax-confirm-btn:disabled{background:#f5f5f5;border-color:#d9d9d9;color:#bfbfbf;cursor:not-allowed;}
+  @media(max-width:760px){.tax-modal{height:calc(100vh - 12px);}.tax-filter{height:auto;min-height:50px;flex-wrap:wrap;padding:8px 14px;}.tax-filter-item{flex:1 1 220px;}.tax-filter-item input{width:100%;}.tax-table{min-width:760px;}}
+  @media(prefers-reduced-motion:reduce){.tax-modal{animation:none;}}
+  .preaudit-result-grid{width:1120px;max-width:calc(100vw - 32px);max-height:92vh;overflow:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start;padding:6px;}
+  .preaudit-result-grid.single{width:552px;grid-template-columns:1fr;}
+  .preaudit-panel{background:#fff;border:1px solid var(--border-light);border-radius:4px;box-shadow:0 8px 28px rgba(0,0,0,.18);overflow:hidden;}
+  .preaudit-panel.hidden{display:none;}
+  .preaudit-panel-head{height:52px;padding:0 20px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;}
+  .preaudit-panel-title{font-size:16px;font-weight:600;color:var(--text-title);}
+  .preaudit-panel-head-actions{display:flex;align-items:center;gap:10px;}
+  .preaudit-panel-close{width:28px;height:28px;padding:0;border:0;background:transparent;color:#86909c;cursor:pointer;font-size:22px;line-height:1;}
+  .preaudit-panel-close:hover{color:var(--text-title);}
+  .preaudit-panel-body{padding:22px 24px;}
+  .preaudit-success-hero{text-align:center;padding:2px 0 22px;}
+  .preaudit-success-icon{width:64px;height:64px;margin:0 auto 16px;border:5px solid #52c41a;border-radius:50%;position:relative;}
+  .preaudit-success-icon::after{content:"";position:absolute;left:17px;top:12px;width:20px;height:11px;border-left:4px solid #52c41a;border-bottom:4px solid #52c41a;transform:rotate(-45deg);}
+  .preaudit-success-title{font-size:20px;font-weight:600;color:#111;margin-bottom:8px;}
+  .preaudit-success-desc{font-size:14px;color:var(--text-sub);}
+  .preaudit-summary{background:#f5f5f5;border-radius:4px;padding:16px;margin-bottom:18px;}
+  .preaudit-summary-title{display:flex;align-items:center;gap:9px;color:var(--text-body);margin-bottom:14px;}
+  .preaudit-list-icon{color:#1677ff;font-size:18px;line-height:1;}
+  .preaudit-check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px;}
+  .preaudit-check-item{display:flex;align-items:center;gap:8px;color:var(--text-body);font-size:13px;}
+  .preaudit-check{width:14px;height:14px;border-radius:50%;background:#52c41a;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+  .preaudit-info-list{display:flex;flex-direction:column;gap:12px;margin:18px 0 4px;}
+  .preaudit-info-item{display:flex;align-items:flex-start;gap:9px;color:var(--text-body);font-size:13px;line-height:1.6;}
+  .preaudit-info-icon{width:15px;height:15px;border:1px solid #1677ff;border-radius:50%;color:#1677ff;display:inline-flex;align-items:center;justify-content:center;font-size:10px;line-height:1;flex-shrink:0;margin-top:2px;}
+  .preaudit-panel-footer{border-top:1px solid var(--border-light);padding:14px 20px;display:flex;justify-content:flex-end;gap:10px;}
+  .preaudit-panel-footer .btn{height:36px;padding:0 16px;}
+  .btn-success{background:#52c41a;border-color:#52c41a;color:#fff;}
+  .btn-success:hover{background:#3fad13;border-color:#3fad13;color:#fff;}
+  .preaudit-block{margin-bottom:22px;}
+  .preaudit-block:last-child{margin-bottom:0;}
+  .preaudit-block-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .preaudit-block-title{font-size:18px;font-weight:600;color:var(--text-title);}
+  .preaudit-status{height:26px;padding:0 12px;border-radius:13px;display:inline-flex;align-items:center;font-size:13px;}
+  .preaudit-status.fail{background:#fff1f0;color:#ff4d4f;}
+  .preaudit-status.loading{background:#fff7e6;color:#fa8c16;}
+  .preaudit-issues{display:flex;flex-direction:column;gap:12px;}
+  .preaudit-issue{display:flex;align-items:flex-start;gap:10px;color:#4e5969;font-size:14px;line-height:1.65;}
+  .preaudit-error-icon{width:17px;height:17px;border-radius:50%;background:#ff4d4f;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;}
+  .preaudit-loading-line{display:flex;align-items:center;gap:10px;color:#4e5969;font-size:14px;}
+  .preaudit-spinner{width:18px;height:18px;border:3px dotted #fa8c16;border-radius:50%;animation:preauditSpin 1.1s linear infinite;flex-shrink:0;}
+  @keyframes preauditSpin{to{transform:rotate(360deg);}}
+  .preaudit-tips{margin-top:22px;padding:16px 18px;background:#f5f6f8;border-radius:6px;}
+  .preaudit-tips-title{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:600;color:var(--text-title);margin-bottom:10px;}
+  .preaudit-bulb{width:16px;height:16px;border:2px solid #fa8c16;border-radius:50%;position:relative;flex-shrink:0;}
+  .preaudit-bulb::after{content:"";position:absolute;left:4px;bottom:-6px;width:5px;height:4px;border-top:2px solid #fa8c16;border-bottom:2px solid #fa8c16;}
+  .preaudit-tips ul{margin:0;padding-left:22px;color:#4e5969;font-size:13px;line-height:2;}
+  .external-link-modal{width:1040px;max-width:calc(100vw - 32px);border-radius:2px;}
+  .external-link-modal .modal-header{padding:10px 16px;}
+  .external-link-modal .modal-body{padding:18px 16px;}
+  .external-link-modal .modal-footer{justify-content:center;padding:12px 16px;}
+  .external-link-tip{font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:12px;}
+  .external-link-form{display:flex;flex-direction:column;gap:14px;}
+  .external-link-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .external-link-field{display:inline-flex;align-items:center;gap:6px;min-width:0;}
+  .external-link-label{font-size:13px;color:var(--text-body);white-space:nowrap;}
+  .external-link-label .req{color:var(--error);margin-right:4px;}
+  .external-link-select,.external-link-input,.external-link-textarea{border:1px solid var(--border);border-radius:2px;background:#fff;color:var(--text-body);font-size:13px;font-family:inherit;outline:none;transition:.2s;}
+  .external-link-select{height:26px;padding:0 26px 0 8px;min-width:100px;}
+  .external-link-input{height:26px;padding:0 8px;width:150px;}
+  .external-link-input[readonly],.external-link-input.external-link-calculated{background:#f5f5f5;color:var(--text-sub);cursor:not-allowed;}
+  .external-link-textarea{width:100%;min-height:48px;padding:6px 8px;resize:vertical;line-height:1.5;}
+  .external-link-select:focus,.external-link-input:focus,.external-link-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1);}
+  .external-link-arrow{font-size:14px;color:var(--text-body);padding:0 4px;}
+  .external-link-url-field{align-items:flex-start;width:100%;}
+  .external-link-url-field .external-link-label{padding-top:6px;}
+  .external-link-url-field .external-link-control{flex:1;min-width:0;}
+  .qa-form-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;}
+  .qa-form-label{width:100px;flex-shrink:0;text-align:right;color:var(--text-title);font-size:14px;padding-top:6px;}
+  .qa-form-label-required::before{content:"* ";color:var(--error);}
+  .qa-form-content{flex:1;}
+  .qa-select{width:100%;height:32px;padding:4px 11px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;background:#fff;outline:none;}
+  .qa-upload-dragger{border:2px dashed var(--border);border-radius:8px;padding:28px 20px;text-align:center;cursor:pointer;background:#fafbfc;}
+  .qa-upload-dragger:hover{border-color:var(--primary);background:var(--primary-bg);}
+  .qa-upload-icon{font-size:32px;color:var(--primary);}
+  .qa-upload-text{margin-top:8px;font-size:14px;color:var(--text-title);}
+  .qa-upload-hint{margin-top:6px;font-size:12px;color:var(--text-sub);line-height:1.7;}
+  .qa-upload-list{margin-top:12px;}
+  .qa-upload-item{display:flex;align-items:center;gap:8px;padding:6px 12px;background:#f6ffed;border:1px solid #b7eb8f;border-radius:var(--radius);font-size:13px;margin-bottom:6px;}
+  .qa-upload-item-name{flex:1;color:var(--text-body);}
+  .qa-upload-item-size{color:var(--text-sub);font-size:12px;}
+  .qa-upload-item-del{color:var(--text-sub);cursor:pointer;padding:2px 6px;}
+  .qa-upload-item-del:hover{color:var(--error);}
+  .qa-popconfirm-mask{position:fixed;inset:0;background:rgba(0,0,0,0.3);display:none;z-index:1700;align-items:center;justify-content:center;}
+  .qa-popconfirm-mask.open{display:flex;}
+  .qa-popconfirm-box{background:#fff;border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,0.08);padding:16px 20px;max-width:360px;}
+  .qa-popconfirm-title{display:flex;align-items:flex-start;gap:8px;font-size:14px;color:var(--text-title);margin-bottom:12px;line-height:1.7;}
+  .qa-popconfirm-title-icon{color:var(--warning);font-size:16px;flex-shrink:0;line-height:1.5;}
+  .qa-popconfirm-actions{display:flex;justify-content:flex-end;gap:8px;}
+  .btn-sm{height:28px;padding:0 12px;font-size:12px;}
+  .btn-default{background:#fff;border-color:var(--border);color:var(--text-body);}
+  .btn-default:hover{border-color:var(--primary);color:var(--primary);}
+  /* 类目 AI 建议 */
+  .category-picker{display:grid;grid-template-columns:minmax(0,1fr) 72px;align-items:center;gap:8px;min-width:0;width:100%;}
+  .category-picker .input{flex:1;min-width:0;cursor:pointer;background:#fff;color:var(--text-body);}
+  .category-picker .input[readonly]{background:#fff;color:var(--text-body);}
+  .ai-category-btn{height:32px;padding:0 12px;border:1px solid #91caff;border-radius:4px;background:#e6f4ff;color:var(--primary);font-size:12px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;}
+  .ai-category-btn:hover{border-color:var(--primary);background:#d6eaff;}
+  .cat-modal{width:880px;max-width:96vw;}
+  .cat-modal .modal-body{padding:0;}
+  .cat-search-bar{padding:12px 16px;border-bottom:1px solid var(--border-light);display:flex;gap:8px;align-items:center;}
+  .cat-search-input{flex:1;height:32px;border:1px solid var(--border);border-radius:4px;padding:0 11px;font-size:13px;outline:none;color:var(--text-body);transition:.2s;}
+  .cat-search-input:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1);}
+  .cat-search-btn{height:32px;padding:0 12px;border:none;border-radius:4px;background:var(--primary);color:#fff;cursor:pointer;font-size:13px;}
+  .cat-search-btn:hover{background:var(--primary-hover);}
+  .cat-body{display:flex;height:440px;}
+  .cat-left{flex:1;min-width:0;border-right:1px solid var(--border-light);display:flex;flex-direction:column;}
+  .cat-right{width:340px;flex-shrink:0;background:#fafafa;display:flex;flex-direction:column;}
+  .cat-pane-title{padding:10px 14px;font-size:12px;color:var(--text-sub);background:var(--bg-table-head);border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .cat-pane-title-l{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--text-title);font-size:13px;}
+  .cat-ai-zone{flex:1;overflow-y:auto;padding:10px 12px;}
+  .cat-ai-retry{font-size:12px;color:var(--primary);cursor:pointer;display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border:1px solid #91caff;border-radius:11px;background:#fff;}
+  .cat-ai-retry:hover{background:var(--primary-bg);}
+  .cat-ai-list{display:flex;flex-direction:column;gap:8px;}
+  .cat-ai-item{display:flex;flex-direction:column;background:#fff;padding:10px 12px;border:1px solid var(--border-light);border-radius:var(--radius);transition:.15s;cursor:pointer;}
+  .cat-ai-item:hover{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,0.06);}
+  .cat-ai-name{font-size:13px;color:var(--text-title);font-weight:500;}
+  .cat-ai-name .ai-rank{display:inline-block;width:18px;height:18px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;line-height:18px;text-align:center;margin-right:6px;}
+  .cat-ai-name .ai-rank.r2{background:#4096ff;}
+  .cat-ai-name .ai-rank.r3{background:#8c8c8c;}
+  .cat-ai-meta{font-size:11px;color:var(--text-sub);margin-top:4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .cat-ai-conf{display:inline-flex;align-items:center;gap:4px;}
+  .cat-ai-bar{width:80px;height:4px;background:#e8e8e8;border-radius:2px;overflow:hidden;}
+  .cat-ai-bar-fill{display:block;height:100%;background:linear-gradient(to right,#1677ff,#4096ff);border-radius:2px;transition:width .3s;}
+  .cat-ai-bar-fill.low{background:linear-gradient(to right,#faad14,#ffc53d);}
+  .cat-ai-reason{font-size:11px;color:var(--text-sub);line-height:1.5;margin-top:6px;background:#fafafa;padding:4px 8px;border-radius:3px;border-left:2px solid #d9d9d9;}
+  .cat-ai-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;font-size:13px;color:var(--text-sub);gap:12px;text-align:center;}
+  .cat-ai-spinner{width:32px;height:32px;border:3px solid var(--border-light);border-top-color:var(--primary);border-radius:50%;animation:catSpin .8s linear infinite;}
+  .cat-ai-loading-tip{font-size:11px;color:var(--text-sub);}
+  @keyframes catSpin{to{transform:rotate(360deg);}}
+  .cat-tree-wrap{flex:1;padding:10px 0;overflow-y:auto;}
+  .cat-node{padding:4px 16px;font-size:13px;color:var(--text-body);cursor:pointer;display:flex;align-items:center;gap:4px;user-select:none;line-height:1.6;}
+  .cat-node:hover{background:#f0f7ff;}
+  .cat-node.selected{background:var(--primary-bg);color:var(--primary);font-weight:500;}
+  .cat-node.l1{padding-left:16px;}
+  .cat-node.l2{padding-left:36px;}
+  .cat-node.l3{padding-left:56px;}
+  .cat-node.l4{padding-left:76px;color:var(--text-sub);}
+  .cat-node.l4.selected{color:var(--primary);}
+  .cat-toggle{display:inline-flex;width:16px;height:16px;align-items:center;justify-content:center;border:1px solid var(--border);font-size:10px;color:var(--text-sub);background:#fff;flex-shrink:0;}
+  .cat-toggle.leaf{visibility:hidden;}
+  .cat-code{color:var(--text-sub);font-size:12px;margin-right:4px;}
+  .cat-empty-tip{padding:30px 16px;text-align:center;font-size:12px;color:var(--text-sub);}
+  @media (max-width:760px){
+    .cat-body{height:auto;max-height:70vh;flex-direction:column;}
+    .cat-left{min-height:260px;border-right:none;border-bottom:1px solid var(--border-light);}
+    .cat-right{width:100%;min-height:220px;}
+    .category-picker{grid-template-columns:minmax(0,1fr) 68px;gap:6px;}
+    .ai-category-btn{padding:0 10px;}
+    .preaudit-result-grid{grid-template-columns:1fr;max-height:94vh;padding:4px;}
+    .preaudit-panel-body{padding:18px 16px;}
+  }
+</style>
+</head>
+<body>
+  <!-- 顶部条 -->
+  <div class="topbar">
+    <div class="brand">咸亨国际供应商协同平台（SCP）</div>
+    <div class="right">
+      <div class="item" onclick="go('../index.html')" title="返回原型门户">🔄 切换系统</div>
+      <div class="item">更新通知</div>
+      <div class="item"><span class="icon">🔔<span class="dot"></span></span></div>
+      <div class="item"><span class="icon">📋<span class="dot"></span></span></div>
+      <div class="item">黄战领 ▾</div>
+      <div class="clear" onclick="toast('已清除当前会话标签','info')">清除</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- 左侧导航 -->
+    <aside class="sider">
+      <div class="nav-item" onclick="toast('原型仅演示物料管理相关页面','info')"><span class="ic">🏠</span>工作台</div>
+      <div class="nav-item" onclick="toast('原型仅演示物料管理相关页面','info')"><span class="ic">📢</span>咸亨公告</div>
+      <div class="nav-item group" onclick="toggleGroup(this)"><span class="ic">👤</span>基本信息<span class="chev">▾</span></div>
+      <div class="nav-item group open" onclick="toggleGroup(this)"><span class="ic">✉️</span>物料管理<span class="chev">▾</span></div>
+      <div class="sub open">
+        <div class="nav-item" onclick="go('SCP-项目物料提报管理-项目物料列表.html')">项目物料提报管理</div>
+        <div class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">项目物料</div>
+        <div class="nav-item" onclick="go('SCP-物料管理-我的物料.html')">我的物料</div>
+        <div class="nav-item active" onclick="go('SCP-物料管理-新增物料-单个新增.html')">新增物料</div>
+        <div class="nav-item" onclick="go('SCP-物料管理-新增物料-批量新增.html')">批量新增</div>
+        <div class="nav-item" onclick="go('SCP-物料管理-待提交物料.html')">待提交物料</div>
+        <div class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">我新增的品牌</div>
+        <div class="nav-item" onclick="go('SCP-物料管理-我的申请.html')">我的申请</div>
+      </div>
+      <div class="nav-item group" onclick="toggleGroup(this)"><span class="ic">📄</span>订单管理<span class="chev">▾</span></div>
+      <div class="nav-item group" onclick="toggleGroup(this)"><span class="ic">👤</span>客户开票<span class="chev">▾</span></div>
+    </aside>
+
+    <main class="main">
+      <div class="tabbar">
+        <div class="tab plain" onclick="toast('原型仅演示新增/批量新增','info')">工作台</div>
+        <div class="tab active">新增物料 <span class="x" onclick="event.stopPropagation();toast('原型页，关闭无效','info')">✕</span></div>
+        <div class="tab" onclick="go('SCP-物料管理-新增物料-批量新增.html')">批量新增 <span class="x">✕</span></div>
+        <div class="tab" onclick="toast('原型仅演示新增/批量新增','info')">任务中心 <span class="x">✕</span></div>
+      </div>
+      <div class="actionbar">
+        <span id="smartEntryAct" class="act act-strong" onclick="toggleCreateMode()">智能新增物料</span>
+        <span class="act" onclick="save()">保存</span>
+        <span class="act" onclick="submitForm()">提交</span>
+        <span class="act" onclick="toast('已关闭（原型）','info')">关闭</span>
+      </div>
+
+      <div class="content">
+        <!-- 新增方式切换 -->
+        <div class="mode-switch-card">
+          <div>
+            <div class="mode-switch-title">当前新增方式：<span id="currentModeName">传统新增物料</span></div>
+            <div id="currentModeDesc" class="mode-switch-tip">按现有 SCP 字段逐项维护，适用于已明确物料信息或需要人工精细录入的场景。</div>
+          </div>
+          <button type="button" id="modeToggleBtn" class="btn btn-primary mode-toggle-btn" onclick="toggleCreateMode()">智能新增物料</button>
+        </div>
+
+        <!-- 智能解析创建物料 -->
+        <div id="smartMode" class="mode-content" style="display:none;">
+          <div class="smart-mode-panel">
+            <div class="smart-hero">
+              <div class="smart-hero-title">
+                <span>操作说明</span>
+                <span class="ai-prefill-tag">当前步骤：<b id="currentSmartStepText" style="margin-left:4px;">第一步：输入关键信息</b></span>
+              </div>
+              <div class="smart-hero-desc">
+                智能新增物料用于将供应商输入的简单描述转为结构化物料数据。确认识别结果后，继续维护供应渠道信息，再进入逐物料预审并提交。
+              </div>
+              <div class="smart-step-list">
+                <div class="smart-step active" data-step="1">
+                  <div class="smart-step-no">1</div>
+                  <div class="smart-step-title">文本输入物料关键信息</div>
+                  <div class="smart-step-desc">提交后触发系统智能解析物料数据。</div>
+                </div>
+                <div class="smart-step" data-step="2">
+                  <div class="smart-step-no">2</div>
+                  <div class="smart-step-title">识别结果和候选展示</div>
+                  <div class="smart-step-desc">展示结构化字段和标准物料候选。</div>
+                </div>
+                <div class="smart-step" data-step="3">
+                  <div class="smart-step-no">3</div>
+                  <div class="smart-step-title">维护供应渠道信息</div>
+                  <div class="smart-step-desc">维护供应商、供货价、附加费和库存状态。</div>
+                </div>
+                <div class="smart-step" data-step="4">
+                  <div class="smart-step-no">4</div>
+                  <div class="smart-step-title">预审物料信息</div>
+                  <div class="smart-step-desc">按物料逐条校验并标记问题类型。</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="smart-flow-viewport">
+              <div id="smartFlowTrack" class="smart-flow-track">
+                <section class="flow-panel is-active" data-flow-step="1">
+                  <div class="smart-card">
+                    <div class="smart-card-header">
+                      <span>1. 输入物料描述</span>
+                      <span class="smart-card-actions">
+                        <span style="font-size:12px;color:#8c8c8c;font-weight:400;">支持多个物料数据新增，换行即可</span>
+                        <button type="button" class="btn btn-primary" onclick="runSmartParse()">提交并智能解析</button>
+                        <button type="button" class="btn btn-default" onclick="clearSmartParse()">清空描述</button>
+                      </span>
+                    </div>
+                    <div class="smart-card-body">
+                      <textarea id="smartMaterialText" class="smart-textarea" placeholder="请输入物料名称、品牌、型号、规格、用途等信息。支持多个物料数据新增，一行一个物料，例如：&#10;3M 防尘口罩 9501+ KN95 白色 头戴式&#10;公牛插座 GN-B3440 8位 3米 白色"></textarea>
+                      <div class="smart-note">点击提交后，系统提示提交成功，并从右向左滑动进入第二步识别结果。若传统字段已有值，不允许静默覆盖。</div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="flow-panel" data-flow-step="2">
+                  <div class="smart-card">
+                    <div class="smart-card-header">
+                      <span>2. AI 结构化识别结果</span>
+                      <span class="smart-card-actions">
+                        <button type="button" class="btn btn-default" onclick="updateSmartStep(1)">返回上一步</button>
+                        <span id="parseStatus" style="font-size:12px;color:var(--primary);font-weight:400;">待解析</span>
+                        <span id="smartSubmitActions" class="smart-card-actions">
+                          <button type="button" class="btn btn-default" onclick="submitToBatchAdd()">提交到批量新增</button>
+                          <button type="button" class="btn btn-default" onclick="saveSmartDraft()">保存到我的暂存</button>
+                          <button type="button" class="btn btn-primary" onclick="goSupplyStep()">下一步：维护供应渠道</button>
+                        </span>
+                      </span>
+                    </div>
+                    <div class="smart-card-body">
+                      <div id="parseResultWrap" class="parse-table-wrap">
+                        <table class="parse-table">
+                          <thead>
+                            <tr>
+                              <th>名称</th>
+                              <th>推荐品牌</th>
+                              <th>推荐类目</th>
+                              <th>型号</th>
+                              <th>规格</th>
+                              <th>市场价</th>
+                              <th>描述</th>
+                              <th>推荐咸亨编码</th>
+                              <th>推荐度</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr data-parse-row="1">
+                              <td><input class="parse-edit-input" value="防尘口罩"></td>
+                              <td><input class="parse-edit-input" list="brandLibraryOptions" value="3M" placeholder="输入关键词搜索品牌库"></td>
+                              <td><input class="parse-edit-input" list="categoryLibraryOptions" value="呼吸防护用品" placeholder="输入关键词搜索类目库"></td>
+                              <td><input class="parse-edit-input" value="9501+"></td>
+                              <td><input class="parse-edit-input" value="KN95 / 白色 / 头戴式 / 无呼吸阀"></td>
+                              <td><input class="parse-edit-input" value="12.80"></td>
+                              <td><textarea class="parse-edit-area">3M 防尘口罩 KN95 / 白色 / 头戴式 / 无呼吸阀 9501+</textarea></td>
+                              <td>
+                                <span class="recommend-code-cell">
+                                  <span class="recommend-code">B0401025928</span>
+                                  <span class="more-link" onclick="openRecommendDrawer(1)">【更多】</span>
+                                </span>
+                              </td>
+                              <td><span class="recommend-score">92%</span></td>
+                            </tr>
+                            <tr data-parse-row="2">
+                              <td><input class="parse-edit-input" value="插座"></td>
+                              <td><input class="parse-edit-input" list="brandLibraryOptions" value="公牛" placeholder="输入关键词搜索品牌库"></td>
+                              <td><input class="parse-edit-input" list="categoryLibraryOptions" value="插座/排插" placeholder="输入关键词搜索类目库"></td>
+                              <td><input class="parse-edit-input" value="GN-B3440"></td>
+                              <td><input class="parse-edit-input" value="8位 / 3米 / 白色 / 总控开关"></td>
+                              <td><input class="parse-edit-input" value="68.00"></td>
+                              <td><textarea class="parse-edit-area">公牛 插座 8位 / 3米 / 白色 / 总控开关 GN-B3440</textarea></td>
+                              <td>
+                                <span class="recommend-code-cell">
+                                  <span class="recommend-code">B0803012048</span>
+                                  <span class="more-link" onclick="openRecommendDrawer(2)">【更多】</span>
+                                </span>
+                              </td>
+                              <td><span class="recommend-score">89%</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <datalist id="brandLibraryOptions">
+                          <option value="3M">
+                          <option value="公牛">
+                          <option value="霍尼韦尔">
+                          <option value="得力">
+                          <option value="钢炬/GANGJU">
+                        </datalist>
+                        <datalist id="categoryLibraryOptions">
+                          <option value="呼吸防护用品">
+                          <option value="插座/排插">
+                          <option value="气体检测仪">
+                          <option value="电工工具">
+                          <option value="劳保防护用品">
+                        </datalist>
+                      </div>
+                      <div id="parseResultNote" class="smart-note">结构化字段支持直接编辑；推荐品牌、推荐类目输入时支持关键词搜索品牌库和类目库；推荐咸亨编码旁点击【更多】可在右侧抽屉查看 3-5 个推荐编码；确认后进入供应渠道维护。</div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="flow-panel" data-flow-step="3">
+                  <div class="smart-card">
+                    <div class="smart-card-header">
+                      <span>3. 维护供应渠道信息</span>
+                      <span class="smart-card-actions">
+                        <button type="button" class="btn btn-default" onclick="updateSmartStep(2)">返回上一步</button>
+                        <button type="button" class="btn btn-primary" onclick="submitSupplyInfo()">下一步：预审物料信息</button>
+                      </span>
+                    </div>
+                    <div class="smart-card-body">
+                      <div class="parse-table-wrap">
+                        <table class="parse-table">
+                          <thead>
+                            <tr>
+                              <th>名称</th>
+                              <th>推荐咸亨编码</th>
+                              <th>供应商</th>
+                              <th>供应价</th>
+                              <th>附加费类型</th>
+                              <th>附加费金额</th>
+                              <th>是否可议价</th>
+                              <th>供应范围</th>
+                              <th>计划库存</th>
+                              <th>状态</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr data-supply-row="1">
+                              <td>防尘口罩</td>
+                              <td data-supply-code="1">B0401025928</td>
+                              <td><input class="supplier-input" data-supply-field="supplier" value="杭州劳保用品有限公司"></td>
+                              <td><input class="supplier-input" data-supply-field="price" value="9.80"></td>
+                              <td><select class="supplier-input" data-supply-field="feeType"><option>包装费</option><option>检测费</option><option>安装费</option></select></td>
+                              <td><input class="supplier-input" data-supply-field="feeAmount" value="0.30"></td>
+                              <td><select class="supplier-input" data-supply-field="negotiable"><option>是</option><option selected>否</option></select></td>
+                              <td><select class="supplier-input" data-supply-field="scope"><option>全国</option><option>华东</option><option>指定项目</option></select></td>
+                              <td><input class="supplier-input" data-supply-field="stock" value="5000"></td>
+                              <td><span class="supplier-status done" data-supply-state="1">已维护</span></td>
+                            </tr>
+                            <tr data-supply-row="2">
+                              <td>插座</td>
+                              <td data-supply-code="2">B0803012048</td>
+                              <td><input class="supplier-input" data-supply-field="supplier" value="宁波电工渠道商"></td>
+                              <td><input class="supplier-input" data-supply-field="price" value="58.00"></td>
+                              <td><select class="supplier-input" data-supply-field="feeType"><option>包装费</option><option selected>检测费</option><option>安装费</option></select></td>
+                              <td><input class="supplier-input" data-supply-field="feeAmount" value=""></td>
+                              <td><select class="supplier-input" data-supply-field="negotiable"><option selected>是</option><option>否</option></select></td>
+                              <td><select class="supplier-input" data-supply-field="scope"><option>全国</option><option selected>华东</option><option>指定项目</option></select></td>
+                              <td><input class="supplier-input" data-supply-field="stock" value="120"></td>
+                              <td><span class="supplier-status done" data-supply-state="2">已维护</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="smart-note">供应渠道信息维护完成后，可返回上一步调整识别结果，也可进入逐物料预审。预审会按每个物料分别校验基础信息、供应渠道、资质附件和价格风险。</div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="flow-panel" data-flow-step="4">
+                  <div class="smart-card">
+                    <div class="smart-card-header">
+                      <span>4. 预审物料信息</span>
+                      <span class="smart-card-actions">
+                        <button type="button" class="btn btn-default" onclick="updateSmartStep(3)">返回上一步</button>
+                        <button type="button" class="btn btn-default" onclick="runPreAudit(false)">重新预审</button>
+                        <button type="button" class="btn btn-default" onclick="markAllPreAuditPass()">全部标记通过</button>
+                        <button type="button" class="btn btn-primary" onclick="submitPreAudit()">提交审核</button>
+                      </span>
+                    </div>
+                    <div class="smart-card-body">
+                      <div id="preAuditWrap">
+                        <div class="preaudit-summary">
+                          <div>
+                            <div class="preaudit-summary-title">预审结果</div>
+                            <div id="preAuditSummaryDesc" class="preaudit-summary-desc">系统将按物料逐条校验基础信息、供应渠道、资质附件和价格风险。</div>
+                          </div>
+                          <span id="preAuditOverallStatus" class="preaudit-result fail">待预审</span>
+                        </div>
+                        <div class="parse-table-wrap">
+                          <table class="preaudit-table">
+                            <thead>
+                              <tr>
+                                <th>物料</th>
+                                <th>推荐咸亨编码</th>
+                                <th>预审状态</th>
+                                <th>问题类型</th>
+                                <th>问题说明</th>
+                                <th>操作</th>
+                              </tr>
+                            </thead>
+                            <tbody id="preAuditTbody"></tbody>
+                          </table>
+                        </div>
+                        <div class="smart-note">没有问题时整体状态标记为【预审通过】；存在问题时按物料展示具体问题类型，可点击【编辑详情】进入物料详情编辑后重新预审。</div>
+                      </div>
+                      <div id="smartSuccessState" class="smart-success-state">
+                        <div class="success-check">✓</div>
+                        <div class="success-title">提交成功</div>
+                        <div id="smartSuccessDesc" class="success-desc">提交成功 0 条数据；请在【-】点击查看。</div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="traditionalMode" class="mode-content">
+        <!-- 操作流程 -->
+        <div class="flow">
+          <div class="ic">ⓘ</div>
+          <div>
+            <div class="title">操作流程</div>
+            <div class="step">第一步：新增物料前，请先维护好您的品牌信息</div>
+            <div class="step">第二步：填写好物料信息，并提交审核 <span class="link" onclick="toast('打开填写说明（原型）','info')">查看填写说明</span></div>
+            <div class="step">第三步：咸亨管理员审核通过后，物料生效。如果你的申请被驳回了，请前往【我的申请】重新提交</div>
+          </div>
+        </div>
+
+        <!-- 物料类型 -->
+        <div class="mtype-row"><span class="req">*</span>物料类型 <label class="radio"><input type="radio" name="mtype" checked> 电商供应商物料</label></div>
+
+        <!-- 主要信息 -->
+        <div class="section">
+          <div class="section-head">
+            <div class="section-title">主要信息</div>
+            <div class="hot" onclick="toast('快捷拾取：从历史物料拾取信息（原型）','info')">🔥 快捷拾取</div>
+          </div>
+          <div class="grid3">
+            <div class="field">
+              <div class="flabel">编码</div>
+              <input class="input" value="SRMHZS410406995" readonly>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>品牌</div>
+              <input class="input req-f" data-name="品牌" placeholder="请输入">
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>名称</div>
+              <input class="input req-f" data-name="名称" placeholder="请输入">
+              <div class="fhint">以名词结尾；描述性词语放描述中；不能过长。</div>
+            </div>
+
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>型号</div>
+              <input class="input req-f" data-name="型号" placeholder="请输入">
+              <div class="fhint">无型号可填规格，都无填 /（不能写通用、常规）</div>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>基本单位</div>
+              <input class="input req-f" data-name="基本单位" placeholder="请输入">
+              <div class="fhint red">审核后无法修改，请确认！</div>
+            </div>
+            <div class="field" id="categoryFormItem">
+              <div class="flabel"><span class="req">*</span>类目</div>
+              <div class="category-picker">
+                <input class="input req-f" id="catInput" data-name="类目" placeholder="请选择四级类目" readonly onclick="openCategoryModal()" title="点击选择四级类目">
+                <button class="ai-category-btn" type="button" onclick="showInlineCategorySuggestion(event)">AI建议</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>毛重</div>
+              <div class="unit"><input class="req-f" data-name="毛重" placeholder="请输入"><span class="u">kg</span></div>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>市场价</div>
+              <div class="unit"><input class="req-f" id="marketPriceInput" data-name="市场价" placeholder="请输入"><span class="u">元</span></div>
+            </div>
+            <div class="field">
+              <div class="flabel">参考供货价 <span data-tip="参考供货价用于平台比价，请填写含税价" style="color:#b0b6c0;cursor:help;">ⓘ</span></div>
+              <div class="unit"><input placeholder="请输入"><span class="u">元</span></div>
+              <div class="fhint">请填写含税价</div>
+            </div>
+
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>起订量</div>
+              <input class="input req-f" data-name="起订量" placeholder="请输入">
+            </div>
+            <div class="field">
+              <div class="flabel">是否倍数下单</div>
+              <div class="inline"><label class="check"><input type="checkbox"> 是否倍数下单</label></div>
+            </div>
+            <div class="field">
+              <div class="flabel">含安装费</div>
+              <div class="inline">
+                <label class="check"><input type="checkbox" name="install"> 含</label>
+                <label class="check"><input type="checkbox" name="install"> 不含</label>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="flabel">含检测费</div>
+              <div class="inline" style="height:auto;flex-direction:column;align-items:flex-start;gap:6px;">
+                <label class="check"><input type="checkbox"> 不含检测费</label>
+                <label class="check"><input type="checkbox"> 含第三方检测费</label>
+                <label class="check"><input type="checkbox"> 含出厂检测费</label>
+              </div>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>含运费</div>
+              <div class="inline">
+                <label class="radio"><input type="radio" name="freight" checked> 含</label>
+                <label class="radio"><input type="radio" name="freight"> 不含</label>
+              </div>
+            </div>
+            <div class="field"></div>
+
+            <div class="field col3">
+              <div class="flabel">描述</div>
+              <textarea class="input" placeholder="请输入"></textarea>
+              <div class="fhint">1、单位为大规格如包/箱时描述需注明规格个数；2、名称、型号、描述中的内容不允许重复；3、产品本身若有不同的颜色款式，需在描述中注明，且和主图的颜色或款式描述一致。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 次要信息 -->
+        <div class="section">
+          <div class="section-head"><div class="section-title">次要信息</div></div>
+          <div class="grid3">
+            <div class="field">
+              <div class="flabel">条形码</div>
+              <input class="input" placeholder="请输入">
+            </div>
+            <div class="field">
+              <div class="flabel">净重</div>
+              <div class="unit"><input placeholder="请输入"><span class="u">kg</span></div>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>已停产</div>
+              <div class="inline">
+                <label class="radio"><input type="radio" name="stop"> 是</label>
+                <label class="radio"><input type="radio" name="stop" checked> 否</label>
+              </div>
+            </div>
+
+            <div class="field col2">
+              <div class="flabel">尺寸 / 体积</div>
+              <div class="inline" style="gap:8px;height:auto;">
+                <div class="unit" style="width:120px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">长</span><input placeholder="请输入"><span class="u">mm</span></div>
+                <div class="unit" style="width:120px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">宽</span><input placeholder="请输入"><span class="u">mm</span></div>
+                <div class="unit" style="width:120px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">高</span><input placeholder="请输入"><span class="u">mm</span></div>
+                <div class="unit" style="width:140px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">体积</span><input placeholder="请输入"><span class="u">mm³</span></div>
+              </div>
+            </div>
+            <div class="field">
+              <div class="flabel">发货期 / 详询客服</div>
+              <div class="inline" style="gap:12px;">
+                <div class="unit" style="width:120px;"><input placeholder="请输入"><span class="u">天</span></div>
+                <label class="check"><input type="checkbox" checked> 详询客服</label>
+              </div>
+            </div>
+
+            <div class="field col2">
+              <div class="flabel">税收分类编码</div>
+              <div class="with-btn">
+                <input class="input tax-code-trigger" id="taxCode" placeholder="点击选择税收分类编码" readonly role="button" aria-haspopup="dialog" title="点击选择税收分类编码" onclick="openTaxModal('search')" onkeydown="handleTaxCodeKeydown(event)">
+                <button class="mini-btn" type="button" onclick="smartTax()">智能赋码</button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>税收分类名称</div>
+              <input class="input req-f tax-readonly" id="taxName" data-name="税收分类名称" placeholder="选择编码后自动带出" readonly aria-readonly="true">
+            </div>
+
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>简称</div>
+              <input class="input req-f tax-readonly" id="taxShort" data-name="简称" placeholder="选择编码后自动带出" readonly aria-readonly="true">
+            </div>
+            <div class="field">
+              <div class="flabel"><span class="req">*</span>税率</div>
+              <input class="input req-f tax-readonly" id="taxRate" data-name="税率" placeholder="选择编码后自动带出" readonly aria-readonly="true">
+            </div>
+          </div>
+        </div>
+
+        <!-- 关联项目信息 -->
+        <div class="section">
+          <div class="section-head"><div class="section-title">关联项目信息 <span class="req-note">*请至少添加一个关联项目</span></div></div>
+          <div class="project-picker" id="projectPicker">
+            <input class="req-f project-picker-input" id="projInput" data-name="关联项目" tabindex="-1" aria-hidden="true">
+            <div class="project-select" id="projectSelect" data-name="关联项目" role="combobox" aria-haspopup="listbox" aria-expanded="false" tabindex="0" onclick="toggleProjectMenu()" onkeydown="handleProjectSelectKeydown(event)">
+              <span id="projectTags"><span class="project-placeholder">请选择关联项目</span></span>
+              <span class="project-select-actions">
+                <button type="button" class="project-clear" id="projectClearBtn" aria-label="清空关联项目" title="清空" onclick="clearProj(event)">×</button>
+                <span class="project-arrow" aria-hidden="true">▾</span>
+              </span>
+            </div>
+            <div class="project-menu" id="projectMenu" role="listbox" aria-label="关联项目" aria-multiselectable="true"></div>
+            <div class="project-picker-hint">支持多选，请从项目枚举中至少选择一项</div>
+          </div>
+        </div>
+
+        <!-- 拓展属性 -->
+        <div class="section">
+          <div class="section-head"><div class="section-title">拓展属性 <span class="sub-note">拓展属性标题为蓝色代表有平台项目对该拓展属性有要求，鼠标移到拓展属性标题即可查看具体平台项目。都需填写，无法填写的填 /【如果是大批量无法填写，可能是四级类目选错】</span></div></div>
+          <div style="font-size:12px;color:var(--text-body);margin-bottom:12px;line-height:1.6;background:#fffbe6;border:1px solid #ffe58f;border-radius:var(--radius);padding:8px 12px;">
+            依据四级类目展示的提示文案，紧固件螺帽螺栓四级类目的属性等级超过8.8硬度，咸亨集团暂不接受，请供应商或新增人员知晓；
+          </div>
+          <div class="grid3">
+            <div class="field">
+              <div class="flabel" style="color:var(--primary);cursor:help;" data-tip="平台项目「咸亨商城自营」要求：含锌量">含锌量</div>
+              <input class="input" placeholder="请输入">
+            </div>
+            <div class="field">
+              <div class="flabel" style="color:var(--primary);cursor:help;" data-tip="平台项目「电工仪表专项」要求：防护等级">防护等级</div>
+              <input class="input" placeholder="请输入">
+            </div>
+            <div class="field">
+              <div class="flabel">材质</div>
+              <input class="input" placeholder="请输入">
+            </div>
+          </div>
+        </div>
+
+        <!-- 资料附件（完全复用 物料审核详情 · §资料附件 的功能与样式） -->
+        <div class="section">
+          <div class="section-head">
+            <div class="section-title">资料附件 <span class="sub-note">命中规则的必传资质需齐全；图片资质类型仅可选本期 12 类；单文件 ≤ 10MB</span></div>
+            <button class="sec-upload-btn" onclick="openQAUploadModal('')">📤 上传资质图片</button>
+          </div>
+          <table class="qa-table" id="qaTable">
+            <thead>
+              <tr>
+                <th style="width:280px;">图片资质类型</th>
+                <th style="width:180px;">文件名称</th>
+                <th>图片</th>
+                <th style="width:200px;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="qaTbody">
+              <tr>
+                <td>国家强制性产品认证试验报告</td>
+                <td class="qa-file-name">CCC认证报告.pdf</td>
+                <td><a class="oss-link" href="https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/CCC_TEST_REPORT/CCC认证报告.pdf" target="_blank" rel="noopener">https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/CCC_TEST_REPORT/CCC认证报告.pdf</a></td>
+                <td>
+                  <span class="op danger" onclick="onQADeleteRow(this,'CCC_TEST_REPORT')">删除</span>
+                </td>
+              </tr>
+              <tr>
+                <td>特种劳动防护用品安全标志（LA）</td>
+                <td class="qa-file-name">LA标志证书.pdf</td>
+                <td><a class="oss-link" href="https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/LA/LA标志证书.pdf" target="_blank" rel="noopener">https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/LA/LA标志证书.pdf</a></td>
+                <td>
+                  <span class="op danger" onclick="onQADeleteRow(this,'LA')">删除</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="qa-alert qa-alert-warning" id="qaMissingAlert">
+            <span class="qa-alert-icon">⚠</span>
+            <div><strong>还需上传 1 项必传资质：</strong>产品质量检验检测报告</div>
+          </div>
+        </div>
+
+        <!-- 外部链接/价格佐证 -->
+        <div class="section">
+          <div class="section-head"><div class="section-title">外部链接 / 价格佐证</div></div>
+          <div id="extList"></div>
+          <div class="ext-add" onclick="openExternalLinkModal()">+ 点击添加</div>
+        </div>
+
+        <!-- 图文信息 -->
+        <div class="section">
+          <div class="section-head"><div class="section-title">图文信息 <span class="hot" onclick="toast('链接取图：粘贴外部链接抓取图片（原型）','info')" style="margin-left:8px;">🔥 链接取图</span> <span class="sub-note">支持类型：.bmp / .gif / .jpg / .png / .webp / .heic</span></div></div>
+          <div class="img-block">
+            <div class="cap"><b>主图：</b>尺寸 800*800 以上，3 张以上，越多越好。第一张白底，其它尽量白底。主图要求颜色唯一，需要与描述或者拓展属性值一致【最低标准：不低于在其他平台上架的标准】</div>
+            <div class="thumbs" id="mainThumbs">
+              <div class="up-box" onclick="addThumb('mainThumbs')">＋<span>上传</span></div>
+            </div>
+          </div>
+          <div class="img-block">
+            <div class="cap"><b>详情图：</b>宽度要求 800，长度无要求。要图文丰富，需包含产品图、细节图、参数图、使用场景图【最低标准：不低于在其他平台上架的标准】。一定不能包含：7 天无理由退换货、送货上门、免费开票、水印、其它店铺信息、质保、包邮、链接、二维码、电话号码……等</div>
+            <div class="cap" style="color:var(--text-sub);">敏感词汇</div>
+            <div class="thumbs" id="detailThumbs">
+              <div class="up-box" onclick="addThumb('detailThumbs')">＋<span>上传</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad-bottom"></div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <button class="btn" onclick="save()">保 存</button>
+        <button class="btn" onclick="toast('已关闭（原型）','info')">关 闭</button>
+        <button class="btn btn-primary" onclick="submitForm()">提 交</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- 税收分类选择 / 智能赋码弹窗 -->
+  <div class="modal-overlay" id="taxModal" onclick="handleTaxOverlayClick(event)">
+    <div class="modal tax-modal" role="dialog" aria-modal="true" aria-labelledby="taxModalTitle">
+      <div class="modal-header">
+        <span class="modal-header-title" id="taxModalTitle">选择税收分类</span>
+        <button class="modal-close" type="button" aria-label="关闭税收分类弹窗" onclick="closeTaxModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="tax-filter" id="taxFilterPanel">
+          <div class="tax-filter-item"><label for="taxFilterCode">税收分类编码：</label><input id="taxFilterCode" placeholder="请输入"></div>
+          <div class="tax-filter-item"><label for="taxFilterName">税收分类名称：</label><input id="taxFilterName" placeholder="请输入"></div>
+          <div class="tax-filter-item"><label for="taxFilterShort">简称：</label><input id="taxFilterShort" placeholder="请输入"></div>
+          <button class="btn btn-primary" type="button" onclick="queryTaxRows()">查询</button>
+        </div>
+        <div class="tax-name-hint" id="taxNameHint" hidden>依据物料名称 <strong id="taxMaterialName">—</strong> 智能加载以下候选结果</div>
+        <div class="tax-table-wrap">
+          <table class="tax-table" aria-label="税收分类候选结果">
+            <thead><tr><th class="radio-col"></th><th class="name-col">税收分类名称</th><th class="short-col">简称</th><th class="code-col">税收分类编码</th><th class="rate-col">税率</th></tr></thead>
+            <tbody id="taxResultRows"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" type="button" onclick="closeTaxModal()">取消</button>
+        <button class="btn btn-primary tax-confirm-btn" id="taxConfirmBtn" type="button" onclick="confirmTaxSelection()" disabled>确定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 外部链接管理弹窗（参考 MPM，SCP 不展示最低价字段） -->
+  <div class="modal-overlay" id="externalLinkModal">
+    <div class="modal external-link-modal">
+      <div class="modal-header">
+        <span class="modal-header-title">外部链接管理</span>
+        <span class="modal-close" onclick="closeExternalLinkModal()">×</span>
+      </div>
+      <div class="modal-body">
+        <div class="external-link-tip">
+          当外部链接的商品单位和咸亨商城的商品单位不一致时，需要填写计价单位转换，表明外部链接的商品数量和咸亨商城商品数量的换算关系。
+          咸亨外链价格=外链价格*外链单位数量/咸亨单位数量<br />
+          举例：外链单位支；咸亨单位盒；若12支=1盒；外链单位数量填写12；咸亨单位数量填写1；
+        </div>
+        <div class="external-link-form">
+          <div class="external-link-row">
+            <label class="external-link-field">
+              <span class="external-link-label"><span class="req">*</span>链接类型：</span>
+              <select class="external-link-select" id="externalLinkType">
+                <option selected>匹配</option>
+                <option>相似</option>
+                <option>采集</option>
+              </select>
+            </label>
+            <label class="external-link-field">
+              <span class="external-link-label"><span class="req">*</span>平台类型：</span>
+              <select class="external-link-select" id="externalPlatformType">
+                <option selected>京东</option>
+                <option>淘宝</option>
+                <option>天猫</option>
+                <option>1688</option>
+              </select>
+            </label>
+            <label class="external-link-field">
+              <span class="external-link-label"><span class="req">*</span>店铺类型：</span>
+              <select class="external-link-select" id="externalShopType">
+                <option selected>自营</option>
+                <option>第三方</option>
+                <option>品牌旗舰店</option>
+                <option>非品牌旗舰店</option>
+              </select>
+            </label>
+            <label class="external-link-field">
+              <span class="external-link-label"><span class="req">*</span>计价单位转换：</span>
+              <input class="external-link-input" id="externalLinkSourceQty" value="1.0000" title="外链单位数量" aria-label="外链单位数量" />
+              <span class="external-link-arrow">↔</span>
+              <input class="external-link-input" id="externalLinkTargetQty" value="1.0000" title="咸亨单位数量" aria-label="咸亨单位数量" />
+            </label>
+          </div>
+          <div class="external-link-row">
+            <label class="external-link-field">
+              <span class="external-link-label"><span class="req">*</span>外链价格：</span>
+              <input class="external-link-input" id="externalLinkPrice" value="88.36" />
+            </label>
+            <button class="btn btn-default btn-sm" type="button" onclick="fetchExternalLinkPrice()">获取价格</button>
+          </div>
+          <div class="external-link-row">
+            <label class="external-link-field">
+              <span class="external-link-label">咸亨外链价格：</span>
+              <input class="external-link-input external-link-calculated" id="xianhengExternalLinkPrice" value="88.36" readonly />
+            </label>
+            <label class="external-link-field">
+              <span class="external-link-label">评价/销量：</span>
+              <input class="external-link-input" id="externalLinkReviewSales" value="" placeholder="请输入数量" />
+            </label>
+          </div>
+          <div class="external-link-row">
+            <label class="external-link-field external-link-url-field">
+              <span class="external-link-label"><span class="req">*</span>链接：</span>
+              <span class="external-link-control">
+                <textarea class="external-link-textarea" id="externalLinkUrl" placeholder="请输入外部链接"></textarea>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="button" onclick="saveExternalLink()">保存</button>
+        <button class="btn btn-primary" type="button" onclick="closeExternalLinkModal()">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 资质上传弹窗（复用 物料审核详情 · 资料附件） -->
+  <div class="modal-overlay" id="qaUploadModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-header-title" id="qaModalTitle">批量上传</span>
+        <span class="modal-close" onclick="closeQAUploadModal()">×</span>
+      </div>
+      <div class="modal-body">
+        <div class="qa-form-row">
+          <label class="qa-form-label qa-form-label-required">图片资质类型：</label>
+          <div class="qa-form-content">
+            <select class="qa-select" id="qaTypeSelect">
+              <option value="">请选择图片资质类型</option>
+              <option value="SAFETY_PRODUCTION_LICENSE">安全生产许可证</option>
+              <option value="PRODUCTION_LICENSE">生产许可证</option>
+              <option value="CCC_TEST_REPORT">3C认证（或 消防3C证书）</option>
+              <option value="LA">特种劳动防护用品安全标志(LA)</option>
+              <option value="MA">MA认证（矿用产品安全标志）</option>
+              <option value="CLASSIFICATION_SOCIETY_CERT">船级社证书</option>
+              <option value="BRAND_AUTH">品牌授权</option>
+              <option value="QUALITY_INSPECTION">检测报告（包含：出厂检测报告、第三方检测报告、公安部授权的国家级检测机构出具的检测报告）</option>
+              <option value="CERTIFICATE">合格证（含标注国标GB 6095-2021的合格证）</option>
+              <option value="QUALITY_CERT">质量证明书</option>
+              <option value="RAW_MATERIAL_QUALITY_CERT">原材料质量证明书</option>
+              <option value="VOLUNTARY_CERT">自愿性认证</option>
+            </select>
+          </div>
+        </div>
+        <div class="qa-upload-dragger" onclick="onQAMockUpload()">
+          <div class="qa-upload-icon">📤</div>
+          <div class="qa-upload-text">点击或拖拽文件到此处</div>
+          <div class="qa-upload-hint">支持: jpg / png / pdf /<br/>单文件 ≤ 10MB · 数量不限</div>
+        </div>
+        <div class="qa-upload-list" id="qaUploadList"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" onclick="closeQAUploadModal()">取消</button>
+        <button class="btn btn-primary" onclick="onQAUploadConfirm()">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 删除确认 Popconfirm -->
+  <div class="qa-popconfirm-mask" id="qaPopconfirm">
+    <div class="qa-popconfirm-box">
+      <div class="qa-popconfirm-title">
+        <span class="qa-popconfirm-title-icon">⚠</span>
+        <span>确认删除此资质文件吗？<br/><span style="color:var(--text-sub);font-size:12px;">删除后将记录到物料操作历史，已审核通过的历史不受影响。</span></span>
+      </div>
+      <div class="qa-popconfirm-actions">
+        <button class="btn btn-default btn-sm" onclick="closeQAPopconfirm()">取消</button>
+        <button class="btn btn-primary btn-sm" onclick="confirmQADelete()">确认删除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 推荐咸亨编码抽屉 -->
+  <div class="recommend-mask" id="recommendDrawerMask" onclick="closeRecommendDrawer(event)">
+    <div class="recommend-drawer" onclick="event.stopPropagation()">
+      <div class="recommend-drawer-header">
+        <span>推荐咸亨物料编码</span>
+        <button type="button" class="drawer-close" onclick="closeRecommendDrawer()">×</button>
+      </div>
+      <div class="recommend-drawer-body">
+        <div class="drawer-readonly-card">
+          <div class="drawer-section-title">客户原始需求 / AI 识别结果（只读）</div>
+          <div class="drawer-info-grid">
+            <div class="drawer-info-item"><span class="k">名称</span><span id="drawerName" class="v">-</span></div>
+            <div class="drawer-info-item"><span class="k">推荐品牌</span><span id="drawerBrand" class="v">-</span></div>
+            <div class="drawer-info-item"><span class="k">推荐类目</span><span id="drawerCategory" class="v">-</span></div>
+            <div class="drawer-info-item"><span class="k">型号</span><span id="drawerModel" class="v">-</span></div>
+            <div class="drawer-info-item"><span class="k">规格</span><span id="drawerSpec" class="v">-</span></div>
+            <div class="drawer-info-item"><span class="k">市场价</span><span id="drawerMarketPrice" class="v">-</span></div>
+            <div class="drawer-info-item" style="grid-column:1 / -1;"><span class="k">描述</span><span id="drawerDesc" class="v">-</span></div>
+          </div>
+        </div>
+
+        <div class="drawer-ai-card">
+          <div class="drawer-ai-title">
+            <span>AI 智能匹配</span>
+            <span class="smart-card-actions">
+              <span style="font-size:12px;color:#666;font-weight:400;">展示近似度最高的 3-5 个咸亨物料编码</span>
+              <button type="button" class="btn-default" onclick="rematchDrawerRecommendations()">重新匹配</button>
+            </span>
+          </div>
+          <div id="drawerMatchLoading" class="drawer-match-loading">AI 匹配中，请稍候...</div>
+          <div class="ai-trace">AI 分析流程回溯：依据名称、品牌、型号、规格、推荐类目与标准库进行语义相似度和字段命中匹配。</div>
+          <div class="recommend-table-wrap">
+            <table class="recommend-table">
+              <thead>
+                <tr>
+                  <th>操作</th>
+                  <th>匹配度</th>
+                  <th>物料编码</th>
+                  <th>名称</th>
+                  <th>品牌</th>
+                  <th>规格型号</th>
+                  <th>单位</th>
+                  <th>参考调拨价</th>
+                  <th>市场价</th>
+                  <th>四级类目</th>
+                  <th>推荐原因</th>
+                </tr>
+              </thead>
+              <tbody id="drawerRecommendRows">
+                <tr><td colspan="11" style="text-align:center;color:#999;">暂无 AI 推荐结果</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="drawer-footer">
+        <div class="drawer-footer-left">
+          <button type="button" class="btn-default" onclick="switchDrawerItem(-1)">上一条</button>
+          <button type="button" class="btn-default" onclick="switchDrawerItem(1)">下一条</button>
+        </div>
+        <div class="drawer-footer-right">
+          <button type="button" class="btn btn-primary" onclick="confirmDrawerRecommend()">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 类目选择弹窗 -->
+  <div class="modal-overlay" id="categoryModal">
+    <div class="modal cat-modal" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
+      <div class="modal-header">
+        <span class="modal-header-title" id="categoryModalTitle">类目</span>
+        <span class="modal-close" onclick="closeCategoryModal()">×</span>
+      </div>
+      <div class="modal-body">
+        <div class="cat-search-bar">
+          <input class="cat-search-input" id="catSearchInput" placeholder="请输入名称或编码" oninput="filterCategoryTree()">
+          <button class="cat-search-btn" type="button" onclick="filterCategoryTree()">查询</button>
+        </div>
+        <div class="cat-body">
+          <div class="cat-left">
+            <div class="cat-pane-title">
+              <span class="cat-pane-title-l">类目层级</span>
+              <span>必须选到四级</span>
+            </div>
+            <div class="cat-tree-wrap" id="catTreeWrap"></div>
+          </div>
+          <div class="cat-right">
+            <div class="cat-pane-title">
+              <span class="cat-pane-title-l">四级类目（AI建议）</span>
+              <span class="cat-ai-retry" onclick="retryAiCategory()">重新获取</span>
+            </div>
+            <div class="cat-ai-zone">
+              <div class="cat-ai-list" id="catAiList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 物料预审双结果：两个独立结果窗口同时展示 -->
+  <div class="modal-overlay" id="preAuditResultsOverlay">
+    <div class="preaudit-result-grid" id="preAuditResultGrid" role="group" aria-label="物料预审结果">
+          <section class="preaudit-panel" id="preAuditSuccessPanel" role="dialog" aria-labelledby="preAuditSuccessTitle">
+            <div class="preaudit-panel-head">
+              <span class="preaudit-panel-title">物料预审结果</span>
+              <span class="preaudit-panel-head-actions"><button type="button" class="preaudit-panel-close" aria-label="关闭预审通过结果" onclick="closePreAuditResult('success')">×</button></span>
+            </div>
+            <div class="preaudit-panel-body">
+              <div class="preaudit-success-hero">
+                <div class="preaudit-success-icon" aria-hidden="true"></div>
+                <div class="preaudit-success-title" id="preAuditSuccessTitle">预审全部通过</div>
+                <div class="preaudit-success-desc">预审通过，可提交上架申请</div>
+              </div>
+              <div class="preaudit-summary">
+                <div class="preaudit-summary-title"><span class="preaudit-list-icon" aria-hidden="true">☷</span>预审通过项</div>
+                <div class="preaudit-check-grid">
+                  <div class="preaudit-check-item"><span class="preaudit-check" aria-hidden="true">✓</span>基础信息校验</div>
+                  <div class="preaudit-check-item"><span class="preaudit-check" aria-hidden="true">✓</span>项目信息校验</div>
+                  <div class="preaudit-check-item"><span class="preaudit-check" aria-hidden="true">✓</span>项目黑名单校验</div>
+                </div>
+              </div>
+              <div class="preaudit-info-list">
+                <div class="preaudit-info-item"><span class="preaudit-info-icon" aria-hidden="true">i</span><span>提交后物料将进入运营审核环节，当前审核人为：-</span></div>
+                <div class="preaudit-info-item"><span class="preaudit-info-icon" aria-hidden="true">i</span><span>可在【项目提报管理】中查看状态</span></div>
+              </div>
+            </div>
+            <div class="preaudit-panel-footer">
+              <button type="button" class="btn" onclick="closePreAuditResult('success')">暂不提交</button>
+              <button type="button" class="btn btn-success" id="confirmMaterialBtn" onclick="confirmMaterialSubmit()">▷ 确认提交物料</button>
+            </div>
+          </section>
+
+          <section class="preaudit-panel" id="preAuditFailurePanel" role="dialog" aria-labelledby="preAuditFailureTitle">
+            <div class="preaudit-panel-head">
+              <span class="preaudit-panel-title">物料预审结果</span>
+              <span class="preaudit-panel-head-actions"><button type="button" class="preaudit-panel-close" aria-label="关闭预审失败结果" onclick="closePreAuditResult('failure')">×</button></span>
+            </div>
+            <div class="preaudit-panel-body">
+              <div class="preaudit-block">
+                <div class="preaudit-block-head">
+                  <span class="preaudit-block-title" id="preAuditFailureTitle">商品预审</span>
+                  <span class="preaudit-status fail">预审失败</span>
+                </div>
+                <div class="preaudit-issues">
+                  <div class="preaudit-issue"><span class="preaudit-error-icon" aria-hidden="true">!</span><span>市场价与外链价冲突：请将市场价修改为 9.99</span></div>
+                  <div class="preaudit-issue"><span class="preaudit-error-icon" aria-hidden="true">!</span><span>项目控价冲突：国家电网项目控价为 9.99，不得低于项目控价，建议商城价修改为 9.99</span></div>
+                  <div class="preaudit-issue"><span class="preaudit-error-icon" aria-hidden="true">!</span><span>市场价与商城价冲突：商城价需要小于等于市场价，建议修改市场价为 9.99</span></div>
+                  <div class="preaudit-issue"><span class="preaudit-error-icon" aria-hidden="true">!</span><span><b>供应商黑名单：</b>因项目管控升级，现已临时关闭贵司物料线上提交权限，订单、对账等业务均可正常开展。如需恢复物料提报权限，可联系我方商品专员对接处理，感谢您的理解支持！</span></div>
+                </div>
+              </div>
+              <div class="preaudit-block">
+                <div class="preaudit-block-head">
+                  <span class="preaudit-block-title">商品预审</span>
+                  <span class="preaudit-status loading">预审中</span>
+                </div>
+                <div class="preaudit-loading-line"><span class="preaudit-spinner" aria-hidden="true"></span>正在读取项目配置进行校验...</div>
+              </div>
+              <div class="preaudit-tips">
+                <div class="preaudit-tips-title"><span class="preaudit-bulb" aria-hidden="true"></span>功能提示</div>
+                <ul>
+                  <li>点击立即修改，相关预警信息将在填写页标红展示处理</li>
+                  <li>新增操作，基础信息可以直接在当前表单修改</li>
+                  <li>商品提报操作，基础信息请在我的物料处进行修改</li>
+                </ul>
+              </div>
+            </div>
+            <div class="preaudit-panel-footer">
+              <button type="button" class="btn" onclick="closePreAuditResult('failure')">稍后处理</button>
+              <button type="button" class="btn btn-primary" onclick="editPreAuditIssue()">立即修改</button>
+            </div>
+          </section>
+    </div>
+  </div>
+
+  <!-- 智能新增物料详情编辑 -->
+  <div class="modal-overlay" id="materialEditModal">
+    <div class="modal material-edit-modal">
+      <div class="modal-header">
+        <span class="modal-header-title" id="materialEditTitle">物料详情编辑</span>
+        <span class="modal-close" onclick="closeMaterialEditModal()">×</span>
+      </div>
+      <div class="modal-body">
+        <div class="material-edit-grid">
+          <div class="field">
+            <div class="flabel">名称</div>
+            <input class="input" id="editMaterialName">
+          </div>
+          <div class="field">
+            <div class="flabel">推荐品牌</div>
+            <input class="input" id="editMaterialBrand">
+          </div>
+          <div class="field">
+            <div class="flabel">推荐类目</div>
+            <input class="input" id="editMaterialCategory">
+          </div>
+          <div class="field">
+            <div class="flabel">型号</div>
+            <input class="input" id="editMaterialModel">
+          </div>
+          <div class="field">
+            <div class="flabel">推荐咸亨编码</div>
+            <input class="input" id="editMaterialCode">
+          </div>
+          <div class="field">
+            <div class="flabel">供应商</div>
+            <input class="input" id="editMaterialSupplier">
+          </div>
+          <div class="field col2">
+            <div class="flabel">当前问题类型</div>
+            <div id="editMaterialIssues" class="issue-tags"></div>
+          </div>
+          <div class="field col2">
+            <div class="flabel">问题处理说明</div>
+            <textarea class="input" id="editMaterialRemark" placeholder="补充处理说明，保存后可重新预审"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" onclick="closeMaterialEditModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveMaterialEdit()">保存并返回预审</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toastWrap"></div>
+  <input type="file" id="hiddenFile" hidden>
+
+<script>
+  function go(path){ window.location.href = path; }
+  function toggleGroup(el){
+    el.classList.toggle('open');
+    const sub = el.nextElementSibling;
+    if(sub && sub.classList.contains('sub')) sub.classList.toggle('open');
+  }
+  function toast(text,type='info'){
+    const map={success:'成功',error:'失败',info:'提示',warning:'注意'};
+    const w=document.getElementById('toastWrap');
+    const el=document.createElement('div');
+    el.className='toast '+type;
+    el.innerHTML='<span class="ti">'+(map[type]||'提示')+'</span><span>'+text+'</span>';
+    w.appendChild(el);
+    requestAnimationFrame(()=>el.classList.add('show'));
+    setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),250);},2600);
+  }
+
+  let currentCreateMode='traditional';
+  let drawerCurrentIndex=1;
+  let drawerSelectedCode='';
+  let drawerSelectedRecommend=null;
+  let currentMaterialEditIndex=null;
+  const preAuditResolved={};
+  const recommendData={
+    1:[
+      {score:'92%',code:'B0401025928',name:'3M 防尘口罩 9501+ KN95',brand:'3M',spec:'9501+ / KN95 / 白色 / 头戴式',unit:'只',transfer:'9.80',market:'12.80',category:'呼吸防护用品',reason:'命中：品牌、型号、防护等级、佩戴方式；差异：包装规格未明确。'},
+      {score:'87%',code:'B0401025899',name:'3M 防尘口罩 9502+ KN95',brand:'3M',spec:'9502+ / KN95 / 耳戴式',unit:'只',transfer:'8.90',market:'11.60',category:'呼吸防护用品',reason:'命中：品牌、防护等级；差异：型号和佩戴方式。'},
+      {score:'82%',code:'B0401025751',name:'霍尼韦尔 KN95 防尘口罩',brand:'霍尼韦尔',spec:'KN95 / 白色 / 头戴式',unit:'只',transfer:'7.80',market:'10.50',category:'呼吸防护用品',reason:'命中：防护等级、颜色、佩戴方式；差异：品牌。'},
+      {score:'78%',code:'B0401025668',name:'3M 9001V 防尘口罩',brand:'3M',spec:'9001V / KN90 / 带阀',unit:'只',transfer:'6.50',market:'9.00',category:'呼吸防护用品',reason:'命中：品牌、口罩类型；差异：型号、防护等级、是否带阀。'}
+    ],
+    2:[
+      {score:'89%',code:'B0803012048',name:'公牛插座 GN-B3440 8位 3米',brand:'公牛',spec:'GN-B3440 / 8位 / 3米 / 白色',unit:'个',transfer:'58.00',market:'68.00',category:'插座/排插',reason:'命中：品牌、型号、位数、线长、颜色；差异：是否带独立开关未明确。'},
+      {score:'83%',code:'B0803012051',name:'公牛插座 GN-B3440 8位 5米',brand:'公牛',spec:'GN-B3440 / 8位 / 5米 / 白色',unit:'个',transfer:'65.00',market:'76.00',category:'插座/排插',reason:'命中：品牌、型号、位数、颜色；差异：线长。'},
+      {score:'79%',code:'B0803011986',name:'公牛插座 GN-109K 6位 3米',brand:'公牛',spec:'GN-109K / 6位 / 3米 / 总控',unit:'个',transfer:'49.00',market:'59.00',category:'插座/排插',reason:'命中：品牌、线长、总控；差异：型号、位数。'},
+      {score:'74%',code:'B0803012102',name:'得力插座 8位 3米',brand:'得力',spec:'8位 / 3米 / 白色 / 总控',unit:'个',transfer:'42.00',market:'55.00',category:'插座/排插',reason:'命中：位数、线长、颜色、类目；差异：品牌、型号。'}
+    ]
+  };
+
+  function toggleCreateMode(){ switchCreateMode(currentCreateMode==='smart'?'traditional':'smart'); }
+  function switchCreateMode(mode){
+    const traditional=document.getElementById('traditionalMode');
+    const smart=document.getElementById('smartMode');
+    const modeName=document.getElementById('currentModeName');
+    const modeDesc=document.getElementById('currentModeDesc');
+    const toggleBtn=document.getElementById('modeToggleBtn');
+    const smartEntry=document.getElementById('smartEntryAct');
+    const footer=document.querySelector('.footer');
+    const isSmart=mode==='smart';
+    if(!traditional||!smart) return;
+    currentCreateMode=isSmart?'smart':'traditional';
+    traditional.style.display=isSmart?'none':'block';
+    smart.style.display=isSmart?'block':'none';
+    if(footer) footer.style.display=isSmart?'none':'flex';
+    if(isSmart){
+      document.querySelectorAll('.scp-demo-tips').forEach(tip=>{
+        tip.classList.add('collapsed');
+        const toggle=tip.querySelector('.scp-demo-tips-toggle');
+        if(toggle) toggle.textContent='展开 ▸';
+      });
+    }
+    if(modeName) modeName.textContent=isSmart?'智能新增物料':'传统新增物料';
+    if(modeDesc) modeDesc.textContent=isSmart
+      ? '通过文本描述触发智能解析，推荐咸亨标准物料编码后，继续维护供应渠道并进入逐物料预审。'
+      : '按现有 SCP 字段逐项维护，适用于已明确物料信息或需要人工精细录入的场景。';
+    if(toggleBtn){
+      toggleBtn.textContent=isSmart?'切换为传统新增':'智能新增物料';
+      toggleBtn.classList.toggle('btn-primary',!isSmart);
+      toggleBtn.classList.toggle('btn-default',isSmart);
+    }
+    if(smartEntry) smartEntry.textContent=isSmart?'传统新增物料':'智能新增物料';
+    if(isSmart) updateSmartStep(window.__smartStep||1);
+    const content=document.querySelector('.content');
+    if(content) content.scrollTo({top:0,behavior:'smooth'});
+    toast(isSmart?'已切换至智能新增物料模式':'已切换至传统新增物料模式','info');
+  }
+
+  function runSmartParse(){
+    const textarea=document.getElementById('smartMaterialText');
+    const status=document.getElementById('parseStatus');
+    if(!textarea.value.trim()){
+      textarea.value='3M 防尘口罩 9501+ KN95 白色 头戴式，用于工业粉尘防护，无呼吸阀。\n公牛插座 GN-B3440 8位 3米 白色。';
+    }
+    resetSmartResultState();
+    if(status) status.textContent='已解析 2 条，待匹配标品';
+    updateSmartStep(2);
+    toast('提交成功，系统已完成智能解析','success');
+  }
+  function clearSmartParse(){
+    const textarea=document.getElementById('smartMaterialText');
+    if(textarea) textarea.value='';
+    const status=document.getElementById('parseStatus');
+    if(status) status.textContent='待解析';
+    resetSmartResultState();
+    updateSmartStep(1);
+    toast('已清空智能解析描述，候选示例保留用于演示','info');
+  }
+  function openRecommendDrawer(index){
+    drawerCurrentIndex=index;
+    const rows=recommendData[index]||[];
+    drawerSelectedRecommend=rows[0]||null;
+    drawerSelectedCode=drawerSelectedRecommend?drawerSelectedRecommend.code:'';
+    updateSmartStep(2);
+    loadDrawerRecognizedItem(index);
+    renderDrawerRecommendRows(index);
+    document.getElementById('recommendDrawerMask').classList.add('open');
+  }
+  function loadDrawerRecognizedItem(index){
+    const row=document.querySelector('[data-parse-row="'+index+'"]');
+    if(!row) return;
+    const values=Array.from(row.querySelectorAll('.parse-edit-input,.parse-edit-area')).map(el=>el.value.trim()||'-');
+    const [name,brand,category,model,spec,marketPrice,desc]=values;
+    document.getElementById('drawerName').textContent=name;
+    document.getElementById('drawerBrand').textContent=brand;
+    document.getElementById('drawerCategory').textContent=category;
+    document.getElementById('drawerModel').textContent=model;
+    document.getElementById('drawerSpec').textContent=spec;
+    document.getElementById('drawerMarketPrice').textContent=marketPrice==='-'?'-':marketPrice+' 元';
+    document.getElementById('drawerDesc').textContent=desc;
+  }
+  function renderDrawerRecommendRows(index){
+    const rows=recommendData[index]||[];
+    const body=document.getElementById('drawerRecommendRows');
+    body.innerHTML=rows.map(item=>
+      '<tr data-recommend-code="'+item.code+'" class="'+(drawerSelectedCode===item.code?'selected':'')+'">'+
+      '<td><span class="parse-op" onclick="selectDrawerRecommend(\''+item.code+'\')">选用</span></td>'+
+      '<td><span class="recommend-score">'+item.score+'</span></td>'+
+      '<td><b>'+item.code+'</b>'+(drawerSelectedCode===item.code?'<div class="current-selected-tag">当前选中</div>':'')+'</td>'+
+      '<td>'+item.name+'</td><td>'+item.brand+'</td><td>'+item.spec+'</td><td>'+item.unit+'</td>'+
+      '<td>'+item.transfer+'</td><td>'+item.market+'</td><td>'+item.category+'</td>'+
+      '<td class="reason-cell">'+formatReason(item.reason)+'</td></tr>'
+    ).join('');
+  }
+  function selectDrawerRecommend(code){
+    const rows=recommendData[drawerCurrentIndex]||[];
+    drawerSelectedCode=code;
+    drawerSelectedRecommend=rows.find(item=>item.code===code)||null;
+    renderDrawerRecommendRows(drawerCurrentIndex);
+    toast('已选中推荐咸亨物料编码 '+code+'，请点击确定','success');
+  }
+  function formatReason(reason){
+    if(!reason) return '-';
+    return reason.replace('命中：','<span class="reason-hit">命中：</span>').replace('差异：','<span class="reason-diff">差异：</span>');
+  }
+  function confirmDrawerRecommend(){
+    if(!drawerSelectedCode){ toast('请先选用一条推荐咸亨物料编码','warning'); return; }
+    const row=document.querySelector('[data-parse-row="'+drawerCurrentIndex+'"]');
+    if(row){
+      const codeEl=row.querySelector('.recommend-code');
+      const scoreEl=row.querySelector('.recommend-score');
+      if(codeEl) codeEl.textContent=drawerSelectedCode;
+      if(scoreEl&&drawerSelectedRecommend) scoreEl.textContent=drawerSelectedRecommend.score;
+    }
+    toast('已确认第 '+drawerCurrentIndex+' 条推荐编码 '+drawerSelectedCode,'success');
+    const nextIndex=getNextDrawerIndex(drawerCurrentIndex);
+    if(nextIndex&&nextIndex!==drawerCurrentIndex) openRecommendDrawer(nextIndex);
+    else{
+      closeRecommendDrawer();
+      const status=document.getElementById('parseStatus');
+      if(status) status.textContent='推荐编码已确认，待提交';
+      updateSmartStep(2);
+    }
+  }
+  function switchDrawerItem(delta){
+    const indexes=Array.from(document.querySelectorAll('[data-parse-row]')).map(row=>Number(row.dataset.parseRow)).sort((a,b)=>a-b);
+    const currentPos=indexes.indexOf(drawerCurrentIndex);
+    if(currentPos===-1) return;
+    const target=indexes[currentPos+delta];
+    if(!target){ toast(delta>0?'已经是最后一条':'已经是第一条','info'); return; }
+    openRecommendDrawer(target);
+  }
+  function getNextDrawerIndex(current){
+    const indexes=Array.from(document.querySelectorAll('[data-parse-row]')).map(row=>Number(row.dataset.parseRow)).sort((a,b)=>a-b);
+    const currentPos=indexes.indexOf(current);
+    return indexes[currentPos+1]||current;
+  }
+  function rematchDrawerRecommendations(){
+    const loading=document.getElementById('drawerMatchLoading');
+    if(loading) loading.classList.add('show');
+    toast('AI 匹配中','info');
+    setTimeout(()=>{
+      const rows=recommendData[drawerCurrentIndex]||[];
+      recommendData[drawerCurrentIndex]=rows.map((item,idx)=>{
+        const scoreNumber=Math.max(68,Math.min(96,parseInt(item.score,10)+(idx===0?2:-1)));
+        return {...item,score:scoreNumber+'%'};
+      });
+      drawerSelectedRecommend=recommendData[drawerCurrentIndex]&&recommendData[drawerCurrentIndex][0]?recommendData[drawerCurrentIndex][0]:null;
+      drawerSelectedCode=drawerSelectedRecommend?drawerSelectedRecommend.code:'';
+      renderDrawerRecommendRows(drawerCurrentIndex);
+      if(loading) loading.classList.remove('show');
+      toast('AI 匹配完成，推荐结果已刷新','success');
+    },1200);
+  }
+  function closeRecommendDrawer(event){
+    if(event&&event.target!==document.getElementById('recommendDrawerMask')) return;
+    const loading=document.getElementById('drawerMatchLoading');
+    if(loading) loading.classList.remove('show');
+    document.getElementById('recommendDrawerMask').classList.remove('open');
+  }
+  function escapeHtml(value){
+    return String(value==null?'':value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+  function getParsedIndexes(){
+    return Array.from(document.querySelectorAll('[data-parse-row]'))
+      .map(row=>Number(row.dataset.parseRow))
+      .filter(index=>Number.isFinite(index))
+      .sort((a,b)=>a-b);
+  }
+  function getParsedItem(index){
+    const row=document.querySelector('[data-parse-row="'+index+'"]');
+    if(!row) return {index,name:'',brand:'',category:'',model:'',spec:'',marketPrice:'',desc:'',code:''};
+    const values=Array.from(row.querySelectorAll('.parse-edit-input,.parse-edit-area')).map(el=>el.value.trim());
+    return {
+      index,
+      name:values[0]||'',
+      brand:values[1]||'',
+      category:values[2]||'',
+      model:values[3]||'',
+      spec:values[4]||'',
+      marketPrice:values[5]||'',
+      desc:values[6]||'',
+      code:(row.querySelector('.recommend-code')||{}).textContent||''
+    };
+  }
+  function getSupplyItem(index){
+    const row=document.querySelector('[data-supply-row="'+index+'"]');
+    const item={index,name:'',code:'',supplier:'',price:'',feeType:'',feeAmount:'',negotiable:'',scope:'',stock:''};
+    if(!row) return item;
+    item.name=(row.cells&&row.cells[0]?row.cells[0].textContent:'').trim();
+    item.code=(row.querySelector('[data-supply-code="'+index+'"]')||{}).textContent||'';
+    row.querySelectorAll('[data-supply-field]').forEach(el=>{
+      item[el.dataset.supplyField]=el.value.trim();
+    });
+    return item;
+  }
+  function setSupplyField(index,field,value){
+    const el=document.querySelector('[data-supply-row="'+index+'"] [data-supply-field="'+field+'"]');
+    if(el) el.value=value;
+  }
+  function syncSupplyCodes(){
+    getParsedIndexes().forEach(index=>{
+      const parsed=getParsedItem(index);
+      const supplyRow=document.querySelector('[data-supply-row="'+index+'"]');
+      if(!supplyRow) return;
+      if(supplyRow.cells&&supplyRow.cells[0]) supplyRow.cells[0].textContent=parsed.name||'-';
+      const codeEl=supplyRow.querySelector('[data-supply-code="'+index+'"]');
+      if(codeEl) codeEl.textContent=parsed.code||'-';
+    });
+  }
+  function goSupplyStep(){
+    syncSupplyCodes();
+    const status=document.getElementById('parseStatus');
+    if(status) status.textContent='待维护供应渠道';
+    updateSmartStep(3);
+    toast('请维护供应渠道信息后进入预审','info');
+  }
+  function submitSupplyInfo(){
+    syncSupplyCodes();
+    getParsedIndexes().forEach(index=>{
+      const state=document.querySelector('[data-supply-state="'+index+'"]');
+      if(state){
+        state.textContent='已维护';
+        state.classList.add('done');
+      }
+    });
+    updateSmartStep(4);
+    runPreAudit(false);
+    toast('供应渠道信息已维护完成，进入预审','success');
+  }
+  function collectPreAuditRows(allPass){
+    return getParsedIndexes().map(index=>{
+      const parsed=getParsedItem(index);
+      const supply=getSupplyItem(index);
+      const issues=[];
+      if(!parsed.name||!parsed.brand||!parsed.category||!parsed.model||!parsed.code) issues.push('基础信息');
+      if(!supply.supplier||!supply.price||!supply.feeAmount||!supply.stock) issues.push('供应渠道');
+      if(index===2&&!preAuditResolved[index]&&!allPass){
+        issues.push('资质附件');
+        issues.push('价格风险');
+      }
+      const uniqueIssues=Array.from(new Set(issues));
+      const status=allPass||uniqueIssues.length===0?'pass':'fail';
+      return {
+        index,
+        status,
+        issues:status==='pass'?[]:uniqueIssues,
+        material:parsed,
+        supply,
+        message:status==='pass'
+          ? '基础信息、供应渠道、资质附件和价格风险校验通过。'
+          : buildPreAuditMessage(uniqueIssues)
+      };
+    });
+  }
+  function buildPreAuditMessage(issues){
+    const map={
+      '基础信息':'基础字段不完整，请补充名称、品牌、类目、型号或推荐编码。',
+      '供应渠道':'供应商、供应价、附加费金额或库存信息不完整。',
+      '资质附件':'当前类目命中资质规则，需要补充或确认资质附件。',
+      '价格风险':'供应价与参考市场价差异较大，需要确认价格合理性。'
+    };
+    return issues.map(issue=>map[issue]||issue).join('；');
+  }
+  function renderIssueTags(issues){
+    if(!issues||!issues.length) return '<span class="issue-tag pass">无问题</span>';
+    return issues.map(issue=>'<span class="issue-tag">'+escapeHtml(issue)+'</span>').join('');
+  }
+  function renderPreAuditRows(rows){
+    const body=document.getElementById('preAuditTbody');
+    if(!body) return;
+    body.innerHTML=rows.map(row=>
+      '<tr data-preaudit-row="'+row.index+'">'+
+      '<td><b>'+escapeHtml(row.material.name||'-')+'</b><div style="color:#8c8c8c;">'+escapeHtml(row.material.brand||'-')+' / '+escapeHtml(row.material.model||'-')+'</div></td>'+
+      '<td>'+escapeHtml(row.material.code||'-')+'</td>'+
+      '<td><span class="preaudit-status '+row.status+'">'+(row.status==='pass'?'预审通过':'预审异常')+'</span></td>'+
+      '<td><div class="issue-tags">'+renderIssueTags(row.issues)+'</div></td>'+
+      '<td>'+escapeHtml(row.message)+'</td>'+
+      '<td><span class="parse-op" onclick="openMaterialEdit('+row.index+')">编辑详情</span></td>'+
+      '</tr>'
+    ).join('');
+  }
+  function updatePreAuditSummary(rows){
+    const status=document.getElementById('preAuditOverallStatus');
+    const desc=document.getElementById('preAuditSummaryDesc');
+    const failCount=rows.filter(row=>row.status==='fail').length;
+    if(status){
+      status.className='preaudit-result '+(failCount?'fail':'pass');
+      status.textContent=failCount?'预审异常 '+failCount+' 条':'整体预审通过';
+    }
+    if(desc){
+      desc.textContent=failCount
+        ? '系统已按物料逐条校验，发现 '+failCount+' 条存在问题，请进入详情编辑后重新预审。'
+        : '系统已按物料逐条校验，全部物料基础信息、供应渠道、资质附件和价格风险均通过。';
+    }
+  }
+  function runPreAudit(allPass){
+    const preAuditWrap=document.getElementById('preAuditWrap');
+    const success=document.getElementById('smartSuccessState');
+    if(preAuditWrap) preAuditWrap.style.display='block';
+    if(success) success.classList.remove('show');
+    syncSupplyCodes();
+    const rows=collectPreAuditRows(Boolean(allPass));
+    renderPreAuditRows(rows);
+    updatePreAuditSummary(rows);
+    return rows;
+  }
+  function markAllPreAuditPass(){
+    getParsedIndexes().forEach(index=>{
+      preAuditResolved[index]=true;
+      if(!getSupplyItem(index).feeAmount) setSupplyField(index,'feeAmount','0.00');
+    });
+    runPreAudit(false);
+    toast('已将全部物料标记为预审通过','success');
+  }
+  function openMaterialEdit(index){
+    currentMaterialEditIndex=Number(index);
+    const parsed=getParsedItem(currentMaterialEditIndex);
+    const supply=getSupplyItem(currentMaterialEditIndex);
+    const row=collectPreAuditRows(false).find(item=>item.index===currentMaterialEditIndex);
+    const modal=document.getElementById('materialEditModal');
+    const setValue=(id,value)=>{ const el=document.getElementById(id); if(el) el.value=value||''; };
+    const title=document.getElementById('materialEditTitle');
+    const issues=document.getElementById('editMaterialIssues');
+    if(title) title.textContent='物料详情编辑 - 第 '+currentMaterialEditIndex+' 条';
+    setValue('editMaterialName',parsed.name);
+    setValue('editMaterialBrand',parsed.brand);
+    setValue('editMaterialCategory',parsed.category);
+    setValue('editMaterialModel',parsed.model);
+    setValue('editMaterialCode',parsed.code);
+    setValue('editMaterialSupplier',supply.supplier);
+    setValue('editMaterialRemark','');
+    if(issues) issues.innerHTML=renderIssueTags(row?row.issues:[]);
+    if(modal) modal.classList.add('open');
+  }
+  function closeMaterialEditModal(){
+    const modal=document.getElementById('materialEditModal');
+    if(modal) modal.classList.remove('open');
+    currentMaterialEditIndex=null;
+  }
+  function saveMaterialEdit(){
+    if(!currentMaterialEditIndex){ closeMaterialEditModal(); return; }
+    const index=currentMaterialEditIndex;
+    const row=document.querySelector('[data-parse-row="'+index+'"]');
+    const values=[
+      document.getElementById('editMaterialName'),
+      document.getElementById('editMaterialBrand'),
+      document.getElementById('editMaterialCategory'),
+      document.getElementById('editMaterialModel')
+    ].map(el=>el?el.value.trim():'');
+    if(row){
+      const inputs=Array.from(row.querySelectorAll('.parse-edit-input'));
+      values.forEach((value,idx)=>{ if(inputs[idx]) inputs[idx].value=value; });
+      const code=document.getElementById('editMaterialCode');
+      const codeEl=row.querySelector('.recommend-code');
+      if(codeEl&&code) codeEl.textContent=code.value.trim()||'-';
+    }
+    const supplier=document.getElementById('editMaterialSupplier');
+    if(supplier) setSupplyField(index,'supplier',supplier.value.trim());
+    if(!getSupplyItem(index).feeAmount) setSupplyField(index,'feeAmount','0.00');
+    preAuditResolved[index]=true;
+    syncSupplyCodes();
+    closeMaterialEditModal();
+    runPreAudit(false);
+    toast('物料详情已保存，预审结果已刷新','success');
+  }
+  function submitToBatchAdd(){ showSmartSuccess('批量新增任务'); }
+  function saveSmartDraft(){ toast('已保存到我的暂存（原型演示）','success'); }
+  function submitParsedAudit(){
+    if((window.__smartStep||1)<4){ goSupplyStep(); return; }
+    submitPreAudit();
+  }
+  function submitPreAudit(){
+    const rows=runPreAudit(false);
+    const failCount=rows.filter(row=>row.status==='fail').length;
+    if(failCount>0){
+      toast('预审存在 '+failCount+' 条问题，请进入详情编辑后重新提交','error');
+      return;
+    }
+    showSmartSuccess('审核任务');
+  }
+  function getParsedCount(){ return document.querySelectorAll('[data-parse-row]').length; }
+  function resetSmartResultState(){
+    const wrap=document.getElementById('parseResultWrap');
+    const note=document.getElementById('parseResultNote');
+    const success=document.getElementById('smartSuccessState');
+    const actions=document.getElementById('smartSubmitActions');
+    const preAuditWrap=document.getElementById('preAuditWrap');
+    Object.keys(preAuditResolved).forEach(key=>delete preAuditResolved[key]);
+    currentMaterialEditIndex=null;
+    if(wrap) wrap.style.display='block';
+    if(note) note.style.display='block';
+    if(actions) actions.style.display='flex';
+    if(preAuditWrap) preAuditWrap.style.display='block';
+    if(success) success.classList.remove('show');
+  }
+  function showSmartSuccess(entryName){
+    const count=getParsedCount();
+    const wrap=document.getElementById('parseResultWrap');
+    const note=document.getElementById('parseResultNote');
+    const preAuditWrap=document.getElementById('preAuditWrap');
+    const success=document.getElementById('smartSuccessState');
+    const desc=document.getElementById('smartSuccessDesc');
+    const status=document.getElementById('parseStatus');
+    const actions=document.getElementById('smartSubmitActions');
+    if(wrap) wrap.style.display='none';
+    if(note) note.style.display='none';
+    if(preAuditWrap) preAuditWrap.style.display='none';
+    if(actions) actions.style.display='none';
+    if(success) success.classList.add('show');
+    if(desc) desc.innerHTML='提交成功 '+count+' 条数据；请在<span class="success-link" onclick="toast(\'打开'+entryName+'（原型演示）\',\'info\')">【'+entryName+'】</span>点击查看。';
+    if(status) status.textContent='提交成功';
+    updateSmartStep(4);
+    toast('提交成功，共 '+count+' 条数据','success');
+  }
+  function updateSmartStep(step){
+    const normalizedStep=Math.max(1,Math.min(4,Number(step)||1));
+    window.__smartStep=normalizedStep;
+    const stepTextMap={
+      1:'第一步：输入关键信息',
+      2:'第二步：识别与推荐',
+      3:'第三步：维护供应渠道信息',
+      4:'第四步：预审物料信息'
+    };
+    document.querySelectorAll('.smart-step').forEach(item=>{
+      const itemStep=Number(item.dataset.step);
+      item.classList.toggle('active',itemStep===normalizedStep);
+      item.classList.toggle('done',itemStep<normalizedStep);
+    });
+    document.querySelectorAll('.flow-panel').forEach(item=>{
+      item.classList.toggle('is-active',Number(item.dataset.flowStep)===normalizedStep);
+    });
+    const text=document.getElementById('currentSmartStepText');
+    if(text) text.textContent=stepTextMap[normalizedStep]||stepTextMap[1];
+    slideSmartFlow(normalizedStep);
+  }
+  function slideSmartFlow(step){
+    const track=document.getElementById('smartFlowTrack');
+    if(!track) return;
+    const panel=track.querySelector('[data-flow-step="'+step+'"]');
+    if(!panel) return;
+    track.style.transform='translateX(-'+panel.offsetLeft+'px)';
+  }
+
+  /* 类目 / 关联项目 简易选择 */
+  const CATEGORY_TREE=[
+    {code:'02',name:'电工电气',children:[
+      {code:'0201',name:'电工仪器仪表',children:[
+        {code:'020102',name:'电流电压测量仪表',children:[
+          {code:'02010201',name:'钳形电流表'},
+          {code:'02010202',name:'数字万用表'},
+          {code:'02010203',name:'绝缘电阻测试仪'}
+        ]},
+        {code:'020103',name:'环境检测仪表',children:[
+          {code:'02010301',name:'红外测温仪'},
+          {code:'02010302',name:'噪声检测仪'}
+        ]}
+      ]},
+      {code:'0202',name:'低压电器',children:[
+        {code:'020201',name:'开关插座',children:[
+          {code:'02020101',name:'工业插座'},
+          {code:'02020102',name:'断路器'}
+        ]}
+      ]}
+    ]},
+    {code:'03',name:'劳保防护',children:[
+      {code:'0301',name:'呼吸防护',children:[
+        {code:'030101',name:'防尘口罩',children:[
+          {code:'03010101',name:'KN95防尘口罩'},
+          {code:'03010102',name:'滤棉滤盒'}
+        ]}
+      ]}
+    ]},
+    {code:'04',name:'管材管件',children:[
+      {code:'0401',name:'塑料管材',children:[
+        {code:'040101',name:'PVC类',children:[
+          {code:'04010101',name:'PVC给排水管'},
+          {code:'04010102',name:'PVC线槽'}
+        ]}
+      ]}
+    ]}
+  ];
+  const AI_SUGGESTIONS_DEFAULT=[
+    {code:'02010201',name:'钳形电流表',confidence:0.94,reason:'名称、型号和税收分类均命中电流测量仪表特征，适合归入钳形电流表。'},
+    {code:'02010202',name:'数字万用表',confidence:0.76,reason:'同属电工测量仪表，若商品描述强调多功能测量可考虑此类目。'},
+    {code:'02010301',name:'红外测温仪',confidence:0.58,reason:'仅命中仪表类关键词，缺少温度检测特征，建议人工复核。'}
+  ];
+  let currentSelectedCategory={code:'',name:''};
+  let tempSelectedCategory=null;
+  let aiSuggestions=[...AI_SUGGESTIONS_DEFAULT];
+  let expandedNodes=new Set(['02','0201','020102']);
+  let aiCategoryTimer=null;
+
+  function pickCat(){ openCategoryModal(); }
+  function showInlineCategorySuggestion(event){
+    if(event) event.stopPropagation();
+    const suggestion=AI_SUGGESTIONS_DEFAULT[0];
+    if(!suggestion) return;
+    setCategoryValue(suggestion);
+    showMsg('已采用 AI 建议类目：'+suggestion.name,'ok');
+  }
+  function openCategoryModal(){
+    tempSelectedCategory={...currentSelectedCategory};
+    const search=document.getElementById('catSearchInput');
+    if(search) search.value='';
+    renderCategoryTree();
+    const modal=document.getElementById('categoryModal');
+    if(modal) modal.classList.add('open');
+    loadAiSuggestions();
+  }
+  function closeCategoryModal(){
+    if(aiCategoryTimer) clearTimeout(aiCategoryTimer);
+    const modal=document.getElementById('categoryModal');
+    if(modal) modal.classList.remove('open');
+  }
+  function loadAiSuggestions(){
+    const wrap=document.getElementById('catAiList');
+    if(!wrap) return;
+    wrap.innerHTML='<div class="cat-ai-loading"><div class="cat-ai-spinner"></div><div>正在调用 AI 类目接口...</div><div class="cat-ai-loading-tip">请稍候，通常需要 1~3 秒</div></div>';
+    if(aiCategoryTimer) clearTimeout(aiCategoryTimer);
+    aiCategoryTimer=setTimeout(()=>{
+      aiSuggestions=[...AI_SUGGESTIONS_DEFAULT];
+      renderAiSuggestions();
+    },900);
+  }
+  function retryAiCategory(){
+    const wrap=document.getElementById('catAiList');
+    if(!wrap) return;
+    wrap.innerHTML='<div class="cat-ai-loading"><div class="cat-ai-spinner"></div><div>正在重新获取 AI 建议...</div><div class="cat-ai-loading-tip">请稍候，通常需要 1~3 秒</div></div>';
+    if(aiCategoryTimer) clearTimeout(aiCategoryTimer);
+    aiCategoryTimer=setTimeout(()=>{
+      aiSuggestions=[
+        {code:'02010201',name:'钳形电流表',confidence:0.97,reason:'重新分析后，名称和型号与钳形电流表标准类目匹配度最高。'},
+        {code:'02010202',name:'数字万用表',confidence:0.72,reason:'同属电流电压测量仪表，作为备选项保留。'},
+        {code:'02010203',name:'绝缘电阻测试仪',confidence:0.61,reason:'若商品用于绝缘检测，可由人工进一步确认。'}
+      ];
+      renderAiSuggestions();
+      showMsg('AI 类目建议已刷新','ok');
+    },900);
+  }
+  function renderAiSuggestions(){
+    const wrap=document.getElementById('catAiList');
+    if(!wrap) return;
+    if(!aiSuggestions.length){
+      wrap.innerHTML='<div class="cat-empty-tip">AI 暂无建议，请在左侧手动选择类目</div>';
+      return;
+    }
+    wrap.innerHTML=aiSuggestions.slice(0,3).map((s,i)=>{
+      const conf=Math.round(s.confidence*100);
+      const lowCls=s.confidence<0.7?' low':'';
+      const confColor=s.confidence>=0.7?'#1677ff':'#faad14';
+      return '<div class="cat-ai-item" onclick="useAiSuggestion('+i+')" title="点击采用此类目">'+
+        '<div class="cat-ai-name"><span class="ai-rank r'+(i+1)+'">'+(i+1)+'</span>'+escapeHtml(s.name)+' <span class="cat-code">('+escapeHtml(s.code)+')</span></div>'+
+        '<div class="cat-ai-meta"><span class="cat-ai-conf">置信度 <b style="color:'+confColor+';">'+conf+'%</b><span class="cat-ai-bar"><span class="cat-ai-bar-fill'+lowCls+'" style="width:'+conf+'%;"></span></span></span></div>'+
+        '<div class="cat-ai-reason">'+escapeHtml(s.reason)+'</div>'+
+      '</div>';
+    }).join('');
+  }
+  function useAiSuggestion(idx){
+    const suggestion=aiSuggestions[idx];
+    if(!suggestion) return;
+    setCategoryValue(suggestion);
+    closeCategoryModal();
+    showMsg('已选择类目：'+suggestion.name,'ok');
+  }
+  function renderCategoryTree(filterText){
+    const wrap=document.getElementById('catTreeWrap');
+    if(!wrap) return;
+    const keyword=(filterText||'').trim();
+    const html=CATEGORY_TREE.map(node=>renderCategoryNode(node,1,keyword)).filter(Boolean).join('');
+    wrap.innerHTML=html||'<div class="cat-empty-tip">未找到匹配的类目</div>';
+  }
+  function renderCategoryNode(node,level,keyword){
+    const hasChildren=Array.isArray(node.children)&&node.children.length>0;
+    const isExpanded=expandedNodes.has(node.code)||!!keyword;
+    const isSelected=tempSelectedCategory&&tempSelectedCategory.code===node.code;
+    const matched=!keyword||node.name.includes(keyword)||node.code.includes(keyword);
+    let childrenHtml='';
+    let anyChildMatch=false;
+    if(hasChildren&&isExpanded){
+      const childResults=node.children.map(child=>{
+        const result=renderCategoryNode(child,level+1,keyword);
+        if(result) anyChildMatch=true;
+        return result;
+      }).filter(Boolean);
+      childrenHtml=childResults.join('');
+    }
+    if(keyword&&!matched&&!anyChildMatch) return '';
+    const toggleSym=hasChildren?(isExpanded?'−':'+'):'';
+    const toggleCls=hasChildren?'':' leaf';
+    const action=hasChildren?'toggleCategoryNode(\''+node.code+'\')':'selectCategoryLeaf(\''+node.code+'\')';
+    const self='<div class="cat-node l'+level+(isSelected?' selected':'')+'" onclick="'+action+'">'+
+      '<span class="cat-toggle'+toggleCls+'" onclick="event.stopPropagation();'+action+'">'+toggleSym+'</span>'+
+      '<span class="cat-code">|'+escapeHtml(node.code)+'|</span>'+escapeHtml(node.name)+
+    '</div>';
+    return self+childrenHtml;
+  }
+  function toggleCategoryNode(code){
+    if(expandedNodes.has(code)) expandedNodes.delete(code);
+    else expandedNodes.add(code);
+    const search=document.getElementById('catSearchInput');
+    renderCategoryTree(search?search.value:'');
+  }
+  function selectCategoryLeaf(code){
+    const node=findCategoryByCode(CATEGORY_TREE,code);
+    if(!node) return;
+    setCategoryValue(node);
+    closeCategoryModal();
+    showMsg('已选择类目：'+node.name,'ok');
+  }
+  function findCategoryByCode(nodes,code){
+    for(const node of nodes){
+      if(node.code===code) return node;
+      if(node.children){
+        const child=findCategoryByCode(node.children,code);
+        if(child) return child;
+      }
+    }
+    return null;
+  }
+  function setCategoryValue(category){
+    currentSelectedCategory={code:category.code,name:category.name};
+    tempSelectedCategory={...currentSelectedCategory};
+    const input=document.getElementById('catInput');
+    if(input){
+      input.value=category.code+' '+category.name;
+      input.classList.remove('invalid');
+    }
+  }
+  function filterCategoryTree(){
+    const search=document.getElementById('catSearchInput');
+    renderCategoryTree(search?search.value:'');
+  }
+  const categoryModalEl=document.getElementById('categoryModal');
+  if(categoryModalEl){
+    categoryModalEl.addEventListener('click',function(e){
+      if(e.target===this) closeCategoryModal();
+    });
+  }
+  document.addEventListener('keydown',function(e){
+    const modal=document.getElementById('categoryModal');
+    if(e.key==='Escape'&&modal&&modal.classList.contains('open')) closeCategoryModal();
+  });
+  const PROJECT_OPTIONS=[
+    '安能',
+    '中国铝业',
+    '中核电商',
+    '国网项目',
+    '长安汽车（自建）',
+    '2026 电商日常采购项目'
+  ];
+  let selectedProjects=[];
+  function renderProjectPicker(){
+    const tags=document.getElementById('projectTags');
+    const input=document.getElementById('projInput');
+    const clearBtn=document.getElementById('projectClearBtn');
+    const menu=document.getElementById('projectMenu');
+    if(!tags||!input||!menu) return;
+    tags.innerHTML=selectedProjects.length
+      ? selectedProjects.map(name=>'<span class="project-tag"><span class="project-tag-name">'+name+'</span><button type="button" class="project-tag-remove" aria-label="移除 '+name+'" onclick="removeProject(event,\''+name+'\')">×</button></span>').join('')
+      : '<span class="project-placeholder">请选择关联项目</span>';
+    input.value=selectedProjects.join(' / ');
+    menu.innerHTML=PROJECT_OPTIONS.map(name=>{
+      const checked=selectedProjects.includes(name);
+      return '<label class="project-option'+(checked?' selected':'')+'"><input type="checkbox" '+(checked?'checked':'')+' onchange="toggleProject(\''+name+'\')"><span>'+name+'</span></label>';
+    }).join('');
+    if(clearBtn) clearBtn.classList.toggle('show',selectedProjects.length>0);
+    if(selectedProjects.length) document.getElementById('projectSelect').classList.remove('invalid');
+  }
+  function toggleProjectMenu(forceOpen){
+    const select=document.getElementById('projectSelect');
+    const menu=document.getElementById('projectMenu');
+    if(!select||!menu) return;
+    const shouldOpen=typeof forceOpen==='boolean'?forceOpen:!menu.classList.contains('open');
+    menu.classList.toggle('open',shouldOpen);
+    select.classList.toggle('open',shouldOpen);
+    select.setAttribute('aria-expanded',String(shouldOpen));
+  }
+  function handleProjectSelectKeydown(event){
+    if(event.key==='Enter'||event.key===' '||event.key==='ArrowDown'){
+      event.preventDefault();
+      toggleProjectMenu(true);
+      const first=document.querySelector('#projectMenu input');
+      if(first) first.focus();
+    }else if(event.key==='Escape') toggleProjectMenu(false);
+  }
+  function toggleProject(name){
+    if(selectedProjects.includes(name)) selectedProjects=selectedProjects.filter(item=>item!==name);
+    else selectedProjects.push(name);
+    renderProjectPicker();
+  }
+  function removeProject(event,name){
+    event.stopPropagation();
+    selectedProjects=selectedProjects.filter(item=>item!==name);
+    renderProjectPicker();
+  }
+  function clearProj(event){
+    if(event) event.stopPropagation();
+    selectedProjects=[];
+    renderProjectPicker();
+    document.getElementById('projectSelect').classList.add('invalid');
+  }
+  renderProjectPicker();
+  document.addEventListener('click',function(event){
+    const picker=document.getElementById('projectPicker');
+    if(picker&&!picker.contains(event.target)) toggleProjectMenu(false);
+  });
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape') toggleProjectMenu(false);
+  });
+
+  /* 税收分类选择 / 智能赋码 */
+  const taxClassificationRows=[
+    {code:'1090603130000000000',name:'电工仪器仪表零部件',short:'电工仪器仪表',rate:'13%',level:0},
+    {code:'1090232040000000000',name:'芯片制造设备',short:'电子工业设备',rate:'13%',level:0},
+    {code:'1070505010000000000',name:'未硫化复合橡胶',short:'橡胶制品',rate:'13%',level:0},
+    {code:'1070502000000000000',name:'橡胶带、管',short:'橡胶制品',rate:'13%',level:0},
+    {code:'1090232050000000000',name:'封装测试设备',short:'电子工业设备',rate:'13%',level:0},
+    {code:'1090518000000000000',name:'微电子组件',short:'微电子组件',rate:'13%',level:0},
+    {code:'1090231030000000000',name:'电器绝缘材料设备',short:'电工机械设备',rate:'13%',level:0},
+    {code:'1080412010000000000',name:'钢铁制绳、缆、带',short:'金属制品',rate:'13%',level:0},
+    {code:'1090208070000000000',name:'橡胶成型压力机',short:'橡胶加工设备',rate:'13%',level:0},
+    {code:'1070504020000000000',name:'橡胶粘带',short:'橡胶制品',rate:'13%',level:0},
+    {code:'1000000000000000000',name:'货物',short:'货物',rate:'—',level:0},
+    {code:'1040000000000000000',name:'纺织、服装、皮革类产品',short:'纺织服装皮革产品',rate:'—',level:1},
+    {code:'1040100000000000000',name:'纺织产品',short:'纺织产品',rate:'—',level:2},
+    {code:'1040101000000000000',name:'棉、化纤纺织及印染产品',short:'纺织产品',rate:'—',level:3},
+    {code:'1040101010000000000',name:'已梳皮棉',short:'纺织产品',rate:'9%',level:4}
+  ];
+  let taxModalMode='search';
+  let pendingTaxSelection=null;
+  let taxLastTrigger=null;
+
+  function getMaterialName(){
+    const field=document.querySelector('input[data-name="名称"]');
+    return field&&field.value.trim()?field.value.trim():'当前物料';
+  }
+  function openTaxModal(mode='search'){
+    taxModalMode=mode;
+    pendingTaxSelection=null;
+    taxLastTrigger=document.activeElement;
+    const modal=document.getElementById('taxModal');
+    const filter=document.getElementById('taxFilterPanel');
+    const hint=document.getElementById('taxNameHint');
+    document.getElementById('taxModalTitle').textContent=mode==='ai'?'智能赋码':'选择税收分类';
+    filter.hidden=mode==='ai';
+    hint.hidden=mode!=='ai';
+    document.getElementById('taxMaterialName').textContent='「'+getMaterialName()+'」';
+    document.getElementById('taxConfirmBtn').disabled=true;
+    if(mode==='search'){
+      ['taxFilterCode','taxFilterShort','taxFilterName'].forEach(id=>document.getElementById(id).value='');
+    }
+    renderTaxRows(mode==='ai'?taxClassificationRows.slice(0,10):taxClassificationRows.slice(10));
+    modal.classList.add('open');
+    setTimeout(()=>{
+      const target=mode==='ai'?modal.querySelector('input[type="radio"]'):document.getElementById('taxFilterCode');
+      if(target) target.focus();
+    },0);
+  }
+  function closeTaxModal(){
+    document.getElementById('taxModal').classList.remove('open');
+    pendingTaxSelection=null;
+    if(taxLastTrigger&&typeof taxLastTrigger.focus==='function') taxLastTrigger.focus();
+  }
+  function handleTaxOverlayClick(event){if(event.target===event.currentTarget) closeTaxModal();}
+  function handleTaxCodeKeydown(event){
+    if(event.key==='Enter'||event.key===' '){event.preventDefault();openTaxModal('search');}
+  }
+  function renderTaxRows(rows){
+    const body=document.getElementById('taxResultRows');
+    body.innerHTML='';
+    if(!rows.length){
+      const tr=document.createElement('tr');
+      tr.innerHTML='<td class="tax-empty" colspan="5">未查询到匹配的税收分类</td>';
+      body.appendChild(tr);
+      return;
+    }
+    rows.forEach((row,index)=>{
+      const tr=document.createElement('tr');
+      const isParent=taxModalMode==='search'&&row.level<4;
+      const indent=taxModalMode==='search'?row.level*16:0;
+      const treeToggle=taxModalMode==='search'?(row.level<4?'<span class="tax-tree-toggle" aria-hidden="true">−</span>':'<span class="tax-tree-spacer" aria-hidden="true"></span>'):'';
+      if(isParent) tr.classList.add('tax-parent-row');
+      tr.innerHTML='<td class="radio-col"><input type="radio" name="taxClassificationChoice" aria-label="'+(isParent?'父级税收分类不可选择：':'选择')+row.name+'"'+(isParent?' disabled':'')+'></td>'+
+        '<td><span class="tax-tree-name" style="padding-left:'+indent+'px">'+treeToggle+row.name+'</span></td><td>'+row.short+'</td><td>'+row.code+'</td><td>'+row.rate+'</td>';
+      if(!isParent){
+        tr.addEventListener('click',()=>selectTaxRow(row,tr));
+        tr.querySelector('input').addEventListener('click',event=>{event.stopPropagation();selectTaxRow(row,tr);});
+      }
+      body.appendChild(tr);
+    });
+  }
+  function selectTaxRow(row,tr){
+    const radio=tr.querySelector('input[type="radio"]');
+    if(!radio||radio.disabled) return;
+    document.querySelectorAll('#taxResultRows tr').forEach(item=>item.classList.remove('selected'));
+    document.querySelectorAll('#taxResultRows input[type="radio"]').forEach(item=>item.checked=false);
+    tr.classList.add('selected');
+    radio.checked=true;
+    pendingTaxSelection=row;
+    document.getElementById('taxConfirmBtn').disabled=false;
+  }
+  function queryTaxRows(){
+    const code=document.getElementById('taxFilterCode').value.trim().toLowerCase();
+    const shortName=document.getElementById('taxFilterShort').value.trim().toLowerCase();
+    const name=document.getElementById('taxFilterName').value.trim().toLowerCase();
+    const rows=taxClassificationRows.filter(row=>(!code||row.code.toLowerCase().includes(code))&&(!shortName||row.short.toLowerCase().includes(shortName))&&(!name||row.name.toLowerCase().includes(name)));
+    pendingTaxSelection=null;
+    document.getElementById('taxConfirmBtn').disabled=true;
+    renderTaxRows(rows);
+  }
+  function confirmTaxSelection(){
+    if(!pendingTaxSelection) return;
+    document.getElementById('taxCode').value=pendingTaxSelection.code;
+    document.getElementById('taxName').value=pendingTaxSelection.name;
+    document.getElementById('taxShort').value=pendingTaxSelection.short;
+    document.getElementById('taxRate').value=pendingTaxSelection.rate;
+    ['taxName','taxShort','taxRate'].forEach(id=>document.getElementById(id).classList.remove('invalid'));
+    closeTaxModal();
+    toast(taxModalMode==='ai'?'智能赋码结果已回填':'税收分类信息已回填','success');
+  }
+  function smartTax(){openTaxModal('ai');}
+  document.querySelectorAll('#taxFilterPanel input').forEach(input=>input.addEventListener('keydown',event=>{if(event.key==='Enter') queryTaxRows();}));
+  document.addEventListener('keydown',event=>{
+    const modal=document.getElementById('taxModal');
+    if(event.key==='Escape'&&modal&&modal.classList.contains('open')) closeTaxModal();
+  });
+
+  /* 资料附件（资质附件）——完全复用 物料审核详情 逻辑 */
+  function showMsg(text,type='info'){
+    const m={ok:'success',warn:'warning',info:'info',error:'error',success:'success',warning:'warning'};
+    toast(text, m[type]||'info');
+  }
+  let qaCurrentEditType=''; let qaPendingDeleteRow=null; let qaEditingRow=null; let qaMockFiles=[];
+  const QA_LABELS={
+    SAFETY_PRODUCTION_LICENSE:'安全生产许可证',
+    PRODUCTION_LICENSE:'生产许可证',
+    CCC_TEST_REPORT:'3C认证（或 消防3C证书）',
+    LA:'特种劳动防护用品安全标志(LA)',
+    MA:'MA认证（矿用产品安全标志）',
+    CLASSIFICATION_SOCIETY_CERT:'船级社证书',
+    BRAND_AUTH:'品牌授权',
+    QUALITY_INSPECTION:'检测报告（包含：出厂检测报告、第三方检测报告、公安部授权的国家级检测机构出具的检测报告）',
+    CERTIFICATE:'合格证（含标注国标GB 6095-2021的合格证）',
+    QUALITY_CERT:'质量证明书',
+    RAW_MATERIAL_QUALITY_CERT:'原材料质量证明书',
+    VOLUNTARY_CERT:'自愿性认证'
+  };
+  function openQAUploadModal(presetType,rowEl){
+    qaCurrentEditType=presetType;
+    qaEditingRow=rowEl?rowEl.closest('tr'):null;
+    if(qaEditingRow){
+      const nameCell=qaEditingRow.querySelector('.qa-file-name');
+      const curName=nameCell?nameCell.textContent.trim():'';
+      qaMockFiles=curName?[{name:curName,existing:true}]:[];
+    } else { qaMockFiles=[]; }
+    document.getElementById('qaModalTitle').textContent=qaEditingRow?'编辑资质文件':'批量上传';
+    document.getElementById('qaTypeSelect').value=presetType||'';
+    renderQAUploadList();
+    document.getElementById('qaUploadModal').classList.add('open');
+    if(presetType) setTimeout(()=>showMsg('已自动选择资质类型，可删除原附件后重新上传以修改','info'),100);
+  }
+  function closeQAUploadModal(){ document.getElementById('qaUploadModal').classList.remove('open'); }
+  function onQAMockUpload(){
+    const names=['质检报告-2026.pdf','补充材料.jpg','检验报告.docx'];
+    const name=names[qaMockFiles.length%names.length];
+    const size=(qaMockFiles.length*1.3+1.8).toFixed(1)+'MB';
+    qaMockFiles.push({name,size}); renderQAUploadList();
+  }
+  function renderQAUploadList(){
+    document.getElementById('qaUploadList').innerHTML=qaMockFiles.map((f,i)=>
+      '<div class="qa-upload-item"><span style="color:var(--success);">✓</span>'+
+      '<span class="qa-upload-item-name">'+f.name+'</span>'+
+      '<span class="qa-upload-item-size">'+(f.size?f.size+' · ':'')+(f.existing?'已上传':'上传完成')+'</span>'+
+      '<span class="qa-upload-item-del" onclick="removeQAFile('+i+')">✕</span></div>').join('');
+  }
+  function removeQAFile(i){ qaMockFiles.splice(i,1); renderQAUploadList(); }
+  function onQAUploadConfirm(){
+    const type=document.getElementById('qaTypeSelect').value;
+    if(!type){ showMsg('请选择图片资质类型','warn'); return; }
+    if(qaMockFiles.length===0){ showMsg('请至少上传 1 个文件','warn'); return; }
+    const file=qaMockFiles[qaMockFiles.length-1];
+    closeQAUploadModal();
+    if(qaEditingRow){
+      const url='https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/'+type+'/'+file.name;
+      const nameCell=qaEditingRow.querySelector('.qa-file-name');
+      if(nameCell) nameCell.textContent=file.name;
+      const link=qaEditingRow.querySelector('.oss-link');
+      if(link){ link.href=url; link.textContent=url; }
+      qaEditingRow=null;
+      showMsg('已更新附件：'+file.name+'（写入物料操作历史）','ok');
+    }
+    else { showMsg('已上传 '+qaMockFiles.length+' 个文件并关联到物料','ok'); addQARowToTable(type,file); updateQAMissingAlert(); }
+  }
+  function addQARowToTable(type,file){
+    const label=QA_LABELS[type]||type;
+    const url='https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/'+type+'/'+file.name;
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td>'+label+'</td>'+
+      '<td class="qa-file-name">'+file.name+'</td>'+
+      '<td><a class="oss-link" href="'+url+'" target="_blank" rel="noopener">'+url+'</a></td>'+
+      '<td><span class="op danger" onclick="onQADeleteRow(this,\''+type+'\')">删除</span></td>';
+    document.getElementById('qaTbody').appendChild(tr);
+  }
+  function onQADeleteRow(el,type){ qaPendingDeleteRow=el.closest('tr'); document.getElementById('qaPopconfirm').classList.add('open'); }
+  function closeQAPopconfirm(){ document.getElementById('qaPopconfirm').classList.remove('open'); qaPendingDeleteRow=null; }
+  function confirmQADelete(){ if(qaPendingDeleteRow) qaPendingDeleteRow.remove(); closeQAPopconfirm(); showMsg('已删除（已写入物料操作历史）','ok'); updateQAMissingAlert(); }
+  function updateQAMissingAlert(){
+    const rows=document.querySelectorAll('#qaTbody tr'); const types=new Set();
+    rows.forEach(tr=>{ const t=tr.querySelector('td').textContent;
+      if(t.includes('国家强制性')) types.add('CCC_TEST_REPORT');
+      if(t.includes('质量检验')) types.add('QUALITY_INSPECTION');
+      if(t.includes('LA')||t.includes('特种劳动')) types.add('LA'); });
+    const required=['CCC_TEST_REPORT','QUALITY_INSPECTION','LA'];
+    const missing=required.filter(t=>!types.has(t));
+    const al=document.getElementById('qaMissingAlert');
+    if(missing.length===0){ al.style.display='none'; }
+    else { al.style.display='flex'; al.querySelector('div').innerHTML='<strong>还需上传 '+missing.length+' 项必传资质：</strong>'+missing.map(m=>QA_LABELS[m]).join('、'); }
+  }
+  ['qaUploadModal','qaPopconfirm'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('click',function(e){ if(e.target===this){ id==='qaUploadModal'?closeQAUploadModal():closeQAPopconfirm(); } }); });
+
+  /* 外部链接 */
+  function openExternalLinkModal(){
+    document.getElementById('externalLinkType').value='匹配';
+    document.getElementById('externalPlatformType').value='京东';
+    document.getElementById('externalShopType').value='自营';
+    document.getElementById('externalLinkSourceQty').value='1.0000';
+    document.getElementById('externalLinkTargetQty').value='1.0000';
+    document.getElementById('externalLinkPrice').value='88.36';
+    document.getElementById('externalLinkReviewSales').value='';
+    document.getElementById('externalLinkUrl').value='';
+    updateXianhengExternalLinkPrice();
+    document.getElementById('externalLinkModal').classList.add('open');
+    setTimeout(()=>document.getElementById('externalLinkUrl').focus(),0);
+  }
+  function closeExternalLinkModal(){
+    document.getElementById('externalLinkModal').classList.remove('open');
+  }
+  function parseExternalLinkNumber(value){
+    const normalized=String(value||'').trim().replace(/,/g,'');
+    if(!normalized) return NaN;
+    return Number(normalized);
+  }
+  function calculateXianhengExternalLinkPrice(){
+    const externalPrice=parseExternalLinkNumber(document.getElementById('externalLinkPrice').value);
+    const externalQty=parseExternalLinkNumber(document.getElementById('externalLinkSourceQty').value);
+    const xianhengQty=parseExternalLinkNumber(document.getElementById('externalLinkTargetQty').value);
+    if(!Number.isFinite(externalPrice)||!Number.isFinite(externalQty)||!Number.isFinite(xianhengQty)||externalQty<=0||xianhengQty<=0) return NaN;
+    return externalPrice*externalQty/xianhengQty;
+  }
+  function updateXianhengExternalLinkPrice(){
+    const price=calculateXianhengExternalLinkPrice();
+    document.getElementById('xianhengExternalLinkPrice').value=Number.isFinite(price)?price.toFixed(2):'';
+  }
+  function fetchExternalLinkPrice(){
+    document.getElementById('externalLinkPrice').value='88.36';
+    updateXianhengExternalLinkPrice();
+    toast('已获取外链价格','success');
+  }
+  function saveExternalLink(){
+    const type=document.getElementById('externalLinkType').value;
+    const platform=document.getElementById('externalPlatformType').value;
+    const shop=document.getElementById('externalShopType').value;
+    const externalPrice=parseExternalLinkNumber(document.getElementById('externalLinkPrice').value);
+    const externalQty=parseExternalLinkNumber(document.getElementById('externalLinkSourceQty').value);
+    const xianhengQty=parseExternalLinkNumber(document.getElementById('externalLinkTargetQty').value);
+    const reviewSales=document.getElementById('externalLinkReviewSales').value.trim();
+    const url=document.getElementById('externalLinkUrl').value.trim();
+    if(!Number.isFinite(externalPrice)||externalPrice<0){toast('外链价格请输入大于或等于0的数字','error');return;}
+    if(!Number.isFinite(externalQty)||externalQty<=0){toast('外链销售单位数量请输入大于0的数字','error');return;}
+    if(!Number.isFinite(xianhengQty)||xianhengQty<=0){toast('咸亨销售单位数量请输入大于0的数字','error');return;}
+    if(reviewSales&&!/^\d+$/.test(reviewSales)){toast('评论/销量仅支持填写非负整数','error');return;}
+    if(!url){toast('请输入外部链接','error');return;}
+    const calculatedPrice=calculateXianhengExternalLinkPrice();
+    const row=document.createElement('div');
+    row.className='ext-item';
+    row.innerHTML=`<div class="ext-item-main">
+      <div class="ext-item-title"><span>${escapeHtml(platform)}外链</span><span class="ext-item-tag">${escapeHtml(type)}</span></div>
+      <div class="ext-item-meta">
+        <span>店铺类型：${escapeHtml(shop)}</span>
+        <span>外链价格：¥${externalPrice.toFixed(2)}</span>
+        <span>计价转换：${externalQty} ↔ ${xianhengQty}</span>
+        <span>咸亨外链价格：¥${Number.isFinite(calculatedPrice)?calculatedPrice.toFixed(2):'-'}</span>
+        <span>评价/销量：${escapeHtml(reviewSales||'-')}</span>
+      </div>
+      <div class="ext-item-url">${escapeHtml(url)}</div>
+    </div><span class="ext-item-remove" onclick="this.parentElement.remove()">删除</span>`;
+    document.getElementById('extList').appendChild(row);
+    closeExternalLinkModal();
+    toast('外部链接已保存','success');
+  }
+  ['externalLinkPrice','externalLinkSourceQty','externalLinkTargetQty'].forEach(id=>{
+    const input=document.getElementById(id);
+    if(!input) return;
+    input.addEventListener('input',updateXianhengExternalLinkPrice);
+    input.addEventListener('change',updateXianhengExternalLinkPrice);
+  });
+  document.getElementById('externalLinkModal').addEventListener('click',function(event){
+    if(event.target===this) closeExternalLinkModal();
+  });
+
+  /* 图文上传 */
+  function addThumb(wrapId){
+    const f=document.getElementById('hiddenFile');
+    f.accept='.bmp,.gif,.jpg,.jpeg,.png,.webp,.heic';
+    f.value=''; f.onchange=()=>{
+      if(!f.files.length) return;
+      const wrap=document.getElementById(wrapId);
+      const box=wrap.querySelector('.up-box');
+      const t=document.createElement('div');
+      t.className='thumb';
+      t.textContent=f.files[0].name;
+      t.innerHTML+='<span class="rm" onclick="this.parentElement.remove()">✕</span>';
+      wrap.insertBefore(t,box);
+      toast('已上传图片：'+f.files[0].name,'success');
+    };
+    f.click();
+  }
+
+  /* 保存 / 提交 */
+  function save(){
+    if(currentCreateMode==='smart'){ saveSmartDraft(); return; }
+    toast('已保存草稿，可在【我的申请】继续编辑','success');
+  }
+  function openPreAuditResults(){
+    const overlay=document.getElementById('preAuditResultsOverlay');
+    const grid=document.getElementById('preAuditResultGrid');
+    const successPanel=document.getElementById('preAuditSuccessPanel');
+    const failurePanel=document.getElementById('preAuditFailurePanel');
+    if(overlay){
+      if(successPanel) successPanel.classList.remove('hidden');
+      if(failurePanel) failurePanel.classList.remove('hidden');
+      if(grid) grid.classList.remove('single');
+      overlay.classList.add('open');
+      const confirmBtn=document.getElementById('confirmMaterialBtn');
+      if(confirmBtn) confirmBtn.focus();
+    }
+  }
+  function closePreAuditResults(){
+    const overlay=document.getElementById('preAuditResultsOverlay');
+    if(overlay) overlay.classList.remove('open');
+  }
+  function closePreAuditResult(type){
+    const panel=document.getElementById(type==='success'?'preAuditSuccessPanel':'preAuditFailurePanel');
+    const grid=document.getElementById('preAuditResultGrid');
+    if(panel) panel.classList.add('hidden');
+    const visiblePanels=grid?grid.querySelectorAll('.preaudit-panel:not(.hidden)'):[];
+    if(!visiblePanels.length) closePreAuditResults();
+    else if(grid) grid.classList.add('single');
+  }
+  function confirmMaterialSubmit(){
+    closePreAuditResults();
+    toast('物料已确认提交，进入运营审核环节','success');
+  }
+  function editPreAuditIssue(){
+    closePreAuditResults();
+    const marketPrice=document.getElementById('marketPriceInput');
+    if(marketPrice){
+      const priceUnit=marketPrice.closest('.unit');
+      if(priceUnit) priceUnit.classList.add('invalid');
+      marketPrice.scrollIntoView({behavior:'smooth',block:'center'});
+      window.setTimeout(()=>marketPrice.focus(),350);
+    }
+    toast('请根据预审提示修改市场价及相关价格信息','warning');
+  }
+  function submitForm(){
+    if(currentCreateMode==='smart'){ submitParsedAudit(); return; }
+    let firstBad=null;
+    document.querySelectorAll('.req-f').forEach(el=>{
+      const validationTarget=el.id==='projInput'?document.getElementById('projectSelect'):(el.closest('.unit')||el);
+      if(!el.value.trim()){
+        validationTarget.classList.add('invalid');
+        if(!firstBad) firstBad={field:el,target:validationTarget};
+      }
+      else validationTarget.classList.remove('invalid');
+    });
+    if(firstBad){
+      const name=firstBad.field.dataset.name||firstBad.target.dataset.name||'必填项';
+      toast('请完善必填项：'+name,'error');
+      firstBad.target.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+    openPreAuditResults();
+  }
+  document.getElementById('preAuditResultsOverlay').addEventListener('click',function(event){
+    if(event.target===this) closePreAuditResults();
+  });
+  document.addEventListener('keydown',function(event){
+    const overlay=document.getElementById('preAuditResultsOverlay');
+    if(event.key==='Escape'&&overlay&&overlay.classList.contains('open')) closePreAuditResults();
+  });
+  window.addEventListener('resize',()=>{ if(currentCreateMode==='smart') slideSmartFlow(window.__smartStep||1); });
+</script>
+
+<div class="scp-demo-tips">
+  <div class="scp-demo-tips-section">
+    <b>本期改造内容：</b><br>
+    <ul>
+      <li>新增物料表单补充“资质资料”上传区，按资质类型维护文件名称和 OSS URL。</li>
+      <li>新增“智能新增物料”入口，支持文本解析、结构化识别结果、推荐咸亨编码抽屉、供应渠道维护和逐物料预审。</li>
+      <li>顶部操作流程统一为品牌维护、填写提交、审核生效三步说明。</li>
+      <li>提交时保留原有必填校验、图片上传、外部链接和价格佐证交互。</li>
+    </ul>
+  </div>
+  <div class="scp-demo-tips-section">
+    <b>操作说明：</b><br>
+    1. 先维护品牌信息，再填写物料基础信息、类目和项目。<br>
+    2. 点击<span class="ti">智能新增物料</span>可切换到智能解析流程，点击推荐编码旁的【更多】查看候选编码，并继续维护供应渠道。<br>
+    3. 进入<span class="ti">预审物料信息</span>后，可按物料查看问题类型，点击<span class="ti">编辑详情</span>处理后重新提交。
+  </div>
+</div><script src="scp-demo-tips.js"></script>
+<script src="../mpm-topnav-links.js"></script>
+</body>
+</html>
+

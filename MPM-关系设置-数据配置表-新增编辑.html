@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>配置数据新增/编辑</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-width:1280px;background:#f3f6fa;color:#252525;font:13px/1.5 Arial,"Microsoft YaHei",sans-serif}
+    button,input,select{font:inherit}
+    .top-actions{height:42px;background:#fff;border-bottom:1px solid #e6e9ef;display:flex;align-items:center;gap:16px;padding:0 22px;position:sticky;top:0;z-index:30}
+    .top-link{border:0;background:transparent;color:#2468f2;cursor:pointer;padding:4px 0}
+    .page-title{margin-left:auto;color:#7a8493;font-size:12px}
+    .page{padding:10px 16px 24px}
+    .section{background:#fff;border:1px solid #edf0f4;margin-bottom:14px;box-shadow:0 1px 3px rgba(20,40,80,.04)}
+    .section-title{height:34px;border-bottom:1px solid #e7e9ed;display:flex;align-items:center;padding:0 12px;font-weight:700;color:#1f2937}
+    .section-title::before{content:"";width:3px;height:14px;background:#2f6df6;margin-right:7px}
+    .section-body{padding:16px 18px 18px}
+    .rule-row{display:flex;align-items:flex-start;margin-bottom:16px;min-height:28px}
+    .label{width:92px;text-align:right;padding-right:10px;line-height:28px;flex:0 0 92px}
+    .required::before{content:"*";color:#f5222d;margin-right:3px}
+    .text-input,.fake-select,select{height:28px;border:1px solid #d7dbe3;background:#fff;border-radius:2px;padding:0 9px;outline:none;color:#333}
+    .text-input{width:300px}
+    .radio-group,.check-group{display:flex;align-items:center;gap:18px;min-height:28px}
+    input[type=radio],input[type=checkbox]{accent-color:#2f6df6}
+    .condition-workspace{width:790px;margin-left:74px;background:#eee;padding:24px 30px 28px;min-height:500px}
+    .condition-field{display:flex;align-items:flex-start;margin-bottom:18px}
+    .condition-field.is-hidden{display:none}
+    .condition-field .label{width:70px;flex-basis:70px}
+    .fake-select{width:300px;color:#a3a8b0;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+    .category-head{display:flex;align-items:center;gap:16px;margin-bottom:10px}
+    .category-clear{color:#2f6df6;cursor:pointer}
+    .category-box{width:400px;height:400px;background:#fff;border:1px solid #cfd5df;padding:10px;overflow:hidden}
+    .category-search{display:flex;margin-bottom:8px}
+    .category-search input{height:28px;flex:1;border:1px solid #d8dde6;padding:0 8px;outline:none}
+    .category-search button{width:34px;border:0;background:#2f6df6;color:#fff;cursor:pointer}
+    .category-list{height:342px;overflow-y:auto;padding-right:4px}
+    .category-item{height:28px;display:flex;align-items:center;gap:7px;white-space:nowrap}
+    .category-arrow{border:0;background:transparent;width:14px;color:#555;cursor:pointer}
+    .category-child{display:none;padding-left:28px;color:#555}
+    .category-child.open{display:flex}
+    .data-grid{display:grid;grid-template-columns:repeat(4,minmax(240px,1fr));gap:14px 28px;padding:2px 40px 10px}
+    .data-field{display:flex;align-items:center;min-width:0}
+    .data-field .label{width:108px;flex-basis:108px}
+    .data-field .text-input,.data-field select{width:100%;min-width:0}
+    .owner-row{position:relative;padding:18px 0 16px;border-bottom:1px dashed #dfe3ea}
+    .owner-row:last-child{border-bottom:0}
+    .delete-owner{position:absolute;right:20px;bottom:23px;border:0;background:transparent;color:#ff4d4f;cursor:pointer;font-size:18px}
+    .add-owner{margin:12px 0 2px 58px;border:0;background:transparent;color:#2f6df6;cursor:pointer}
+    .multi-select{position:relative;width:100%;min-width:0}
+    .multi-control{min-height:28px;border:1px solid #d7dbe3;background:#fff;border-radius:2px;padding:2px 28px 2px 5px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;cursor:pointer;position:relative}
+    .multi-placeholder{color:#b3b8c0;padding-left:4px}
+    .multi-caret{position:absolute;right:8px;top:5px;color:#9aa1ab}
+    .multi-tag{display:inline-flex;align-items:center;gap:4px;height:21px;background:#edf3ff;border:1px solid #c8d8ff;color:#245fd8;border-radius:2px;padding:0 5px;max-width:120px}
+    .multi-tag button{border:0;background:transparent;color:#6f86b8;cursor:pointer}
+    .multi-panel{display:none;position:absolute;left:0;right:0;top:31px;background:#fff;border:1px solid #d4d9e2;box-shadow:0 5px 14px rgba(0,0,0,.12);z-index:60;padding:6px 0}
+    .multi-select.open .multi-panel{display:block}
+    .multi-option{height:30px;padding:0 10px;display:flex;align-items:center;gap:8px;cursor:pointer}
+    .multi-option:hover{background:#f3f6fb}
+    .multi-actions{border-top:1px solid #edf0f4;margin-top:4px;padding:6px 10px 0;text-align:right}
+    .multi-clear{border:0;background:transparent;color:#2f6df6;cursor:pointer}
+    .toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,20px);opacity:0;background:rgba(0,0,0,.78);color:#fff;padding:9px 18px;border-radius:4px;transition:.2s;z-index:100}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:1500px){.data-grid{grid-template-columns:repeat(2,minmax(300px,1fr))}}
+  </style>
+</head>
+<body>
+  <div class="top-actions">
+    <button class="top-link" id="saveBtn" type="button">保存</button>
+    <button class="top-link" id="closeBtn" type="button">关闭</button>
+    <span class="page-title" id="pageModeTitle">新增配置数据</span>
+  </div>
+  <main class="page">
+    <section class="section">
+      <div class="section-title">配置规则</div>
+      <div class="section-body">
+        <div class="rule-row">
+          <label class="label required">名称</label>
+          <input class="text-input" id="configName" placeholder="请输入" />
+        </div>
+        <div class="rule-row">
+          <label class="label required">设置类型</label>
+          <div class="radio-group">
+            <label><input type="radio" name="settingType" value="组合条件维度" checked /> 组合条件维度</label>
+            <label><input type="radio" name="settingType" value="全局维度" /> 全局维度</label>
+          </div>
+        </div>
+        <div class="rule-row" id="conditionSelectorRow">
+          <label class="label required">设置条件</label>
+          <div class="check-group">
+            <label><input class="condition-check" type="checkbox" value="tag" checked /> 标签</label>
+            <label><input class="condition-check" type="checkbox" value="brand" checked /> 品牌</label>
+            <label><input class="condition-check" type="checkbox" value="category" checked /> 类目</label>
+          </div>
+        </div>
+        <div class="condition-workspace" id="conditionWorkspace">
+          <div class="condition-field" data-condition="tag">
+            <label class="label required">标签</label>
+            <div class="fake-select">请选择 <span>⌄</span></div>
+          </div>
+          <div class="condition-field" data-condition="brand">
+            <label class="label required">品牌</label>
+            <div class="fake-select">请选择 <span>⌄</span></div>
+          </div>
+          <div class="condition-field" data-condition="category">
+            <label class="label required">类目</label>
+            <div>
+              <div class="category-head"><b>共计<span id="categoryCount">0</span>个</b><span class="category-clear" id="clearCategories">清空</span></div>
+              <div class="category-box">
+                <div class="category-search"><input id="categorySearch" placeholder="输入实现搜索" /><button type="button">⌕</button></div>
+                <div class="category-list" id="categoryList"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">配置数据</div>
+      <div class="section-body" id="ownerRows"></div>
+      <button class="add-owner" id="addOwnerBtn" type="button">＋新增货主</button>
+    </section>
+  </main>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const params=new URLSearchParams(location.search);
+    const mode=params.get('mode')==='edit'?'edit':'add';
+    const sourceCode=params.get('code')||'';
+    const sourceName=params.get('name')||'';
+    const tagOptions=[
+      {value:'A',label:'A 核心主推'},
+      {value:'B',label:'B 主推'},
+      {value:'C',label:'C 常规'},
+      {value:'D',label:'D 零星'}
+    ];
+    const categories=['01|应急装备','02|仪器仪表','03|手动工具','04|动力工具','05|电动低压','06|工控','07|电工','08|线缆','09|个人防护','10|安防设备','11|搬运','12|存储','13|起重','14|登高','15|办公','16|制冷暖通'];
+    let ownerIndex=0;
+    let toastTimer;
+
+    function showToast(text){
+      const toast=document.getElementById('toast');
+      toast.textContent=text;toast.classList.add('show');
+      clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1700);
+    }
+
+    function renderCategories(filter=''){
+      const list=document.getElementById('categoryList');
+      list.innerHTML='';
+      categories.filter(item=>item.includes(filter.trim())).forEach((item,index)=>{
+        const row=document.createElement('div');row.className='category-item';
+        row.innerHTML=`<button class="category-arrow" type="button">▶</button><input class="category-checkbox" type="checkbox" value="${item}"><b>|${item}</b>`;
+        const child=document.createElement('div');child.className='category-item category-child';child.textContent=`${item.split('|')[0]}01 示例四级类目`;
+        row.querySelector('.category-arrow').onclick=()=>child.classList.toggle('open');
+        row.querySelector('.category-checkbox').onchange=updateCategoryCount;
+        list.append(row,child);
+      });
+      updateCategoryCount();
+    }
+
+    function updateCategoryCount(){
+      document.getElementById('categoryCount').textContent=document.querySelectorAll('.category-checkbox:checked').length;
+    }
+
+    function ownerRowTemplate(index,editPreset=false){
+      return `<div class="owner-row" data-index="${index}">
+        <div class="data-grid">
+          <div class="data-field"><label class="label required">${index}. 货主</label><input class="text-input owner-input" value="${editPreset?'万聚国际（杭州）供应链有限公司':''}" placeholder="请输入或选择"></div>
+          <div class="data-field"><label class="label">订单执行员</label><select><option>请选择</option><option ${editPreset?'selected':''}>胡乾祥</option></select></div>
+          <div class="data-field"><label class="label">采购部门</label><select><option>请选择</option><option ${editPreset?'selected':''}>通用工具采购组</option></select></div>
+          <div class="data-field"><label class="label">项目报价员</label><select><option>请选择</option><option ${editPreset?'selected':''}>王云龙</option></select></div>
+          <div class="data-field"><label class="label">产品经理</label><select><option>请选择</option><option ${editPreset?'selected':''}>吴蒙文</option></select></div>
+          <div class="data-field"><label class="label">加价系数</label><input class="text-input" value="${editPreset?'8':''}" placeholder="请输入"></div>
+          <div class="data-field"><label class="label">推荐标签</label>${multiSelectTemplate(editPreset?['A','C']:[])}</div>
+          <div class="data-field"><label class="label">厂控物料</label><select><option>请选择</option><option ${editPreset?'selected':''}>是</option><option>否</option></select></div>
+        </div>
+        <button class="delete-owner" type="button" title="删除">⌫</button>
+      </div>`;
+    }
+
+    function multiSelectTemplate(selected){
+      const checks=tagOptions.map(item=>`<label class="multi-option"><input type="checkbox" value="${item.value}" ${selected.includes(item.value)?'checked':''}>${item.label}</label>`).join('');
+      return `<div class="multi-select"><div class="multi-control" tabindex="0"><span class="multi-placeholder">请选择</span><span class="multi-caret">⌄</span></div><div class="multi-panel">${checks}<div class="multi-actions"><button class="multi-clear" type="button">清空</button></div></div></div>`;
+    }
+
+    function renderMultiSelect(root){
+      const control=root.querySelector('.multi-control');
+      const render=()=>{
+        control.querySelectorAll('.multi-tag').forEach(tag=>tag.remove());
+        const checked=[...root.querySelectorAll('.multi-option input:checked')];
+        root.querySelector('.multi-placeholder').style.display=checked.length?'none':'';
+        checked.forEach(input=>{
+          const option=tagOptions.find(item=>item.value===input.value);
+          const tag=document.createElement('span');tag.className='multi-tag';tag.dataset.value=input.value;
+          tag.innerHTML=`${option.label}<button type="button">×</button>`;
+          tag.querySelector('button').onclick=event=>{event.stopPropagation();input.checked=false;render()};
+          control.insertBefore(tag,root.querySelector('.multi-caret'));
+        });
+      };
+      control.onclick=event=>{event.stopPropagation();document.querySelectorAll('.multi-select.open').forEach(item=>{if(item!==root)item.classList.remove('open')});root.classList.toggle('open')};
+      root.querySelectorAll('.multi-option input').forEach(input=>input.onchange=render);
+      root.querySelector('.multi-clear').onclick=event=>{event.stopPropagation();root.querySelectorAll('.multi-option input').forEach(input=>input.checked=false);render()};
+      render();
+    }
+
+    function appendOwner(editPreset=false){
+      ownerIndex+=1;
+      document.getElementById('ownerRows').insertAdjacentHTML('beforeend',ownerRowTemplate(ownerIndex,editPreset));
+      const row=document.querySelector(`.owner-row[data-index="${ownerIndex}"]`);
+      renderMultiSelect(row.querySelector('.multi-select'));
+      row.querySelector('.delete-owner').onclick=()=>{
+        if(document.querySelectorAll('.owner-row').length===1){showToast('至少保留一条货主配置');return}
+        row.remove();renumberOwners();
+      };
+    }
+
+    function renumberOwners(){
+      [...document.querySelectorAll('.owner-row')].forEach((row,index)=>{row.querySelector('.label').textContent=`${index+1}. 货主`});
+    }
+
+    function updateConditionVisibility(){
+      const global=document.querySelector('input[name="settingType"]:checked').value==='全局维度';
+      document.getElementById('conditionSelectorRow').style.display=global?'none':'flex';
+      document.getElementById('conditionWorkspace').style.display=global?'none':'block';
+      if(!global){
+        const enabled=new Set([...document.querySelectorAll('.condition-check:checked')].map(input=>input.value));
+        document.querySelectorAll('.condition-field').forEach(field=>field.classList.toggle('is-hidden',!enabled.has(field.dataset.condition)));
+      }
+    }
+
+    function savePage(){
+      const name=document.getElementById('configName').value.trim();
+      if(!name){showToast('请输入名称');document.getElementById('configName').focus();return}
+      const owners=[...document.querySelectorAll('.owner-input')];
+      const emptyOwner=owners.find(input=>!input.value.trim());
+      if(emptyOwner){showToast('请输入货主');emptyOwner.focus();return}
+      const settingType=document.querySelector('input[name="settingType"]:checked').value;
+      const conditions=settingType==='全局维度'?'全局维度':[...document.querySelectorAll('.condition-check:checked')].map(input=>input.parentElement.textContent.trim()).join('/');
+      const payload={mode,code:sourceCode||`P${String(Date.now()).slice(-9)}`,name,settingType,conditions,time:new Date().toLocaleString('zh-CN',{hour12:false})};
+      localStorage.setItem('mpm_config_editor_saved',JSON.stringify(payload));
+      showToast('保存成功');setTimeout(()=>location.href='MPM-关系设置-数据配置表.html',450);
+    }
+
+    document.getElementById('pageModeTitle').textContent=mode==='edit'?'编辑配置数据':'新增配置数据';
+    document.getElementById('configName').value=mode==='edit'?(sourceName||'推荐标签配置'):'';
+    document.querySelectorAll('input[name="settingType"],.condition-check').forEach(input=>input.addEventListener('change',updateConditionVisibility));
+    document.getElementById('categorySearch').addEventListener('input',event=>renderCategories(event.target.value));
+    document.getElementById('clearCategories').onclick=()=>{document.querySelectorAll('.category-checkbox').forEach(input=>input.checked=false);updateCategoryCount()};
+    document.getElementById('addOwnerBtn').onclick=()=>appendOwner(false);
+    document.getElementById('saveBtn').onclick=savePage;
+    document.getElementById('closeBtn').onclick=()=>location.href='MPM-关系设置-数据配置表.html';
+    document.addEventListener('click',()=>document.querySelectorAll('.multi-select.open').forEach(item=>item.classList.remove('open')));
+
+    renderCategories();
+    appendOwner(mode==='edit');
+    updateConditionVisibility();
+  </script>
+</body>
+</html>

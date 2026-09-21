@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>物料列表筛选样式讨论</title>
+  <style>
+    :root {
+      --primary: #1677ff;
+      --primary-hover: #4096ff;
+      --primary-bg: #e6f4ff;
+      --text-title: rgba(0, 0, 0, 0.88);
+      --text-body: rgba(0, 0, 0, 0.65);
+      --text-sub: rgba(0, 0, 0, 0.45);
+      --border: #d9d9d9;
+      --border-light: #f0f0f0;
+      --bg-layout: #f5f5f5;
+      --bg-container: #ffffff;
+      --bg-muted: #fafafa;
+      --warning: #faad14;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 2px 10px rgba(0, 0, 0, 0.04);
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      background: var(--bg-layout);
+      color: var(--text-body);
+      min-width: 1560px;
+      padding: 18px;
+    }
+
+    .page {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .page-head {
+      background: var(--bg-container);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      padding: 18px 20px 16px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+
+    .title-main h1 {
+      font-size: 20px;
+      line-height: 28px;
+      color: var(--text-title);
+      margin-bottom: 6px;
+    }
+
+    .title-main p {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 22px;
+    }
+
+    .recommend-tag {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 14px;
+      background: var(--primary-bg);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .note-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #ffe7ba;
+      background: #fffbe6;
+      color: #ad6800;
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    .note-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ffe58f;
+      color: #ad6800;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .scheme-card {
+      background: var(--bg-container);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .scheme-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border-light);
+      background: linear-gradient(180deg, #ffffff 0%, #fafcff 100%);
+    }
+
+    .scheme-title {
+      font-size: 16px;
+      line-height: 22px;
+      color: var(--text-title);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .scheme-desc {
+      font-size: 12px;
+      line-height: 20px;
+      color: var(--text-sub);
+    }
+
+    .scheme-badge {
+      display: inline-flex;
+      align-items: center;
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      border: 1px solid var(--border);
+      color: var(--text-body);
+      background: var(--bg-container);
+    }
+
+    .scheme-badge.recommend {
+      border-color: #91caff;
+      background: var(--primary-bg);
+      color: var(--primary);
+    }
+
+    .scheme-body {
+      padding: 18px;
+      background: var(--bg-muted);
+    }
+
+    .filter-demo {
+      background: var(--bg-container);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 14px 14px 16px;
+    }
+
+    .filter-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .filter-label {
+      font-size: 13px;
+      color: var(--text-title);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn,
+    .action-btn {
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-container);
+      font-size: 13px;
+      cursor: default;
+    }
+
+    .icon-btn {
+      width: 32px;
+      color: var(--primary);
+      font-size: 15px;
+    }
+
+    .action-btn {
+      padding: 0 14px;
+      color: var(--text-body);
+    }
+
+    .action-btn.primary {
+      color: #fff;
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(260px, 1fr));
+      gap: 12px 16px;
+    }
+
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .filter-item label {
+      width: 92px;
+      flex-shrink: 0;
+      font-size: 13px;
+      color: var(--text-body);
+      text-align: right;
+    }
+
+    .field {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      height: 32px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-container);
+      color: var(--text-body);
+      font-size: 13px;
+      padding: 0 12px;
+      outline: none;
+    }
+
+    .field input::placeholder { color: #bfbfbf; }
+
+    .field.date input {
+      padding-right: 72px;
+    }
+
+    .date-range {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-sub);
+      font-size: 12px;
+    }
+
+    .field.searchable input {
+      padding-right: 68px;
+    }
+
+    .tail-mode {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .mode-pill {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 4px;
+      border-radius: 11px;
+      background: #f5f5f5;
+      border: 1px solid #d9d9d9;
+    }
+
+    .mode-pill span {
+      min-width: 24px;
+      height: 18px;
+      padding: 0 6px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .mode-pill span.active {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .mode-pill.compact {
+      padding: 0 2px;
+      gap: 2px;
+    }
+
+    .mode-pill.compact span {
+      min-width: 18px;
+      padding: 0 5px;
+      font-size: 11px;
+    }
+
+    .help-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+      color: var(--text-sub);
+      font-size: 11px;
+      display: grid;
+      place-items: center;
+      line-height: 1;
+    }
+
+    .mode-inline {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .mode-chip {
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 11px;
+      border: 1px solid #91caff;
+      background: var(--primary-bg);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .mode-switch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+      color: var(--text-sub);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .focus-field input {
+      border-color: #91caff;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
+    }
+
+    .demo-tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #fafafa;
+      border: 1px dashed #d9d9d9;
+      font-size: 12px;
+      line-height: 20px;
+      color: var(--text-sub);
+    }
+
+    .demo-tip strong { color: var(--text-body); }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .legend {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .legend-swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .legend-swatch.blue {
+      background: var(--primary-bg);
+      border-color: #91caff;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="page-head">
+      <div class="title-row">
+        <div class="title-main">
+          <h1>物料列表筛选区 UI 讨论稿</h1>
+          <p>目标：按截图展示完整查询条件，并且只针对 7 个文本字段增加独立的“全模糊 / 半模糊”切换入口。</p>
+        </div>
+        <div class="recommend-tag">推荐优先看方案 A</div>
+      </div>
+      <div class="note-bar">
+        <span class="note-icon">i</span>
+        <span>7 个带切换的字段：物料名称、条形码、规格、型号、助记码、描述、内部备注。提示文案统一采用鼠标移入说明。</span>
+      </div>
+    </section>
+
+    <section class="compare-grid">
+      <article class="scheme-card">
+        <div class="scheme-head">
+          <div>
+            <div class="scheme-title">方案 A：输入框尾部双态胶囊</div>
+            <div class="scheme-desc">在输入框内部右侧直接放“全 / 半”双态切换，旁边保留帮助提示点，信息表达最直接。</div>
+          </div>
+          <div class="scheme-badge recommend">推荐方案</div>
+        </div>
+        <div class="scheme-body">
+          <div class="filter-demo">
+            <div class="filter-toolbar">
+              <div class="filter-label">筛选条件</div>
+              <div class="filter-actions">
+                <button class="icon-btn" type="button">✎</button>
+                <button class="action-btn primary" type="button">查询</button>
+                <button class="action-btn" type="button">重置</button>
+                <button class="icon-btn" type="button">⌃</button>
+              </div>
+            </div>
+
+            <div class="filter-grid">
+              <div class="filter-item"><label>货主</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>物料编码</label><div class="field"><input placeholder="多个物料编码英文逗号间隔或在表格" /></div></div>
+              <div class="filter-item"><label>物料名称</label><div class="field searchable focus-field"><input placeholder="多个物料名称英文逗号间隔或在表格" /><div class="tail-mode"><div class="mode-pill"><span class="active">全</span><span>半</span></div><span class="help-dot" title="全模糊：输入关键词命中任意位置，如电动扳手、扳手、扳手套装。半模糊：仅命中以关键词开头的结果，如扳手、扳手套装。">?</span></div></div></div>
+              <div class="filter-item"><label>品牌</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>型号</label><div class="field searchable"><input placeholder="请输入型号" /><div class="tail-mode"><div class="mode-pill compact"><span>全</span><span class="active">半</span></div><span class="help-dot" title="全模糊：输入关键词命中任意位置。半模糊：仅命中以关键词开头的结果。">?</span></div></div></div>
+              <div class="filter-item"><label>描述</label><div class="field searchable"><input placeholder="请输入描述" /><div class="tail-mode"><div class="mode-pill compact"><span class="active">全</span><span>半</span></div><span class="help-dot" title="全模糊：输入关键词命中任意位置。半模糊：仅命中以关键词开头的结果。">?</span></div></div></div>
+              <div class="filter-item"><label>基本单位</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>部门</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>规格</label><div class="field searchable"><input placeholder="请输入规格" /><div class="tail-mode"><div class="mode-pill compact"><span class="active">全</span><span>半</span></div><span class="help-dot" title="全模糊：输入关键词命中任意位置。半模糊：仅命中以关键词开头的结果。">?</span></div></div></div>
+              <div class="filter-item"><label>物料等级</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>别名</label><div class="field"><input placeholder="请输入" /></div></div>
+              <div class="filter-item"><label>产品经理</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>物料来源渠道</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>图片关系</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>执行人</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>订单执行员</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>推送状态</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>创建时间</label><div class="field date"><input placeholder="请选择" /><span class="date-range">至 请选择</span></div></div>
+              <div class="filter-item"><label>审核时间</label><div class="field date"><input placeholder="请选择" /><span class="date-range">至 请选择</span></div></div>
+              <div class="filter-item"><label>修改时间</label><div class="field date"><input placeholder="请选择" /><span class="date-range">至 请选择</span></div></div>
+
+              <div class="filter-item"><label>物料类型</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>上下架</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>是否可售</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>对商城隐藏</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>内部备注</label><div class="field searchable"><input placeholder="请输入内部备注" /><div class="tail-mode"><div class="mode-pill compact"><span class="active">全</span><span>半</span></div><span class="help-dot" title="全模糊：输入关键词命中任意位置。半模糊：仅命中以关键词开头的结果。">?</span></div></div></div>
+              <div class="filter-item"><label>条形码</label><div class="field searchable"><input placeholder="请输入条形码" /><div class="tail-mode"><div class="mode-pill compact"><span class="active">全</span><span>半</span></div><span class="help-dot" title="全模糊：输入关键词命中任意位置。半模糊：仅命中以关键词开头的结果。">?</span></div></div></div>
+              <div class="filter-item"><label>供应商</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>项目</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>存在税编信息</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>物料图片类型</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>创建人</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>物料标签</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>自动赋值采购</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>厂家订货号</label><div class="field"><input placeholder="请输入厂家订货号" /></div></div>
+              <div class="filter-item"><label>项目报价员</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>是否停产</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>推荐标签</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>动销标签</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>行业标签</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>下架原因</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>产品线</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>助记码</label><div class="field searchable"><input placeholder="多个助记码英文逗号间隔或在表格中" /><div class="tail-mode"><div class="mode-pill compact"><span class="active">全</span><span>半</span></div><span class="help-dot" title="全模糊：输入关键词命中任意位置。半模糊：仅命中以关键词开头的结果。">?</span></div></div></div>
+              <div class="filter-item"><label>是否倍数下单</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>物料清洗</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>数据类型</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>标品编码</label><div class="field"><input placeholder="多个标品编码英文逗号间隔或在表格中" /></div></div>
+              <div class="filter-item"><label>是否有效期管理</label><div class="field"><select><option>请选择</option></select></div></div>
+            </div>
+
+            <div class="demo-tip">
+              <strong>适用特点：</strong>
+              <span>用户一眼能看出当前是“全”还是“半”，切换路径最短；在 4 列密集筛选下依然保持控件边界稳定。</span>
+            </div>
+
+            <div class="legend-row">
+              <div class="legend"><span class="legend-swatch blue">全</span><span>默认建议用高亮态表示当前模式</span></div>
+              <div class="legend"><span class="legend-swatch">?</span><span>鼠标移入显示匹配说明与“扳手”示例</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="scheme-card">
+        <div class="scheme-head">
+          <div>
+            <div class="scheme-title">方案 B：当前模式标签 + 单按钮切换</div>
+            <div class="scheme-desc">输入框尾部显示当前模式标签，用一个圆形按钮触发切换，视觉更轻，但用户需要理解一次切换动作。</div>
+          </div>
+          <div class="scheme-badge">备选方案</div>
+        </div>
+        <div class="scheme-body">
+          <div class="filter-demo">
+            <div class="filter-toolbar">
+              <div class="filter-label">筛选条件</div>
+              <div class="filter-actions">
+                <button class="icon-btn" type="button">✎</button>
+                <button class="action-btn primary" type="button">查询</button>
+                <button class="action-btn" type="button">重置</button>
+                <button class="icon-btn" type="button">⌃</button>
+              </div>
+            </div>
+
+            <div class="filter-grid">
+              <div class="filter-item"><label>货主</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>物料编码</label><div class="field"><input placeholder="多个物料编码英文逗号间隔或在表格" /></div></div>
+              <div class="filter-item"><label>物料名称</label><div class="field searchable"><input placeholder="多个物料名称英文逗号间隔或在表格" /><div class="mode-inline"><span class="mode-chip">全模糊</span><span class="mode-switch" title="点击切换全模糊/半模糊；鼠标移入标签查看说明。">⇄</span></div></div></div>
+              <div class="filter-item"><label>品牌</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>型号</label><div class="field searchable"><input placeholder="请输入型号" /><div class="mode-inline"><span class="mode-chip">半模糊</span><span class="mode-switch" title="点击切换全模糊/半模糊；鼠标移入标签查看说明。">⇄</span></div></div></div>
+              <div class="filter-item"><label>描述</label><div class="field searchable"><input placeholder="请输入描述" /><div class="mode-inline"><span class="mode-chip">全模糊</span><span class="mode-switch" title="点击切换全模糊/半模糊；鼠标移入标签查看说明。">⇄</span></div></div></div>
+              <div class="filter-item"><label>基本单位</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>部门</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>规格</label><div class="field searchable"><input placeholder="请输入规格" /><div class="mode-inline"><span class="mode-chip">全模糊</span><span class="mode-switch" title="点击切换全模糊/半模糊；鼠标移入标签查看说明。">⇄</span></div></div></div>
+              <div class="filter-item"><label>物料等级</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>别名</label><div class="field"><input placeholder="请输入" /></div></div>
+              <div class="filter-item"><label>产品经理</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>物料来源渠道</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>图片关系</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>执行人</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>订单执行员</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>推送状态</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>创建时间</label><div class="field date"><input placeholder="请选择" /><span class="date-range">至 请选择</span></div></div>
+              <div class="filter-item"><label>审核时间</label><div class="field date"><input placeholder="请选择" /><span class="date-range">至 请选择</span></div></div>
+              <div class="filter-item"><label>修改时间</label><div class="field date"><input placeholder="请选择" /><span class="date-range">至 请选择</span></div></div>
+
+              <div class="filter-item"><label>物料类型</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>上下架</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>是否可售</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>对商城隐藏</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>内部备注</label><div class="field searchable"><input placeholder="请输入内部备注" /><div class="mode-inline"><span class="mode-chip">全模糊</span><span class="mode-switch" title="点击切换全模糊/半模糊；鼠标移入标签查看说明。">⇄</span></div></div></div>
+              <div class="filter-item"><label>条形码</label><div class="field searchable"><input placeholder="请输入条形码" /><div class="mode-inline"><span class="mode-chip">全模糊</span><span class="mode-switch" title="点击切换全模糊/半模糊；鼠标移入标签查看说明。">⇄</span></div></div></div>
+              <div class="filter-item"><label>供应商</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>项目</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>存在税编信息</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>物料图片类型</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>创建人</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>物料标签</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>自动赋值采购</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>厂家订货号</label><div class="field"><input placeholder="请输入厂家订货号" /></div></div>
+              <div class="filter-item"><label>项目报价员</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>是否停产</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>推荐标签</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>动销标签</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>行业标签</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>下架原因</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>产品线</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>助记码</label><div class="field searchable"><input placeholder="多个助记码英文逗号间隔或在表格中" /><div class="mode-inline"><span class="mode-chip">全模糊</span><span class="mode-switch" title="点击切换全模糊/半模糊；鼠标移入标签查看说明。">⇄</span></div></div></div>
+              <div class="filter-item"><label>是否倍数下单</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>物料清洗</label><div class="field"><select><option>请选择</option></select></div></div>
+
+              <div class="filter-item"><label>数据类型</label><div class="field"><select><option>请选择</option></select></div></div>
+              <div class="filter-item"><label>标品编码</label><div class="field"><input placeholder="多个标品编码英文逗号间隔或在表格中" /></div></div>
+              <div class="filter-item"><label>是否有效期管理</label><div class="field"><select><option>请选择</option></select></div></div>
+            </div>
+
+            <div class="demo-tip">
+              <strong>适用特点：</strong>
+              <span>输入框内部更轻，模式文案更完整；但“查看当前状态”和“执行切换”分成两个部件，首次理解成本略高。</span>
+            </div>
+
+            <div class="legend-row">
+              <div class="legend"><span class="legend-swatch blue">全</span><span>标签直接显示“全模糊 / 半模糊”全称</span></div>
+              <div class="legend"><span class="legend-swatch">⇄</span><span>圆形按钮负责切换，提示说明放在标签 hover 上</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+<script src="mpm-topnav-links.js"></script>
+</body>
+</html>

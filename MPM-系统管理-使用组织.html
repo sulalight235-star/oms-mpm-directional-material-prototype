@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>使用组织 - 咸亨国际主数据管理平台</title>
+  <style>
+    :root{--primary:#1677ff;--primary-hover:#4096ff;--primary-bg:#e6f4ff;--header:#001529;--text:#262626;--muted:#8c8c8c;--border:#d9d9d9;--border-light:#f0f0f0;--page:#f4f6f9;--white:#fff;}
+    *{box-sizing:border-box;}
+    html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;color:var(--text);background:var(--page);}
+    button,input{font:inherit;}
+    .skip-link{position:fixed;left:12px;top:-48px;z-index:999;padding:8px 12px;background:#fff;color:var(--primary);border:1px solid var(--primary);transition:top .2s;}.skip-link:focus{top:8px;}
+    .topbar{height:48px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:var(--header);color:#fff;}
+    .brand{display:flex;align-items:center;gap:10px}.brand-logo{width:28px;height:28px;border-radius:6px;display:grid;place-items:center;background:var(--primary);font-weight:700}.brand-name{font-size:16px;font-weight:600;cursor:pointer}.switch-btn{height:28px;padding:0 10px;border:1px solid rgba(255,255,255,.28);border-radius:4px;background:transparent;color:rgba(255,255,255,.82);cursor:pointer}.switch-btn:hover{border-color:#69b1ff;color:#fff}
+    .nav{height:100%;display:flex;align-items:center;gap:2px}.nav span{height:100%;padding:0 12px;display:flex;align-items:center;color:rgba(255,255,255,.78);white-space:nowrap}.nav span:hover{color:#fff;background:rgba(255,255,255,.08)}.avatar{width:26px!important;height:26px!important;margin-right:5px;padding:0!important;border-radius:50%;display:flex;align-items:center;justify-content:center!important;background:var(--primary);color:#fff!important;font-size:11px;font-style:normal}
+    .tabs{height:36px;display:flex;align-items:stretch;justify-content:space-between;background:#fff;border-bottom:1px solid var(--border-light)}.tab{min-width:150px;padding:0 14px;display:flex;align-items:center;gap:9px;color:var(--primary);background:var(--primary-bg);border-top:2px solid var(--primary)}.tab-close{margin-left:auto;color:#8c8c8c}.tabs-clear{padding:0 14px;display:flex;align-items:center;color:#8c8c8c;cursor:pointer}
+    main{min-width:980px;padding:0 6px 18px;}
+    .filter-bar{min-height:54px;padding:10px 8px;display:flex;align-items:center;gap:26px;background:#fff;border-bottom:1px solid var(--border-light)}.filter-title{font-weight:600}.filter-item{display:flex;align-items:center;gap:8px}.filter-item label{white-space:nowrap}.filter-input{width:270px;height:30px;padding:0 30px 0 10px;border:1px solid var(--border);border-radius:2px;outline:none;background:#fff}.filter-input:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1)}.input-wrap{position:relative}.input-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:18px;height:18px;border:0;background:transparent;color:#bfbfbf;cursor:pointer}.filter-actions{margin-left:auto;display:flex;gap:6px}.btn{height:32px;padding:0 13px;border:1px solid var(--border);border-radius:3px;background:#fff;color:#434343;cursor:pointer}.btn:hover{border-color:var(--primary);color:var(--primary)}.btn:focus-visible,.link-btn:focus-visible,.org-link:focus-visible{outline:2px solid rgba(22,119,255,.35);outline-offset:2px}.btn-primary{border-color:var(--primary);background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-hover);color:#fff}.btn-icon{width:32px;padding:0;display:grid;place-items:center;color:var(--primary);border-color:var(--primary)}
+    .toolbar{height:44px;padding:0 6px;display:flex;align-items:center;justify-content:space-between;background:#f5f8ff;border-bottom:1px solid #e6ebf2}.toolbar-group{display:flex;align-items:center;gap:16px}.toolbar-label{color:var(--primary);font-weight:600}.link-btn{border:0;background:transparent;color:var(--primary);cursor:pointer;padding:6px 0}.link-btn:hover{text-decoration:underline}.edit-icon{width:28px;height:28px;border:1px solid var(--primary);border-radius:50%;display:grid;place-items:center;color:var(--primary);background:#fff;cursor:pointer}
+    .table-wrap{height:calc(100vh - 216px);min-height:420px;overflow:auto;background:#fff;border:1px solid #e5e7eb;border-top:0}.org-table{width:100%;min-width:1180px;border-collapse:collapse;table-layout:fixed}.org-table th{position:sticky;top:0;z-index:2;height:36px;padding:0 10px;background:#fafafa;border-right:1px solid #eee;border-bottom:1px solid var(--border);font-weight:600;text-align:left}.org-table td{height:36px;padding:6px 10px;border-right:1px solid #eee;border-bottom:1px solid #e5e5e5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.org-table tbody tr:hover{background:#f5f8ff}.org-table tbody tr.selected{background:#e6f4ff}.select-col{width:56px;text-align:center!important}.code-col{width:150px}.name-col{width:360px}.status-col{width:190px}.flag-col{width:180px}.time-col{width:220px}.row-radio{width:17px;height:17px;margin:0;accent-color:var(--primary);cursor:pointer}.org-link{border:0;background:transparent;padding:0;color:#0958d9;cursor:pointer;text-align:left;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.org-link:hover{text-decoration:underline;color:var(--primary)}.status-tag{display:inline-flex;align-items:center;height:22px;padding:0 7px;border-radius:3px;color:#389e0d;background:#f6ffed;border:1px solid #b7eb8f}.status-tag.off{color:#8c8c8c;background:#fafafa;border-color:#d9d9d9}
+    .pagination{height:38px;padding:0 10px;display:flex;align-items:center;justify-content:flex-end;gap:8px;background:#fff;border:1px solid #e5e7eb;border-top:0;color:#595959}.page-current{width:28px;height:28px;border:1px solid var(--primary);display:grid;place-items:center;color:var(--primary);background:#fff}.page-arrow{border:0;background:transparent;color:#bfbfbf;font-size:20px}.page-size{height:28px;border:1px solid var(--border);background:#fff;color:#595959}
+    .toast{position:fixed;left:50%;top:96px;z-index:500;transform:translate(-50%,-10px);padding:9px 14px;border-radius:4px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.16);opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:1100px){.nav span:nth-child(-n+4){display:none}.filter-bar{gap:12px}.filter-input{width:220px}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">跳到主要内容</a>
+  <header class="topbar">
+    <div class="brand"><div class="brand-logo">咸</div><span class="brand-name" onclick="location.href='MPM-工作台-首页.html'">咸亨国际主数据管理平台</span><button class="switch-btn" type="button" onclick="location.href='index.html'">切换系统</button></div>
+    <nav class="nav" aria-label="顶部导航"><span>消息通知</span><span>价格审核</span><span>版本更新</span><span>推送ERP</span><span>管理模块</span><span>任务中心</span><span><i class="avatar">管</i>管理员</span></nav>
+  </header>
+  <div class="tabs"><div class="tab">使用组织 <span class="tab-close" aria-hidden="true">×</span></div><div class="tabs-clear">清除</div></div>
+  <main id="mainContent">
+    <section class="filter-bar" aria-label="筛选条件">
+      <span class="filter-title">筛选：</span>
+      <div class="filter-item"><label for="orgCodeFilter">组织编码</label><span class="input-wrap"><input class="filter-input" id="orgCodeFilter" placeholder="请输入"><button class="input-clear" type="button" aria-label="清空组织编码" onclick="clearFilter('orgCodeFilter')">×</button></span></div>
+      <div class="filter-item"><label for="orgNameFilter">组织名称</label><span class="input-wrap"><input class="filter-input" id="orgNameFilter" placeholder="请输入"><button class="input-clear" type="button" aria-label="清空组织名称" onclick="clearFilter('orgNameFilter')">×</button></span></div>
+      <div class="filter-actions"><button class="btn btn-icon" type="button" aria-label="编辑筛选条件" title="编辑筛选条件"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button class="btn btn-primary" type="button" onclick="filterOrganizations()">查询</button><button class="btn" type="button" onclick="resetFilters()">重置</button><button class="btn" type="button" aria-label="展开更多筛选">⌄</button></div>
+    </section>
+    <div class="toolbar"><div class="toolbar-group"><span class="toolbar-label">操作：</span><button class="link-btn" type="button" onclick="refreshOrganizations()">刷新</button></div><div class="toolbar-group"><button class="link-btn" type="button" onclick="showToast('组织同步任务已提交')">同步组织</button><button class="link-btn" type="button" onclick="showToast('分配关系已更新')">分配关系更新</button><button class="edit-icon" type="button" aria-label="编辑选中的组织" onclick="openSelectedOrganization()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button></div></div>
+    <div class="table-wrap" role="region" aria-label="使用组织列表" tabindex="0">
+      <table class="org-table"><thead><tr><th class="select-col"></th><th class="code-col">组织编码</th><th class="name-col">组织名称</th><th class="status-col">组织状态</th><th class="flag-col">可为货主</th><th class="flag-col">可被分配</th><th class="time-col">同步时间</th></tr></thead><tbody id="orgTableBody"></tbody></table>
+    </div>
+    <div class="pagination"><span id="totalText">共 0 条</span><button class="page-arrow" type="button" disabled>‹</button><span class="page-current">1</span><button class="page-arrow" type="button" disabled>›</button><select class="page-size" aria-label="每页条数"><option>25 条/页</option><option>50 条/页</option></select></div>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    const organizations=[
+      {code:'1087',name:'浙江中标卓越认证有限公司',status:'已启用',owner:'是',assign:'是',time:'2026-07-01 11:35:48'},
+      {code:'1084',name:'杭州浙创愿景管理咨询合伙企业（有限合伙）',status:'已启用',owner:'否',assign:'否',time:'2026-04-01 13:11:51'},
+      {code:'1085',name:'浙创智元（杭州）科技有限公司',status:'已启用',owner:'是',assign:'是',time:'2025-11-14 10:09:30'},
+      {code:'1083',name:'杭州威亨国际数字科技有限公司',status:'已启用',owner:'是',assign:'是',time:'2025-10-23 16:06:55'},
+      {code:'1082',name:'南京浙创立苗管理咨询合伙企业（有限合伙）',status:'已启用',owner:'否',assign:'否',time:'2024-10-09 15:52:56'},
+      {code:'1081',name:'江苏浙创赛扬安全技术有限公司',status:'已启用',owner:'是',assign:'是',time:'2024-10-09 15:52:56'},
+      {code:'1076',name:'嘉兴浙创兴能技术有限公司杭州分公司',status:'已启用',owner:'否',assign:'否',time:'2024-08-01 08:50:40'},
+      {code:'1075',name:'浙江咸亨创新产业中心有限公司杭州分公司',status:'已启用',owner:'否',assign:'否',time:'2024-08-01 08:50:40'},
+      {code:'1074',name:'杭州浙创立坤管理咨询合伙企业（有限合伙）',status:'已启用',owner:'否',assign:'否',time:'2024-08-01 08:50:40'},
+      {code:'1065',name:'杭州咸亨国际应急科技有限公司',status:'已启用',owner:'否',assign:'否',time:'2024-08-01 08:50:40'},
+      {code:'1058',name:'杭州古拱野区赛孚救援队',status:'已启用',owner:'否',assign:'否',time:'2024-08-01 08:50:40'},
+      {code:'1055',name:'杭州市上城区赛孚救援队',status:'已启用',owner:'否',assign:'否',time:'2024-08-01 08:50:40'},
+      {code:'1033',name:'杭州市赛孚职业技能培训学校',status:'已启用',owner:'否',assign:'否',time:'2024-08-01 08:50:39'},
+      {code:'1028',name:'T&IElectricGmbH',status:'已启用',owner:'否',assign:'否',time:'2024-08-01 08:50:39'},
+      {code:'1024',name:'浙江万疆兴驰专用车辆有限公司杭州分公司',status:'已启用',owner:'否',assign:'否',time:'2024-08-01 08:50:39'},
+      {code:'1023',name:'杭州市咸亨电力职业技能培训学校',status:'已停用',owner:'否',assign:'否',time:'2024-08-01 08:50:39'},
+      {code:'1080',name:'河南正博电力科技有限公司',status:'已启用',owner:'是',assign:'是',time:'2024-07-30 14:02:08'},
+      {code:'1066',name:'咸亨国际秦晋城（杭州）科技发展有限公司',status:'已启用',owner:'是',assign:'是',time:'2024-02-27 08:33:03'},
+      {code:'1071',name:'嘉兴浙创兴能技术有限公司',status:'已启用',owner:'是',assign:'是',time:'2024-02-27 08:33:03'},
+      {code:'1070',name:'咸亨国际（杭州）院前救护研究中心有限公司',status:'已启用',owner:'是',assign:'是',time:'2024-02-27 08:33:03'},
+      {code:'1048',name:'咸亨核电器材（上海）有限公司',status:'已启用',owner:'是',assign:'是',time:'2024-02-27 08:33:03'},
+      {code:'1022',name:'杭州贝特设备制造有限公司海宁分公司',status:'已启用',owner:'是',assign:'是',time:'2024-02-27 08:33:02'},
+      {code:'1019',name:'杭州咸亨校准检测技术有限公司',status:'已启用',owner:'是',assign:'是',time:'2024-02-27 08:33:02'},
+      {code:'1021',name:'贝特（杭州）工业机械有限公司海宁分公司',status:'已启用',owner:'是',assign:'是',time:'2024-02-27 08:33:02'},
+      {code:'1015',name:'浙江贝工设备制造有限公司',status:'已启用',owner:'是',assign:'是',time:'2024-02-27 08:33:02'}
+    ];
+    let selectedOrganization=null;
+    function renderOrganizations(rows){const body=document.getElementById('orgTableBody');body.innerHTML='';rows.forEach(org=>{const tr=document.createElement('tr');tr.innerHTML='<td class="select-col"><input class="row-radio" type="radio" name="organization" aria-label="选择'+org.name+'"></td><td>'+org.code+'</td><td><button class="org-link" type="button" title="'+org.name+'">'+org.name+'</button></td><td><span class="status-tag '+(org.status==='已停用'?'off':'')+'">'+org.status+'</span></td><td>'+org.owner+'</td><td>'+org.assign+'</td><td>'+org.time+'</td>';const select=()=>{document.querySelectorAll('#orgTableBody tr').forEach(row=>row.classList.remove('selected'));tr.classList.add('selected');tr.querySelector('input').checked=true;selectedOrganization=org};tr.addEventListener('click',select);tr.querySelector('input').addEventListener('click',event=>{event.stopPropagation();select()});tr.querySelector('.org-link').addEventListener('click',event=>{event.stopPropagation();openOrganization(org)});body.appendChild(tr)});document.getElementById('totalText').textContent='共 '+rows.length+' 条';}
+    function filterOrganizations(){const code=document.getElementById('orgCodeFilter').value.trim();const name=document.getElementById('orgNameFilter').value.trim().toLowerCase();renderOrganizations(organizations.filter(org=>(!code||org.code.includes(code))&&(!name||org.name.toLowerCase().includes(name))));}
+    function resetFilters(){document.getElementById('orgCodeFilter').value='';document.getElementById('orgNameFilter').value='';selectedOrganization=null;renderOrganizations(organizations)}
+    function clearFilter(id){document.getElementById(id).value='';document.getElementById(id).focus()}
+    function refreshOrganizations(){renderOrganizations(organizations);showToast('使用组织列表已刷新')}
+    function openOrganization(org){const params=new URLSearchParams(org);location.href='MPM-系统管理-使用组织详情.html?'+params.toString()}
+    function openSelectedOrganization(){if(!selectedOrganization){showToast('请先选择一个使用组织');return}openOrganization(selectedOrganization)}
+    function showToast(text){const toast=document.getElementById('toast');toast.textContent=text;toast.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.classList.remove('show'),2200)}
+    document.querySelectorAll('.filter-input').forEach(input=>input.addEventListener('keydown',event=>{if(event.key==='Enter')filterOrganizations()}));
+    renderOrganizations(organizations);
+  </script>
+  <script src="mpm-topnav-links.js"></script>
+</body>
+</html>

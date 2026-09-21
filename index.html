@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>咸亨原型预览门户 · MPM / SCP / 商城</title>
+  <title>咸亨原型预览门户 · MPM / OMS / SCP / CRM / 商城</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#f4f6fb;color:#1a1a1a;min-height:100vh;padding:32px 20px 48px;}
@@ -12,15 +12,17 @@
     .head .badge{display:inline-block;background:#e8f4ff;color:#1677ff;font-size:12px;padding:3px 12px;border-radius:20px;margin-bottom:12px;font-weight:500;}
     .head h1{font-size:24px;font-weight:600;margin-bottom:8px;}
     .head p{font-size:14px;color:#888;}
-    /* 顶部四入口导航 */
-    .anchors{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:24px 0 36px;}
+    /* 顶部系统入口导航 */
+    .anchors{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0 36px;}
     .anchor{display:flex;align-items:center;gap:12px;padding:16px 18px;border-radius:12px;text-decoration:none;color:#fff;transition:.2s;box-shadow:0 4px 14px rgba(0,0,0,.06);}
     .anchor:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.12);}
     .anchor .ic{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
     .anchor .t{font-size:15px;font-weight:600;}
     .anchor .d{font-size:11px;opacity:.85;margin-top:2px;}
     .a-mpm{background:linear-gradient(135deg,#1677ff,#4096ff);}
+    .a-oms{background:linear-gradient(135deg,#2386aa,#48a8cf);}
     .a-scp{background:linear-gradient(135deg,#13a8a8,#2bc4b4);}
+    .a-crm{background:linear-gradient(135deg,#2878df,#31a6ef);}
     .a-mall{background:linear-gradient(135deg,#fa8c16,#ffa940);}
     .a-doc{background:linear-gradient(135deg,#722ed1,#9254de);}
     /* 分区 */
@@ -31,7 +33,7 @@
     .sec-head .tag{font-size:11px;color:#888;border:1px solid #e8e8e8;border-radius:20px;padding:1px 9px;margin-left:4px;}
     .sec-desc{font-size:13px;color:#999;margin:2px 0 18px 46px;line-height:1.6;}
     .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-    @media(max-width:880px){.grid{grid-template-columns:repeat(2,1fr);}.anchors{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr);}.anchors{grid-template-columns:repeat(2,1fr);}}
     .card{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;border:1px solid #eef0f4;border-radius:9px;text-decoration:none;color:#1a1a1a;transition:.18s;background:#fff;}
     .card:hover{border-color:#1677ff;background:#f5faff;}
     .card .cic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
@@ -49,14 +51,16 @@
   <div class="wrap">
     <div class="head">
       <div class="badge">原型预览门户</div>
-      <h1>咸亨集团原型预览 · MPM / SCP / 咸亨商城</h1>
-      <p>三套系统的原型按板块独立入口，互不混淆；点击下方板块快速定位</p>
+      <h1>咸亨集团原型预览 · MPM / OMS / SCP / CRM / 咸亨商城</h1>
+      <p>各业务系统原型按板块独立入口，互不混淆；点击下方板块快速定位</p>
     </div>
 
-    <!-- 四入口 -->
+    <!-- 系统入口 -->
     <div class="anchors">
       <a class="anchor a-mpm" href="#mpm"><div class="ic">🗂️</div><div><div class="t">MPM 入口</div><div class="d">物料主数据管理后台</div></div></a>
+      <a class="anchor a-oms" href="OMS-订单管理-订单列表.html"><div class="ic">OMS</div><div><div class="t">OMS 入口</div><div class="d">订单履约管理平台</div></div></a>
       <a class="anchor a-scp" href="#scp"><div class="ic">🤝</div><div><div class="t">SCP 入口</div><div class="d">供应商协同平台</div></div></a>
+      <a class="anchor a-crm" href="CRM-工作台-首页.html"><div class="ic">CRM</div><div><div class="t">CRM 入口</div><div class="d">客户关系管理系统</div></div></a>
       <a class="anchor a-mall" href="#mall"><div class="ic">🛒</div><div><div class="t">咸亨商城入口</div><div class="d">商城前台</div></div></a>
       <a class="anchor a-doc" href="#doc"><div class="ic">📖</div><div><div class="t">其他解释说明</div><div class="d">流程图与说明文档</div></div></a>
     </div>
@@ -66,24 +70,33 @@
       <div class="sec-head"><div class="dot" style="background:#1677ff;">🗂️</div><h2>MPM 入口</h2><span class="tag">物料主数据管理平台（后台）</span></div>
       <div class="sec-desc">咸亨内部物料主数据管理后台：物料创建/审核、资质规则配置与资质资料管理、产品奖励管理、任务中心等。与 SCP 供应商前台完全区分。</div>
       <div class="grid">
-        <a class="card" href="oms-mpm-物料工作台原型.html"><div class="cic ic-blue">🏠</div><div><div class="ct">物料工作台</div><div class="cd">定向物料生成主入口</div></div></a>
-        <a class="card" href="物料列表.html"><div class="cic ic-blue">列</div><div><div class="ct">物料列表</div><div class="cd">物料主数据列表 / 筛选 / 自定义导出</div></div></a>
-        <a class="card" href="批量新增物料列表.html"><div class="cic ic-blue">批</div><div><div class="ct">批量新增物料列表</div><div class="cd">两步制暂存清单 / 关联资质 / 提交审核</div></div></a>
-        <a class="card" href="暂存列表.html"><div class="cic ic-blue">暂</div><div><div class="ct">暂存列表</div><div class="cd">草稿物料暂存与提交</div></div></a>
-        <a class="card" href="待我审核.html"><div class="cic ic-orange">审</div><div><div class="ct">待我审核</div><div class="cd">待审核物料列表</div></div></a>
-        <a class="card" href="我发起的.html"><div class="cic ic-green">📤</div><div><div class="ct">我发起的</div><div class="cd">我发起的物料申请列表</div></div></a>
-        <a class="card" href="审核结果.html"><div class="cic ic-purple">✅</div><div><div class="ct">审核结果</div><div class="cd">物料审核结果查看</div></div></a>
-        <a class="card" href="物料审核详情.html"><div class="cic ic-blue">🔍</div><div><div class="ct">物料审核详情</div><div class="cd">单条物料审核详情</div></div></a>
-        <a class="card" href="物料审核-AI资质审核子项.html"><div class="cic ic-blue">🤖</div><div><div class="ct">物料审核 · AI 资质审核子项</div><div class="cd">AI 建议 + 资料附件资质表格 + 决策弹窗</div></div></a>
-        <a class="card" href="资质配置-编辑.html"><div class="cic ic-green">⚙️</div><div><div class="ct">资质配置 · 编辑</div><div class="cd">四级类目按货主配置资质要求规则</div></div></a>
-        <a class="card" href="资质规则批量维护-含任务详情.html"><div class="cic ic-green">📑</div><div><div class="ct">资质规则批量维护</div><div class="cd">【类目-资质配置】模板 + 任务详情</div></div></a>
-        <a class="card" href="批增批改资质文件.html"><div class="cic ic-green">📎</div><div><div class="ct">批增批改资质文件</div><div class="cd">Excel 三列 upsert 物料↔资质关联</div></div></a>
-        <a class="card" href="资质资料导出-我的导出任务.html"><div class="cic ic-orange">📤</div><div><div class="ct">资质资料导出 · 我的导出任务</div><div class="cd">资质 URL 清单 Excel 异步导出</div></div></a>
-        <a class="card" href="文件管理.html"><div class="cic ic-gray">🗃️</div><div><div class="ct">文件管理</div><div class="cd">OSS 文件管理</div></div></a>
-        <a class="card" href="任务中心.html"><div class="cic ic-green">📋</div><div><div class="ct">任务中心</div><div class="cd">全局异步任务状态 / 进度 / 下载</div></div></a>
-        <a class="card" href="咸亨产品奖励管理列表.html"><div class="cic ic-purple">🎁</div><div><div class="ct">咸亨产品奖励管理</div><div class="cd">奖励配置列表与状态总览</div></div></a>
-        <a class="card" href="咸亨产品奖励管理-批量导入.html"><div class="cic ic-orange">📥</div><div><div class="ct">奖励管理 · 批量导入</div><div class="cd">模板下载 / 上传 / 校验结果</div></div></a>
-        <a class="card" href="咸亨产品奖励管理操作历史.html"><div class="cic ic-gray">🕑</div><div><div class="ct">奖励管理 · 操作历史</div><div class="cd">奖励变更操作历史</div></div></a>
+        <a class="card" href="MPM-工作台-首页.html"><div class="cic ic-blue">🏠</div><div><div class="ct">MPM-工作台-首页</div><div class="cd">定向物料生成主入口</div></div></a>
+        <a class="card" href="MPM-价格设置-价格计算验证.html"><div class="cic ic-blue">价</div><div><div class="ct">MPM-价格设置-价格计算验证</div><div class="cd">价格数据录入 / 计价公式 / 流程路径高亮</div></div></a>
+        <a class="card" href="MPM-物料-物料列表.html"><div class="cic ic-blue">列</div><div><div class="ct">MPM-物料-物料列表</div><div class="cd">物料主数据列表 / 筛选 / 自定义导出</div></div></a>
+        <a class="card" href="MPM-物料-批量新增.html"><div class="cic ic-blue">批</div><div><div class="ct">MPM-物料-批量新增</div><div class="cd">两步制暂存清单 / 关联资质 / 提交审核</div></div></a>
+        <a class="card" href="MPM-物料-暂存列表.html"><div class="cic ic-blue">暂</div><div><div class="ct">MPM-物料-暂存列表</div><div class="cd">草稿物料暂存与提交</div></div></a>
+        <a class="card" href="MPM-物料-待我审核.html"><div class="cic ic-orange">审</div><div><div class="ct">MPM-物料-待我审核</div><div class="cd">待审核物料列表</div></div></a>
+        <a class="card" href="MPM-物料-我发起的.html"><div class="cic ic-green">📤</div><div><div class="ct">MPM-物料-我发起的</div><div class="cd">我发起的物料申请列表</div></div></a>
+        <a class="card" href="MPM-物料-审核结果.html"><div class="cic ic-purple">✅</div><div><div class="ct">MPM-物料-审核结果</div><div class="cd">物料审核结果查看</div></div></a>
+        <a class="card" href="MPM-物料-新增物料-入口跳转.html"><div class="cic ic-blue">🔍</div><div><div class="ct">MPM-物料-新增物料-入口跳转</div><div class="cd">单条物料审核详情</div></div></a>
+        <a class="card" href="MPM-物料-待我审核-物料审核详情-AI资质审核.html"><div class="cic ic-blue">🤖</div><div><div class="ct">MPM-物料-待我审核-物料审核详情-AI资质审核</div><div class="cd">AI 建议 + 资料附件资质表格 + 决策弹窗</div></div></a>
+        <a class="card" href="MPM-类目属性-类目列表-资质配置-编辑.html"><div class="cic ic-green">⚙️</div><div><div class="ct">MPM-类目属性-类目列表-资质配置-编辑</div><div class="cd">四级类目按货主配置资质要求规则</div></div></a>
+        <a class="card" href="MPM-类目属性-类目列表-资质规则批量维护.html"><div class="cic ic-green">📑</div><div><div class="ct">MPM-类目属性-类目列表-资质规则批量维护</div><div class="cd">【类目-资质配置】模板 + 任务详情</div></div></a>
+        <a class="card" href="MPM-物料-物料列表-批增批改资质文件.html"><div class="cic ic-green">📎</div><div><div class="ct">MPM-物料-物料列表-批增批改资质文件</div><div class="cd">Excel 三列 upsert 物料↔资质关联</div></div></a>
+        <a class="card" href="MPM-物料-物料列表-我的导出任务-资质资料导出.html"><div class="cic ic-orange">📤</div><div><div class="ct">MPM-物料-物料列表-我的导出任务-资质资料导出</div><div class="cd">资质 URL 清单 Excel 异步导出</div></div></a>
+        <a class="card" href="MPM-文件管理-文件列表.html"><div class="cic ic-gray">🗃️</div><div><div class="ct">MPM-文件管理-文件列表</div><div class="cd">OSS 文件管理</div></div></a>
+        <a class="card" href="MPM-任务中心-任务列表.html"><div class="cic ic-green">📋</div><div><div class="ct">MPM-任务中心-任务列表</div><div class="cd">全局异步任务状态 / 进度 / 下载</div></div></a>
+        <a class="card" href="MPM-咸亨产品奖励管理-奖励配置列表.html"><div class="cic ic-purple">🎁</div><div><div class="ct">MPM-咸亨产品奖励管理-奖励配置列表</div><div class="cd">奖励配置列表与状态总览</div></div></a>
+        <a class="card" href="MPM-咸亨产品奖励管理-奖励配置列表-批量导入.html"><div class="cic ic-orange">📥</div><div><div class="ct">MPM-咸亨产品奖励管理-奖励配置列表-批量导入</div><div class="cd">模板下载 / 上传 / 校验结果</div></div></a>
+      </div>
+    </div>
+
+    <!-- OMS -->
+    <div class="section" id="oms">
+      <div class="sec-head"><div class="dot" style="background:#3697bd;">OMS</div><h2>OMS 入口</h2><span class="tag">咸亨国际订单管理与履约平台</span></div>
+      <div class="sec-desc">面向订单运营、履约人员和供应商管理人员，集中处理订单查询、派单、转单、完结、导入与导出。</div>
+      <div class="grid">
+        <a class="card" href="OMS-订单管理-订单列表.html"><div class="cic ic-blue">OMS</div><div><div class="ct">OMS-订单管理-订单列表</div><div class="cd">订单列表 / 项目筛选 / 批量派单 / 转单 / 完结订单</div></div></a>
       </div>
     </div>
 
@@ -92,32 +105,42 @@
       <div class="sec-head"><div class="dot" style="background:#13a8a8;">🤝</div><h2>SCP 入口</h2><span class="tag">咸亨国际供应商协同平台（前台）</span></div>
       <div class="sec-desc">供应商 / 采购员在 SCP 自己的界面创建物料并上传资质文件（底层调 MPM 文件上传 API）。与 MPM 后台工作台完全独立。</div>
       <div class="grid">
-        <a class="card" href="原型-SCP新增物料/SCP-单个新增物料.html"><div class="cic ic-green">➕</div><div><div class="ct">SCP · 单个新增物料</div><div class="cd">长表单 + 资质资料(CCC/质检/检疫/LA/自愿性) + 图文</div></div></a>
-        <a class="card" href="原型-SCP新增物料/SCP-批量新增物料.html"><div class="cic ic-green">📦</div><div><div class="ct">SCP · 批量新增物料</div><div class="cd">关联项目 + 模板下载 + 上传图片/导入物料</div></div></a>
+        <a class="card" href="原型-SCP新增物料/SCP-物料管理-新增物料-单个新增.html"><div class="cic ic-green">➕</div><div><div class="ct">SCP-物料管理-新增物料-单个新增</div><div class="cd">长表单 + 资质资料(CCC/质检/检疫/LA/自愿性) + 图文</div></div></a>
+        <a class="card" href="原型-SCP新增物料/SCP-物料管理-新增物料-批量新增.html"><div class="cic ic-green">📦</div><div><div class="ct">SCP-物料管理-新增物料-批量新增</div><div class="cd">关联项目 + 模板下载 + 上传图片/导入物料</div></div></a>
       </div>
     </div>
 
-    <!-- ③ 咸亨商城 -->
+    <!-- ③ CRM -->
+    <div class="section" id="crm">
+      <div class="sec-head"><div class="dot" style="background:#2878df;">CRM</div><h2>CRM 入口</h2><span class="tag">威亨CRM客户关系管理系统</span></div>
+      <div class="sec-desc">面向销售员和销售助理的客户、项目及询价工作台，后续承载跨系统项目物料查询入口。</div>
+      <div class="grid">
+        <a class="card" href="CRM-工作台-首页.html"><div class="cic ic-blue">CRM</div><div><div class="ct">CRM-工作台-首页</div><div class="cd">个人概览 / 客户管理 / 项目管理 / 申请管理</div></div></a>
+      </div>
+    </div>
+
+    <!-- ④ 咸亨商城 -->
     <div class="section" id="mall">
       <div class="sec-head"><div class="dot" style="background:#fa8c16;">🛒</div><h2>咸亨商城入口</h2><span class="tag">商城前台</span></div>
       <div class="sec-desc">咸亨商城前台展示（用户主要为咸亨会员 / 内部销售员）。</div>
       <div class="grid">
-        <a class="card" href="咸亨商城商品详情-奖励展示原型.html"><div class="cic ic-orange">🏷️</div><div><div class="ct">商城商品详情 · 奖励展示</div><div class="cd">按 PRD 接口字段展示奖励 Banner（三类奖励 / 即将到期 / 无奖励）</div></div></a>
+        <a class="card" href="咸亨商城-商品详情-奖励展示.html"><div class="cic ic-orange">🏷️</div><div><div class="ct">咸亨商城-商品详情-奖励展示</div><div class="cd">按 PRD 接口字段展示奖励 Banner（三类奖励 / 即将到期 / 无奖励）</div></div></a>
       </div>
     </div>
 
-    <!-- ④ 其他解释说明 -->
+    <!-- ⑤ 其他解释说明 -->
     <div class="section" id="doc">
       <div class="sec-head"><div class="dot" style="background:#722ed1;">📖</div><h2>其他解释说明</h2><span class="tag">流程图 / 说明</span></div>
       <div class="sec-desc">业务流程图与跨系统说明，辅助评审理解。</div>
       <div class="grid">
-        <a class="card" href="批量任务审核流程图.html"><div class="cic ic-purple">🔀</div><div><div class="ct">批量任务审核业务流程图</div><div class="cd">业务人员→产业管理→考核→执行；H0 + 钉钉通道</div></div></a>
-        <a class="card" href="物料列表导出H0审批流程图.html"><div class="cic ic-purple">审</div><div><div class="ct">物料列表导出 H0 审批流程图</div><div class="cd">导出审批 / 部门经理必审 / 追加审核 / 驳回</div></div></a>
+        <a class="card" href="MPM-咸亨产品奖励管理-批量任务审核流程图.html"><div class="cic ic-purple">🔀</div><div><div class="ct">MPM-咸亨产品奖励管理-批量任务审核流程图</div><div class="cd">业务人员→产业管理→考核→执行；H0 + 钉钉通道</div></div></a>
+        <a class="card" href="MPM-物料-物料列表-导出-H0审批流程图.html"><div class="cic ic-purple">审</div><div><div class="ct">MPM-物料-物料列表-导出-H0审批流程图</div><div class="cd">导出审批 / 部门经理必审 / 追加审核 / 驳回</div></div></a>
+        <a class="card" href="MPM-价格设置-价格计算验证.html"><div class="cic ic-orange">价</div><div><div class="ct">MPM-价格设置-价格计算验证</div><div class="cd">商城售价数据录入 / 价格公式验证 / 计算过程核对</div></div></a>
         <a class="card" href="原型-SCP新增物料/README.md"><div class="cic ic-gray">📄</div><div><div class="ct">SCP 新增物料原型 · 说明</div><div class="cd">文件清单、交互范围、与 PRD 的对应</div></div></a>
       </div>
       <div style="border-top:1px dashed #eee;margin:18px 0 14px;"></div>
       <div class="note">
-        <div class="sys-line"><div class="k">系统关系</div><div><b>MPM</b>（物料主数据管理后台）是源头主数据；<b>SCP</b>（供应商协同平台）是供应商/采购员的前台入口，通过接口把物料与资质推送到 MPM；<b>咸亨商城</b>是面向会员/内部销售员的前台。三者数据单向流转：SCP → MPM → 咸亨商城。</div></div>
+        <div class="sys-line"><div class="k">系统关系</div><div><b>MPM</b>（物料主数据管理后台）是源头主数据；<b>OMS</b>（订单履约平台）承接订单与履约管理；<b>SCP</b>（供应商协同平台）是服务商物料提报与项目物料查询入口；<b>CRM</b>（客户关系管理系统）是销售员、销售助理的项目业务入口；<b>咸亨商城</b>是面向会员和内部销售的商品前台。</div></div>
         <div class="sys-line"><div class="k">资质资料</div><div>SCP「单个新增物料」的资质资料区块已对齐 MPM v4.8.0 资质类型（CCC 试验报告 / 质检报告 / 检验检疫 / LA / 其他自愿性认证），上传后随物料接口带 <code>qualFiles[]</code> 入参落 MPM OSS。</div></div>
         <div class="sys-line"><div class="k">说明</div><div>本门户仅为原型预览，所有页面均为纯前端模拟，不含真实后端、上传与数据持久化。</div></div>
       </div>
@@ -125,5 +148,6 @@
 
     <div class="footer">咸亨集团原型预览门户 · 仅供内部评审使用</div>
   </div>
+<script src="mpm-topnav-links.js"></script>
 </body>
 </html>

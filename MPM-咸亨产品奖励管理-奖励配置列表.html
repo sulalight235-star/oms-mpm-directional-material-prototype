@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>咸亨产品奖励管理 - 列表页</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --primary: #1677ff;
+      --primary-hover: #4096ff;
+      --primary-bg: #e6f4ff;
+      --success: #52c41a;
+      --warning: #faad14;
+      --error: #ff4d4f;
+      --text-title: rgba(0,0,0,0.88);
+      --text-body: rgba(0,0,0,0.65);
+      --text-sub: rgba(0,0,0,0.45);
+      --border: #d9d9d9;
+      --border-light: #f0f0f0;
+      --bg-layout: #f5f5f5;
+      --bg-container: #ffffff;
+      --bg-table-head: #fafafa;
+      --radius: 6px;
+      --radius-sm: 4px;
+      --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 1px 6px rgba(0,0,0,0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      font-size: 14px;
+      background: var(--bg-layout);
+      color: var(--text-body);
+      min-width: 1280px;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+
+    /* ── 顶栏 ── */
+    .topbar {
+      height: 48px;
+      background: #001529;
+      color: rgba(255,255,255,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      position: sticky;
+      top: 0;
+      z-index: 120;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      background: var(--primary);
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .brand-name { font-size: 16px; font-weight: 600; color: #fff; white-space: nowrap; }
+    .switch-btn {
+      border: 1px solid rgba(255,255,255,0.25);
+      background: transparent;
+      color: rgba(255,255,255,0.75);
+      border-radius: var(--radius);
+      padding: 3px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      line-height: 22px;
+      transition: all .2s;
+    }
+    .switch-btn:hover { border-color: var(--primary); color: #fff; }
+    .nav-menu { display: flex; align-items: center; height: 100%; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 13px;
+      height: 100%;
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      cursor: pointer;
+      position: relative;
+      white-space: nowrap;
+      transition: .2s;
+    }
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--error); position: absolute; top: 10px; right: 7px; border: 1.5px solid #001529; }
+    .nav-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); margin: 0 3px; }
+    .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+
+    /* ── 标签页 ── */
+    .tabs-bar {
+      height: 36px;
+      background: var(--bg-container);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      padding: 0 8px 0 0;
+      position: sticky;
+      top: 48px;
+      z-index: 110;
+    }
+    .tabs-list { display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
+    .tabs-list::-webkit-scrollbar { display: none; }
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 14px;
+      font-size: 12px;
+      color: var(--text-sub);
+      cursor: pointer;
+      border-right: 1px solid var(--border-light);
+      white-space: nowrap;
+      transition: .2s;
+      position: relative;
+    }
+    .tab:hover { color: var(--text-body); background: #fafafa; }
+    .tab.active { color: var(--primary); background: var(--primary-bg); }
+    .tab.active::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--primary); }
+    .tab .cls { font-size: 10px; opacity: .5; padding: 2px; border-radius: 2px; }
+    .tab:hover .cls { opacity: .85; }
+    .tab .cls:hover { background: rgba(0,0,0,0.08); color: var(--error); }
+    .tabs-clear { display: flex; align-items: center; padding: 0 12px; font-size: 12px; color: var(--text-sub); cursor: pointer; border-left: 1px solid var(--border-light); }
+    .tabs-clear:hover { color: var(--primary); }
+
+    /* ── 主体 ── */
+    .page { padding: 12px 16px 24px; }
+
+    .filter-card {
+      background: var(--bg-container);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 8px;
+    }
+    .filter-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .filter-title { font-size: 13px; color: var(--text-title); font-weight: 600; }
+    .filter-tip { font-size: 12px; color: var(--text-sub); }
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(200px, 1fr));
+      gap: 12px 16px;
+      align-items: center;
+    }
+    .reward-filter-grid {
+      grid-template-columns: repeat(4, minmax(220px, 1fr));
+    }
+    .date-range-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      min-width: 0;
+    }
+    .date-range-group .f-input {
+      min-width: 0;
+    }
+    .date-range-sep {
+      color: var(--text-sub);
+      flex-shrink: 0;
+      font-size: 12px;
+    }
+    .filter-item { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .filter-item label { width: 86px; flex-shrink: 0; font-size: 13px; color: var(--text-body); }
+    .f-input, .f-select {
+      width: 100%;
+      height: 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0 11px;
+      font-size: 13px;
+      outline: none;
+      color: var(--text-body);
+      background: var(--bg-container);
+      transition: border .2s, box-shadow .2s;
+    }
+    .f-input:focus, .f-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(22,119,255,.1);
+    }
+    .filter-actions { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+
+    /* ── 按钮 ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 32px;
+      padding: 0 15px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      cursor: pointer;
+      transition: .2s;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      background: var(--bg-container);
+    }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+    .btn-default { color: var(--text-body); border-color: var(--border); }
+    .btn-default:hover { color: var(--primary); border-color: var(--primary); }
+    .btn-link {
+      color: var(--primary);
+      border: none;
+      padding: 0;
+      background: transparent;
+      height: auto;
+      cursor: pointer;
+    }
+    .btn-link:hover { text-decoration: underline; }
+
+    /* ── 列表容器 ── */
+    .table-panel {
+      background: var(--bg-container);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .summary-bar {
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .summary-main { display: flex; flex-direction: column; gap: 4px; }
+    .summary-title { font-size: 18px; color: var(--text-title); font-weight: 600; }
+    .summary-desc { font-size: 12px; color: var(--text-sub); }
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .export-dropdown {
+      position: relative;
+      display: inline-flex;
+    }
+    .export-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      min-width: 144px;
+      padding: 4px 0;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      background: var(--bg-container);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+      z-index: 100;
+    }
+    .export-menu[hidden] { display: none; }
+    .export-menu-item {
+      width: 100%;
+      height: 34px;
+      padding: 0 12px;
+      border: none;
+      background: transparent;
+      color: var(--text-body);
+      text-align: left;
+      cursor: pointer;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .export-menu-item:hover {
+      color: var(--primary);
+      background: var(--primary-bg);
+    }
+
+    /* ── 状态切换 ── */
+    .status-tabs {
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      background: var(--bg-container);
+      border-bottom: 1px solid var(--border-light);
+      flex-wrap: wrap;
+      gap: 0;
+    }
+    .status-tab {
+      height: 40px;
+      padding: 0 14px;
+      border: none;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: .2s;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: -1px;
+    }
+    .status-tab:hover { color: var(--text-body); }
+    .status-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: transparent;
+      font-weight: 600;
+    }
+    .status-tab .count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 18px;
+      min-width: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      font-size: 11px;
+      background: var(--border-light);
+      color: var(--text-sub);
+    }
+    .status-tab.active .count {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* ── 次要工具条（已选 + 查询标签） ── */
+    .sub-toolbar {
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .sub-toolbar-left { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-sub); flex-wrap: wrap; }
+    .sub-toolbar-right { display: flex; align-items: center; gap: 12px; }
+    .summary-tag {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 11px;
+      background: var(--primary-bg);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .selected-count {
+      font-size: 12px;
+      color: var(--text-body);
+    }
+    .selected-count strong { color: var(--primary); font-weight: 600; }
+
+    /* ── 表格 ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; min-width: 1580px; border-collapse: collapse; font-size: 13px; }
+    thead tr { background: var(--bg-table-head); }
+    thead th {
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-title);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      background: var(--bg-table-head);
+    }
+    tbody tr { border-bottom: 1px solid var(--border-light); transition: background .12s; }
+    tbody tr:hover { background: #fafafa; }
+    tbody td {
+      padding: 10px 12px;
+      vertical-align: middle;
+      color: var(--text-body);
+      white-space: nowrap;
+    }
+    tbody tr.row-error { background: #fff5f4; }
+    tbody tr.row-error:hover { background: #fff0ee; }
+    .td-link { color: var(--primary); cursor: pointer; }
+    .td-link:hover { text-decoration: underline; }
+    .muted { color: var(--text-sub); }
+    .price { font-variant-numeric: tabular-nums; color: var(--text-title); }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      border: 1px solid;
+      background: #fff;
+    }
+    .tag-blue { color: #096dd9; border-color: #91d5ff; background: #e6f7ff; }
+    .tag-orange { color: #d46b08; border-color: #ffd591; background: #fff7e6; }
+    .tag-green { color: var(--success); border-color: #b7eb8f; background: #f6ffed; }
+    .tag-red { color: var(--error); border-color: #ffa39e; background: #fff1f0; }
+    .tag-grey { color: var(--text-sub); border-color: #d9d9d9; background: #fafafa; }
+
+    /* ── 空态 ── */
+    .empty-state {
+      padding: 60px 20px 68px;
+      text-align: center;
+      color: var(--text-sub);
+    }
+    .empty-state .empty-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+    .empty-state .empty-title {
+      font-size: 14px;
+      color: var(--text-body);
+      margin-bottom: 6px;
+    }
+    .empty-state .empty-desc { font-size: 12px; margin-bottom: 16px; }
+
+    /* ── 分页 ── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border-light);
+      flex-wrap: wrap;
+    }
+    .pagination-left { font-size: 13px; color: var(--text-sub); }
+    .pagination-right { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .page-btn {
+      min-width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-container);
+      color: var(--text-body);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: .2s;
+      font-size: 13px;
+    }
+    .page-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .page-jump { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-body); }
+    .page-jump input,
+    .page-jump select {
+      width: 56px;
+      height: 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      text-align: center;
+      outline: none;
+      background: var(--bg-container);
+    }
+    .page-jump input:focus,
+    .page-jump select:focus { border-color: var(--primary); }
+
+    /* ── 全局消息条 ── */
+    .message-wrap {
+      position: fixed;
+      top: 56px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .message-item {
+      background: var(--bg-container);
+      border-radius: var(--radius);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12), 0 3px 6px rgba(0,0,0,0.08);
+      padding: 9px 12px;
+      font-size: 14px;
+      color: var(--text-body);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: .25s;
+      white-space: nowrap;
+      border-left: 3px solid var(--primary);
+    }
+    .message-item.show { opacity: 1; transform: translateY(0); }
+    .message-item.success { border-left-color: var(--success); }
+    .message-item.warning { border-left-color: var(--warning); }
+    .message-item.error { border-left-color: var(--error); }
+
+    .demo-tips-stack {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 380px;
+      max-width: calc(100vw - 32px);
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      z-index: 90;
+    }
+    .demo-tips {
+      flex-shrink: 0;
+      background: rgba(0,0,0,.80);
+      color: #fff;
+      padding: 12px 14px;
+      border-radius: 6px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.25);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .demo-tips-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .demo-tips-head .t {
+      color: #ffd666;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .demo-tips-toggle {
+      color: #fff;
+      opacity: .65;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .demo-tips-head:hover .demo-tips-toggle { opacity: 1; }
+    .demo-tips-body {
+      margin-top: 10px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    .demo-tips-body::-webkit-scrollbar { width: 6px; }
+    .demo-tips-body::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.28);
+      border-radius: 3px;
+    }
+    .demo-tips.collapsed { padding: 9px 14px; }
+    .demo-tips.collapsed .demo-tips-body { display: none; }
+    .demo-tips b { color: #ffd666; }
+    .demo-tips .ti { color: #95de64; }
+
+    @media (max-width: 1500px) {
+      .reward-filter-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+    }
+
+    /* ── 批量弹窗 ── */
+    .modal-mask {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 1000;
+    }
+    .modal-mask.show { display: flex; }
+    .bulk-modal {
+      width: 520px;
+      max-height: 80vh;
+      background: var(--bg-container);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .bulk-modal-header {
+      padding: 14px 18px;
+      display: flex; align-items: center;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 15px; font-weight: 600;
+      color: var(--text-title);
+    }
+    .bulk-modal-header .modal-close {
+      margin-left: auto;
+      cursor: pointer;
+      color: var(--text-sub);
+      font-size: 18px;
+      line-height: 1;
+      padding: 0 4px;
+    }
+    .bulk-modal-header .modal-close:hover { color: var(--text-title); }
+    .bulk-modal-body {
+      padding: 0;
+      overflow-y: auto;
+    }
+    .bulk-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 0;
+    }
+    .bulk-table thead th {
+      background: var(--bg-table-head);
+      color: var(--text-title);
+      font-weight: 600;
+      font-size: 13px;
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-light);
+      white-space: nowrap;
+    }
+    .bulk-table tbody td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 13px;
+      color: var(--text-body);
+      vertical-align: middle;
+      white-space: normal;
+      line-height: 1.55;
+    }
+    .bulk-table tbody tr:last-child td { border-bottom: none; }
+    .bulk-table .col-item    { width: 50%; }
+    .bulk-table .col-tpl     { width: 18%; }
+    .bulk-table .col-op      { width: 32%; }
+    .bulk-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .bulk-link {
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .bulk-link:hover { text-decoration: underline; }
+    .bulk-link.disabled { color: var(--text-sub); cursor: not-allowed; pointer-events: none; }
+    .file-name-tag {
+      display: inline-block;
+      max-width: 110px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: middle;
+      color: var(--text-sub);
+      font-size: 12px;
+      padding: 1px 6px;
+      background: #fafafa;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .change-log-modal {
+      width: 1040px;
+      max-width: calc(100vw - 48px);
+    }
+    .change-log-body { overflow: visible; }
+    .change-log-table-wrap {
+      padding: 22px 30px 10px;
+      overflow-x: auto;
+    }
+    .change-log-table {
+      min-width: 940px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .change-log-table thead th {
+      background: var(--bg-table-head);
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-title);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 11px 8px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .change-log-table tbody td {
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-size: 13px;
+      line-height: 1.55;
+      padding: 10px 8px;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+    .change-json-cell {
+      position: relative;
+      max-width: 260px;
+      cursor: default;
+    }
+    .change-json-code {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+      margin: 0;
+      color: var(--text-body);
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .json-tooltip {
+      position: fixed;
+      display: none;
+      z-index: 1300;
+      max-width: 520px;
+      max-height: 360px;
+      overflow: auto;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-container);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+      color: var(--text-body);
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-all;
+      pointer-events: none;
+    }
+    .change-log-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 6px 30px 22px;
+      color: var(--text-body);
+      font-size: 13px;
+    }
+    .change-log-pagination .page-current {
+      min-width: 24px;
+      height: 24px;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2px;
+    }
+    .change-log-pagination .page-arrow {
+      color: var(--text-sub);
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶栏 -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">咸</div>
+      <span class="brand-name" style="cursor:pointer;" onclick="location.href='MPM-工作台-首页.html'">咸亨国际主数据管理平台</span>
+      <button class="switch-btn" type="button" data-action="switch-system" onclick="window.location.href='index.html'">切换系统</button>
+    </div>
+    <nav class="nav-menu">
+      <div class="nav-item" data-name="消息通知">消息通知<span class="badge-dot"></span></div>
+      <div class="nav-item" data-name="价格审核">价格审核<span class="badge-dot"></span></div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-name="版本更新">版本更新</div>
+      <div class="nav-item" data-name="推送ERP">推送ERP</div>
+      <div class="nav-item" data-name="管理模块">管理模块</div>
+      <div class="nav-item" data-name="任务中心">任务中心</div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-name="管理员"><div class="user-avatar">管</div>管理员 ▾</div>
+    </nav>
+  </header>
+
+  <!-- 页签 -->
+  <div class="tabs-bar">
+    <div class="tabs-list">
+      <div class="tab" onclick="goPage('MPM-工作台-首页.html')">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab active" onclick="location.href='MPM-咸亨产品奖励管理-奖励配置列表.html'">咸亨产品奖励管理 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    </div>
+    <div class="tabs-clear" id="clearTabs">清除</div>
+  </div>
+
+  <!-- 主体 -->
+  <main class="page">
+    <!-- 筛选区 -->
+    <section class="filter-card">
+      <div class="filter-head">
+        <div class="filter-title">筛选条件</div>
+      </div>
+      <form id="rewardFilterForm" class="filter-grid reward-filter-grid" onsubmit="event.preventDefault();">
+        <div class="filter-item">
+          <label for="rewardCode">物料编码</label>
+          <input id="rewardCode" class="f-input" placeholder="多个编码用英文逗号分隔" />
+        </div>
+        <div class="filter-item">
+          <label for="rewardName">物料名称</label>
+          <input id="rewardName" class="f-input" placeholder="请输入物料名称" />
+        </div>
+        <div class="filter-item">
+          <label for="rewardType">奖励类型</label>
+          <select id="rewardType" class="f-select">
+            <option value="">全部</option>
+            <option>项目奖励</option>
+            <option>定额奖励</option>
+            <option>比例奖励</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="rewardStatus">配置状态</label>
+          <select id="rewardStatus" class="f-select">
+            <option value="">全部</option>
+            <option>未生效</option>
+            <option>已生效</option>
+            <option>已失效</option>
+            <option>已删除</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="rewardPeriod">奖励有效期</label>
+          <input id="rewardPeriod" class="f-input" placeholder="2026-05-01 ~ 2026-12-31" />
+        </div>
+        <div class="filter-item">
+          <label for="rewardOperator">操作人</label>
+          <input id="rewardOperator" class="f-input" placeholder="请输入操作人" />
+        </div>
+        <div class="filter-item">
+          <label for="rewardOperateDateStart">操作时间</label>
+          <div class="date-range-group">
+            <input id="rewardOperateDateStart" class="f-input" type="date" />
+            <span class="date-range-sep">至</span>
+            <input id="rewardOperateDateEnd" class="f-input" type="date" />
+          </div>
+        </div>
+        <div class="filter-actions">
+          <button class="btn btn-primary" type="button" id="rewardSearchBtn">查询</button>
+          <button class="btn btn-default" type="button" id="rewardResetBtn">重置</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 列表容器 -->
+    <section class="table-panel">
+      <!-- summary-bar 标题与主操作 -->
+      <div class="summary-bar">
+        <div class="summary-main">
+          <div class="summary-title">咸亨产品奖励管理</div>
+        </div>
+        <div class="toolbar-actions">
+          <button class="btn btn-default" type="button" id="importRewardBtn">批量导入</button>
+          <button class="btn btn-default" type="button" id="batchDeleteRewardBtn">批量删除</button>
+          <div class="export-dropdown" id="exportDropdown">
+            <button class="btn btn-default" type="button" id="exportRewardBtn">导出 ▾</button>
+            <div class="export-menu" id="exportDropdownMenu" hidden>
+              <button class="export-menu-item" type="button" data-export-type="reward-rules">导出奖励规则</button>
+              <button class="export-menu-item" type="button" data-export-type="operation-logs">导出操作记录</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 状态切换 -->
+      <div class="status-tabs" id="rewardStatusTabs">
+        <button class="status-tab active" type="button" data-status="全部">全部<span class="count" data-count="全部">10</span></button>
+        <button class="status-tab" type="button" data-status="未生效">未生效<span class="count" data-count="未生效">2</span></button>
+        <button class="status-tab" type="button" data-status="已生效">已生效<span class="count" data-count="已生效">4</span></button>
+        <button class="status-tab" type="button" data-status="已失效">已失效<span class="count" data-count="已失效">2</span></button>
+        <button class="status-tab" type="button" data-status="已删除">已删除<span class="count" data-count="已删除">2</span></button>
+      </div>
+
+      <!-- 次要工具条 -->
+      <div class="sub-toolbar">
+        <div class="sub-toolbar-left">
+          <span class="summary-tag" id="queryTag">当前视图：全部</span>
+          <span class="selected-count">已选：<strong id="selectedCount">0</strong> 条 / 共 <strong id="totalCount">10</strong> 条</span>
+        </div>
+        <div class="sub-toolbar-right">
+          <button class="btn-link" type="button" id="refreshBtn">刷新</button>
+        </div>
+      </div>
+
+      <!-- 表格 -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 38px;"><input type="checkbox" id="selectAllRows" /></th>
+              <th>物料编码</th>
+              <th>物料名称</th>
+              <th>物料货主编码</th>
+              <th>物料货主名称</th>
+              <th>品牌名称</th>
+              <th>奖励类型</th>
+              <th>奖励金额</th>
+              <th>奖励比例</th>
+              <th>项目奖励标题</th>
+              <th>奖励有效期</th>
+              <th>配置状态</th>
+              <th>操作时间</th>
+              <th>操作人</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="rewardTableBody"></tbody>
+        </table>
+        <!-- 空态容器 -->
+        <div class="empty-state" id="emptyState" hidden>
+          <div class="empty-icon">📭</div>
+          <div class="empty-title" id="emptyTitle">暂无奖励配置数据</div>
+          <div class="empty-desc" id="emptyDesc">可点击右上角"批量导入"开始维护。</div>
+          <div>
+            <button class="btn btn-default" type="button" id="emptyImportBtn">批量导入</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 分页 -->
+      <div class="pagination">
+        <div class="pagination-left" id="paginationSummary">共 10 条数据</div>
+        <div class="pagination-right">
+          <button class="page-btn" type="button" data-page="prev">‹</button>
+          <button class="page-btn active" type="button" data-page="1">1</button>
+          <button class="page-btn" type="button" data-page="2">2</button>
+          <button class="page-btn" type="button" data-page="3">3</button>
+          <button class="page-btn" type="button" data-page="next">›</button>
+          <div class="page-jump">
+            <select id="pageSizeSelect">
+              <option selected>25</option>
+              <option>50</option>
+              <option>100</option>
+            </select>
+            <span>条/页</span>
+          </div>
+          <div class="page-jump">
+            <span>跳至</span>
+            <input id="pageJumpInput" value="1" />
+            <span>页</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 批量导入弹窗 -->
+  <div class="modal-mask" id="modalImport" data-modal>
+    <div class="bulk-modal">
+      <div class="bulk-modal-header">
+        批量导入
+        <span class="modal-close" data-modal-close>×</span>
+      </div>
+      <div class="bulk-modal-body">
+        <div class="bulk-tip" style="background:#fffbe6;border:1px solid #ffe58f;color:#874d00;padding:8px 12px;border-radius:4px;margin-bottom:12px;line-height:1.7;font-size:12px;">
+          <strong>审核流程：</strong>点击"执行"后任务不会直接入库，会进入两级审核（① 陆雅静 · 产业管理部门 → ② 汪李琼 · 考核部门）。两节点全部通过后系统自动入库；任意节点驳回则全单失败。审核进度与结果通过钉钉通知。
+        </div>
+        <table class="bulk-table">
+          <colgroup>
+            <col class="col-item"><col class="col-tpl"><col class="col-op">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>导入项</th>
+              <th>模板下载</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div><strong>批量新增修改模版</strong></div>
+                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码 /物料名称/ 奖励类型 / 奖励金额 / 奖励比例 / 有效期开始时间 / 有效期结束时间 / 说明文案；支持新增或修改奖励配置。</div>
+              </td>
+              <td><span class="bulk-link" data-tpl="批量新增修改模版">下载</span></td>
+              <td>
+                <div class="bulk-action">
+                  <span class="bulk-link" data-file-pick>选择文件</span>
+                  <span class="bulk-link" data-exec="批量新增修改">执行</span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div><strong>批量删除模版</strong></div>
+                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码。</div>
+              </td>
+              <td><span class="bulk-link" data-tpl="批量删除模版">下载</span></td>
+              <td>
+                <div class="bulk-action">
+                  <span class="bulk-link" data-file-pick>选择文件</span>
+                  <span class="bulk-link" data-exec="批量删除">执行</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 批量删除弹窗 -->
+  <div class="modal-mask" id="modalDelete" data-modal>
+    <div class="bulk-modal" style="max-width:560px;">
+      <div class="bulk-modal-header">
+        批量删除
+        <span class="modal-close" data-modal-close>×</span>
+      </div>
+      <div class="bulk-modal-body" style="padding-left:24px;padding-right:24px;">
+        <div style="margin-bottom:12px;font-size:13px;">
+          已选 <strong id="deleteSelectedCount" style="color:#cf1322;">0</strong> 条奖励配置准备执行<strong>逻辑删除</strong>。
+        </div>
+        <div style="background:#fff1f0;border:1px solid #ffa39e;color:#820014;padding:10px 12px;border-radius:4px;line-height:1.7;font-size:12px;margin-bottom:12px;">
+          <div style="font-weight:600;margin-bottom:4px;">⚠ 删除审核通过后立即生效，影响范围：</div>
+          • 商城前台<strong>立即隐藏</strong>对应奖励 Banner；<br/>
+          • BI 不再将其计入"当前生效"汇总；<br/>
+          • <strong>历史记录会完整保留</strong>；<br/>
+          • 如需恢复，请通过批量新增修改模版重新创建一条新的奖励配置。
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="display:block;font-size:12px;color:#595959;margin-bottom:4px;">删除原因</label>
+          <textarea id="deleteReason" rows="3" maxlength="200" placeholder="例如：政策调整、奖励周期结束、配置错误等" style="width:100%;border:1px solid #d9d9d9;border-radius:4px;padding:6px 8px;font-size:12px;resize:vertical;"></textarea>
+        </div>
+        <div style="margin-bottom:16px;font-size:12px;">
+          <label><input type="checkbox" id="deleteConfirmCheck" /> 我已了解上述影响，确认执行删除</label>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;padding-bottom:12px;">
+          <button type="button" class="btn btn-default" data-modal-close>取消</button>
+          <button type="button" class="btn" id="deleteConfirmBtn" style="background:#cf1322;color:#fff;border-color:#cf1322;" disabled>确认删除</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 操作记录弹窗 -->
+  <div class="modal-mask" id="modalChangeLog" data-modal>
+    <div class="bulk-modal change-log-modal">
+      <div class="bulk-modal-header">
+        操作记录
+        <span class="modal-close" data-modal-close>×</span>
+      </div>
+      <div class="bulk-modal-body change-log-body">
+        <div class="change-log-table-wrap">
+          <table class="change-log-table">
+            <thead>
+              <tr>
+                <th style="width: 100px;">变更类型</th>
+                <th>变更前</th>
+                <th>变更后</th>
+                <th style="width: 130px;">变更人</th>
+                <th style="width: 160px;">变更时间</th>
+              </tr>
+            </thead>
+            <tbody id="changeLogBody"></tbody>
+          </table>
+        </div>
+        <div class="change-log-pagination">
+          <span id="changeLogTotal">共3条</span>
+          <span class="page-arrow">‹</span>
+          <span class="page-current">1</span>
+          <span class="page-arrow">›</span>
+          <span>10 条/页⌄</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 我的导出任务已迁移至「任务中心」全局页面 -->
+
+  <input type="file" id="hiddenFileInput" hidden />
+
+  <div class="message-wrap" id="messageWrap"></div>
+  <div class="json-tooltip" id="jsonTooltip"></div>
+
+  <div class="demo-tips-stack">
+    <div class="demo-tips" id="rewardListTip">
+      <div class="demo-tips-head" onclick="toggleDemoTip('rewardListTip')">
+        <span class="t">💡 MPM v4.7.0 界面说明</span>
+        <span class="demo-tips-toggle">收起 ▾</span>
+      </div>
+      <div class="demo-tips-body">
+        <b>界面操作：</b><br/>
+        1. 筛选区支持按物料编码/名称、奖励类型、配置状态、奖励有效期、操作人、操作时间查询。<br/>
+        2. 顶部 <b>「批量导入」</b> 支持批量新增修改、删除两类 Excel 模板下载、选择文件和执行。<br/>
+        3. <b>「批量删除」</b> 需先勾选列表记录，并填写/确认删除影响后提交。<br/>
+        4. <b>「导出」</b> 支持按当前筛选条件导出；未选择筛选条件时导出全部数据，导出文件可用于批量新增修改回传。<br/>
+        5. 列表 <b>「变更记录」</b> 可查看对应物料奖励配置的操作记录。<br/>
+        <b>模板字段：</b><br/>
+        1. 批量新增修改模版：物料编码、奖励类型、奖励金额/比例、有效期开始/结束、项目奖励标题、奖励说明文案。<br/>
+        2. 批量删除模版：物料编码。<br/>
+        <b>注意事项：</b><br/>
+        1. 奖励类型枚举：1=项目奖励，2=定额奖励，3=比例奖励。<br/>
+        2. 项目奖励标题仅项目奖励必填，最多 50 字；奖励说明文案最多 500 字，支持 http/https 链接。<br/>
+        3. 执行后进入两级审核，全部通过后才会入库并同步影响商城前台展示。
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ------ 全局工具 ------ */
+    function goPage(path) {
+      window.location.href = path;
+    }
+
+    function toggleDemoTip(id) {
+      const el = document.getElementById(id);
+      const toggle = el.querySelector('.demo-tips-toggle');
+      const collapsed = el.classList.toggle('collapsed');
+      toggle.textContent = collapsed ? '展开 ▸' : '收起 ▾';
+    }
+
+    function showMessage(text, type = 'info') {
+      const wrap = document.getElementById('messageWrap');
+      const icons = { info: '提示', success: '成功', warning: '注意', error: '失败' };
+      const el = document.createElement('div');
+      el.className = `message-item ${type}`;
+      el.innerHTML = `<span>${icons[type] || '提示'}</span><span>${text}</span>`;
+      wrap.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('show'));
+      setTimeout(() => {
+        el.classList.remove('show');
+        setTimeout(() => el.remove(), 250);
+      }, 2200);
+    }
+
+    /* ------ Mock 数据 ------ */
+    const rewardMock = [
+      {
+        id: 'RWD-202604280001',
+        code: 'SKU-10001', name: 'PVC 管材', type: '项目奖励', typeTag: 'tag-blue',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
+        amountNum: '', ratioNum: '',
+        startDate: '2026-05-01', endDate: '2026-12-31',
+        rewardTitle: '2026 年度 PVC 管材专项工程奖励',
+        description: '项目奖励-参与项目即享',
+        period: '2026-05-01 ~ 2026-12-31', mall: '2026-05-15 ~ 2026-11-30',
+        status: '已生效', statusTag: 'tag-green', voidFlag: 'N',
+        mallSync: '成功', mallSyncTag: 'tag-green',
+        biSync: '成功', biSyncTag: 'tag-green',
+        updated: '2026-05-11 10:20', updater: '张敏', isError: false
+      },
+      {
+        id: 'RWD-202605110002',
+        code: 'SKU-10002', name: '配电箱', type: '定额奖励', typeTag: 'tag-orange',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
+        amountNum: 120, ratioNum: '',
+        startDate: '2026-06-01', endDate: '2026-09-30',
+        description: '满 X 件即享',
+        period: '2026-06-01 ~ 2026-09-30', mall: '2026-06-01 ~ 2026-09-15',
+        status: '已生效', statusTag: 'tag-green', voidFlag: 'N',
+        mallSync: '失败', mallSyncTag: 'tag-red',
+        biSync: '成功', biSyncTag: 'tag-green',
+        updated: '2026-05-11 11:05', updater: '李航', isError: true
+      },
+      {
+        id: 'RWD-202605100003',
+        code: 'SKU-10003', name: '电线电缆 2.5mm²', type: '比例奖励', typeTag: 'tag-green',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
+        amountNum: '', ratioNum: 3.5,
+        startDate: '2026-05-10', endDate: '2026-08-31',
+        description: '按调拨价 3.5% 返利',
+        period: '2026-05-10 ~ 2026-08-31', mall: '2026-05-10 ~ 2026-08-20',
+        status: '已生效', statusTag: 'tag-green', voidFlag: 'N',
+        mallSync: '成功', mallSyncTag: 'tag-green',
+        biSync: '成功', biSyncTag: 'tag-green',
+        updated: '2026-05-10 16:42', updater: '王芳', isError: false
+      },
+      {
+        id: 'RWD-202605110004',
+        code: 'SKU-10004', name: '防爆照明灯', type: '项目奖励', typeTag: 'tag-blue',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
+        amountNum: '', ratioNum: '',
+        startDate: '2026-07-01', endDate: '2026-12-31',
+        rewardTitle: '2026 H2 防爆照明项目套餐',
+        description: '7 月起项目套餐',
+        period: '2026-07-01 ~ 2026-12-31', mall: '2026-07-01 ~ 2026-11-30',
+        status: '未生效', statusTag: 'tag-grey', voidFlag: 'N',
+        mallSync: '待同步', mallSyncTag: 'tag-grey',
+        biSync: '待同步', biSyncTag: 'tag-grey',
+        updated: '2026-05-11 09:02', updater: '陈晨', isError: false
+      },
+      {
+        id: 'RWD-202604010005',
+        code: 'SKU-10005', name: '工业风机 380V', type: '定额奖励', typeTag: 'tag-orange',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
+        amountNum: 260, ratioNum: '',
+        startDate: '2026-04-01', endDate: '2026-07-31',
+        description: '满 100 件返 ¥ 260',
+        period: '2026-04-01 ~ 2026-07-31', mall: '2026-04-01 ~ 2026-07-20',
+        status: '已生效', statusTag: 'tag-green', voidFlag: 'N',
+        mallSync: '成功', mallSyncTag: 'tag-green',
+        biSync: '失败', biSyncTag: 'tag-red',
+        updated: '2026-05-09 15:18', updater: '赵宇', isError: true
+      },
+      {
+        id: 'RWD-202603010006',
+        code: 'SKU-10006', name: '工业手套 XL', type: '比例奖励', typeTag: 'tag-green',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
+        amountNum: '', ratioNum: 2.0,
+        startDate: '2026-03-01', endDate: '2026-04-30',
+        description: '春季返利 2%',
+        period: '2026-03-01 ~ 2026-04-30', mall: '2026-03-01 ~ 2026-04-25',
+        status: '已失效', statusTag: 'tag-grey', voidFlag: 'N',
+        mallSync: '成功', mallSyncTag: 'tag-green',
+        biSync: '成功', biSyncTag: 'tag-green',
+        updated: '2026-05-01 10:00', updater: '管理员', isError: false
+      },
+      // ↓↓↓ 新增 4 行覆盖：1 未生效 + 1 已失效 + 2 已删除 ↓↓↓
+      {
+        id: 'RWD-202605120007',
+        code: 'SKU-10007', name: '消防应急灯', type: '比例奖励', typeTag: 'tag-green',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
+        amountNum: '', ratioNum: 4.0,
+        startDate: '2026-08-01', endDate: '2026-10-31',
+        description: '8 月起 4% 返利',
+        period: '2026-08-01 ~ 2026-10-31', mall: '2026-08-01 ~ 2026-10-25',
+        status: '未生效', statusTag: 'tag-grey', voidFlag: 'N',
+        mallSync: '待同步', mallSyncTag: 'tag-grey',
+        biSync: '待同步', biSyncTag: 'tag-grey',
+        updated: '2026-05-12 09:42', updater: '李航', isError: false
+      },
+      {
+        id: 'RWD-202601010008',
+        code: 'SKU-10008', name: '钢制管夹（旧规格）', type: '比例奖励', typeTag: 'tag-green',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
+        amountNum: '', ratioNum: 3.0,
+        startDate: '2026-01-01', endDate: '2026-02-28',
+        description: '一季度返利（已结束）',
+        period: '2026-01-01 ~ 2026-02-28', mall: '2026-01-01 ~ 2026-02-25',
+        status: '已失效', statusTag: 'tag-grey', voidFlag: 'N',
+        mallSync: '成功', mallSyncTag: 'tag-green',
+        biSync: '成功', biSyncTag: 'tag-green',
+        updated: '2026-03-01 09:00', updater: '管理员', isError: false
+      },
+      {
+        id: 'RWD-202603010009',
+        code: 'SKU-10009', name: '电缆桥架 200×100', type: '定额奖励', typeTag: 'tag-orange',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
+        amountNum: 80, ratioNum: '',
+        startDate: '2026-03-01', endDate: '2026-05-31',
+        description: '配置错误后撤回',
+        period: '2026-03-01 ~ 2026-05-31', mall: '2026-03-01 ~ 2026-05-25',
+        status: '已删除', statusTag: 'tag-red', voidFlag: 'Y',
+        mallSync: '已撤回', mallSyncTag: 'tag-grey',
+        biSync: '已撤回', biSyncTag: 'tag-grey',
+        updated: '2026-05-16 14:38', updater: '王雪', isError: false
+      },
+      {
+        id: 'RWD-202602010010',
+        code: 'SKU-10010', name: '插座面板（停产）', type: '项目奖励', typeTag: 'tag-blue',
+        ownerCode: '1025', ownerName: '万聚供应链科技有限公司',
+        brandName: '范沃克/fanwoke',
+        amountNum: '', ratioNum: '',
+        startDate: '2026-02-01', endDate: '2026-12-31',
+        rewardTitle: '插座面板停产撤回项目',
+        description: '物料已停产，奖励同步撤销',
+        period: '2026-02-01 ~ 2026-12-31', mall: '2026-02-01 ~ 2026-12-25',
+        status: '已删除', statusTag: 'tag-red', voidFlag: 'Y',
+        mallSync: '已撤回', mallSyncTag: 'tag-grey',
+        biSync: '已撤回', biSyncTag: 'tag-grey',
+        updated: '2026-05-15 16:05', updater: '陈骋', isError: false
+      }
+    ];
+
+    /* ------ 状态 ------ */
+    const state = {
+      keyword: '',
+      status: '全部',
+      filtered: rewardMock.slice(),
+      selected: new Set()
+    };
+
+    const changeLogRows = [
+      {
+        type: '新增',
+        before: null,
+        after: {
+          '奖励类型': '项目奖励',
+          '奖励金额': '-',
+          '奖励比例': '-',
+          '有效期开始时间': '2026-05-18',
+          '有效期结束时间': '2026-12-31',
+          '奖励说明标题': '项目奖励标题',
+          '奖励说明文档': '新增奖励说明文案，支持较长内容展示，表格内超过三行后自动省略，鼠标移入后展示完整 JSON 文本。'
+        },
+        operator: '名称 / xhgj002358',
+        time: '2026-05-18 09:21'
+      },
+      {
+        type: '修改',
+        before: {
+          '奖励类型': '定额奖励',
+          '奖励金额': '100.00',
+          '奖励比例': '-',
+          '有效期开始时间': '2026-05-01',
+          '有效期结束时间': '2026-12-31',
+          '奖励说明标题': '修改前标题',
+          '奖励说明文档': '修改前奖励说明文案，用于模拟变更前完整字段内容。'
+        },
+        after: {
+          '奖励类型': '定额奖励',
+          '奖励金额': '120.00',
+          '奖励比例': '-',
+          '有效期开始时间': '2026-05-18',
+          '有效期结束时间': '2026-11-30',
+          '奖励说明标题': '修改后标题',
+          '奖励说明文档': '修改后奖励说明文案，保留多字段 JSON 样式，长文本在表格内省略，悬浮查看完整内容。'
+        },
+        operator: '名称 / xhgj002358',
+        time: '2026-05-18 09:21'
+      },
+      {
+        type: '删除',
+        before: {
+          '奖励类型': '比例奖励',
+          '奖励金额': '-',
+          '奖励比例': '5.00%',
+          '有效期开始时间': '2026-05-18',
+          '有效期结束时间': '2026-12-31',
+          '奖励说明标题': '删除前标题',
+          '奖励说明文档': '删除前奖励说明文案。'
+        },
+        after: null,
+        operator: '名称 / xhgj002358',
+        time: '2026-05-18 09:21'
+      }
+    ];
+
+    /* ------ 渲染表格 ------ */
+    const tableBody = document.getElementById('rewardTableBody');
+    const emptyState = document.getElementById('emptyState');
+    const totalCountEl = document.getElementById('totalCount');
+    const selectedCountEl = document.getElementById('selectedCount');
+    const paginationSummary = document.getElementById('paginationSummary');
+    const queryTag = document.getElementById('queryTag');
+    const changeLogBody = document.getElementById('changeLogBody');
+    const changeLogTotal = document.getElementById('changeLogTotal');
+    const jsonTooltip = document.getElementById('jsonTooltip');
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function tagHtml(label, cls) {
+      if (!label || label === '-') return '<span class="muted">-</span>';
+      return `<span class="tag ${cls || ''}">${label}</span>`;
+    }
+
+    function formatConfigJson(config) {
+      if (!config) return '-';
+      return JSON.stringify(config, null, 2);
+    }
+
+    function changeValueHtml(value) {
+      const text = formatConfigJson(value);
+      if (text === '-') return '<span class="muted">-</span>';
+      const escaped = escapeHtml(text);
+      return `<pre class="change-json-code" data-full-json="${escaped}">${escaped}</pre>`;
+    }
+
+    function renderChangeLog(rowCode) {
+      changeLogBody.innerHTML = changeLogRows.map(item => `
+        <tr data-code="${escapeHtml(rowCode || '')}">
+          <td>${escapeHtml(item.type)}</td>
+          <td class="change-json-cell">${changeValueHtml(item.before)}</td>
+          <td class="change-json-cell">${changeValueHtml(item.after)}</td>
+          <td>${escapeHtml(item.operator)}</td>
+          <td>${escapeHtml(item.time)}</td>
+        </tr>
+      `).join('');
+      changeLogTotal.textContent = `共${changeLogRows.length}条`;
+    }
+
+    function openChangeLog(rowCode) {
+      renderChangeLog(rowCode);
+      openModal('modalChangeLog');
+    }
+
+    function renderRows() {
+      tableBody.innerHTML = '';
+      if (!state.filtered.length) {
+        emptyState.hidden = false;
+        totalCountEl.textContent = '0';
+        paginationSummary.textContent = '共 0 条数据';
+        const hasQuery = state.keyword || state.status !== '全部';
+        document.getElementById('emptyTitle').textContent = hasQuery ? '没有符合条件的奖励配置' : '暂无奖励配置数据';
+        document.getElementById('emptyDesc').textContent = hasQuery
+          ? '试试调整筛选条件或清空关键词。'
+          : '可点击右上角"批量导入"开始维护。';
+        return;
+      }
+      emptyState.hidden = true;
+      const frag = document.createDocumentFragment();
+      state.filtered.forEach(row => {
+        const tr = document.createElement('tr');
+        if (row.isError) tr.classList.add('row-error');
+        tr.innerHTML = `
+          <td><input type="checkbox" class="reward-row-check" data-code="${row.code}" ${state.selected.has(row.code) ? 'checked' : ''} /></td>
+          <td>${row.code}</td>
+          <td>${row.name}</td>
+          <td>${row.ownerCode || '<span class="muted">-</span>'}</td>
+          <td>${row.ownerName || '<span class="muted">-</span>'}</td>
+          <td>${row.brandName || '<span class="muted">-</span>'}</td>
+          <td>${tagHtml(row.type, row.typeTag)}</td>
+          <td class="price">${row.amountNum === '' || row.amountNum == null ? '<span class="muted">-</span>' : `¥${Number(row.amountNum).toFixed(2)}`}</td>
+          <td class="price">${row.ratioNum === '' || row.ratioNum == null ? '<span class="muted">-</span>' : `${Number(row.ratioNum).toFixed(2)}%`}</td>
+          <td>${row.rewardTitle ? row.rewardTitle : '<span class="muted">-</span>'}</td>
+          <td>${row.period}</td>
+          <td>${tagHtml(row.status, row.statusTag)}</td>
+          <td>${row.updated}</td>
+          <td>${row.updater || '<span class="muted">-</span>'}</td>
+          <td><button class="btn-link" type="button" data-action="change-log" data-code="${row.code}">变更记录</button></td>
+        `;
+        frag.appendChild(tr);
+      });
+      tableBody.appendChild(frag);
+      totalCountEl.textContent = state.filtered.length;
+      paginationSummary.textContent = `共 ${state.filtered.length} 条数据`;
+    }
+
+    /* ------ 过滤 ------ */
+    function applyFilter() {
+      const code = document.getElementById('rewardCode').value.trim();
+      const codeList = code.split(',').map(item => item.trim()).filter(Boolean);
+      const name = document.getElementById('rewardName').value.trim();
+      const type = document.getElementById('rewardType').value;
+      const statusField = document.getElementById('rewardStatus').value;
+      const operator = document.getElementById('rewardOperator').value.trim();
+      const operateDateStart = document.getElementById('rewardOperateDateStart').value;
+      const operateDateEnd = document.getElementById('rewardOperateDateEnd').value;
+      state.keyword = [code, name, type, statusField, operator, operateDateStart, operateDateEnd].filter(Boolean).join(' / ');
+      state.filtered = rewardMock.filter(row => {
+        const operateDate = String(row.updated || '').slice(0, 10);
+        if (state.status !== '全部' && row.status !== state.status) return false;
+        if (codeList.length && !codeList.some(item => row.code.includes(item))) return false;
+        if (name && !row.name.includes(name)) return false;
+        if (type && row.type !== type) return false;
+        if (statusField && row.status !== statusField) return false;
+        if (operator && !(row.updater || '').includes(operator)) return false;
+        if (operateDateStart && (!operateDate || operateDate < operateDateStart)) return false;
+        if (operateDateEnd && (!operateDate || operateDate > operateDateEnd)) return false;
+        return true;
+      });
+      // 同步选中集合
+      const keep = new Set(state.filtered.map(r => r.code));
+      [...state.selected].forEach(c => { if (!keep.has(c)) state.selected.delete(c); });
+      selectedCountEl.textContent = state.selected.size;
+      renderRows();
+    }
+
+    /* ------ 状态 tabs ------ */
+    const statusTabs = document.querySelectorAll('.status-tab');
+
+    function recountBuckets() {
+      const buckets = {
+        '全部': rewardMock.length,
+        '未生效': rewardMock.filter(r => r.status === '未生效').length,
+        '已生效': rewardMock.filter(r => r.status === '已生效').length,
+        '已失效': rewardMock.filter(r => r.status === '已失效').length,
+        '已删除': rewardMock.filter(r => r.status === '已删除').length
+      };
+      document.querySelectorAll('[data-count]').forEach(el => {
+        const key = el.dataset.count;
+        if (buckets[key] !== undefined) el.textContent = buckets[key];
+      });
+    }
+
+    function syncStatusTab(status, silent) {
+      state.status = status;
+      statusTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.status === status));
+      queryTag.textContent = `当前视图：${status}`;
+      applyFilter();
+      if (!silent) showMessage(`已切换到：${status}`);
+    }
+
+    statusTabs.forEach(tab => {
+      tab.addEventListener('click', () => syncStatusTab(tab.dataset.status));
+    });
+
+    /* ------ 批量操作弹窗 ------ */
+    function openModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.add('show');
+    }
+    function closeModal(m) {
+      if (m && m.classList) m.classList.remove('show');
+    }
+
+    document.getElementById('importRewardBtn').addEventListener('click', () => openModal('modalImport'));
+    document.getElementById('batchDeleteRewardBtn').addEventListener('click', () => {
+      const checked = document.querySelectorAll('.reward-row-check:checked');
+      if (!checked.length) {
+        showMessage('请先在列表中勾选需要删除的奖励配置', 'warning');
+        return;
+      }
+      document.getElementById('deleteSelectedCount').textContent = checked.length;
+      document.getElementById('deleteReason').value = '';
+      const confirmCheck = document.getElementById('deleteConfirmCheck');
+      const confirmBtn = document.getElementById('deleteConfirmBtn');
+      confirmCheck.checked = false;
+      confirmBtn.disabled = true;
+      openModal('modalDelete');
+    });
+
+    // 删除弹窗内：勾选确认才能点击提交
+    document.getElementById('deleteConfirmCheck').addEventListener('change', (ev) => {
+      document.getElementById('deleteConfirmBtn').disabled = !ev.target.checked;
+    });
+    document.getElementById('deleteConfirmBtn').addEventListener('click', () => {
+      const count = document.getElementById('deleteSelectedCount').textContent;
+      const reason = document.getElementById('deleteReason').value.trim();
+      if (Number(count) >= 50 && !reason) {
+        showMessage('删除 ≥ 50 条时必须填写删除原因', 'warning');
+        return;
+      }
+      const mask = document.getElementById('modalDelete');
+      closeModal(mask);
+      showMessage(`已提交 ${count} 条删除请求，任务已进入审核流程：陆雅静（产业管理）→ 汪李琼（考核），两节点通过后将自动入库；审核通过/驳回会通过钉钉通知`, 'success');
+    });
+
+    /* ------ 导出按钮 ------ */
+    const exportBtn = document.getElementById('exportRewardBtn');
+    const exportMenu = document.getElementById('exportDropdownMenu');
+
+    const REWARD_RULE_EXPORT_HEADERS = [
+      '物料编码', '物料名称', '物料货主编码', '物料货主名称', '品牌名称',
+      '奖励有效期开始时间',
+      '奖励类型',
+      '奖励金额', '奖励比例(%)',
+      '奖励有效期结束时间',
+      '项目奖励标题',
+      '奖励说明文案',
+      '配置状态', '操作人', '操作时间'
+    ];
+    const REWARD_RULE_EXPORT_WIDTHS = [14, 22, 14, 28, 18, 22, 14, 12, 12, 22, 28, 32, 12, 12, 20];
+    const OPERATION_LOG_EXPORT_HEADERS = ['物料编码', '物料名称', '货主', '变更类型', '变更前', '变更后', '变更人', '变更时间'];
+    const OPERATION_LOG_EXPORT_WIDTHS = [14, 22, 28, 12, 42, 42, 18, 20];
+
+    function rowToRewardRuleArray(r) {
+      return [
+        r.code,
+        r.name,
+        r.ownerCode || '',
+        r.ownerName || '',
+        r.brandName || '',
+        r.startDate,
+        r.type,
+        r.amountNum === '' ? '' : r.amountNum,
+        r.ratioNum === '' ? '' : r.ratioNum,
+        r.endDate,
+        r.rewardTitle || '',
+        r.description || '',
+        r.status,
+        r.updater,
+        r.updated
+      ];
+    }
+
+    function buildRewardRuleWorkbook(rows, mode /* 'current' | 'all' */) {
+      const aoa = [REWARD_RULE_EXPORT_HEADERS, ...rows.map(rowToRewardRuleArray)];
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      ws['!cols'] = REWARD_RULE_EXPORT_WIDTHS.map(w => ({ wch: w }));
+      ws['!rows'] = [{ hpt: 36 }];
+      Object.keys(ws).forEach(addr => {
+        if (addr.startsWith('!')) return;
+        const cell = ws[addr];
+        if (typeof cell.v === 'string' && cell.v.includes('\n')) {
+          cell.s = Object.assign({}, cell.s, { alignment: { wrapText: true, vertical: 'center' } });
+        }
+      });
+      ws['!freeze'] = { xSplit: 0, ySplit: 1 };
+      XLSX.utils.book_append_sheet(wb, ws, '奖励规则');
+
+      // 第 2 个 Sheet：导出说明
+      const readme = [
+        ['导出说明', '', '', ''],
+        ['模式', '', '', mode === 'all' ? '导出全部' : '按当前筛选条件导出'],
+        ['导出条数', '', '', String(rows.length)],
+        ['生成时间', '', '', new Date().toLocaleString('zh-CN')],
+        [],
+        ['列结构', '', '', ''],
+        ['字段', '类型', '是否回传识别', '说明'],
+        ['物料编码', 'String(32)', 'Y', '业务键-定位用，回传到批量新增修改模版时不可修改'],
+        ['物料名称', 'String(200)', 'N', '辅助阅读；回传时系统忽略此列'],
+        ['物料货主编码', 'String(32)', 'N', '系统按物料编码联查带出；回传时被忽略'],
+        ['物料货主名称', 'String(200)', 'N', '系统按物料编码联查带出；回传时被忽略'],
+        ['品牌名称', 'String(200)', 'N', '系统按物料编码联查带出，含中/英；回传时被忽略'],
+        ['奖励有效期开始时间', 'Date(yyyy-MM-dd)', 'Y', '业务键-定位用，回传到批量新增修改模版时不可修改'],
+        ['奖励类型', 'Enum', 'Y', '项目奖励 / 定额奖励 / 比例奖励'],
+        ['奖励金额', 'Decimal(18,2)', '条件', '仅定额奖励填写'],
+        ['奖励比例(%)', 'Decimal(8,4)', '条件', '仅比例奖励填写'],
+        ['奖励有效期结束时间', 'Date(yyyy-MM-dd)', 'N', '回传批量新增修改模版时留空 = 不改'],
+        ['项目奖励标题', 'String(50)', '条件', '仅"项目奖励"必填且 1~50 字；不限文本类型；商城前台紧跟「项目奖励」标签展示'],
+        ['奖励说明文案', 'String(500)', 'N', '最大 500 字；支持 http/https 链接地址，商城前台自动渲染为可点击超链接'],
+        ['配置状态', 'Enum', 'N', '系统计算列；回传时被忽略'],
+        ['操作人', 'String', 'N', '系统列；回传时被忽略'],
+        ['操作时间', 'DateTime', 'N', '系统列；回传时被忽略'],
+        [],
+        ['回传说明', '', '', ''],
+        ['1', '', '', '此导出文件可直接补/改可改字段后，通过【批量导入 → 批量新增修改模版】回传'],
+        ['2', '', '', '物料编码用于定位记录'],
+        ['3', '', '', '奖励类型必填，回传时按模板枚举要求填写'],
+        ['4', '', '', '如需将其中部分行执行删除：复制物料编码到批量删除模版再回传'],
+      ];
+      const readmeWs = XLSX.utils.aoa_to_sheet(readme);
+      readmeWs['!cols'] = [{ wch: 22 }, { wch: 18 }, { wch: 14 }, { wch: 60 }];
+      XLSX.utils.book_append_sheet(wb, readmeWs, '导出说明');
+
+      return wb;
+    }
+
+    function rowToOperationLogArrays(row) {
+      const owner = [row.ownerCode, row.ownerName].filter(Boolean).join(' / ');
+      return changeLogRows.map(log => [
+        row.code,
+        row.name,
+        owner,
+        log.type,
+        formatConfigJson(log.before),
+        formatConfigJson(log.after),
+        log.operator,
+        log.time
+      ]);
+    }
+
+    function buildOperationLogWorkbook(rows, mode /* 'current' | 'all' */) {
+      const aoa = [OPERATION_LOG_EXPORT_HEADERS, ...rows.flatMap(rowToOperationLogArrays)];
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      ws['!cols'] = OPERATION_LOG_EXPORT_WIDTHS.map(w => ({ wch: w }));
+      ws['!rows'] = [{ hpt: 30 }];
+      Object.keys(ws).forEach(addr => {
+        if (addr.startsWith('!')) return;
+        const cell = ws[addr];
+        if (typeof cell.v === 'string' && cell.v.includes('\n')) {
+          cell.s = Object.assign({}, cell.s, { alignment: { wrapText: true, vertical: 'top' } });
+        }
+      });
+      ws['!freeze'] = { xSplit: 0, ySplit: 1 };
+      XLSX.utils.book_append_sheet(wb, ws, '操作记录');
+      return wb;
+    }
+
+    function getExportRows(mode /* 'current' | 'all' */) {
+      return mode === 'all' ? rewardMock : state.filtered.slice();
+    }
+
+    function writeWorkbook(wb, fileName, rowsCount) {
+      XLSX.writeFile(wb, fileName);
+      showMessage(`已下载：${fileName}（共 ${rowsCount} 行）`, 'success');
+    }
+
+    function doExportRewardRules(mode /* 'current' | 'all' */, filenameHint) {
+      if (typeof XLSX === 'undefined') {
+        showMessage('Excel 生成库未加载完成，请稍后重试', 'warning');
+        return;
+      }
+      const rows = getExportRows(mode);
+      if (!rows.length) {
+        showMessage('当前查询结果为空，无数据可导出', 'warning');
+        return;
+      }
+      const wb = buildRewardRuleWorkbook(rows, mode);
+      const today = new Date().toISOString().slice(0, 10);
+      const fileName = `咸亨奖励规则-${filenameHint || (mode === 'all' ? '导出全部' : '按当前筛选条件导出')}_${today}.xlsx`;
+      writeWorkbook(wb, fileName, rows.length);
+    }
+
+    function doExportOperationLogs(mode /* 'current' | 'all' */, filenameHint) {
+      if (typeof XLSX === 'undefined') {
+        showMessage('Excel 生成库未加载完成，请稍后重试', 'warning');
+        return;
+      }
+      const rows = getExportRows(mode);
+      if (!rows.length) {
+        showMessage('当前查询结果为空，无操作记录可导出', 'warning');
+        return;
+      }
+      const wb = buildOperationLogWorkbook(rows, mode);
+      const today = new Date().toISOString().slice(0, 10);
+      const logRowsCount = rows.length * changeLogRows.length;
+      const fileName = `咸亨操作记录-${filenameHint || (mode === 'all' ? '导出全部' : '按当前筛选条件导出')}_${today}.xlsx`;
+      writeWorkbook(wb, fileName, logRowsCount);
+    }
+
+    function hasActiveExportFilter() {
+      return Boolean(state.keyword || state.status !== '全部');
+    }
+
+    exportBtn.addEventListener('click', () => {
+      exportMenu.hidden = !exportMenu.hidden;
+    });
+    exportMenu.addEventListener('click', (ev) => {
+      const target = ev.target;
+      if (!(target instanceof HTMLElement)) return;
+      const exportType = target.dataset.exportType;
+      if (!exportType) return;
+      exportMenu.hidden = true;
+      applyFilter();
+      const mode = hasActiveExportFilter() ? 'current' : 'all';
+      if (exportType === 'reward-rules') {
+        doExportRewardRules(mode);
+        return;
+      }
+      if (exportType === 'operation-logs') {
+        doExportOperationLogs(mode);
+      }
+    });
+    document.addEventListener('click', (ev) => {
+      const target = ev.target;
+      if (!(target instanceof Node)) return;
+      if (!document.getElementById('exportDropdown')?.contains(target)) {
+        exportMenu.hidden = true;
+      }
+    });
+
+    // 顶部导航「任务中心」入口（替代原"我的导出任务"弹窗）
+    document.querySelectorAll('.nav-item').forEach(nav => {
+      if (nav.dataset.name === '任务中心') {
+        nav.style.cursor = 'pointer';
+        nav.addEventListener('click', () => { window.location.href = 'MPM-任务中心-任务列表.html'; });
+      }
+    });
+
+    // 关闭：点击 × / 点击遮罩
+    document.querySelectorAll('[data-modal]').forEach(mask => {
+      mask.addEventListener('click', (ev) => {
+        const t = ev.target;
+        if (!(t instanceof HTMLElement)) return;
+        if (t.hasAttribute('data-modal-close') || t === mask) closeModal(mask);
+      });
+    });
+    // Esc 关闭
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') {
+        document.querySelectorAll('.modal-mask.show').forEach(closeModal);
+      }
+    });
+
+    // 模板下载 / 选择文件 / 执行
+    const hiddenFile = document.getElementById('hiddenFileInput');
+    let activePickTarget = null;
+
+    /* ------ Excel 模板定义（与 PRD V1.8 4.3 字段清单完全对齐：已删除项目编码列、奖励说明文案 200→500；V1.10：必填标记与示例值同步更新） ------ */
+    const REWARD_TYPE_HEADER = '奖励类型\n（1.项目奖励；2定额奖励；3比例奖励）';
+    const REWARD_TYPE_HEADER_REQ = '*奖励类型\n（1.项目奖励；2定额奖励；3比例奖励）';
+    const TEMPLATE_DEFS = {
+      '批量新增修改模版': {
+        sheet: '批量新增修改',
+        headers: ['*物料编码', '物料名称', REWARD_TYPE_HEADER_REQ, '奖励金额', '奖励比例(%)', '*奖励有效期开始时间', '*奖励有效期结束时间', '项目奖励标题（≤50字，仅项目奖励必填）', '奖励说明文案（≤500字，支持 http/https 链接）'],
+        examples: [
+          ['SKU-10001', 'PVC 管材', 1, '', '', '2026-06-01', '2026-12-31', '2026 年度装修工程项目奖励', '参与年度项目即享，方案详情：https://example.com/promo/PRJ-2026-001'],
+          ['SKU-10002', '配电箱', 2, 100.00, '', '2026-06-01', '2026-12-31', '', '满 X 件即享'],
+          ['SKU-10003', 'LED 灯具', 3, '', 5.0000, '2026-06-01', '2026-12-31', '', '按调拨价 5% 返利']
+        ],
+        widths: [14, 18, 26, 12, 12, 22, 22, 28, 36],
+        readme: [
+          ['字段', '类型', '必填', '说明'],
+          ['物料编码', 'String(32)', 'Y', '必须存在于 MPM 物料主数据；导入后系统自动联查物料货主编码、物料货主名称、品牌名称三字段'],
+          ['物料名称', 'String(200)', 'N', '仅参考，导入时按物料编码自动带出，不参与写入'],
+          ['奖励类型', 'Enum(1/2/3)', 'Y', '枚举值：1=项目奖励；2=定额奖励；3=比例奖励'],
+          ['奖励金额', 'Decimal(18,2)', '条件', '仅"定额奖励"必填且必须 > 0；最多 2 位小数'],
+          ['奖励比例(%)', 'Decimal(8,4)', '条件', '仅"比例奖励"必填，> 0 且 ≤ 100；最多 4 位小数'],
+          ['奖励有效期开始时间', 'Date(yyyy-MM-dd)', 'Y', '与同物料已有有效记录不得在时间区间上冲突'],
+          ['奖励有效期结束时间', 'Date(yyyy-MM-dd)', 'Y', '不得早于开始时间'],
+          ['项目奖励标题', 'String(50)', '条件', '仅"项目奖励"必填且 1~50 字；不限文本类型（中英文/数字/符号/emoji 均可）；定额/比例奖励填写会被系统忽略并清空；商城前台紧跟「项目奖励」标签展示'],
+          ['奖励说明文案', 'String(500)', 'N', '最大 500 字；支持 http/https 链接地址，商城前台自动渲染为可点击超链接（target="_blank"）；项目奖励建议填写'],
+          [],
+          ['注意事项', '', '', ''],
+          ['1', '', '', '同一文件内可混合多种奖励类型（1/2/3 任意组合），按行独立校验'],
+          ['2', '', '', '业务键 = 物料编码 + 奖励有效期开始时间，新增时若业务键已存在将报错'],
+          ['3', '', '', '一个物料系统中有且仅有一条未删除奖励配置（一个类型 + 一段有效期）；如需调整请走"批量删除 + 批量新增修改"'],
+          ['4', '', '', 'V1.8 变更：已移除项目编码列，项目奖励的项目归属请在"奖励说明文案"中自由描述并可附详情链接'],
+          ['5', '', '', 'V1.10 变更：奖励类型 / 开始时间 / 结束时间均为必填，表头加 * 前缀；奖励类型填写枚举数字 1/2/3'],
+          ['6', '', '', 'V2.5 变更：新增「项目奖励标题」列（≤50字，仅项目奖励必填）；单批上限由 1000 行调整为 50000 行'],
+          ['7', '', '', 'V2.6 变更：新增模板与修改模板合并为「批量新增修改模版」'],
+        ]
+      },
+      '批量删除模版': {
+        sheet: '批量删除',
+        headers: ['*物料编码'],
+        examples: [
+          ['SKU-10004'],
+          ['SKU-10005']
+        ],
+        widths: [14],
+        readme: [
+          ['字段', '类型', '必填', '说明'],
+          ['物料编码', 'String(32)', 'Y', '【业务键-定位用】'],
+          [],
+          ['执行说明', '', '', ''],
+          ['1', '', '', '系统按物料编码定位未删除奖励配置并执行逻辑作废，不做物理删除；历史记录完整保留'],
+          ['2', '', '', '已处于"已删除"状态的记录再次执行删除会被忽略，不计入失败'],
+          ['3', '', '', '一次最大删除条数 ≤ 50000 行/批，超出请分批'],
+        ]
+      }
+    };
+
+    function downloadTemplate(name) {
+      if (typeof XLSX === 'undefined') {
+        showMessage('Excel 生成库未加载完成，请稍后重试', 'warning');
+        return;
+      }
+      const def = TEMPLATE_DEFS[name];
+      if (!def) {
+        showMessage(`未找到模板定义：${name}`, 'error');
+        return;
+      }
+
+      const wb = XLSX.utils.book_new();
+
+      // Sheet 1: 数据表（表头 + 示例行）
+      const dataAoA = [def.headers, ...def.examples];
+      const ws = XLSX.utils.aoa_to_sheet(dataAoA);
+      ws['!cols'] = def.widths.map(w => ({ wch: w }));
+      // 启用表头自动换行（奖励类型表头自带 \n）
+      Object.keys(ws).forEach(addr => {
+        if (addr.startsWith('!')) return;
+        const cell = ws[addr];
+        if (typeof cell.v === 'string' && cell.v.includes('\n')) {
+          cell.s = Object.assign({}, cell.s, { alignment: { wrapText: true, vertical: 'center' } });
+        }
+      });
+      ws['!freeze'] = { xSplit: 0, ySplit: 1 };
+      // 表头行加高，便于显示换行表头
+      ws['!rows'] = [{ hpt: 36 }];
+      XLSX.utils.book_append_sheet(wb, ws, def.sheet);
+
+      // Sheet 2: 字段说明
+      const readmeWs = XLSX.utils.aoa_to_sheet(def.readme);
+      readmeWs['!cols'] = [{ wch: 22 }, { wch: 18 }, { wch: 8 }, { wch: 60 }];
+      XLSX.utils.book_append_sheet(wb, readmeWs, '字段说明');
+
+      const fileName = `咸亨奖励-${name}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+      showMessage(`已下载：${fileName}`, 'success');
+    }
+
+    document.querySelectorAll('.bulk-table').forEach(table => {
+      table.addEventListener('click', (ev) => {
+        const t = ev.target;
+        if (!(t instanceof HTMLElement)) return;
+        if (t.dataset.tpl) {
+          downloadTemplate(t.dataset.tpl);
+          return;
+        }
+        if (t.hasAttribute('data-file-pick')) {
+          activePickTarget = t;
+          hiddenFile.value = '';
+          hiddenFile.click();
+          return;
+        }
+        if (t.dataset.exec) {
+          const td = t.closest('tr')?.querySelector('[data-file-pick]');
+          const fileTag = td?.parentElement?.querySelector('.file-name-tag');
+          if (!fileTag) {
+            showMessage('请先选择待上传的文件', 'warning');
+            return;
+          }
+          showMessage(`已提交：${t.dataset.exec}，任务已进入审核流程（陆雅静 → 汪李琼），两节点通过后自动入库；审核结果将通过钉钉通知`, 'success');
+        }
+      });
+    });
+    hiddenFile.addEventListener('change', () => {
+      if (!activePickTarget || !hiddenFile.files?.length) return;
+      const file = hiddenFile.files[0];
+      const wrap = activePickTarget.parentElement;
+      if (!wrap) return;
+      let tag = wrap.querySelector('.file-name-tag');
+      if (!tag) {
+        tag = document.createElement('span');
+        tag.className = 'file-name-tag';
+        wrap.insertBefore(tag, activePickTarget);
+      }
+      tag.title = file.name;
+      tag.textContent = file.name;
+      activePickTarget.textContent = '重新选择';
+    });
+
+    /* ------ 按钮跳转 ------ */
+
+    // 空态按钮
+    document.getElementById('emptyImportBtn').addEventListener('click', () => {
+      openModal('modalImport');
+    });
+
+    /* ------ 筛选按钮 ------ */
+    document.getElementById('rewardSearchBtn').addEventListener('click', () => {
+      applyFilter();
+      showMessage(`已按“${state.keyword || '全部条件'}”执行查询`, 'success');
+    });
+    document.getElementById('rewardResetBtn').addEventListener('click', () => {
+      document.getElementById('rewardFilterForm').reset();
+      state.keyword = '';
+      applyFilter();
+      showMessage('已重置筛选条件');
+    });
+    /* ------ 刷新 / 顶栏 / 页签 ------ */
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      applyFilter();
+      showMessage('列表已刷新', 'success');
+    });
+
+    /* ------ 汇总指标卡点击:联动状态视图 ------ */
+    document.querySelectorAll('#rewardStats [data-reward-filter]').forEach(card => {
+      card.addEventListener('click', () => {
+        const target = card.dataset.rewardFilter;
+        const allowedTabs = ['全部', '未生效', '已生效', '已失效', '已删除'];
+        if (allowedTabs.includes(target)) {
+          syncStatusTab(target);
+        } else {
+          showMessage(`已聚焦"${target}"指标（示例）`);
+        }
+      });
+    });
+    document.querySelector('[data-action="switch-system"]').addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+    document.getElementById('clearTabs').addEventListener('click', () => {
+      showMessage('已清除所有标签页');
+    });
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => showMessage(`已点击：${item.dataset.name}`));
+    });
+
+    /* ------ 行内交互：勾选 ------ */
+    tableBody.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+
+      if (target.classList.contains('reward-row-check')) {
+        const code = target.dataset.code;
+        if (target.checked) state.selected.add(code); else state.selected.delete(code);
+        selectedCountEl.textContent = state.selected.size;
+        document.getElementById('selectAllRows').checked =
+          state.filtered.length > 0 &&
+          state.filtered.every(r => state.selected.has(r.code));
+        return;
+      }
+
+      if (target.dataset.action === 'change-log') {
+        openChangeLog(target.dataset.code);
+        return;
+      }
+    });
+
+    changeLogBody.addEventListener('mousemove', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const code = target.closest('.change-json-code');
+      if (!code) return;
+      jsonTooltip.textContent = code.dataset.fullJson || code.textContent || '';
+      jsonTooltip.style.display = 'block';
+      const offset = 14;
+      const maxLeft = window.innerWidth - jsonTooltip.offsetWidth - 12;
+      const maxTop = window.innerHeight - jsonTooltip.offsetHeight - 12;
+      jsonTooltip.style.left = `${Math.max(12, Math.min(event.clientX + offset, maxLeft))}px`;
+      jsonTooltip.style.top = `${Math.max(12, Math.min(event.clientY + offset, maxTop))}px`;
+    });
+    changeLogBody.addEventListener('mouseleave', () => {
+      jsonTooltip.style.display = 'none';
+    });
+
+    document.getElementById('selectAllRows').addEventListener('change', (event) => {
+      const checked = event.target.checked;
+      document.querySelectorAll('.reward-row-check').forEach(cb => {
+        cb.checked = checked;
+        const code = cb.dataset.code;
+        if (checked) state.selected.add(code); else state.selected.delete(code);
+      });
+      selectedCountEl.textContent = state.selected.size;
+    });
+
+    /* ------ 分页 ------ */
+    document.querySelectorAll('[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.page === 'prev' || btn.dataset.page === 'next') {
+          showMessage(`已${btn.dataset.page === 'prev' ? '上一' : '下一'}页（示例）`);
+          return;
+        }
+        document.querySelectorAll('[data-page]').forEach(item => item.classList.remove('active'));
+        btn.classList.add('active');
+        showMessage(`已切换到第 ${btn.dataset.page} 页`);
+      });
+    });
+    document.getElementById('pageSizeSelect').addEventListener('change', (event) => {
+      showMessage(`已切换每页 ${event.target.value} 条`);
+    });
+    document.getElementById('pageJumpInput').addEventListener('change', (event) => {
+      const value = Number(event.target.value) || 1;
+      showMessage(`已跳转到第 ${value} 页`);
+    });
+
+    /* ------ 初始化：读取 URL tab 参数 ------ */
+    const params = new URLSearchParams(window.location.search);
+    const initTab = params.get('tab');
+    const allowed = ['全部', '未生效', '已生效', '已失效', '已删除'];
+    recountBuckets();
+    syncStatusTab(allowed.includes(initTab) ? initTab : '全部', true);
+  </script>
+<script src="mpm-topnav-links.js"></script>
+</body>
+</html>
+

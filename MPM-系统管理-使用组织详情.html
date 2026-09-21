@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>使用组织详情 - 咸亨国际主数据管理平台</title>
+  <style>
+    :root{--primary:#1677ff;--primary-hover:#4096ff;--primary-bg:#e6f4ff;--header:#001529;--text:#262626;--muted:#8c8c8c;--border:#d9d9d9;--border-light:#f0f0f0;--page:#f2f5f9;--white:#fff;--danger:#ff4d4f;}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;color:var(--text);background:var(--page)}button,input{font:inherit}
+    .skip-link{position:fixed;left:12px;top:-48px;z-index:999;padding:8px 12px;background:#fff;color:var(--primary);border:1px solid var(--primary);transition:top .2s}.skip-link:focus{top:8px}
+    .topbar{height:48px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:var(--header);color:#fff}.brand{display:flex;align-items:center;gap:10px}.brand-logo{width:28px;height:28px;border-radius:6px;display:grid;place-items:center;background:var(--primary);font-weight:700}.brand-name{font-size:16px;font-weight:600;cursor:pointer}.switch-btn{height:28px;padding:0 10px;border:1px solid rgba(255,255,255,.28);border-radius:4px;background:transparent;color:rgba(255,255,255,.82);cursor:pointer}.switch-btn:hover{border-color:#69b1ff;color:#fff}.nav{height:100%;display:flex;align-items:center;gap:2px}.nav span{height:100%;padding:0 12px;display:flex;align-items:center;color:rgba(255,255,255,.78);white-space:nowrap}.nav span:hover{color:#fff;background:rgba(255,255,255,.08)}.avatar{width:26px!important;height:26px!important;margin-right:5px;padding:0!important;border-radius:50%;display:flex;align-items:center;justify-content:center!important;background:var(--primary);color:#fff!important;font-size:11px;font-style:normal}
+    .tabs{height:36px;display:flex;align-items:stretch;justify-content:space-between;background:#fff;border-bottom:1px solid var(--border-light)}.tabs-list{display:flex}.tab{min-width:134px;padding:0 14px;display:flex;align-items:center;gap:9px;color:#8c8c8c;border-right:1px solid var(--border-light);cursor:pointer}.tab.active{color:var(--primary);background:var(--primary-bg);border-top:2px solid var(--primary)}.tab-close{margin-left:auto;color:#8c8c8c}.tabs-clear{padding:0 14px;display:flex;align-items:center;color:#8c8c8c;cursor:pointer}
+    .actionbar{height:50px;padding:0 26px;display:flex;align-items:center;gap:22px;background:#fff;border-bottom:1px solid var(--border-light)}.action-btn{border:0;background:transparent;color:var(--primary);cursor:pointer;padding:8px 0}.action-btn:hover{text-decoration:underline}.action-btn:focus-visible,.back-link:focus-visible{outline:2px solid rgba(22,119,255,.35);outline-offset:2px}.action-btn.danger{color:#cf1322}
+    main{min-width:1000px;padding:12px 18px 36px}.breadcrumb{height:30px;display:flex;align-items:center;gap:8px;color:#8c8c8c}.back-link{border:0;background:transparent;color:var(--primary);cursor:pointer;padding:0}.breadcrumb-sep{color:#bfbfbf}
+    .panel{margin-bottom:20px;background:#fff;border:1px solid #e9edf2}.panel-title{height:34px;padding:0 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border-light);font-size:14px;font-weight:600}.panel-title::before{content:"";width:3px;height:16px;border-radius:2px;background:var(--primary)}.panel-subtitle{font-size:12px;font-weight:400;color:#8c8c8c}.panel-body{padding:12px 22px 18px}.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 70px}.form-item{min-width:0;display:grid;grid-template-columns:150px minmax(0,1fr);align-items:center;min-height:30px}.form-label{text-align:right;padding-right:12px;white-space:nowrap}.input{width:100%;height:30px;padding:0 10px;border:1px solid var(--border);border-radius:2px;background:#fff;color:var(--text);outline:none}.input:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1)}.input[readonly]{background:#f5f5f5;color:#8c8c8c;cursor:not-allowed}.radio-group{min-height:30px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}.radio{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;cursor:pointer}.radio input{width:17px;height:17px;margin:0;accent-color:var(--primary)}.radio input:disabled+.radio-text{color:#bfbfbf}.type-row{grid-column:1/-1}.type-row .radio-group{gap:22px}.required{color:var(--danger);margin-right:4px}
+    .sync-auth-item{grid-column:1/-1;grid-template-columns:150px minmax(0,1fr);align-items:start;padding-top:4px;border-top:1px dashed var(--border-light)}.sync-auth-item .form-label{padding-top:5px;text-align:right}.sync-auth-content{min-width:0;display:flex;align-items:flex-start;gap:12px}.sync-switch{position:relative;width:42px;height:24px;flex:0 0 42px;border:0;border-radius:12px;background:#bfbfbf;cursor:pointer;transition:background .2s}.sync-switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}.sync-switch[aria-checked="true"]{background:var(--primary)}.sync-switch[aria-checked="true"]::after{transform:translateX(18px)}.sync-switch:focus-visible{outline:2px solid rgba(22,119,255,.35);outline-offset:2px}.sync-switch:disabled{background:#d9d9d9;cursor:not-allowed;opacity:.72}.sync-switch:disabled::after{background:#f5f5f5}.sync-auth-copy{display:grid;gap:5px;line-height:1.55}.sync-current{font-weight:500;color:var(--primary)}.sync-state-list{display:flex;align-items:center;gap:18px;flex-wrap:wrap;color:#8c8c8c}.sync-state-item.active{color:#262626;font-weight:500}.sync-permission{color:#8c8c8c;font-size:12px}.sync-permission.readonly{color:#cf1322}
+    .default-note{margin-bottom:16px;color:#8c8c8c;line-height:1.6}.default-row{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:64px;align-items:center;min-height:48px}.default-field{display:grid;grid-template-columns:250px minmax(0,1fr);align-items:center}.default-field .form-label{text-align:left}.default-option{display:grid;grid-template-columns:150px minmax(0,1fr);align-items:center}.row-type{font-weight:500}.divider{height:1px;background:var(--border-light);margin:2px 0}
+    /* 税收分类编码黑名单 */
+    .panel-heading{min-height:42px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--border-light)}.panel-heading .panel-title{height:auto;padding:0;border:0;flex:1;min-width:0}.panel-heading-actions{flex:none;display:flex;align-items:center;gap:12px}.blacklist-limit{color:var(--muted);font-variant-numeric:tabular-nums}.small-btn{height:30px;padding:0 12px;border:1px solid var(--primary);border-radius:3px;background:#fff;color:var(--primary);cursor:pointer}.small-btn:hover,.small-btn:focus-visible{background:var(--primary-bg);outline:none;box-shadow:0 0 0 2px rgba(22,119,255,.12)}.small-btn:disabled{border-color:var(--border);background:#f5f5f5;color:#bfbfbf;cursor:not-allowed;box-shadow:none}
+    .blacklist-body{padding:14px 18px 18px}.blacklist-table-wrap{overflow:auto;border:1px solid var(--border-light)}.blacklist-table{width:100%;min-width:940px;border-collapse:collapse;table-layout:fixed}.blacklist-table th{height:36px;padding:0 10px;background:#fafafa;border-right:1px solid var(--border-light);border-bottom:1px solid var(--border-light);text-align:left;font-weight:500}.blacklist-table td{padding:10px;border-right:1px solid var(--border-light);border-bottom:1px solid var(--border-light);vertical-align:middle}.blacklist-table tbody tr:last-child td{border-bottom:0}.blacklist-table th:last-child,.blacklist-table td:last-child{border-right:0}.blacklist-table .code-column{width:27%}.blacklist-table .name-column{width:29%}.blacklist-table .short-column{width:20%}.blacklist-table .rate-column{width:13%}.blacklist-table .action-column{width:90px;text-align:center}.blacklist-input{width:100%;height:30px;padding:0 10px;border:1px solid var(--border);border-radius:2px;background:#f5f5f5;color:#8c8c8c;outline:none;text-overflow:ellipsis;cursor:not-allowed}.delete-group-btn{min-width:52px;height:30px;border:0;background:transparent;color:#cf1322;cursor:pointer}.delete-group-btn:hover{text-decoration:underline}.delete-group-btn:focus-visible{outline:2px solid rgba(255,77,79,.3);outline-offset:2px}.blacklist-empty{display:none;height:96px;align-items:center;justify-content:center;color:#8c8c8c;background:#fff}.blacklist-empty.show{display:flex}
+    /* H0 税收分类选择弹窗 */
+    .modal-overlay{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:12px;background:rgba(0,0,0,.45)}.modal-overlay.open{display:flex}.tax-modal{width:1000px;max-width:calc(100vw - 24px);overflow:hidden;border-radius:3px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.22);animation:modalIn .2s ease-out}@keyframes modalIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}.modal-header{height:46px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border-light)}.modal-title{font-size:15px;font-weight:500}.modal-close{width:44px;height:44px;margin-right:-14px;border:0;background:transparent;color:#8c8c8c;font-size:25px;cursor:pointer}.modal-close:hover,.modal-close:focus-visible{color:#262626;background:#f5f5f5;outline:none}.tax-filter{padding:12px 16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:12px;align-items:end;border-bottom:1px solid var(--border-light)}.tax-filter-item{min-width:0;display:flex;align-items:center;gap:8px}.tax-filter-item label{white-space:nowrap}.tax-filter-input{width:100%;min-width:0;height:30px;padding:0 9px;border:1px solid var(--border);border-radius:2px;outline:none}.tax-filter-input:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(22,119,255,.1)}.tax-result-wrap{height:390px;overflow:auto}.tax-result-table{width:100%;min-width:760px;border-collapse:collapse;table-layout:fixed}.tax-result-table th{height:38px;padding:0 10px;background:#fafafa;border-bottom:1px solid var(--border-light);text-align:left;font-weight:500}.tax-result-table td{height:44px;padding:8px 10px;border-bottom:1px solid var(--border-light);line-height:1.45}.tax-result-table tbody tr{cursor:pointer}.tax-result-table tbody tr:hover{background:#f5f8ff}.tax-result-table tbody tr.selected{background:#e6f4ff}.tax-radio-col{width:56px;text-align:center!important}.tax-seq-col{width:64px}.tax-name-col{width:28%}.tax-short-col{width:23%}.tax-code-col{width:27%;font-variant-numeric:tabular-nums}.tax-rate-col{width:80px}.tax-result-table input[type="radio"]{width:17px;height:17px;accent-color:var(--primary);cursor:pointer}.tax-result-empty{text-align:center!important;color:#8c8c8c!important;height:120px!important}.modal-footer{min-height:58px;padding:10px 18px;display:flex;align-items:center;justify-content:flex-end;gap:8px;border-top:1px solid var(--border-light)}.modal-btn{height:32px;padding:0 16px;border:1px solid var(--border);border-radius:3px;background:#fff;color:#434343;cursor:pointer}.modal-btn:hover{border-color:var(--primary);color:var(--primary)}.modal-btn.primary{border-color:var(--primary);background:var(--primary);color:#fff}.modal-btn.primary:hover{background:var(--primary-hover)}.modal-btn:disabled{border-color:#d9d9d9;background:#f5f5f5;color:#bfbfbf;cursor:not-allowed}
+    /* 与物料详情页的选择税收分类弹窗保持一致 */
+    .tax-modal{box-sizing:border-box;width:1000px;height:584px;max-width:calc(100vw - 12px);max-height:calc(100vh - 12px);border-radius:0;border-top:3px solid #8c8c8c;overflow:hidden;display:flex;flex-direction:column;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.24);animation:modalIn .2s ease-out}
+    .tax-modal .modal-header{box-sizing:border-box;height:31px;min-height:31px;padding:0 8px;border-bottom:1px solid #e8e8e8}
+    .tax-modal .modal-title{font-size:16px;font-weight:400;color:#2388bd}
+    .tax-modal .modal-close{width:32px;height:30px;margin-right:-6px;font-size:24px;font-weight:300;color:#999}
+    .tax-filter{box-sizing:border-box;height:50px;min-height:50px;display:flex;gap:16px;align-items:center;padding:0 14px;border-bottom:1px solid #ededed}
+    .tax-filter-item{display:flex;align-items:center;gap:7px;min-width:0}
+    .tax-filter-item label{flex:none;color:#333;font-size:14px;white-space:nowrap}
+    .tax-filter-input{box-sizing:border-box;width:180px;min-width:0;height:24px;padding:0 8px;border:1px solid #d9d9d9;border-radius:0;font:inherit;outline:none}
+    .tax-filter>.modal-btn{box-sizing:border-box;width:48px;min-width:48px;height:26px;padding:0;justify-content:center;border-radius:0}
+    .tax-result-wrap{height:auto;min-height:0;flex:1;overflow:auto}
+    .tax-result-table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;font-size:14px}
+    .tax-result-table th{box-sizing:border-box;height:39px;padding:0 9px;background:#fafafa;color:#222;font-weight:600;text-align:left;border-right:1px solid #ededed;border-bottom:1px solid #e5e5e5;white-space:nowrap}
+    .tax-result-table td{box-sizing:border-box;height:44px;padding:0 9px;color:#555;border-bottom:1px solid #e8e8e8;line-height:1.45;word-break:break-word}
+    .tax-result-table tbody tr{cursor:pointer;transition:background .15s}
+    .tax-result-table tbody tr:hover{background:#f5f8ff}
+    .tax-result-table tbody tr.selected{background:#eaf2ff}
+    .tax-result-table tbody tr.tax-parent-row{cursor:not-allowed}
+    .tax-result-table tbody tr.tax-parent-row:hover{background:transparent}
+    .tax-result-table tbody tr.tax-parent-row input[type="radio"]{opacity:.45;cursor:not-allowed}
+    .tax-radio-col{width:40px;text-align:center!important}
+    .tax-name-col{width:40%}.tax-short-col{width:13%}.tax-code-col{width:30%;font-variant-numeric:tabular-nums}.tax-rate-col{width:13%}
+    .tax-result-table input[type="radio"]{width:16px;height:16px;margin:0;accent-color:var(--primary);cursor:pointer;vertical-align:middle}
+    .tax-tree-name{display:flex;align-items:center;min-height:43px}
+    .tax-tree-toggle{width:16px;height:16px;margin-right:8px;border:1px solid #e5e5e5;background:#fff;color:#555;display:inline-grid;place-items:center;font-size:14px;line-height:1;flex:none}
+    .tax-tree-spacer{width:24px;flex:none}
+    .tax-result-empty{text-align:center!important;color:#8c8c8c!important;height:120px!important}
+    .tax-modal .modal-footer{box-sizing:border-box;height:53px;min-height:53px;align-items:center;justify-content:center;gap:50px;padding:0;border-top:1px solid #e8e8e8}
+    .tax-modal .modal-footer .modal-btn{box-sizing:border-box;width:100px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:2px}
+    .confirm-modal{width:480px;max-width:calc(100vw - 24px);overflow:hidden;border-radius:4px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.22);animation:modalIn .2s ease-out}.confirm-body{padding:24px 24px 22px;display:flex;align-items:flex-start;gap:12px}.confirm-warning-icon{width:22px;height:22px;flex:0 0 22px;display:grid;place-items:center;border-radius:50%;background:#faad14;color:#fff;font-size:15px;font-weight:700}.confirm-copy{min-width:0}.confirm-heading{margin-bottom:8px;font-size:15px;font-weight:600;color:#262626}.confirm-description{color:#595959;font-size:13px;line-height:1.7}.modal-btn.danger-primary{border-color:#ff4d4f;background:#ff4d4f;color:#fff}.modal-btn.danger-primary:hover{border-color:#ff7875;background:#ff7875;color:#fff}
+    .toast{position:fixed;left:50%;top:96px;z-index:500;transform:translate(-50%,-10px);padding:9px 14px;border-radius:4px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.16);opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:1200px){.nav span:nth-child(-n+4){display:none}.form-grid{gap:12px 24px}.form-item{grid-template-columns:120px minmax(0,1fr)}.sync-auth-item{grid-template-columns:120px minmax(0,1fr)}.default-row{gap:24px}.default-field{grid-template-columns:210px minmax(0,1fr)}}
+    @media(max-width:760px){.tax-modal{height:calc(100vh - 12px)}.tax-filter{height:auto;min-height:50px;flex-wrap:wrap;padding:8px 14px}.tax-filter-item{flex:1 1 220px}.tax-filter-input{width:100%}.tax-result-table{min-width:760px}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">跳到主要内容</a>
+  <header class="topbar"><div class="brand"><div class="brand-logo">咸</div><span class="brand-name" onclick="location.href='MPM-工作台-首页.html'">咸亨国际主数据管理平台</span><button class="switch-btn" type="button" onclick="location.href='index.html'">切换系统</button></div><nav class="nav" aria-label="顶部导航"><span>消息通知</span><span>价格审核</span><span>版本更新</span><span>推送ERP</span><span>管理模块</span><span>任务中心</span><span><i class="avatar">管</i>管理员</span></nav></header>
+  <div class="tabs"><div class="tabs-list"><div class="tab" onclick="location.href='MPM-系统管理-使用组织.html'">使用组织 <span class="tab-close">×</span></div><div class="tab active">编辑-组织 <span class="tab-close">×</span></div></div><div class="tabs-clear">清除</div></div>
+  <div class="actionbar"><button class="action-btn" type="button" onclick="saveOrganization()">保存</button><button class="action-btn danger" type="button" onclick="location.href='MPM-系统管理-使用组织.html'">关闭</button></div>
+  <main id="mainContent">
+    <nav class="breadcrumb" aria-label="面包屑"><button class="back-link" type="button" onclick="location.href='MPM-系统管理-使用组织.html'">使用组织</button><span class="breadcrumb-sep">/</span><span>组织详情</span></nav>
+    <section class="panel" aria-labelledby="organizationInfoTitle">
+      <h1 class="panel-title" id="organizationInfoTitle">组织信息</h1>
+      <div class="panel-body">
+        <div class="form-grid">
+          <div class="form-item"><label class="form-label" for="orgCode">组织编码：</label><input class="input" id="orgCode" readonly></div>
+          <div class="form-item"><label class="form-label" for="orgName">组织名称：</label><input class="input" id="orgName" readonly></div>
+          <div class="form-item"><label class="form-label" for="syncTime">同步至MDM时间：</label><input class="input" id="syncTime" readonly></div>
+          <div class="form-item"><span class="form-label">可为使用组织：</span><div class="radio-group"><label class="radio"><input type="radio" name="usable" value="yes" checked><span class="radio-text">是</span></label><label class="radio"><input type="radio" name="usable" value="no"><span class="radio-text">否</span></label></div></div>
+          <div class="form-item"><span class="form-label">可为货主：</span><div class="radio-group"><label class="radio"><input type="radio" name="owner" value="yes"><span class="radio-text">是</span></label><label class="radio"><input type="radio" name="owner" value="no"><span class="radio-text">否</span></label></div></div>
+          <div class="form-item"><span class="form-label">SRM货主：</span><div class="radio-group"><label class="radio"><input type="radio" name="srmOwner" value="yes"><span class="radio-text">是</span></label><label class="radio"><input type="radio" name="srmOwner" value="no" checked><span class="radio-text">否</span></label></div></div>
+          <div class="form-item type-row"><span class="form-label">组织类型：</span><div class="radio-group"><label class="radio"><input type="radio" name="orgType" value="销售公司"><span class="radio-text">销售公司</span></label><label class="radio"><input type="radio" name="orgType" value="万聚"><span class="radio-text">万聚</span></label><label class="radio"><input type="radio" name="orgType" value="总部"><span class="radio-text">总部</span></label><label class="radio"><input type="radio" name="orgType" value="产业公司" checked><span class="radio-text">产业公司</span></label></div></div>
+          <div class="form-item sync-auth-item">
+            <span class="form-label">授权同步：</span>
+            <div class="sync-auth-content">
+              <button class="sync-switch" id="huisuiTaxSyncSwitch" type="button" role="switch" aria-checked="true" aria-label="授权同步" onclick="toggleHuisuiTaxSync()"></button>
+              <div class="sync-auth-copy">
+                <span class="sync-current" id="huisuiTaxSyncCurrent">当前状态：开启</span>
+                <div class="sync-state-list"><span class="sync-state-item active" id="huisuiEnabledCopy">开启：允许慧穗云定时任务同步该组织所属物料。</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="panel" aria-labelledby="defaultValueTitle">
+      <h2 class="panel-title" id="defaultValueTitle">为使用组织时物料字段默认值 <span class="panel-subtitle">物料若使用到当前组织为使用组织，需要确认同步 SAP 拓展该组织的特殊字段信息，仅限于首次设置有效，请谨慎配置</span></h2>
+      <div class="panel-body">
+        <div class="default-note">根据物料类型进行区分货品和服务类型</div>
+        <div class="default-row">
+          <div class="default-field"><label class="form-label" for="goodsDept"><span class="row-type">货品类型：</span><span class="required">*</span>采购部门（采购组）：</label><input class="input" id="goodsDept" value="综合服务科" readonly></div>
+          <div class="default-option"><span class="form-label"><span class="required">*</span>是否启用批次管理：</span><div class="radio-group"><label class="radio"><input type="radio" name="goodsBatch" value="yes" checked><span class="radio-text">是</span></label><label class="radio"><input type="radio" name="goodsBatch" value="no"><span class="radio-text">否</span></label></div></div>
+          <div class="default-option"><span class="form-label"><span class="required">*</span>评估类别：</span><div class="radio-group"><label class="radio"><input type="radio" name="goodsAssess" value="yes"><span class="radio-text">是</span></label><label class="radio"><input type="radio" name="goodsAssess" value="no"><span class="radio-text">否</span></label></div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="default-row">
+          <div class="default-field"><label class="form-label" for="serviceDept"><span class="row-type">服务类型：</span><span class="required">*</span>采购部门（采购组）：</label><input class="input" id="serviceDept" value="综合服务科" readonly></div>
+          <div class="default-option"><span class="form-label"><span class="required">*</span>是否启用批次管理：</span><div class="radio-group"><label class="radio"><input type="radio" name="serviceBatch" value="yes"><span class="radio-text">是</span></label><label class="radio"><input type="radio" name="serviceBatch" value="no" checked><span class="radio-text">否</span></label></div></div>
+          <div class="default-option"><span class="form-label"><span class="required">*</span>评估类别：</span><div class="radio-group"><label class="radio"><input type="radio" name="serviceAssess" value="yes"><span class="radio-text">是</span></label><label class="radio"><input type="radio" name="serviceAssess" value="no"><span class="radio-text">否</span></label></div></div>
+        </div>
+      </div>
+    </section>
+    <section class="panel" aria-labelledby="taxBlacklistTitle">
+      <div class="panel-heading">
+        <h2 class="panel-title" id="taxBlacklistTitle">税收分类编码黑名单 <span class="panel-subtitle">非必填，最多可配置 99 个；对应货主下的物料不允许使用黑名单中的税收分类编码，请谨慎配置</span></h2>
+        <div class="panel-heading-actions"><span class="blacklist-limit" id="blacklistLimit">0 / 99</span><button class="small-btn" id="addBlacklistButton" type="button" onclick="addBlacklistGroup()">新增</button></div>
+      </div>
+      <div class="blacklist-body">
+        <div class="blacklist-table-wrap">
+          <table class="blacklist-table" aria-label="税收分类编码黑名单">
+            <thead><tr><th class="code-column">税收分类编码</th><th class="name-column">名称</th><th class="short-column">简称</th><th class="rate-column">税率</th><th class="action-column">操作</th></tr></thead>
+            <tbody id="blacklistRows"></tbody>
+          </table>
+          <div class="blacklist-empty" id="blacklistEmpty">暂无税收分类编码黑名单，点击“新增”选择税收分类</div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="modal-overlay" id="disableSyncConfirmModal" onclick="handleDisableSyncOverlay(event)">
+    <div class="confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="disableSyncConfirmTitle" aria-describedby="disableSyncConfirmDescription">
+      <div class="modal-header"><span class="modal-title" id="disableSyncConfirmTitle">确认关闭授权同步</span><button class="modal-close" type="button" aria-label="关闭确认弹窗" onclick="cancelDisableSync()">×</button></div>
+      <div class="confirm-body">
+        <span class="confirm-warning-icon" aria-hidden="true">!</span>
+        <div class="confirm-copy"><div class="confirm-heading">关闭后将停止更新当前组织的税编信息</div><div class="confirm-description" id="disableSyncConfirmDescription">关闭后，慧穗云每周同步不会更新当前组织所属物料的税编信息。是否确认关闭？</div></div>
+      </div>
+      <div class="modal-footer"><button class="modal-btn" type="button" onclick="cancelDisableSync()">取消</button><button class="modal-btn danger-primary" id="confirmDisableSyncButton" type="button" onclick="confirmDisableSync()">确认关闭</button></div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="taxSelectModal" onclick="handleTaxModalOverlay(event)">
+    <div class="tax-modal" role="dialog" aria-modal="true" aria-labelledby="taxSelectModalTitle">
+      <div class="modal-header"><span class="modal-title" id="taxSelectModalTitle">选择税收分类</span><button class="modal-close" type="button" aria-label="关闭税收分类选择弹窗" onclick="closeTaxSelectModal()">×</button></div>
+      <div class="tax-filter">
+        <div class="tax-filter-item"><label for="taxFilterCode">税收分类编码：</label><input class="tax-filter-input" id="taxFilterCode" placeholder="请输入"></div>
+        <div class="tax-filter-item"><label for="taxFilterName">税收分类名称：</label><input class="tax-filter-input" id="taxFilterName" placeholder="请输入"></div>
+        <div class="tax-filter-item"><label for="taxFilterShort">简称：</label><input class="tax-filter-input" id="taxFilterShort" placeholder="请输入"></div>
+        <button class="modal-btn primary" type="button" onclick="queryTaxClassifications()">查询</button>
+      </div>
+      <div class="tax-result-wrap">
+        <table class="tax-result-table" aria-label="税收分类查询结果"><thead><tr><th class="tax-radio-col"></th><th class="tax-name-col">税收分类名称</th><th class="tax-short-col">简称</th><th class="tax-code-col">税收分类编码</th><th class="tax-rate-col">税率</th></tr></thead><tbody id="taxResultRows"></tbody></table>
+      </div>
+      <div class="modal-footer"><button class="modal-btn" type="button" onclick="closeTaxSelectModal()">取消</button><button class="modal-btn primary" id="taxSelectConfirm" type="button" onclick="confirmTaxSelection()" disabled>确定</button></div>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    const params=new URLSearchParams(location.search);
+    const org={code:params.get('code')||'1087',name:params.get('name')||'浙江中标卓越认证有限公司',owner:params.get('owner')||'是',time:params.get('time')||'2026-07-01 11:35:48'};
+    const currentRole=params.get('role')||'系统管理员';
+    const canEditHuisuiTaxSync=['系统管理员','审批经理'].includes(currentRole);
+    let huisuiTaxSyncEnabled=params.get('huisuiSync')!=='off';
+    let disableSyncTrigger=null;
+    document.getElementById('orgCode').value=org.code;
+    document.getElementById('orgName').value=org.name;
+    document.getElementById('syncTime').value=org.time;
+    document.querySelector('input[name="owner"][value="'+(org.owner==='是'?'yes':'no')+'"]').checked=true;
+    function renderHuisuiTaxSync(){
+      const switchButton=document.getElementById('huisuiTaxSyncSwitch');
+      switchButton.setAttribute('aria-checked',String(huisuiTaxSyncEnabled));
+      switchButton.disabled=!canEditHuisuiTaxSync;
+      switchButton.setAttribute('aria-disabled',String(!canEditHuisuiTaxSync));
+      document.getElementById('huisuiTaxSyncCurrent').textContent='当前状态：'+(huisuiTaxSyncEnabled?'开启':'关闭');
+      document.getElementById('huisuiEnabledCopy').classList.toggle('active',huisuiTaxSyncEnabled);
+    }
+    function toggleHuisuiTaxSync(){
+      if(!canEditHuisuiTaxSync)return;
+      if(huisuiTaxSyncEnabled){openDisableSyncConfirm();return}
+      huisuiTaxSyncEnabled=true;
+      renderHuisuiTaxSync();
+      showToast('已开启授权同步，保存后生效');
+    }
+    function openDisableSyncConfirm(){
+      disableSyncTrigger=document.activeElement;
+      document.getElementById('disableSyncConfirmModal').classList.add('open');
+      setTimeout(()=>document.getElementById('confirmDisableSyncButton').focus(),0);
+    }
+    function cancelDisableSync(){
+      document.getElementById('disableSyncConfirmModal').classList.remove('open');
+      if(disableSyncTrigger&&typeof disableSyncTrigger.focus==='function')disableSyncTrigger.focus();
+    }
+    function confirmDisableSync(){
+      huisuiTaxSyncEnabled=false;
+      renderHuisuiTaxSync();
+      document.getElementById('disableSyncConfirmModal').classList.remove('open');
+      document.getElementById('huisuiTaxSyncSwitch').focus();
+      showToast('已关闭授权同步，保存后生效');
+    }
+    function handleDisableSyncOverlay(event){if(event.target===event.currentTarget)cancelDisableSync()}
+    renderHuisuiTaxSync();
+    const taxClassificationOptions=[
+      {code:'1000000000000000000',name:'货物',short:'货物',rate:'—',level:0},
+      {code:'1070000000000000000',name:'石油、化工产品',short:'石油化工产品',rate:'—',level:1},
+      {code:'1070600000000000000',name:'塑料制品',short:'塑料制品',rate:'—',level:2},
+      {code:'1070601000000000000',name:'初级形态塑料及塑料制品',short:'塑料制品',rate:'—',level:3},
+      {code:'1070601050000000000',name:'塑料管、棒、型材及异型材',short:'塑料制品',rate:'13%',level:4}
+    ];
+    let blacklistEntries=[{code:'1090603130000000000',name:'电工仪器仪表零部件',short:'电工仪器仪表',rate:'13%'}];
+    let pendingTaxSelection=null;
+    let taxModalTrigger=null;
+
+    function renderBlacklist(){
+      const body=document.getElementById('blacklistRows');
+      const empty=document.getElementById('blacklistEmpty');
+      const addButton=document.getElementById('addBlacklistButton');
+      body.innerHTML='';
+      empty.classList.toggle('show',blacklistEntries.length===0);
+      document.getElementById('blacklistLimit').textContent=blacklistEntries.length+' / 99';
+      addButton.disabled=blacklistEntries.length>=99;
+      addButton.title=addButton.disabled?'最多可配置 99 个税收分类编码':'';
+      blacklistEntries.forEach((entry,index)=>{
+        const row=document.createElement('tr');
+        row.innerHTML='<td><input class="blacklist-input" readonly aria-readonly="true" aria-label="第'+(index+1)+'组税收分类编码"></td><td><input class="blacklist-input" readonly aria-readonly="true" aria-label="第'+(index+1)+'组税收分类名称"></td><td><input class="blacklist-input" readonly aria-readonly="true" aria-label="第'+(index+1)+'组税收分类简称"></td><td><input class="blacklist-input" readonly aria-readonly="true" aria-label="第'+(index+1)+'组税率"></td><td class="action-column"><button class="delete-group-btn" type="button">删除</button></td>';
+        const inputs=row.querySelectorAll('input');
+        inputs[0].value=entry.code;
+        inputs[1].value=entry.name;
+        inputs[2].value=entry.short;
+        inputs[3].value=entry.rate;
+        row.querySelector('.delete-group-btn').addEventListener('click',()=>removeBlacklistGroup(index));
+        body.appendChild(row);
+      });
+    }
+    function addBlacklistGroup(){
+      if(blacklistEntries.length>=99){showToast('税收分类编码黑名单最多可配置 99 个');return}
+      openTaxSelectModal();
+    }
+    function removeBlacklistGroup(index){
+      const entry=blacklistEntries[index];
+      const label='税收分类编码 '+entry.code;
+      if(!window.confirm('确认删除'+label+'吗？'))return;
+      blacklistEntries.splice(index,1);
+      renderBlacklist();
+      showToast('已删除一整组税收分类编码黑名单数据');
+    }
+    function openTaxSelectModal(){
+      pendingTaxSelection=null;
+      taxModalTrigger=document.activeElement;
+      ['taxFilterCode','taxFilterShort','taxFilterName'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('taxSelectConfirm').disabled=true;
+      renderTaxClassificationResults(taxClassificationOptions);
+      document.getElementById('taxSelectModal').classList.add('open');
+      setTimeout(()=>document.getElementById('taxFilterCode').focus(),0);
+    }
+    function closeTaxSelectModal(){
+      document.getElementById('taxSelectModal').classList.remove('open');
+      pendingTaxSelection=null;
+      if(taxModalTrigger&&typeof taxModalTrigger.focus==='function')taxModalTrigger.focus();
+    }
+    function handleTaxModalOverlay(event){if(event.target===event.currentTarget)closeTaxSelectModal()}
+    function renderTaxClassificationResults(rows){
+      const body=document.getElementById('taxResultRows');
+      body.innerHTML='';
+      if(!rows.length){body.innerHTML='<tr><td class="tax-result-empty" colspan="5">未查询到匹配的税收分类</td></tr>';return}
+      rows.forEach(item=>{
+        const row=document.createElement('tr');
+        const isParent=item.level<4;
+        const treeToggle=isParent?'<span class="tax-tree-toggle" aria-hidden="true">−</span>':'<span class="tax-tree-spacer" aria-hidden="true"></span>';
+        if(isParent)row.classList.add('tax-parent-row');
+        row.innerHTML='<td class="tax-radio-col"><input type="radio" name="taxChoice" aria-label="'+(isParent?'父级税收分类不可选择：':'选择')+item.name+'"'+(isParent?' disabled':'')+'></td><td><span class="tax-tree-name" style="padding-left:'+(item.level*16)+'px">'+treeToggle+item.name+'</span></td><td>'+item.short+'</td><td>'+item.code+'</td><td>'+item.rate+'</td>';
+        const select=()=>selectTaxClassification(item,row);
+        if(!isParent){row.addEventListener('click',select);row.querySelector('input').addEventListener('click',event=>{event.stopPropagation();select()})}
+        body.appendChild(row);
+      });
+    }
+    function selectTaxClassification(item,row){
+      const radio=row.querySelector('input[type="radio"]');
+      if(!radio||radio.disabled)return;
+      document.querySelectorAll('#taxResultRows tr').forEach(tr=>tr.classList.remove('selected'));
+      document.querySelectorAll('#taxResultRows input[type="radio"]').forEach(input=>input.checked=false);
+      row.classList.add('selected');
+      radio.checked=true;
+      pendingTaxSelection=item;
+      document.getElementById('taxSelectConfirm').disabled=false;
+    }
+    function queryTaxClassifications(){
+      const code=document.getElementById('taxFilterCode').value.trim().toLowerCase();
+      const shortName=document.getElementById('taxFilterShort').value.trim().toLowerCase();
+      const name=document.getElementById('taxFilterName').value.trim().toLowerCase();
+      pendingTaxSelection=null;
+      document.getElementById('taxSelectConfirm').disabled=true;
+      renderTaxClassificationResults(taxClassificationOptions.filter(item=>(!code||item.code.toLowerCase().includes(code))&&(!shortName||item.short.toLowerCase().includes(shortName))&&(!name||item.name.toLowerCase().includes(name))));
+    }
+    function confirmTaxSelection(){
+      if(!pendingTaxSelection)return;
+      if(blacklistEntries.length>=99){closeTaxSelectModal();showToast('税收分类编码黑名单最多可配置 99 个');return}
+      const duplicate=blacklistEntries.some(entry=>entry.code===pendingTaxSelection.code);
+      if(duplicate){showToast('该税收分类编码已存在于黑名单中，请选择其他编码');return}
+      blacklistEntries.push({...pendingTaxSelection});
+      renderBlacklist();
+      closeTaxSelectModal();
+      showToast('税收分类编码已加入黑名单');
+    }
+    function showToast(text){const toast=document.getElementById('toast');toast.textContent=text;toast.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.classList.remove('show'),2200)}
+    function saveOrganization(){const missing=['goodsAssess','serviceAssess'].filter(name=>!document.querySelector('input[name="'+name+'"]:checked'));if(missing.length){showToast('请先完善货品及服务类型的评估类别');return}showToast('使用组织配置已保存')}
+    document.querySelectorAll('.tax-filter-input').forEach(input=>input.addEventListener('keydown',event=>{if(event.key==='Enter')queryTaxClassifications()}));
+    document.addEventListener('keydown',event=>{
+      if(event.key!=='Escape')return;
+      if(document.getElementById('disableSyncConfirmModal').classList.contains('open')){cancelDisableSync();return}
+      if(document.getElementById('taxSelectModal').classList.contains('open'))closeTaxSelectModal();
+    });
+    renderBlacklist();
+  </script>
+  <script src="mpm-topnav-links.js"></script>
+</body>
+</html>

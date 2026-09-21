@@ -4,7 +4,7 @@
 
 **Goal:** 为当前静态原型补充可从首页与工作台进入的物料列表页，并支持从列表进入现有详情页。
 
-**Architecture:** 保持现有原型的静态 HTML + 内联 CSS/JS 结构，在新增 `物料列表.html` 时复用现有顶部导航、页签、消息提示和按钮语言。入口页与工作台页只做最小改动，列表页集中承载截图参考中的筛选、类目树、工具栏、表格与分页交互。
+**Architecture:** 保持现有原型的静态 HTML + 内联 CSS/JS 结构，在新增 `MPM-物料-物料列表.html` 时复用现有顶部导航、页签、消息提示和按钮语言。入口页与工作台页只做最小改动，列表页集中承载截图参考中的筛选、类目树、工具栏、表格与分页交互。
 
 **Tech Stack:** 纯静态 HTML、CSS、原生 JavaScript
 
@@ -14,7 +14,7 @@
 
 **Files:**
 - Modify: `index.html`
-- Modify: `oms-mpm-物料工作台原型.html:895-918`
+- Modify: `MPM-工作台-首页.html:895-918`
 
 - [ ] **Step 1: 为首页入口写一个可验证的失败检查**
 
@@ -31,12 +31,12 @@ Expected: FAIL with `index.html 尚未提供物料列表入口`
 
 - [ ] **Step 2: 修改首页并补全工作台路由**
 
-在 `index.html` 增加一个指向 `物料列表.html` 的入口；在 `oms-mpm-物料工作台原型.html` 的 `featureRoutes` 中加入 `物料列表` 路由。
+在 `index.html` 增加一个指向 `MPM-物料-物料列表.html` 的入口；在 `MPM-工作台-首页.html` 的 `featureRoutes` 中加入 `物料列表` 路由。
 
 目标代码片段：
 
 ```html
-<a class="link-item" href="物料列表.html">
+<a class="link-item" href="MPM-物料-物料列表.html">
   <div class="icon icon-blue">📦</div>
   <div>
     <div class="link-text">物料列表</div>
@@ -47,10 +47,10 @@ Expected: FAIL with `index.html 尚未提供物料列表入口`
 
 ```js
 const featureRoutes = {
-  '物料列表': '物料列表.html',
-  '待我审核': '待我审核.html',
-  '审核结果': '审核结果.html',
-  '我发起的': '我发起的.html'
+  '物料列表': 'MPM-物料-物料列表.html',
+  '待我审核': 'MPM-物料-待我审核.html',
+  '审核结果': 'MPM-物料-审核结果.html',
+  '我发起的': 'MPM-物料-我发起的.html'
 };
 ```
 
@@ -60,9 +60,9 @@ Run: `python - <<'PY'
 from pathlib import Path
 root = Path(r'D:/xhgj002358/VSCODE/SCMAI 日志/MPM-4.6.1--OMS-MPM定向物料生成文档')
 index_text = (root / 'index.html').read_text(encoding='utf-8')
-workbench_text = (root / 'oms-mpm-物料工作台原型.html').read_text(encoding='utf-8')
-assert 'href="物料列表.html"' in index_text
-assert "'物料列表': '物料列表.html'" in workbench_text
+workbench_text = (root / 'MPM-工作台-首页.html').read_text(encoding='utf-8')
+assert 'href="MPM-物料-物料列表.html"' in index_text
+assert "'物料列表': 'MPM-物料-物料列表.html'" in workbench_text
 print('PASS')
 PY`
 
@@ -71,19 +71,19 @@ Expected: PASS
 ### Task 2: 新建物料列表页骨架
 
 **Files:**
-- Create: `物料列表.html`
-- Reference: `oms-mpm-物料工作台原型.html`
-- Reference: `物料审核详情.html`
+- Create: `MPM-物料-物料列表.html`
+- Reference: `MPM-工作台-首页.html`
+- Reference: `MPM-物料-新增物料-入口跳转.html`
 
 - [ ] **Step 1: 为新页面写一个失败检查**
 
 Run: `python - <<'PY'
 from pathlib import Path
-p = Path(r'D:/xhgj002358/VSCODE/SCMAI 日志/MPM-4.6.1--OMS-MPM定向物料生成文档/物料列表.html')
-assert p.exists(), 'FAIL: 物料列表.html 尚未创建'
+p = Path(r'D:/xhgj002358/VSCODE/SCMAI 日志/MPM-4.6.1--OMS-MPM定向物料生成文档/MPM-物料-物料列表.html')
+assert p.exists(), 'FAIL: MPM-物料-物料列表.html 尚未创建'
 PY`
 
-Expected: FAIL with `物料列表.html 尚未创建`
+Expected: FAIL with `MPM-物料-物料列表.html 尚未创建`
 
 - [ ] **Step 2: 创建页面骨架并铺设结构**
 
@@ -106,7 +106,7 @@ Expected: FAIL with `物料列表.html 尚未创建`
 
 Run: `python - <<'PY'
 from pathlib import Path
-text = Path(r'D:/xhgj002358/VSCODE/SCMAI 日志/MPM-4.6.1--OMS-MPM定向物料生成文档/物料列表.html').read_text(encoding='utf-8')
+text = Path(r'D:/xhgj002358/VSCODE/SCMAI 日志/MPM-4.6.1--OMS-MPM定向物料生成文档/MPM-物料-物料列表.html').read_text(encoding='utf-8')
 for marker in ['class="topbar"', 'class="tabs-bar"', 'class="filter-card"', 'class="category-panel"', 'class="table-panel"', 'id="messageWrap"']:
     assert marker in text, marker
 print('PASS')
@@ -117,19 +117,19 @@ Expected: PASS
 ### Task 3: 实现关键交互
 
 **Files:**
-- Modify: `物料列表.html`
+- Modify: `MPM-物料-物料列表.html`
 
 - [ ] **Step 1: 为关键交互写失败检查**
 
 Run: `python - <<'PY'
 from pathlib import Path
-text = Path(r'D:/xhgj002358/VSCODE/SCMAI 日志/MPM-4.6.1--OMS-MPM定向物料生成文档/物料列表.html').read_text(encoding='utf-8')
+text = Path(r'D:/xhgj002358/VSCODE/SCMAI 日志/MPM-4.6.1--OMS-MPM定向物料生成文档/MPM-物料-物料列表.html').read_text(encoding='utf-8')
 checks = [
     'id="searchBtn"',
     'id="resetBtn"',
     'id="exportDropdown"',
     'data-page=',
-    'href="物料审核详情.html"'
+    'href="MPM-物料-新增物料-入口跳转.html"'
 ]
 missing = [c for c in checks if c not in text]
 assert not missing, f'FAIL: missing {missing}'
@@ -175,8 +175,8 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 
 Run: `python - <<'PY'
 from pathlib import Path
-text = Path(r'D:/xhgj002358/VSCODE/SCMAI 日志/MPM-4.6.1--OMS-MPM定向物料生成文档/物料列表.html').read_text(encoding='utf-8')
-for marker in ['id="searchBtn"', 'id="resetBtn"', 'id="exportDropdown"', 'data-page=', 'href="物料审核详情.html"', 'const state = {']:
+text = Path(r'D:/xhgj002358/VSCODE/SCMAI 日志/MPM-4.6.1--OMS-MPM定向物料生成文档/MPM-物料-物料列表.html').read_text(encoding='utf-8')
+for marker in ['id="searchBtn"', 'id="resetBtn"', 'id="exportDropdown"', 'data-page=', 'href="MPM-物料-新增物料-入口跳转.html"', 'const state = {']:
     assert marker in text, marker
 print('PASS')
 PY`
@@ -187,8 +187,8 @@ Expected: PASS
 
 **Files:**
 - Verify: `index.html`
-- Verify: `oms-mpm-物料工作台原型.html`
-- Verify: `物料列表.html`
+- Verify: `MPM-工作台-首页.html`
+- Verify: `MPM-物料-物料列表.html`
 
 - [ ] **Step 1: 启动本地静态服务**
 
@@ -202,8 +202,8 @@ Expected: 服务启动成功
 
 ```text
 1. 打开 /index.html，点击“物料列表”进入新页
-2. 打开 /oms-mpm-物料工作台原型.html，点击“进入”进入新页
-3. 在 /物料列表.html 点击编码或名称进入 /物料审核详情.html
+2. 打开 /MPM-工作台-首页.html，点击“进入”进入新页
+3. 在 /MPM-物料-物料列表.html 点击编码或名称进入 /MPM-物料-新增物料-入口跳转.html
 ```
 
 Expected: 三段跳转均成立

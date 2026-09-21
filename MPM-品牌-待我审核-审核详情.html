@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>品牌管理 - 审核详情</title>
+  <style>
+    :root {
+      --primary: #1677ff;
+      --primary-hover: #0958d9;
+      --danger: #ff4d4f;
+      --danger-hover: #d9363e;
+      --text: rgba(0, 0, 0, .88);
+      --muted: rgba(0, 0, 0, .45);
+      --border: #d9d9d9;
+      --page: #f4f6f9;
+      --surface: #fff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      min-width: 1180px;
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--page);
+      font: 14px/1.5 "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      height: 48px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: rgba(255, 255, 255, .85);
+      background: #001529;
+      position: sticky;
+      top: 0;
+      z-index: 120;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: #fff;
+      background: var(--primary);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .brand-name {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .switch-btn {
+      padding: 3px 10px;
+      color: rgba(255, 255, 255, .75);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 6px;
+      font-size: 12px;
+      line-height: 22px;
+      transition: all .2s;
+    }
+
+    .switch-btn:hover { color: #fff; border-color: var(--primary); }
+    .nav-menu { height: 100%; display: flex; align-items: center; }
+
+    .nav-item {
+      height: 100%;
+      padding: 0 13px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: rgba(255, 255, 255, .75);
+      position: relative;
+      font-size: 13px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .nav-item:hover { color: #fff; background: rgba(255, 255, 255, .08); }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--danger);
+      border: 1.5px solid #001529;
+      border-radius: 50%;
+      position: absolute;
+      top: 10px;
+      right: 7px;
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 16px;
+      margin: 0 3px;
+      background: rgba(255, 255, 255, .15);
+    }
+
+    .user-avatar {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--primary);
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .tabs-bar {
+      height: 36px;
+      padding-right: 8px;
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      background: #fff;
+      border-bottom: 1px solid #f0f0f0;
+      position: sticky;
+      top: 48px;
+      z-index: 110;
+    }
+
+    .tabs-list { display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
+    .tabs-list::-webkit-scrollbar { display: none; }
+
+    .tab {
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(0, 0, 0, .45);
+      border-right: 1px solid #f0f0f0;
+      position: relative;
+      font-size: 12px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .tab:hover { color: rgba(0, 0, 0, .65); background: #fafafa; }
+    .tab.active { color: var(--primary); background: #e6f4ff; }
+
+    .tab.active::after {
+      content: "";
+      height: 2px;
+      background: var(--primary);
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+
+    .tab .cls { padding: 2px; border-radius: 2px; font-size: 10px; opacity: .5; }
+    .tab:hover .cls { opacity: .85; }
+
+    .tabs-clear {
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      color: rgba(0, 0, 0, .45);
+      border-left: 1px solid #f0f0f0;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .tabs-clear:hover { color: var(--primary); }
+
+    .page-shell { min-height: calc(100vh - 84px); padding-bottom: 28px; }
+
+    .action-bar {
+      min-height: 54px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+      box-shadow: 0 3px 10px rgba(31, 49, 79, .07);
+      position: sticky;
+      top: 84px;
+      z-index: 100;
+    }
+
+    .action-group { display: flex; align-items: center; gap: 10px; }
+
+    .reason-input {
+      width: 280px;
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .reason-input:focus { border-color: #69b1ff; box-shadow: 0 0 0 2px rgba(22, 119, 255, .12); }
+
+    .button {
+      height: 32px;
+      padding: 0 16px;
+      color: rgba(0, 0, 0, .88);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      transition: .2s;
+    }
+
+    .button:hover { color: var(--primary); border-color: var(--primary); }
+    .button.primary { color: #fff; background: var(--primary); border-color: var(--primary); }
+    .button.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+    .button.danger { color: var(--danger); border-color: var(--danger); }
+    .button.danger:hover { color: #fff; background: var(--danger-hover); border-color: var(--danger-hover); }
+
+    .content { padding: 18px 20px; }
+
+    .page-title {
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .audit-tag {
+      padding: 2px 8px;
+      color: #0958d9;
+      background: #e6f4ff;
+      border: 1px solid #91caff;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .card {
+      margin-bottom: 16px;
+      background: var(--surface);
+      border: 1px solid #ececec;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(31, 49, 79, .04);
+    }
+
+    .card-title {
+      height: 46px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .record-link { color: var(--primary); font-size: 13px; font-weight: 400; cursor: pointer; }
+    .form-grid { padding: 20px 24px 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 42px; }
+    .form-item { min-width: 0; display: grid; grid-template-columns: 116px minmax(0, 1fr); align-items: start; gap: 12px; }
+    .form-item.full { grid-column: 1 / -1; }
+
+    .form-label {
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      color: rgba(0, 0, 0, .65);
+      text-align: right;
+    }
+
+    .required::before { content: "*"; margin-right: 4px; color: var(--danger); }
+
+    .field-content { min-width: 0; }
+
+    .previous-value {
+      margin-top: 5px;
+      color: var(--danger);
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .control {
+      width: 100%;
+      min-height: 32px;
+      padding: 5px 10px;
+      color: rgba(0, 0, 0, .88);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .control:focus { border-color: #69b1ff; box-shadow: 0 0 0 2px rgba(22, 119, 255, .12); }
+    textarea.control { min-height: 90px; resize: vertical; }
+
+    .readonly {
+      min-height: 32px;
+      padding: 5px 10px;
+      display: flex;
+      align-items: center;
+      color: rgba(0, 0, 0, .65);
+      background: #fafafa;
+      border: 1px solid #e8e8e8;
+      border-radius: 3px;
+    }
+
+    .radio-group, .switch-row { min-height: 32px; display: flex; align-items: center; gap: 22px; }
+    .radio-group label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+    .switch {
+      width: 40px;
+      height: 22px;
+      padding: 0;
+      background: rgba(0, 0, 0, .25);
+      border: 0;
+      border-radius: 11px;
+      position: relative;
+      transition: .2s;
+    }
+
+    .switch::after {
+      content: "";
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: .2s;
+    }
+
+    .switch.on { background: var(--primary); }
+    .switch.on::after { left: 20px; }
+
+    .image-editor { display: flex; align-items: flex-start; gap: 18px; }
+
+    .logo-preview {
+      width: 140px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      color: #175cd3;
+      background: linear-gradient(135deg, #edf5ff, #d6e9ff);
+      border: 1px solid #b7d7ff;
+      border-radius: 3px;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .image-tools { display: flex; flex-direction: column; gap: 8px; }
+    .image-actions { display: flex; gap: 8px; }
+    .hint { color: var(--muted); font-size: 12px; }
+
+    .upload-zone {
+      width: 340px;
+      min-height: 78px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      background: #fafafa;
+      border: 1px dashed #bfbfbf;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .upload-zone:hover { color: var(--primary); border-color: var(--primary); }
+    .manager-note { color: var(--danger); font-size: 12px; }
+
+    .toast {
+      min-width: 180px;
+      max-width: 420px;
+      padding: 10px 16px;
+      color: #fff;
+      background: rgba(0, 0, 0, .78);
+      border-radius: 4px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .18);
+      position: fixed;
+      left: 50%;
+      bottom: 34px;
+      z-index: 300;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      text-align: center;
+      transition: .2s;
+    }
+
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    @media (max-width: 1280px) {
+      .nav-item { padding: 0 9px; }
+      .form-grid { gap: 18px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">咸</div>
+      <span class="brand-name" onclick="location.href='MPM-工作台-首页.html'">咸亨国际主数据管理平台</span>
+      <button class="switch-btn" type="button" data-action="switch-system" onclick="window.location.href='index.html'">切换系统</button>
+    </div>
+    <nav class="nav-menu">
+      <div class="nav-item" data-name="消息通知">消息通知<span class="badge-dot"></span></div>
+      <div class="nav-item" data-name="价格审核">价格审核<span class="badge-dot"></span></div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-name="版本更新">版本更新</div>
+      <div class="nav-item" data-name="推送ERP">推送ERP</div>
+      <div class="nav-item" data-name="管理模块">管理模块</div>
+      <div class="nav-item" data-name="任务中心">任务中心</div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-name="管理员"><div class="user-avatar">管</div>管理员 ▾</div>
+    </nav>
+  </header>
+
+  <div class="tabs-bar">
+    <div class="tabs-list">
+      <div class="tab" onclick="location.href='MPM-工作台-首页.html'">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab" onclick="location.href='MPM-品牌-待我审核.html'">品牌管理-待我审核 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab active">品牌审核详情 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    </div>
+    <div class="tabs-clear" onclick="location.href='MPM-工作台-首页.html'">清除</div>
+  </div>
+
+  <main class="page-shell">
+    <section class="action-bar" aria-label="审核操作">
+      <div class="action-group">
+        <input class="reason-input" id="rejectReason" type="text" placeholder="驳回理由（驳回时必填）" />
+        <button class="button primary" id="approveButton" type="button">通过</button>
+        <button class="button danger" id="rejectButton" type="button">驳回</button>
+      </div>
+      <div class="action-group">
+        <button class="button primary" id="saveButton" type="button">保存</button>
+        <button class="button" id="closeButton" type="button">关闭</button>
+      </div>
+    </section>
+
+    <div class="content">
+      <h1 class="page-title">品牌审核详情 <span class="audit-tag" id="auditTypeTag">品牌审核</span></h1>
+
+      <section class="card" aria-labelledby="brandInfoTitle">
+        <div class="card-title" id="brandInfoTitle">
+          <span>品牌信息</span>
+          <span class="record-link" id="operationRecordLink">操作记录</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-item">
+            <label class="form-label required" for="chineseName">中文名</label>
+            <div class="field-content">
+              <input class="control" id="chineseName" type="text" />
+              <div class="previous-value">修改前：蓝白合</div>
+            </div>
+          </div>
+          <div class="form-item">
+            <label class="form-label required" for="englishName">英文名</label>
+            <div class="field-content">
+              <input class="control" id="englishName" type="text" />
+              <div class="previous-value">修改前：LBH</div>
+            </div>
+          </div>
+          <div class="form-item">
+            <label class="form-label required" for="brandType">品牌类型</label>
+            <div class="field-content">
+              <select class="control" id="brandType">
+                <option selected>非代理品牌</option>
+                <option>代理品牌</option>
+                <option>自有品牌</option>
+              </select>
+              <div class="previous-value">修改前：非代理品牌</div>
+            </div>
+          </div>
+          <div class="form-item">
+            <span class="form-label">品牌注册地</span>
+            <input class="control" id="registrationPlace" type="text" value="中国" />
+          </div>
+          <div class="form-item">
+            <span class="form-label">热门搜索</span>
+            <div class="switch-row"><button class="switch" type="button" data-switch aria-label="热门搜索开关"></button><span class="hint">关闭</span></div>
+          </div>
+          <div class="form-item">
+            <span class="form-label">优势品牌</span>
+            <div class="switch-row"><button class="switch" type="button" data-switch aria-label="优势品牌开关"></button><span class="hint">关闭</span></div>
+          </div>
+          <div class="form-item full">
+            <span class="form-label">应用场景</span>
+            <div class="radio-group">
+              <label><input type="radio" name="applicationScope" value="全部物料" checked />全部物料</label>
+              <label><input type="radio" name="applicationScope" value="旧物料" />旧物料</label>
+              <label><input type="radio" name="applicationScope" value="新物料" />新物料</label>
+            </div>
+          </div>
+          <div class="form-item full">
+            <span class="form-label">品牌图片</span>
+            <div class="image-editor">
+              <div class="logo-preview" id="logoPreview">品牌LOGO</div>
+              <div class="image-tools">
+                <div class="hint">建议尺寸：140 × 54，支持 JPG、PNG 格式</div>
+                <div class="image-actions">
+                  <button class="button" id="generateLogoButton" type="button">生成文字 logo</button>
+                  <button class="button" id="cropLogoButton" type="button">上传裁剪 logo</button>
+                </div>
+                <div class="upload-zone" id="uploadZone">＋ 点击或拖拽上传品牌图片</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-item full">
+            <label class="form-label" for="description">描述</label>
+            <textarea class="control" id="description" placeholder="请输入品牌描述"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="organizationInfoTitle">
+        <div class="card-title" id="organizationInfoTitle">组织信息</div>
+        <div class="form-grid">
+          <div class="form-item">
+            <span class="form-label">创建组织</span>
+            <div class="readonly" id="companyValue">-</div>
+          </div>
+          <div class="form-item">
+            <span class="form-label">审核类型</span>
+            <div class="readonly" id="auditTypeValue">-</div>
+          </div>
+          <div class="form-item">
+            <span class="form-label">联系人</span>
+            <div class="readonly" id="applicantValue">-</div>
+          </div>
+          <div class="form-item">
+            <span class="form-label">联系方式</span>
+            <div class="readonly" id="phoneValue">-</div>
+          </div>
+          <div class="form-item full">
+            <span class="form-label">产品经理</span>
+            <div>
+              <div class="switch-row"><button class="switch" type="button" data-switch aria-label="产品经理开关"></button><span class="hint">关闭</span></div>
+              <div class="manager-note">开启后，该组织将作为品牌对应产品经理的归属组织，请确认组织信息准确。</div>
+            </div>
+          </div>
+          <div class="form-item full">
+            <label class="form-label" for="organizationRemark">组织说明</label>
+            <textarea class="control" id="organizationRemark" placeholder="请输入组织补充说明"></textarea>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const brandName = params.get('brandName') || '';
+    const separatorIndex = brandName.indexOf('/');
+    const chineseName = separatorIndex >= 0 ? brandName.slice(0, separatorIndex) : brandName;
+    const englishName = separatorIndex >= 0 ? brandName.slice(separatorIndex + 1) : '';
+    const auditTypeLabels = {
+      'SRM新增': 'SRM品牌新增审核',
+      'MDM新增': 'MDM品牌新增审核',
+      'MDM修改': 'MDM品牌修改审核',
+      'SRM修改': 'SRM品牌修改审核'
+    };
+
+    const elements = {
+      chineseName: document.getElementById('chineseName'),
+      englishName: document.getElementById('englishName'),
+      logoPreview: document.getElementById('logoPreview'),
+      company: document.getElementById('companyValue'),
+      applicant: document.getElementById('applicantValue'),
+      phone: document.getElementById('phoneValue'),
+      auditType: document.getElementById('auditTypeValue'),
+      auditTypeTag: document.getElementById('auditTypeTag'),
+      rejectReason: document.getElementById('rejectReason'),
+      toast: document.getElementById('toast')
+    };
+
+    let toastTimer;
+
+    function showToast(message) {
+      clearTimeout(toastTimer);
+      elements.toast.textContent = message;
+      elements.toast.classList.add('show');
+      toastTimer = setTimeout(() => elements.toast.classList.remove('show'), 2200);
+    }
+
+    function setText(element, value) {
+      element.textContent = value || '-';
+    }
+
+    elements.chineseName.value = chineseName;
+    elements.englishName.value = englishName;
+    elements.logoPreview.textContent = englishName || chineseName || '品牌LOGO';
+    setText(elements.company, params.get('company'));
+    setText(elements.applicant, params.get('applicant'));
+    setText(elements.phone, params.get('phone'));
+
+    const auditType = params.get('auditType') || '';
+    const auditTypeText = auditTypeLabels[auditType] || auditType || '品牌审核';
+    setText(elements.auditType, auditTypeText);
+    elements.auditTypeTag.textContent = auditTypeText;
+
+    document.querySelectorAll('[data-switch]').forEach(button => {
+      button.addEventListener('click', () => {
+        const enabled = button.classList.toggle('on');
+        const status = button.nextElementSibling;
+        if (status) status.textContent = enabled ? '开启' : '关闭';
+      });
+    });
+
+    document.getElementById('approveButton').addEventListener('click', () => {
+      showToast(`已通过“${elements.chineseName.value || brandName || '当前品牌'}”审核（原型）`);
+    });
+
+    document.getElementById('rejectButton').addEventListener('click', () => {
+      const reason = elements.rejectReason.value.trim();
+      if (!reason) {
+        elements.rejectReason.focus();
+        showToast('请先填写驳回理由');
+        return;
+      }
+      showToast(`已驳回，理由：${reason}（原型）`);
+    });
+
+    document.getElementById('saveButton').addEventListener('click', () => showToast('品牌审核信息已保存（原型）'));
+    document.getElementById('closeButton').addEventListener('click', () => { window.location.href = 'MPM-品牌-待我审核.html'; });
+    document.getElementById('operationRecordLink').addEventListener('click', () => showToast('操作记录：暂无更多记录（原型）'));
+    document.getElementById('generateLogoButton').addEventListener('click', () => {
+      elements.logoPreview.textContent = elements.englishName.value || elements.chineseName.value || '品牌LOGO';
+      showToast('已生成文字 logo（原型）');
+    });
+    document.getElementById('cropLogoButton').addEventListener('click', () => showToast('打开上传裁剪窗口（原型）'));
+    document.getElementById('uploadZone').addEventListener('click', () => showToast('打开品牌图片选择器（原型）'));
+  </script>
+  <script src="mpm-topnav-links.js"></script>
+</body>
+</html>

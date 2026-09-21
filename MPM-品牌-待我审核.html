@@ -1,0 +1,1125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>品牌管理 - 待我审核</title>
+  <style>
+    :root {
+      --primary: #1d5cff;
+      --primary-hover: #174ed8;
+      --danger: #ff3b30;
+      --text: #111;
+      --muted: #8a8a8a;
+      --border: #d9d9d9;
+      --table-border: #d4d4d4;
+      --page: #f3f6fa;
+      --surface: #fff;
+      --hover: #f2f6ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { width: 100%; min-width: 1180px; height: 100%; }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      color: var(--text);
+      background: var(--page);
+      font: 14px/1.4 "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+
+    button { cursor: pointer; }
+
+    .topbar {
+      height: 48px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: rgba(255, 255, 255, .85);
+      background: #001529;
+      position: relative;
+      z-index: 120;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: #fff;
+      background: #1677ff;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .brand-name {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .switch-btn {
+      padding: 3px 10px;
+      color: rgba(255, 255, 255, .75);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 6px;
+      font-size: 12px;
+      line-height: 22px;
+      transition: all .2s;
+    }
+
+    .switch-btn:hover { color: #fff; border-color: #1677ff; }
+
+    .nav-menu { height: 100%; display: flex; align-items: center; }
+
+    .nav-item {
+      height: 100%;
+      padding: 0 13px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: rgba(255, 255, 255, .75);
+      position: relative;
+      font-size: 13px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .nav-item:hover { color: #fff; background: rgba(255, 255, 255, .08); }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      background: #ff4d4f;
+      border: 1.5px solid #001529;
+      border-radius: 50%;
+      position: absolute;
+      top: 10px;
+      right: 7px;
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 16px;
+      margin: 0 3px;
+      background: rgba(255, 255, 255, .15);
+    }
+
+    .user-avatar {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: #1677ff;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .tabs-bar {
+      height: 36px;
+      padding-right: 8px;
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      background: #fff;
+      border-bottom: 1px solid #f0f0f0;
+      position: relative;
+      z-index: 110;
+    }
+
+    .tabs-list {
+      display: flex;
+      align-items: stretch;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .tabs-list::-webkit-scrollbar { display: none; }
+
+    .tab {
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(0, 0, 0, .45);
+      border-right: 1px solid #f0f0f0;
+      position: relative;
+      font-size: 12px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .tab:hover { color: rgba(0, 0, 0, .65); background: #fafafa; }
+    .tab.active { color: #1677ff; background: #e6f4ff; }
+
+    .tab.active::after {
+      content: "";
+      height: 2px;
+      background: #1677ff;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+
+    .tab .cls {
+      padding: 2px;
+      border-radius: 2px;
+      font-size: 10px;
+      opacity: .5;
+    }
+
+    .tab:hover .cls { opacity: .85; }
+
+    .tabs-clear {
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      color: rgba(0, 0, 0, .45);
+      border-left: 1px solid #f0f0f0;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .tabs-clear:hover { color: #1677ff; }
+
+    .page-shell {
+      height: calc(100vh - 84px);
+      display: flex;
+      flex-direction: column;
+      background: var(--page);
+    }
+
+    .filter-bar {
+      min-height: 54px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 26px;
+      background: var(--surface);
+      border-bottom: 1px solid #e6e6e6;
+      box-shadow: 0 5px 16px rgba(31, 49, 79, .08);
+      position: relative;
+      z-index: 20;
+    }
+
+    .filter-title {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    .search-icon {
+      width: 14px;
+      height: 14px;
+      margin-right: 2px;
+      border: 1.7px solid #111;
+      border-radius: 50%;
+      position: relative;
+      transform: scale(.74);
+      transform-origin: center;
+    }
+
+    .search-icon::after {
+      content: "";
+      width: 7px;
+      height: 1.7px;
+      background: #111;
+      position: absolute;
+      right: -6px;
+      bottom: -3px;
+      transform: rotate(48deg);
+      transform-origin: left center;
+    }
+
+    .filter-form {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 10px 68px;
+    }
+
+    .filter-item {
+      display: grid;
+      grid-template-columns: auto 288px;
+      align-items: center;
+      gap: 10px;
+      min-width: 400px;
+    }
+
+    .filter-item label { white-space: nowrap; }
+
+    .filter-control {
+      width: 100%;
+      height: 30px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      outline: 0;
+      color: #333;
+      background: #fff;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .filter-control::placeholder { color: #c6c6c6; }
+
+    .filter-control:focus {
+      border-color: #8cb1ff;
+      box-shadow: 0 0 0 2px rgba(29, 92, 255, .14);
+    }
+
+    .input-wrap { position: relative; }
+
+    .clear-button {
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      color: #c7c7c7;
+      background: transparent;
+      position: absolute;
+      right: 8px;
+      top: 7px;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .clear-button:hover { color: #8f8f8f; }
+
+    .custom-select { position: relative; }
+
+    .select-trigger {
+      width: 100%;
+      height: 30px;
+      padding: 0 34px 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: #b5b5b5;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      text-align: left;
+      position: relative;
+      outline: 0;
+    }
+
+    .select-trigger.has-value { color: #333; }
+
+    .select-trigger::after {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid #a7a7a7;
+      border-bottom: 1px solid #a7a7a7;
+      position: absolute;
+      right: 13px;
+      top: 9px;
+      transform: rotate(45deg);
+      transition: transform .15s, top .15s;
+    }
+
+    .custom-select.open .select-trigger {
+      border-color: #78a2ff;
+      box-shadow: 0 0 0 2px rgba(29, 92, 255, .14);
+    }
+
+    .custom-select.open .select-trigger::after {
+      top: 12px;
+      transform: rotate(225deg);
+    }
+
+    .select-panel {
+      width: 100%;
+      padding: 4px 0;
+      border: 1px solid #e5e5e5;
+      border-radius: 2px;
+      background: #fff;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, .13);
+      position: absolute;
+      top: 34px;
+      left: 0;
+      display: none;
+      z-index: 80;
+    }
+
+    .custom-select.open .select-panel { display: block; }
+
+    .select-option {
+      width: 100%;
+      height: 37px;
+      padding: 0 13px;
+      border: 0;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      color: #111;
+      text-align: left;
+    }
+
+    .select-option:hover, .select-option.active { background: var(--hover); }
+
+    .secondary-filters {
+      width: 100%;
+      padding-left: 0;
+      display: none;
+      gap: 68px;
+    }
+
+    .secondary-filters.expanded { display: flex; }
+
+    .filter-actions {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .square-button, .action-button {
+      height: 30px;
+      border-radius: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+
+    .square-button {
+      width: 30px;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      background: #fff;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .square-button:hover { background: #eef4ff; }
+
+    .action-button {
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      color: #222;
+      background: #fff;
+    }
+
+    .action-button.primary {
+      border-color: var(--primary);
+      color: #fff;
+      background: var(--primary);
+    }
+
+    .action-button.primary:hover { background: var(--primary-hover); }
+
+    .action-button:hover { border-color: #a9a9a9; }
+
+    .expand-button {
+      width: 28px;
+      padding: 0;
+      position: relative;
+    }
+
+    .expand-button::before, .expand-button::after {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid #555;
+      border-bottom: 1px solid #555;
+      position: absolute;
+      left: 9px;
+      transform: rotate(45deg);
+    }
+
+    .expand-button::before { top: 6px; }
+    .expand-button::after { top: 11px; }
+
+    .expand-button.expanded::before, .expand-button.expanded::after { transform: rotate(225deg); }
+    .expand-button.expanded::before { top: 11px; }
+    .expand-button.expanded::after { top: 16px; }
+
+    .content {
+      min-height: 0;
+      flex: 1;
+      padding: 10px 10px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .toolbar {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--primary);
+      background: transparent;
+      flex-shrink: 0;
+    }
+
+    .toolbar-label { color: var(--primary); }
+
+    .toolbar-button {
+      padding: 0;
+      border: 0;
+      color: var(--primary);
+      background: transparent;
+    }
+
+    .toolbar-button:hover { text-decoration: underline; }
+    .toolbar-button.danger { color: var(--danger); }
+
+    .table-wrap {
+      min-height: 0;
+      flex: 1;
+      overflow: auto;
+      background: var(--surface);
+      border: 1px solid #e6e6e6;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1280px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: #fff;
+    }
+
+    th, td {
+      height: 28px;
+      padding: 0 10px;
+      border-right: 1px solid var(--table-border);
+      border-bottom: 1px solid var(--table-border);
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th {
+      height: 30px;
+      color: #111;
+      background: #fbfbfb;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 3;
+    }
+
+    th:last-child, td:last-child { border-right: 0; }
+    tbody tr:hover td { background: #f7faff; }
+    tbody tr.selected td { background: #eef4ff; }
+
+    .check-cell { width: 48px; text-align: center; padding: 0; }
+    .logo-cell { width: 210px; }
+    .brand-cell { width: 210px; }
+    .company-cell { width: 210px; }
+    .applicant-cell { width: 210px; }
+    .phone-cell { width: 200px; }
+    .time-cell { width: 230px; }
+    .type-cell { width: 260px; }
+
+    input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      margin: 0;
+      accent-color: var(--primary);
+      vertical-align: middle;
+    }
+
+    .brand-link {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .brand-link:hover { text-decoration: underline; }
+
+    .empty-row td {
+      height: 160px;
+      color: #999;
+      text-align: center;
+    }
+
+    .footer {
+      min-height: 56px;
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      border-top: 1px solid #ececec;
+      flex-shrink: 0;
+    }
+
+    .selection-status { color: var(--primary); }
+    .selection-status strong { font-weight: 600; }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #333;
+    }
+
+    .page-arrow {
+      width: 18px;
+      height: 28px;
+      border: 0;
+      color: #bcbcbc;
+      background: transparent;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .page-arrow:disabled { cursor: not-allowed; opacity: .5; }
+
+    .page-number {
+      min-width: 28px;
+      height: 28px;
+      padding: 0 7px;
+      border: 1px solid var(--primary);
+      border-radius: 2px;
+      color: var(--primary);
+      background: #fff;
+      display: grid;
+      place-items: center;
+    }
+
+    .page-size {
+      height: 30px;
+      padding: 0 28px 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: #333;
+      background: #fff;
+      outline: 0;
+    }
+
+    .toast {
+      min-width: 220px;
+      max-width: 420px;
+      padding: 10px 16px;
+      border: 1px solid #d8e5ff;
+      border-radius: 4px;
+      color: #24446f;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(24, 52, 92, .16);
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -12px);
+      transition: opacity .18s, transform .18s;
+      text-align: center;
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .toast.error { border-color: #ffd2cf; color: #b42318; background: #fff8f7; }
+
+    .floating-tool {
+      width: 24px;
+      height: 24px;
+      border: 1px solid var(--primary);
+      border-radius: 50%;
+      color: var(--primary);
+      background: #fff;
+      position: fixed;
+      right: 10px;
+      top: 64px;
+      z-index: 15;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+    }
+
+    @media (max-width: 1500px) {
+      .filter-bar { gap: 18px; }
+      .filter-form { gap: 10px 36px; }
+      .filter-item { grid-template-columns: auto 250px; min-width: 350px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">咸</div>
+      <span class="brand-name" onclick="location.href='MPM-工作台-首页.html'">咸亨国际主数据管理平台</span>
+      <button class="switch-btn" type="button" data-action="switch-system" onclick="window.location.href='index.html'">切换系统</button>
+    </div>
+    <nav class="nav-menu">
+      <div class="nav-item" data-name="消息通知">消息通知<span class="badge-dot"></span></div>
+      <div class="nav-item" data-name="价格审核">价格审核<span class="badge-dot"></span></div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-name="版本更新">版本更新</div>
+      <div class="nav-item" data-name="推送ERP">推送ERP</div>
+      <div class="nav-item" data-name="管理模块">管理模块</div>
+      <div class="nav-item" data-name="任务中心">任务中心</div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-name="管理员"><div class="user-avatar">管</div>管理员 ▾</div>
+    </nav>
+  </header>
+
+  <div class="tabs-bar">
+    <div class="tabs-list">
+      <div class="tab" onclick="location.href='MPM-工作台-首页.html'">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+      <div class="tab active">品牌管理-待我审核 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    </div>
+    <div class="tabs-clear" onclick="location.href='MPM-工作台-首页.html'">清除</div>
+  </div>
+
+  <main class="page-shell">
+    <section class="filter-bar" aria-label="筛选条件">
+      <div class="filter-title"><span class="search-icon" aria-hidden="true"></span>筛选:</div>
+
+      <div class="filter-form">
+        <div class="filter-item">
+          <label for="brandNameFilter">品牌名称</label>
+          <div class="input-wrap">
+            <input class="filter-control" id="brandNameFilter" type="text" placeholder="请输入" autocomplete="off" />
+            <button class="clear-button" type="button" data-clear="brandNameFilter" aria-label="清空品牌名称">×</button>
+          </div>
+        </div>
+
+        <div class="filter-item">
+          <label for="applicantFilter">申请人</label>
+          <div class="input-wrap">
+            <input class="filter-control" id="applicantFilter" type="text" placeholder="请选择" autocomplete="off" />
+            <button class="clear-button" type="button" data-clear="applicantFilter" aria-label="清空申请人">×</button>
+          </div>
+        </div>
+
+        <div class="filter-item">
+          <label id="auditTypeLabel">审核类型</label>
+          <div class="custom-select" id="auditTypeSelect">
+            <button class="select-trigger" id="auditTypeFilter" type="button" aria-labelledby="auditTypeLabel auditTypeFilter" aria-haspopup="listbox" aria-expanded="false">请选择</button>
+            <div class="select-panel" id="auditTypePanel" role="listbox" aria-label="审核类型选项">
+              <button class="select-option" type="button" role="option" data-value="SRM新增">SRM新增</button>
+              <button class="select-option" type="button" role="option" data-value="MDM新增">MDM新增</button>
+              <button class="select-option" type="button" role="option" data-value="MDM修改">MDM修改</button>
+              <button class="select-option" type="button" role="option" data-value="SRM修改">SRM修改</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="secondary-filters" id="secondaryFilters">
+          <div class="filter-item">
+            <label for="companyFilter">创建公司</label>
+            <input class="filter-control" id="companyFilter" type="text" placeholder="请输入" autocomplete="off" />
+          </div>
+          <div class="filter-item">
+            <label for="phoneFilter">联系方式</label>
+            <input class="filter-control" id="phoneFilter" type="text" placeholder="请输入" autocomplete="off" />
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="square-button" id="filterEditButton" type="button" title="编辑筛选条件" aria-label="编辑筛选条件">⌁</button>
+        <button class="action-button primary" id="queryButton" type="button">查询</button>
+        <button class="action-button" id="resetButton" type="button">重置</button>
+        <button class="action-button expand-button" id="expandFilterButton" type="button" aria-label="展开更多筛选" aria-expanded="false"></button>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="toolbar" aria-label="审核操作">
+        <span class="toolbar-label">操作:</span>
+        <button class="toolbar-button" id="refreshButton" type="button">刷新</button>
+        <button class="toolbar-button" id="approveButton" type="button">通过</button>
+        <button class="toolbar-button danger" id="rejectButton" type="button">驳回</button>
+      </div>
+
+      <div class="table-wrap" id="tableWrap">
+        <table aria-label="品牌待审核列表">
+          <thead>
+            <tr>
+              <th class="check-cell"><input id="selectAllRows" type="checkbox" aria-label="全选当前页" /></th>
+              <th class="logo-cell">品牌logo</th>
+              <th class="brand-cell">品牌名称</th>
+              <th class="company-cell">创建公司</th>
+              <th class="applicant-cell">申请人</th>
+              <th class="phone-cell">联系方式</th>
+              <th class="time-cell">申请时间</th>
+              <th class="type-cell">审核类型</th>
+            </tr>
+          </thead>
+          <tbody id="brandTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="selection-status">已选: <strong id="selectedCount">0</strong>条数据</div>
+      <div class="pagination">
+        <span>共 <span id="totalCount">0</span> 条</span>
+        <button class="page-arrow" id="previousPageButton" type="button" aria-label="上一页">‹</button>
+        <span class="page-number" id="currentPageLabel">1</span>
+        <button class="page-arrow" id="nextPageButton" type="button" aria-label="下一页">›</button>
+        <select class="page-size" id="pageSizeSelect" aria-label="每页条数">
+          <option value="10">10 条/页</option>
+          <option value="20">20 条/页</option>
+          <option value="30" selected>30 条/页</option>
+        </select>
+      </div>
+    </footer>
+  </main>
+
+  <button class="floating-tool" type="button" title="页面工具" aria-label="页面工具">⌁</button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const initialRecords = [
+      { id: 1, brandName: '蓝白合/LBH', company: '万聚国际（杭州）供应链有限公司', applicant: '宝鸡市鑫业达机电物资有限公司', phone: '13891736008', applyTime: '2026-07-21 14:19:41', auditType: 'SRM新增' },
+      { id: 2, brandName: '申强/SHENQIANG', company: '万聚国际（杭州）供应链有限公司', applicant: '湖南易驰捷通网络科技有限公司', phone: '16670975888', applyTime: '2026-07-21 14:39:31', auditType: 'SRM新增' },
+      { id: 3, brandName: '蚂蚁照明/MAYIZHAOMING', company: '万聚国际（杭州）供应链有限公司', applicant: '武汉晶云物资有限公司', phone: '13507157985', applyTime: '2026-07-21 14:48:09', auditType: 'MDM新增' },
+      { id: 4, brandName: '七星桥/QIXINGQIAO', company: '万聚国际（杭州）供应链有限公司', applicant: '秦皇岛圣良商贸有限公司', phone: '13933667823', applyTime: '2026-07-21 15:22:44', auditType: 'MDM新增' },
+      { id: 5, brandName: '森迈机械/SENMAIJIXIE', company: '万聚国际（杭州）供应链有限公司', applicant: '宜宾市通彻机电设备有限公司', phone: '13398203357', applyTime: '2026-07-21 15:49:31', auditType: 'MDM修改' },
+      { id: 6, brandName: '奕澜特/YLT', company: '万聚国际（杭州）供应链有限公司', applicant: '南京文克思国际贸易有限公司', phone: '15618511356', applyTime: '2026-07-21 15:57:58', auditType: 'MDM修改' },
+      { id: 7, brandName: '日立信/RELATIONS SENSOR', company: '万聚国际（杭州）供应链有限公司', applicant: '成都西仕腾机电有限公司', phone: '15928955045', applyTime: '2026-07-21 16:01:42', auditType: 'SRM修改' },
+      { id: 8, brandName: '大连中食国实/ZSGS', company: '万聚国际（杭州）供应链有限公司', applicant: '辽宁营耐氟泵制造有限公司', phone: '13104177888', applyTime: '2026-07-21 16:12:04', auditType: 'SRM修改' },
+      { id: 9, brandName: '北狐/NB', company: '万聚国际（杭州）供应链有限公司', applicant: '青岛志鑫鹏程商贸有限公司', phone: '13455245853', applyTime: '2026-07-21 16:37:02', auditType: 'SRM新增' },
+      { id: 10, brandName: 'MEGOPAK/MEGOPAK', company: '万聚国际（杭州）供应链有限公司', applicant: '宜宾市琪具建强商贸有限公司', phone: '18190175098', applyTime: '2026-07-21 16:51:39', auditType: 'MDM新增' },
+      { id: 11, brandName: '中启/ZHONGQI', company: '万聚国际（杭州）供应链有限公司', applicant: '天津海博维新材料科技有限公司', phone: '15602147777', applyTime: '2026-07-21 16:54:30', auditType: 'MDM修改' },
+      { id: 12, brandName: 'FEEC/FEEC', company: '万聚国际（杭州）供应链有限公司', applicant: '内蒙古玫玖供应链科技有限公司', phone: '13080204671', applyTime: '2026-07-21 17:06:48', auditType: 'SRM新增' }
+    ];
+
+    const auditTypeLabels = {
+      'SRM新增': 'SRM品牌新增审核',
+      'MDM新增': 'MDM品牌新增审核',
+      'MDM修改': 'MDM品牌修改审核',
+      'SRM修改': 'SRM品牌修改审核'
+    };
+
+    const state = {
+      records: initialRecords.map(record => ({ ...record })),
+      filteredRecords: [],
+      selectedIds: new Set(),
+      auditType: '',
+      currentPage: 1,
+      pageSize: 30
+    };
+
+    const elements = {
+      brandName: document.getElementById('brandNameFilter'),
+      applicant: document.getElementById('applicantFilter'),
+      company: document.getElementById('companyFilter'),
+      phone: document.getElementById('phoneFilter'),
+      auditSelect: document.getElementById('auditTypeSelect'),
+      auditTrigger: document.getElementById('auditTypeFilter'),
+      auditOptions: [...document.querySelectorAll('.select-option')],
+      tableBody: document.getElementById('brandTableBody'),
+      selectAll: document.getElementById('selectAllRows'),
+      selectedCount: document.getElementById('selectedCount'),
+      totalCount: document.getElementById('totalCount'),
+      currentPage: document.getElementById('currentPageLabel'),
+      previousPage: document.getElementById('previousPageButton'),
+      nextPage: document.getElementById('nextPageButton'),
+      pageSize: document.getElementById('pageSizeSelect'),
+      secondaryFilters: document.getElementById('secondaryFilters'),
+      expandButton: document.getElementById('expandFilterButton'),
+      toast: document.getElementById('toast')
+    };
+
+    let toastTimer = 0;
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function getPageRecords() {
+      const start = (state.currentPage - 1) * state.pageSize;
+      return state.filteredRecords.slice(start, start + state.pageSize);
+    }
+
+    function renderPagination() {
+      const totalPages = Math.max(1, Math.ceil(state.filteredRecords.length / state.pageSize));
+      state.currentPage = Math.min(state.currentPage, totalPages);
+      elements.totalCount.textContent = state.filteredRecords.length;
+      elements.currentPage.textContent = state.currentPage;
+      elements.previousPage.disabled = state.currentPage <= 1;
+      elements.nextPage.disabled = state.currentPage >= totalPages;
+    }
+
+    function updateSelectionStatus() {
+      elements.selectedCount.textContent = state.selectedIds.size;
+      const pageRecords = getPageRecords();
+      const selectedOnPage = pageRecords.filter(record => state.selectedIds.has(record.id)).length;
+      elements.selectAll.checked = pageRecords.length > 0 && selectedOnPage === pageRecords.length;
+      elements.selectAll.indeterminate = selectedOnPage > 0 && selectedOnPage < pageRecords.length;
+    }
+
+    function renderTable() {
+      renderPagination();
+      const pageRecords = getPageRecords();
+
+      if (!pageRecords.length) {
+        elements.tableBody.innerHTML = '<tr class="empty-row"><td colspan="8">暂无符合条件的品牌审核数据</td></tr>';
+        updateSelectionStatus();
+        return;
+      }
+
+      elements.tableBody.innerHTML = pageRecords.map(record => {
+        const selected = state.selectedIds.has(record.id);
+        return `
+          <tr class="${selected ? 'selected' : ''}" data-row-id="${record.id}">
+            <td class="check-cell"><input class="row-checkbox" type="checkbox" data-id="${record.id}" aria-label="选择${escapeHtml(record.brandName)}" ${selected ? 'checked' : ''} /></td>
+            <td title="暂无">暂无</td>
+            <td title="${escapeHtml(record.brandName)}"><a class="brand-link" href="javascript:void(0)" data-brand-id="${record.id}">${escapeHtml(record.brandName)}</a></td>
+            <td title="${escapeHtml(record.company)}">${escapeHtml(record.company)}</td>
+            <td title="${escapeHtml(record.applicant)}">${escapeHtml(record.applicant)}</td>
+            <td title="${escapeHtml(record.phone)}">${escapeHtml(record.phone)}</td>
+            <td title="${escapeHtml(record.applyTime)}">${escapeHtml(record.applyTime)}</td>
+            <td title="${escapeHtml(auditTypeLabels[record.auditType])}">${escapeHtml(auditTypeLabels[record.auditType])}</td>
+          </tr>`;
+      }).join('');
+
+      updateSelectionStatus();
+    }
+
+    function applyFilters() {
+      const brandName = elements.brandName.value.trim().toLowerCase();
+      const applicant = elements.applicant.value.trim().toLowerCase();
+      const company = elements.company.value.trim().toLowerCase();
+      const phone = elements.phone.value.trim().toLowerCase();
+
+      state.filteredRecords = state.records.filter(record => {
+        return (!brandName || record.brandName.toLowerCase().includes(brandName))
+          && (!applicant || record.applicant.toLowerCase().includes(applicant))
+          && (!company || record.company.toLowerCase().includes(company))
+          && (!phone || record.phone.toLowerCase().includes(phone))
+          && (!state.auditType || record.auditType === state.auditType);
+      });
+
+      state.currentPage = 1;
+      state.selectedIds.clear();
+      renderTable();
+    }
+
+    function resetFilters(showMessage = true) {
+      elements.brandName.value = '';
+      elements.applicant.value = '';
+      elements.company.value = '';
+      elements.phone.value = '';
+      state.auditType = '';
+      elements.auditTrigger.textContent = '请选择';
+      elements.auditTrigger.classList.remove('has-value');
+      elements.auditOptions.forEach(option => option.classList.remove('active'));
+      state.filteredRecords = [...state.records];
+      state.selectedIds.clear();
+      state.currentPage = 1;
+      closeAuditTypeSelect();
+      renderTable();
+      if (showMessage) showToast('筛选条件已重置');
+    }
+
+    function toggleRowSelection(id, selected) {
+      if (selected) state.selectedIds.add(id);
+      else state.selectedIds.delete(id);
+      renderTable();
+    }
+
+    function toggleAllRows(selected) {
+      getPageRecords().forEach(record => {
+        if (selected) state.selectedIds.add(record.id);
+        else state.selectedIds.delete(record.id);
+      });
+      renderTable();
+    }
+
+    function processSelected(action) {
+      if (!state.selectedIds.size) {
+        showToast('请先选择需要处理的品牌数据', 'error');
+        return;
+      }
+
+      const count = state.selectedIds.size;
+      state.records = state.records.filter(record => !state.selectedIds.has(record.id));
+      state.selectedIds.clear();
+      applyFilters();
+      showToast(`已${action}${count}条品牌审核数据`);
+    }
+
+    function showToast(message, type = 'success') {
+      window.clearTimeout(toastTimer);
+      elements.toast.textContent = message;
+      elements.toast.classList.toggle('error', type === 'error');
+      elements.toast.classList.add('show');
+      toastTimer = window.setTimeout(() => elements.toast.classList.remove('show'), 2200);
+    }
+
+    function openAuditTypeSelect() {
+      elements.auditSelect.classList.add('open');
+      elements.auditTrigger.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeAuditTypeSelect() {
+      elements.auditSelect.classList.remove('open');
+      elements.auditTrigger.setAttribute('aria-expanded', 'false');
+    }
+
+    function toggleAuditTypeSelect() {
+      if (elements.auditSelect.classList.contains('open')) closeAuditTypeSelect();
+      else openAuditTypeSelect();
+    }
+
+    elements.auditTrigger.addEventListener('click', event => {
+      event.stopPropagation();
+      toggleAuditTypeSelect();
+    });
+
+    elements.auditTrigger.addEventListener('keydown', event => {
+      if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openAuditTypeSelect();
+        elements.auditOptions[0]?.focus();
+      }
+      if (event.key === 'Escape') closeAuditTypeSelect();
+    });
+
+    elements.auditOptions.forEach((option, index) => {
+      option.addEventListener('click', event => {
+        event.stopPropagation();
+        state.auditType = option.dataset.value;
+        elements.auditTrigger.textContent = option.textContent;
+        elements.auditTrigger.classList.add('has-value');
+        elements.auditOptions.forEach(item => item.classList.toggle('active', item === option));
+        closeAuditTypeSelect();
+      });
+
+      option.addEventListener('keydown', event => {
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          elements.auditOptions[(index + 1) % elements.auditOptions.length].focus();
+        }
+        if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          elements.auditOptions[(index - 1 + elements.auditOptions.length) % elements.auditOptions.length].focus();
+        }
+        if (event.key === 'Escape') {
+          closeAuditTypeSelect();
+          elements.auditTrigger.focus();
+        }
+      });
+    });
+
+    document.addEventListener('click', event => {
+      if (!elements.auditSelect.contains(event.target)) closeAuditTypeSelect();
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeAuditTypeSelect();
+    });
+
+    document.getElementById('queryButton').addEventListener('click', applyFilters);
+    document.getElementById('resetButton').addEventListener('click', () => resetFilters());
+    document.getElementById('refreshButton').addEventListener('click', () => {
+      state.records = initialRecords.map(record => ({ ...record }));
+      resetFilters(false);
+      showToast('列表已刷新');
+    });
+    document.getElementById('approveButton').addEventListener('click', () => processSelected('通过'));
+    document.getElementById('rejectButton').addEventListener('click', () => processSelected('驳回'));
+
+    document.getElementById('filterEditButton').addEventListener('click', () => showToast('可在当前筛选区调整查询条件'));
+
+    elements.expandButton.addEventListener('click', () => {
+      const expanded = !elements.secondaryFilters.classList.contains('expanded');
+      elements.secondaryFilters.classList.toggle('expanded', expanded);
+      elements.expandButton.classList.toggle('expanded', expanded);
+      elements.expandButton.setAttribute('aria-expanded', String(expanded));
+      elements.expandButton.setAttribute('aria-label', expanded ? '收起更多筛选' : '展开更多筛选');
+    });
+
+    document.querySelectorAll('[data-clear]').forEach(button => {
+      button.addEventListener('click', () => {
+        const input = document.getElementById(button.dataset.clear);
+        input.value = '';
+        input.focus();
+      });
+    });
+
+    elements.tableBody.addEventListener('change', event => {
+      const checkbox = event.target.closest('.row-checkbox');
+      if (!checkbox) return;
+      toggleRowSelection(Number(checkbox.dataset.id), checkbox.checked);
+    });
+
+    elements.tableBody.addEventListener('click', event => {
+      const link = event.target.closest('.brand-link');
+      if (!link) return;
+      const record = state.records.find(item => item.id === Number(link.dataset.brandId));
+      if (!record) return;
+      const params = new URLSearchParams({
+        id: String(record.id),
+        brandName: record.brandName,
+        company: record.company,
+        applicant: record.applicant,
+        phone: record.phone,
+        auditType: record.auditType
+      });
+      window.location.href = `MPM-品牌-待我审核-审核详情.html?${params.toString()}`;
+    });
+
+    elements.selectAll.addEventListener('change', () => toggleAllRows(elements.selectAll.checked));
+
+    elements.previousPage.addEventListener('click', () => {
+      if (state.currentPage <= 1) return;
+      state.currentPage -= 1;
+      renderTable();
+    });
+
+    elements.nextPage.addEventListener('click', () => {
+      const totalPages = Math.max(1, Math.ceil(state.filteredRecords.length / state.pageSize));
+      if (state.currentPage >= totalPages) return;
+      state.currentPage += 1;
+      renderTable();
+    });
+
+    elements.pageSize.addEventListener('change', () => {
+      state.pageSize = Number(elements.pageSize.value);
+      state.currentPage = 1;
+      renderTable();
+    });
+
+    [elements.brandName, elements.applicant, elements.company, elements.phone].forEach(input => {
+      input.addEventListener('keydown', event => {
+        if (event.key === 'Enter') applyFilters();
+      });
+    });
+
+    state.filteredRecords = [...state.records];
+    renderTable();
+  </script>
+  <script src="mpm-topnav-links.js"></script>
+</body>
+</html>

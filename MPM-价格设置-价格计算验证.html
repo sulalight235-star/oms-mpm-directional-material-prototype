@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MPM 价格计算验证程序</title>
+  <style>
+    :root {
+      --primary: #2468f2;
+      --primary-soft: #edf4ff;
+      --success: #168f48;
+      --success-soft: #eaf8f0;
+      --danger: #d9363e;
+      --danger-soft: #fff0f0;
+      --warning: #ad6800;
+      --warning-soft: #fff7e6;
+      --text: #1f2937;
+      --muted: #667085;
+      --line: #dfe4ec;
+      --page: #f4f6f9;
+      --surface: #ffffff;
+      --radius: 6px;
+      --shadow: 0 2px 8px rgba(31, 41, 55, 0.06);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--page);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    button, input { font: inherit; }
+    button, label, input[type="radio"] { touch-action: manipulation; }
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid rgba(36, 104, 242, 0.2);
+      outline-offset: 1px;
+    }
+
+    .topbar {
+      min-height: 52px;
+      padding: 0 20px;
+      background: #001529;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 5px;
+      background: var(--primary);
+      font-weight: 700;
+    }
+    .brand-text { min-width: 0; }
+    .brand-title { font-size: 15px; font-weight: 600; white-space: nowrap; }
+    .brand-subtitle { color: rgba(255,255,255,.65); font-size: 12px; white-space: nowrap; }
+    .back-link {
+      min-height: 36px;
+      padding: 0 12px;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 4px;
+      background: transparent;
+      color: #fff;
+      cursor: pointer;
+    }
+    .back-link:hover { border-color: #69a5ff; background: rgba(255,255,255,.08); }
+
+    .page-tabs {
+      height: 44px;
+      padding: 0 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: stretch;
+      gap: 24px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .page-tab {
+      position: relative;
+      min-width: 116px;
+      padding: 0 8px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .page-tab[aria-selected="true"] { color: var(--primary); }
+    .page-tab[aria-selected="true"]::after {
+      content: "";
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      bottom: 0;
+      height: 3px;
+      background: var(--primary);
+    }
+
+    .page { max-width: 1600px; margin: 0 auto; padding: 18px 20px 40px; }
+    .intro { margin-bottom: 14px; }
+    .intro h1 { margin: 0 0 4px; font-size: 22px; font-weight: 650; letter-spacing: 0; }
+    .intro p { margin: 0; color: var(--muted); }
+    .panel {
+      background: var(--surface);
+      border: 1px solid #e6eaf0;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .panel-head {
+      min-height: 44px;
+      padding: 0 16px;
+      border-bottom: 1px solid #e9edf2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .panel-title { display: flex; align-items: center; gap: 8px; font-weight: 650; }
+    .panel-title::before { content: ""; width: 3px; height: 16px; background: var(--primary); border-radius: 2px; }
+    .panel-note { color: var(--muted); font-size: 12px; }
+    .panel-body { padding: 16px; }
+
+    .calculator-grid { display: grid; grid-template-columns: minmax(520px, 1.08fr) minmax(440px, .92fr); gap: 16px; align-items: start; }
+    .form-section + .form-section { margin-top: 20px; padding-top: 18px; border-top: 1px dashed var(--line); }
+    .section-heading { margin: 0 0 12px; font-size: 15px; font-weight: 650; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(210px, 1fr)); gap: 14px 18px; }
+    .field { min-width: 0; }
+    .field.span-2 { grid-column: 1 / -1; }
+    .field-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; color: #344054; font-weight: 500; }
+    .field-hint { color: #98a2b3; font-size: 12px; font-weight: 400; }
+    .required::after { content: " *"; color: var(--danger); }
+    .input-wrap { position: relative; }
+    .input-prefix, .input-suffix { position: absolute; top: 50%; transform: translateY(-50%); color: #667085; pointer-events: none; }
+    .input-prefix { left: 11px; }
+    .input-suffix { right: 11px; }
+    .text-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 34px 0 30px;
+      border: 1px solid #cfd6e1;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--text);
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .text-input.no-prefix { padding-left: 11px; }
+    .text-input:hover { border-color: #8fb4fa; }
+    .text-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(36,104,242,.1); outline: 0; }
+    .text-input[readonly] { background: #f6f8fb; color: #475467; cursor: default; }
+    .text-input.is-invalid { border-color: var(--danger); }
+    .field-error { min-height: 18px; margin-top: 3px; color: var(--danger); font-size: 12px; }
+    .field-help { min-height: 18px; margin-top: 3px; color: var(--muted); font-size: 12px; }
+    .radio-set { display: inline-flex; min-height: 40px; border: 1px solid #cfd6e1; border-radius: 4px; overflow: hidden; }
+    .radio-option { position: relative; display: flex; align-items: center; min-width: 86px; justify-content: center; cursor: pointer; background: #fff; color: #475467; }
+    .radio-option + .radio-option { border-left: 1px solid #cfd6e1; }
+    .radio-option input { position: absolute; opacity: 0; pointer-events: none; }
+    .radio-option:has(input:checked) { background: var(--primary-soft); color: var(--primary); font-weight: 600; box-shadow: inset 0 0 0 1px var(--primary); }
+
+    .config-summary { display: grid; grid-template-columns: repeat(5, minmax(92px, 1fr)); gap: 8px; }
+    .config-item { padding: 10px 12px; background: #f7f9fc; border: 1px solid #e5e9f0; border-radius: 4px; }
+    .config-name { color: var(--muted); font-size: 12px; }
+    .config-value { margin-top: 3px; color: #233876; font-size: 17px; font-weight: 650; font-variant-numeric: tabular-nums; }
+
+    .action-row { margin-top: 18px; display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      min-height: 40px;
+      padding: 0 16px;
+      border: 1px solid #cfd6e1;
+      border-radius: 4px;
+      background: #fff;
+      color: #344054;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background .18s, border-color .18s, color .18s;
+    }
+    .btn:hover { border-color: #8fb4fa; color: var(--primary); background: #f7faff; }
+    .btn-primary { min-width: 120px; border-color: var(--primary); background: var(--primary); color: #fff; }
+    .btn-primary:hover { border-color: #1554c7; background: #1554c7; color: #fff; }
+    .btn-text { border-color: transparent; background: transparent; color: var(--primary); }
+    .btn-text:hover { border-color: transparent; background: var(--primary-soft); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    .result-empty { min-height: 430px; display: grid; place-items: center; text-align: center; color: var(--muted); padding: 36px; }
+    .empty-symbol { width: 56px; height: 56px; margin: 0 auto 12px; display: grid; place-items: center; border: 2px solid #cbd5e1; border-radius: 50%; color: #8290a5; font-size: 24px; }
+    .result-content { display: none; }
+    .result-content.show { display: block; }
+    .result-hero { padding: 16px; border-bottom: 1px solid #e9edf2; background: #f8fbff; }
+    .result-state { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .method-tag { display: inline-flex; align-items: center; min-height: 28px; padding: 0 10px; border-radius: 4px; color: var(--success); background: var(--success-soft); font-weight: 600; }
+    .method-tag.blocked { color: var(--danger); background: var(--danger-soft); }
+    .price-label { margin-top: 12px; color: var(--muted); }
+    .price-value { margin-top: 2px; color: #102a56; font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .comparison-summary { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); border-bottom: 1px solid #e9edf2; }
+    .comparison-item { min-width: 0; padding: 13px 14px; border-right: 1px solid #e9edf2; }
+    .comparison-item:last-child { border-right: 0; }
+    .comparison-label { color: var(--muted); font-size: 12px; }
+    .comparison-value { margin-top: 4px; color: #20375f; font-weight: 650; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    .comparison-value.emphasis { color: var(--primary); }
+    .comparison-value.writeback { color: var(--warning); }
+    .result-sections { padding: 4px 16px 16px; }
+    .result-block { padding-top: 14px; }
+    .result-block + .result-block { margin-top: 14px; border-top: 1px dashed var(--line); }
+    .result-block h3 { margin: 0 0 8px; font-size: 13px; color: #344054; }
+    .formula-box { padding: 11px 12px; border-left: 3px solid var(--primary); background: #f6f8fb; color: #20375f; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.8; overflow-wrap: anywhere; }
+    .source-line { margin-top: 8px; color: var(--muted); font-size: 12px; }
+    .step-list { list-style: none; margin: 0; padding: 0; }
+    .step-item { position: relative; padding: 0 0 13px 26px; color: #475467; }
+    .step-item::before { content: ""; position: absolute; left: 4px; top: 5px; width: 9px; height: 9px; border: 2px solid var(--primary); border-radius: 50%; background: #fff; }
+    .step-item:not(:last-child)::after { content: ""; position: absolute; left: 9px; top: 17px; bottom: 0; width: 1px; background: #aac4f8; }
+    .step-item strong { color: #20375f; }
+
+    .flow-panel { margin-top: 16px; }
+    .flow-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .flow-legend { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; color: var(--muted); font-size: 12px; }
+    .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+    .legend-swatch { width: 16px; height: 10px; border: 1px solid #aeb7c5; background: #f4f6f8; }
+    .legend-swatch.active { border-color: var(--primary); background: var(--primary-soft); }
+    .legend-swatch.final { border-color: var(--success); background: var(--success-soft); }
+    .flow-actions { display: flex; align-items: center; gap: 6px; }
+    .icon-btn { width: 40px; height: 40px; padding: 0; border: 1px solid #cfd6e1; border-radius: 4px; background: #fff; color: #344054; cursor: pointer; font-size: 18px; }
+    .icon-btn:hover { color: var(--primary); border-color: #8fb4fa; background: #f7faff; }
+    .flow-viewport { margin-top: 12px; min-height: 460px; overflow: auto; border: 1px solid #e1e6ee; background-color: #fbfcfe; background-image: linear-gradient(#edf0f4 1px, transparent 1px), linear-gradient(90deg, #edf0f4 1px, transparent 1px); background-size: 20px 20px; }
+    #flowSvg { display: block; width: 1500px; height: auto; transition: width .2s ease; }
+    #flowSvg.is-fit { width: 100%; min-width: 980px; }
+    .flow-edge { fill: none; stroke: #aeb7c5; stroke-width: 2; marker-end: url(#arrowDefault); transition: stroke .2s, stroke-width .2s; }
+    .flow-edge.active { stroke: var(--primary); stroke-width: 4; marker-end: url(#arrowActive); }
+    .flow-edge.blocked { stroke: var(--danger); stroke-width: 4; marker-end: url(#arrowBlocked); }
+    .edge-label-bg { fill: #fbfcfe; }
+    .edge-label { fill: #667085; font-size: 15px; font-weight: 600; text-anchor: middle; }
+    .flow-node { cursor: pointer; }
+    .flow-node-shape { fill: #fff; stroke: #aeb7c5; stroke-width: 2; transition: fill .2s, stroke .2s, stroke-width .2s; }
+    .flow-node text { fill: #344054; text-anchor: middle; font-size: 15px; pointer-events: none; }
+    .flow-node .node-sub { fill: #667085; font-size: 12px; }
+    .flow-node.active .flow-node-shape { fill: var(--primary-soft); stroke: var(--primary); stroke-width: 4; }
+    .flow-node.active text { fill: #174ea6; font-weight: 650; }
+    .flow-node.final .flow-node-shape { fill: var(--success-soft); stroke: var(--success); stroke-width: 4; }
+    .flow-node.final text { fill: #116b38; font-weight: 650; }
+    .flow-node.blocked .flow-node-shape { fill: var(--danger-soft); stroke: var(--danger); stroke-width: 4; }
+    .flow-node.blocked text { fill: #a61d24; font-weight: 650; }
+    .flow-node:focus { outline: none; }
+    .flow-node:focus .flow-node-shape { filter: drop-shadow(0 0 4px rgba(36,104,242,.55)); }
+    .node-detail { min-height: 42px; margin-top: 10px; padding: 10px 12px; border: 1px solid #dce3ed; background: #f8fafc; color: #475467; }
+
+    .config-page { display: none; }
+    .config-page.active { display: block; }
+    .calc-page.is-hidden { display: none; }
+    .config-layout { display: grid; grid-template-columns: minmax(460px, .8fr) minmax(520px, 1.2fr); gap: 16px; align-items: start; }
+    .config-form-grid { display: grid; grid-template-columns: repeat(2, minmax(210px, 1fr)); gap: 16px 18px; }
+    .config-table { width: 100%; border-collapse: collapse; }
+    .config-table th, .config-table td { padding: 12px; border-bottom: 1px solid #e6eaf0; text-align: left; vertical-align: top; }
+    .config-table th { background: #f7f9fc; color: #344054; font-weight: 650; }
+    .config-table td:first-child { width: 76px; color: #233876; font-weight: 650; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .config-table tr:last-child td { border-bottom: 0; }
+    .save-state { min-height: 22px; margin-top: 10px; color: var(--success); text-align: right; }
+
+    .toast { position: fixed; left: 50%; bottom: 24px; z-index: 100; transform: translate(-50%, 16px); padding: 10px 16px; border-radius: 4px; background: rgba(31,41,55,.94); color: #fff; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 1120px) {
+      .calculator-grid, .config-layout { grid-template-columns: 1fr; }
+      .result-empty { min-height: 220px; }
+    }
+    @media (max-width: 720px) {
+      .topbar { padding: 8px 12px; }
+      .brand-subtitle { display: none; }
+      .page-tabs { padding: 0 12px; }
+      .page { padding: 14px 12px 32px; }
+      .intro h1 { font-size: 20px; }
+      .form-grid, .config-form-grid { grid-template-columns: 1fr; }
+      .field.span-2 { grid-column: auto; }
+      .config-summary { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+      .comparison-summary { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
+      .comparison-item { border-bottom: 1px solid #e9edf2; }
+      .action-row { justify-content: stretch; }
+      .action-row .btn { flex: 1 1 120px; }
+      .flow-legend { gap: 8px; }
+      .panel-head { align-items: flex-start; padding-top: 10px; padding-bottom: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">咸</div>
+      <div class="brand-text">
+        <div class="brand-title">咸亨国际主数据管理平台</div>
+        <div class="brand-subtitle">MPM 商城价格计算验证</div>
+      </div>
+    </div>
+    <button class="back-link" type="button" onclick="location.href='MPM-工作台-首页.html'">返回工作台</button>
+  </header>
+
+  <nav class="page-tabs" aria-label="价格验证功能">
+    <button class="page-tab" id="calcTab" type="button" role="tab" aria-selected="true" aria-controls="calcPage">价格计算验证</button>
+    <button class="page-tab" id="configTab" type="button" role="tab" aria-selected="false" aria-controls="configPage">配置数据维护</button>
+  </nav>
+
+  <main class="page">
+    <section class="calc-page" id="calcPage" role="tabpanel" aria-labelledby="calcTab">
+      <div class="intro">
+        <h1>价格计算验证程序</h1>
+        <p>录入物料价格后，验证商城价计价方式、公式结果及完整业务判断路径。</p>
+      </div>
+
+      <div class="calculator-grid">
+        <section class="panel" aria-labelledby="inputTitle">
+          <div class="panel-head">
+            <div class="panel-title" id="inputTitle">物料基础价格</div>
+            <span class="panel-note">金额单位：元</span>
+          </div>
+          <div class="panel-body">
+            <div class="form-section">
+              <h2 class="section-heading">业务属性</h2>
+              <div class="form-grid">
+                <div class="field">
+                  <div class="field-label">是否临时改价</div>
+                  <div class="radio-set" role="radiogroup" aria-label="是否临时改价">
+                    <label class="radio-option"><input type="radio" name="temporary" value="no" checked />否</label>
+                    <label class="radio-option"><input type="radio" name="temporary" value="yes" />是</label>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">是否自有品牌</div>
+                  <div class="radio-set" role="radiogroup" aria-label="是否自有品牌">
+                    <label class="radio-option"><input type="radio" name="ownBrand" value="no" checked />否</label>
+                    <label class="radio-option"><input type="radio" name="ownBrand" value="yes" />是</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h2 class="section-heading">价格数据</h2>
+              <div class="form-grid">
+                <div class="field">
+                  <label class="field-label" for="marketPrice">市场价 X</label>
+                  <div class="input-wrap"><span class="input-prefix">¥</span><input class="text-input price-input" id="marketPrice" inputmode="decimal" placeholder="请输入市场价" /></div>
+                  <div class="field-error" id="marketPriceError"></div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="externalPrice">MPM 外联价 W</label>
+                  <div class="input-wrap"><span class="input-prefix">¥</span><input class="text-input price-input" id="externalPrice" inputmode="decimal" placeholder="未维护可留空" /></div>
+                  <div class="field-error" id="externalPriceError"></div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="settlementPrice">结算价</label>
+                  <div class="input-wrap"><span class="input-prefix">¥</span><input class="text-input price-input" id="settlementPrice" inputmode="decimal" placeholder="优先作为调拨价 D" /></div>
+                  <div class="field-error" id="settlementPriceError"></div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="projectTransferPrice">项目调拨参考价</label>
+                  <div class="input-wrap"><span class="input-prefix">¥</span><input class="text-input price-input" id="projectTransferPrice" inputmode="decimal" placeholder="结算价为空时采用" /></div>
+                  <div class="field-error" id="projectTransferPriceError"></div>
+                </div>
+                <div class="field">
+                  <div class="field-label">项目调拨参考价是否参与计算</div>
+                  <div class="radio-set" role="radiogroup" aria-label="项目调拨参考价是否参与计算">
+                    <label class="radio-option"><input type="radio" name="projectParticipates" value="yes" checked />是</label>
+                    <label class="radio-option"><input type="radio" name="projectParticipates" value="no" />否</label>
+                  </div>
+                  <div class="field-help">选择“否”时保留原值，计算时视为空</div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="effectiveD">本次有效调拨价 D <span class="field-hint">自动取值</span></label>
+                  <div class="input-wrap"><span class="input-prefix">¥</span><input class="text-input" id="effectiveD" readonly placeholder="结算价优先，其次项目调拨参考价" /></div>
+                  <div class="field-error"></div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="costPrice">对内最新成本价 L</label>
+                  <div class="input-wrap"><span class="input-prefix">¥</span><input class="text-input price-input" id="costPrice" inputmode="decimal" placeholder="未维护可留空" /></div>
+                  <div class="field-error" id="costPriceError"></div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="highestDealPrice">对外最高成交价 G</label>
+                  <div class="input-wrap"><span class="input-prefix">¥</span><input class="text-input price-input" id="highestDealPrice" inputmode="decimal" placeholder="未维护可留空" /></div>
+                  <div class="field-error" id="highestDealPriceError"></div>
+                </div>
+                <div class="field" id="manualPriceField" hidden>
+                  <label class="field-label required" for="manualMallPrice">人工商城价</label>
+                  <div class="input-wrap"><span class="input-prefix">¥</span><input class="text-input price-input" id="manualMallPrice" inputmode="decimal" placeholder="自有品牌人工填写" /></div>
+                  <div class="field-error" id="manualMallPriceError"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h2 class="section-heading">当前生效配置</h2>
+              <div class="config-summary" id="configSummary"></div>
+            </div>
+
+            <div class="action-row">
+              <button class="btn btn-text" id="sampleBtn" type="button">填入示例</button>
+              <button class="btn" id="resetBtn" type="button">重置数据</button>
+              <button class="btn btn-primary" id="calculateBtn" type="button">开始计算</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="resultTitle">
+          <div class="panel-head">
+            <div class="panel-title" id="resultTitle">计算结果</div>
+            <button class="btn btn-text" id="copyBtn" type="button" disabled>复制计算明细</button>
+          </div>
+          <div class="result-empty" id="resultEmpty">
+            <div>
+              <div class="empty-symbol">=</div>
+              <div>填写价格数据并点击“开始计算”</div>
+              <div class="panel-note">系统将在此展示计价方式、公式代入及判断步骤</div>
+            </div>
+          </div>
+          <div class="result-content" id="resultContent" aria-live="polite">
+            <div class="result-hero">
+              <div class="result-state"><span class="method-tag" id="methodTag"></span><span class="panel-note" id="calculatedAt"></span></div>
+              <div class="price-label" id="priceLabel">最终商城价</div>
+              <div class="price-value" id="priceValue"></div>
+            </div>
+            <div class="comparison-summary" id="comparisonSummary">
+              <div class="comparison-item"><div class="comparison-label">基础公式计算结果</div><div class="comparison-value" id="basePriceValue"></div></div>
+              <div class="comparison-item"><div class="comparison-label">比较前市场价</div><div class="comparison-value" id="marketBeforeValue"></div></div>
+              <div class="comparison-item"><div class="comparison-label">最终商城价</div><div class="comparison-value emphasis" id="finalPriceValue"></div></div>
+              <div class="comparison-item"><div class="comparison-label">是否需要反写</div><div class="comparison-value writeback" id="writebackValue"></div></div>
+              <div class="comparison-item"><div class="comparison-label">命中规则</div><div class="comparison-value" id="hitRuleValue"></div></div>
+            </div>
+            <div class="result-sections">
+              <div class="result-block" id="formulaBlock">
+                <h3>计算公式与代入过程</h3>
+                <div class="formula-box" id="formulaBox"></div>
+                <div class="source-line" id="sourceLine"></div>
+              </div>
+              <div class="result-block">
+                <h3>业务判断过程</h3>
+                <ol class="step-list" id="stepList"></ol>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel flow-panel" aria-labelledby="flowTitle">
+        <div class="panel-head flow-toolbar">
+          <div>
+            <div class="panel-title" id="flowTitle">价格计算业务流程</div>
+            <div class="panel-note">计算后，实际经过的节点和连线将自动高亮</div>
+          </div>
+          <div class="flow-actions" aria-label="流程图缩放工具">
+            <button class="icon-btn" id="zoomOutBtn" type="button" title="缩小" aria-label="缩小流程图">−</button>
+            <button class="icon-btn" id="fitBtn" type="button" title="适应窗口" aria-label="流程图适应窗口">↔</button>
+            <button class="icon-btn" id="zoomInBtn" type="button" title="放大" aria-label="放大流程图">＋</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="flow-legend">
+            <span class="legend-item"><span class="legend-swatch"></span>未经过</span>
+            <span class="legend-item"><span class="legend-swatch active"></span>已经过</span>
+            <span class="legend-item"><span class="legend-swatch final"></span>最终计价节点</span>
+          </div>
+          <div class="flow-viewport" id="flowViewport">
+            <svg id="flowSvg" viewBox="0 0 1540 1640" role="img" aria-label="价格计算完整业务流程图">
+              <defs>
+                <marker id="arrowDefault" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#aeb7c5" /></marker>
+                <marker id="arrowActive" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#2468f2" /></marker>
+                <marker id="arrowBlocked" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#d9363e" /></marker>
+              </defs>
+              <g id="edgeLayer"></g>
+              <g id="nodeLayer"></g>
+            </svg>
+          </div>
+          <div class="node-detail" id="nodeDetail">点击任一节点，可查看该节点的业务说明；完成计算后会同步显示本次取值。</div>
+        </div>
+      </section>
+    </section>
+
+    <section class="config-page" id="configPage" role="tabpanel" aria-labelledby="configTab">
+      <div class="intro">
+        <h1>配置数据维护</h1>
+        <p>维护价格计算所需的加价系数与毛利率。保存后立即应用于计算验证。</p>
+      </div>
+      <div class="config-layout">
+        <section class="panel">
+          <div class="panel-head"><div class="panel-title">计价参数</div><span class="panel-note">按百分比填写</span></div>
+          <div class="panel-body">
+            <div class="config-form-grid">
+              <div class="field">
+                <label class="field-label required" for="configF">外链加价系数 F</label>
+                <div class="input-wrap"><input class="text-input no-prefix config-input" id="configF" inputmode="decimal" /><span class="input-suffix">%</span></div>
+                <div class="field-error" id="configFError"></div>
+              </div>
+              <div class="field">
+                <label class="field-label required" for="configMreg">全局中位毛利率 Mreg</label>
+                <div class="input-wrap"><input class="text-input no-prefix config-input" id="configMreg" inputmode="decimal" /><span class="input-suffix">%</span></div>
+                <div class="field-error" id="configMregError"></div>
+              </div>
+              <div class="field">
+                <label class="field-label" for="configN">品牌平均毛利率 N <span class="field-hint">允许为空</span></label>
+                <div class="input-wrap"><input class="text-input no-prefix config-input" id="configN" inputmode="decimal" placeholder="未维护时留空" /><span class="input-suffix">%</span></div>
+                <div class="field-error" id="configNError"></div>
+              </div>
+              <div class="field">
+                <label class="field-label required" for="configMmin">最小毛利率 Mmin</label>
+                <div class="input-wrap"><input class="text-input no-prefix config-input" id="configMmin" inputmode="decimal" /><span class="input-suffix">%</span></div>
+                <div class="field-error" id="configMminError"></div>
+              </div>
+              <div class="field">
+                <label class="field-label required" for="configMmax">最大毛利率 Mmax</label>
+                <div class="input-wrap"><input class="text-input no-prefix config-input" id="configMmax" inputmode="decimal" /><span class="input-suffix">%</span></div>
+                <div class="field-error" id="configMmaxError"></div>
+              </div>
+            </div>
+            <div class="action-row">
+              <button class="btn" id="restoreConfigBtn" type="button">恢复默认值</button>
+              <button class="btn btn-primary" id="saveConfigBtn" type="button">保存配置</button>
+            </div>
+            <div class="save-state" id="configSaveState" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><div class="panel-title">参数说明</div></div>
+          <div class="panel-body" style="padding:0; overflow:auto;">
+            <table class="config-table">
+              <thead><tr><th>变量</th><th>业务含义</th><th>使用场景</th></tr></thead>
+              <tbody>
+                <tr><td>F</td><td>外链价格加价系数</td><td>无有效调拨价且存在外联价时，按 W × (1 + F) 计算。</td></tr>
+                <tr><td>Mreg</td><td>全局毛利设置的中位毛利率</td><td>有有效调拨价、无外联价且无品牌平均毛利率时使用。</td></tr>
+                <tr><td>N</td><td>MPM 品牌下三级类目平均毛利率</td><td>有有效调拨价、无外联价且已维护品牌平均毛利率时使用。</td></tr>
+                <tr><td>Mmin</td><td>允许的最小毛利率</td><td>外联价兜底计价和品牌核准计价的最低价格保护。</td></tr>
+                <tr><td>Mmax</td><td>允许的最大毛利率</td><td>无调拨价、无外联价时，根据成本价计算商城价。</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORAGE_KEY = 'mpm_price_validation_config_v1';
+    const DEFAULT_CONFIG = { F: 8, Mreg: 15, N: 18, Mmin: 10, Mmax: 25 };
+    const priceFieldIds = ['marketPrice', 'externalPrice', 'settlementPrice', 'projectTransferPrice', 'costPrice', 'highestDealPrice', 'manualMallPrice'];
+    let currentConfig = loadConfig();
+    let lastResult = null;
+    let flowWidth = 1500;
+    let toastTimer;
+
+    const flowNodes = [
+      { id:'start', x:750, y:48, w:170, h:54, type:'rect', title:['开始价格计算'], detail:'读取物料基础价格与当前生效配置。' },
+      { id:'temporary', x:750, y:145, w:190, h:86, type:'diamond', title:['是否临时改价'], detail:'临时改价物料不执行自动价格计算。' },
+      { id:'stop', x:1080, y:145, w:210, h:62, type:'rect', title:['终止计算'], sub:'临时改价提示', detail:'提示当前物料已临时改价，本次自动计算终止。' },
+      { id:'ownBrand', x:750, y:270, w:190, h:86, type:'diamond', title:['是否自有品牌'], detail:'自有品牌采用人工填写的商城价。' },
+      { id:'manual', x:1080, y:270, w:220, h:68, type:'rect', title:['人工填写商城价'], sub:'计价方式：自主定价', detail:'系统不执行公式计算，直接采用人工商城价。' },
+      { id:'resolveD', x:750, y:390, w:260, h:68, type:'rect', title:['确定有效调拨价 D'], sub:'结算价优先，其次项目调拨参考价', detail:'结算价存在时 D 取结算价；结算价为空时，再判断项目调拨参考价是否参与计算。' },
+      { id:'projectParticipates', x:1080, y:390, w:230, h:90, type:'diamond', title:['项目调拨参考价','是否参与计算'], detail:'选择否时保留项目调拨参考价原值，但计算引擎按空值处理。' },
+      { id:'hasD', x:750, y:510, w:200, h:90, type:'diamond', title:['有效调拨价 D','是否存在'], detail:'判断结算价或项目调拨参考价能否生成有效调拨价 D。' },
+      { id:'hasWD', x:470, y:635, w:190, h:86, type:'diamond', title:['外联价 W','是否存在'], detail:'有有效调拨价时，判断是否存在 MPM 外联价。' },
+      { id:'externalFallback', x:250, y:790, w:260, h:82, type:'rect', title:['S = Max[D/(1-Mmin), W]'], sub:'外链兜底计价', detail:'在最低毛利保护价和外联价之间取较大值。' },
+      { id:'hasN', x:560, y:790, w:210, h:90, type:'diamond', title:['品牌平均毛利率 N','是否存在'], detail:'无外联价时，判断是否维护品牌三级类目平均毛利率。' },
+      { id:'brandFormula', x:450, y:950, w:300, h:78, type:'rect', title:['S = Max[D/(1-Mmin),','D/(1-N)]'], sub:'品牌核准计价', detail:'在最低毛利保护价和品牌平均毛利率价格之间取较大值。' },
+      { id:'fixedFormula', x:720, y:950, w:230, h:78, type:'rect', title:['S = D/(1-Mreg)'], sub:'固定毛利计价', detail:'按全局中位毛利率计算商城价。' },
+      { id:'hasWNoD', x:1030, y:635, w:190, h:86, type:'diamond', title:['外联价 W','是否存在'], detail:'无有效调拨价时，判断是否存在 MPM 外联价。' },
+      { id:'externalCoeff', x:1280, y:790, w:230, h:78, type:'rect', title:['S = W × (1 + F)'], sub:'外链系数计价', detail:'按外联价与外链加价系数计算商城价。' },
+      { id:'hasG', x:1000, y:790, w:210, h:90, type:'diamond', title:['最高成交价 G','是否存在'], detail:'无调拨价和外联价时，判断是否存在对外最高成交价。' },
+      { id:'hasLWithG', x:910, y:930, w:190, h:86, type:'diamond', title:['成本价 L','是否存在'], detail:'存在最高成交价时，继续判断是否存在对内最新成本价。' },
+      { id:'bothFormula', x:870, y:1030, w:270, h:72, type:'rect', title:['S = Max[L/(1-Mmax), G]'], sub:'成交价与成本价标准计价', detail:'在成本毛利价和最高成交价之间取较大值。' },
+      { id:'dealFormula', x:1070, y:1030, w:170, h:72, type:'rect', title:['S = G'], sub:'成交价计价', detail:'无成本价时直接采用最高成交价。' },
+      { id:'hasLNoG', x:1180, y:930, w:190, h:86, type:'diamond', title:['成本价 L','是否存在'], detail:'无最高成交价时，判断是否存在对内最新成本价。' },
+      { id:'costFormula', x:1260, y:1030, w:210, h:72, type:'rect', title:['S = L/(1-Mmax)'], sub:'成本价计价', detail:'按成本价和最大毛利率计算商城价。' },
+      { id:'marketFormula', x:1430, y:930, w:150, h:72, type:'rect', title:['S = X'], sub:'市场价计价', detail:'调拨价、外联价、成交价和成本价均为空时，采用市场价。' },
+      { id:'projectMode', x:520, y:1115, w:230, h:90, type:'diamond', title:['是否项目调拨','参考价模式'], detail:'只有固定结算价为空、项目调拨参考价有效且参与计算时，才执行市场价后置比较。' },
+      { id:'baseFinal', x:250, y:1245, w:240, h:72, type:'rect', title:['最终商城价 =','基础公式结果'], sub:'不执行市场价后置比较', detail:'固定结算价模式不进入本次新增的市场价后置比较。' },
+      { id:'marketEmpty', x:650, y:1245, w:230, h:90, type:'diamond', title:['市场价是否','为空或 0'], detail:'市场价为空或为 0 时，最终商城价取基础计算结果，并模拟反写市场价。' },
+      { id:'writebackMarket', x:500, y:1420, w:290, h:84, type:'rect', title:['最终商城价 = 基础结果'], sub:'模拟反写市场价', detail:'市场价为空/0，或基础计算结果大于市场价时，展示模拟反写结果，不修改真实数据。' },
+      { id:'compareMarket', x:820, y:1420, w:250, h:100, type:'diamond', title:['两者保留两位小数后','基础结果与市场价比较'], detail:'基础计算结果与市场价均先保留两位小数，再判断大于、小于或相等。' },
+      { id:'marketWins', x:760, y:1580, w:230, h:78, type:'rect', title:['最终商城价 = 市场价'], sub:'不反写市场价', detail:'基础计算结果小于市场价时，最终商城价取市场价。' },
+      { id:'equalResult', x:1060, y:1580, w:250, h:78, type:'rect', title:['最终商城价 = 相等值'], sub:'不产生反写记录', detail:'两者保留两位小数后相等，直接采用相等值。' }
+    ];
+
+    const flowEdges = [
+      { id:'start-temporary', from:'start', to:'temporary', path:'M750 75 L750 102' },
+      { id:'temporary-stop', from:'temporary', to:'stop', path:'M845 145 L975 145', label:'是', lx:910, ly:133 },
+      { id:'temporary-ownBrand', from:'temporary', to:'ownBrand', path:'M750 188 L750 227', label:'否', lx:764, ly:209 },
+      { id:'ownBrand-manual', from:'ownBrand', to:'manual', path:'M845 270 L970 270', label:'是', lx:910, ly:258 },
+      { id:'ownBrand-resolveD', from:'ownBrand', to:'resolveD', path:'M750 313 L750 356', label:'否', lx:764, ly:338 },
+      { id:'resolveD-hasD', from:'resolveD', to:'hasD', path:'M750 424 L750 465' },
+      { id:'resolveD-projectParticipates', from:'resolveD', to:'projectParticipates', path:'M880 390 L965 390', label:'项目价存在', lx:922, ly:378 },
+      { id:'projectParticipates-hasD-yes', from:'projectParticipates', to:'hasD', path:'M1080 435 L1080 470 L850 470 L850 510', label:'是', lx:960, ly:458 },
+      { id:'projectParticipates-hasD-no', from:'projectParticipates', to:'hasD', path:'M1195 390 L1240 390 L1240 490 L850 490 L850 510', label:'否', lx:1218, ly:378 },
+      { id:'hasD-hasWD', from:'hasD', to:'hasWD', path:'M650 510 L470 510 L470 592', label:'是', lx:558, ly:498 },
+      { id:'hasD-hasWNoD', from:'hasD', to:'hasWNoD', path:'M850 510 L1030 510 L1030 592', label:'否', lx:942, ly:498 },
+      { id:'hasWD-externalFallback', from:'hasWD', to:'externalFallback', path:'M375 635 L250 635 L250 749', label:'是', lx:312, ly:623 },
+      { id:'hasWD-hasN', from:'hasWD', to:'hasN', path:'M470 678 L470 710 L560 710 L560 745', label:'否', lx:514, ly:698 },
+      { id:'hasN-brandFormula', from:'hasN', to:'brandFormula', path:'M455 790 L450 790 L450 911', label:'是', lx:438, ly:852 },
+      { id:'hasN-fixedFormula', from:'hasN', to:'fixedFormula', path:'M665 790 L720 790 L720 911', label:'否', lx:695, ly:778 },
+      { id:'hasWNoD-externalCoeff', from:'hasWNoD', to:'externalCoeff', path:'M1125 635 L1280 635 L1280 751', label:'是', lx:1204, ly:623 },
+      { id:'hasWNoD-hasG', from:'hasWNoD', to:'hasG', path:'M1030 678 L1030 720 L1000 720 L1000 745', label:'否', lx:1014, ly:707 },
+      { id:'hasG-hasLWithG', from:'hasG', to:'hasLWithG', path:'M895 790 L850 790 L850 887 L910 887', label:'是', lx:838, ly:840 },
+      { id:'hasG-hasLNoG', from:'hasG', to:'hasLNoG', path:'M1105 790 L1180 790 L1180 887', label:'否', lx:1142, ly:778 },
+      { id:'hasLWithG-bothFormula', from:'hasLWithG', to:'bothFormula', path:'M910 973 L870 973 L870 994', label:'是', lx:890, ly:961 },
+      { id:'hasLWithG-dealFormula', from:'hasLWithG', to:'dealFormula', path:'M1005 930 L1070 930 L1070 994', label:'否', lx:1038, ly:918 },
+      { id:'hasLNoG-costFormula', from:'hasLNoG', to:'costFormula', path:'M1180 973 L1260 973 L1260 994', label:'是', lx:1220, ly:961 },
+      { id:'hasLNoG-marketFormula', from:'hasLNoG', to:'marketFormula', path:'M1275 930 L1355 930', label:'否', lx:1314, ly:918 },
+      { id:'externalFallback-projectMode', from:'externalFallback', to:'projectMode', path:'M250 831 L250 1070 L405 1070 L405 1115' },
+      { id:'brandFormula-projectMode', from:'brandFormula', to:'projectMode', path:'M450 989 L450 1070 L470 1070' },
+      { id:'fixedFormula-projectMode', from:'fixedFormula', to:'projectMode', path:'M720 989 L720 1070 L570 1070' },
+      { id:'projectMode-baseFinal', from:'projectMode', to:'baseFinal', path:'M405 1115 L250 1115 L250 1209', label:'否', lx:330, ly:1103 },
+      { id:'projectMode-marketEmpty', from:'projectMode', to:'marketEmpty', path:'M635 1115 L650 1115 L650 1200', label:'是', lx:650, ly:1160 },
+      { id:'marketEmpty-writebackMarket', from:'marketEmpty', to:'writebackMarket', path:'M535 1245 L500 1245 L500 1378', label:'是', lx:486, ly:1312 },
+      { id:'marketEmpty-compareMarket', from:'marketEmpty', to:'compareMarket', path:'M765 1245 L820 1245 L820 1370', label:'否', lx:794, ly:1233 },
+      { id:'compareMarket-writebackMarket', from:'compareMarket', to:'writebackMarket', path:'M695 1420 L645 1420', label:'大于', lx:670, ly:1408 },
+      { id:'compareMarket-marketWins', from:'compareMarket', to:'marketWins', path:'M820 1470 L820 1515 L760 1515 L760 1541', label:'小于', lx:806, ly:1510 },
+      { id:'compareMarket-equalResult', from:'compareMarket', to:'equalResult', path:'M945 1420 L1060 1420 L1060 1541', label:'相等', lx:1002, ly:1408 }
+    ];
+
+    function loadConfig() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return saved && typeof saved === 'object' ? { ...DEFAULT_CONFIG, ...saved } : { ...DEFAULT_CONFIG };
+      } catch (error) {
+        return { ...DEFAULT_CONFIG };
+      }
+    }
+
+    function isBlank(value) { return String(value ?? '').trim() === ''; }
+    function parseOptionalNumber(value) {
+      if (isBlank(value)) return null;
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : NaN;
+    }
+    function formatMoney(value, digits = 2) {
+      return new Intl.NumberFormat('zh-CN', { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value);
+    }
+    function formatRaw(value) {
+      return Number(value.toFixed(6)).toString();
+    }
+    function roundMoney(value) { return Math.round((value + Number.EPSILON) * 100) / 100; }
+    function percentDecimal(value) { return value / 100; }
+    function nowText() { return new Date().toLocaleString('zh-CN', { hour12: false }); }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    function renderConfigSummary() {
+      const values = [
+        ['F', currentConfig.F], ['Mreg', currentConfig.Mreg], ['N', currentConfig.N], ['Mmin', currentConfig.Mmin], ['Mmax', currentConfig.Mmax]
+      ];
+      document.getElementById('configSummary').innerHTML = values.map(([name, value]) => `
+        <div class="config-item"><div class="config-name">${name}</div><div class="config-value">${value === null || value === '' ? '未维护' : `${value}%`}</div></div>
+      `).join('');
+    }
+
+    function syncEffectiveD() {
+      const settlement = parseOptionalNumber(document.getElementById('settlementPrice').value);
+      const project = parseOptionalNumber(document.getElementById('projectTransferPrice').value);
+      const participates = document.querySelector('input[name="projectParticipates"]:checked').value === 'yes';
+      const effective = Number.isFinite(settlement) ? settlement : (participates && Number.isFinite(project) ? project : null);
+      document.getElementById('effectiveD').value = effective === null ? '' : formatRaw(effective);
+      document.getElementById('effectiveD').placeholder = !Number.isFinite(settlement) && Number.isFinite(project) && !participates
+        ? '项目调拨参考价不参与计算，D 视为空'
+        : '结算价优先，其次取参与计算的项目调拨参考价';
+    }
+
+    function syncBusinessFields() {
+      const ownBrand = document.querySelector('input[name="ownBrand"]:checked').value === 'yes';
+      document.getElementById('manualPriceField').hidden = !ownBrand;
+    }
+
+    function clearErrors() {
+      document.querySelectorAll('.field-error').forEach(item => item.textContent = '');
+      document.querySelectorAll('.is-invalid').forEach(item => item.classList.remove('is-invalid'));
+    }
+
+    function markError(id, message) {
+      const input = document.getElementById(id);
+      const error = document.getElementById(`${id}Error`);
+      input.classList.add('is-invalid');
+      if (error) error.textContent = message;
+    }
+
+    function collectPrices() {
+      return {
+        X: parseOptionalNumber(document.getElementById('marketPrice').value),
+        W: parseOptionalNumber(document.getElementById('externalPrice').value),
+        settlement: parseOptionalNumber(document.getElementById('settlementPrice').value),
+        project: parseOptionalNumber(document.getElementById('projectTransferPrice').value),
+        L: parseOptionalNumber(document.getElementById('costPrice').value),
+        G: parseOptionalNumber(document.getElementById('highestDealPrice').value),
+        manual: parseOptionalNumber(document.getElementById('manualMallPrice').value)
+      };
+    }
+
+    function validatePrices(prices) {
+      const mapping = { X:'marketPrice', W:'externalPrice', settlement:'settlementPrice', project:'projectTransferPrice', L:'costPrice', G:'highestDealPrice', manual:'manualMallPrice' };
+      let valid = true;
+      Object.entries(prices).forEach(([key, value]) => {
+        if (Number.isNaN(value)) { markError(mapping[key], '请输入有效数字'); valid = false; }
+        else if (value !== null && value < 0) { markError(mapping[key], '价格不能小于 0'); valid = false; }
+      });
+      return valid;
+    }
+
+    function createResult({ method, price, basePrice = price, marketBefore = null, writeback = '不适用', hitRule = method, formula, substitution, source, steps, nodes, edges, finalNode, blocked = false }) {
+      return { method, price, basePrice, marketBefore, writeback, hitRule, formula, substitution, source, steps, nodes, edges, finalNode, blocked, time: nowText() };
+    }
+
+    function completeDResult({ method, basePrice, formula, substitution, source, prices, dMode, steps, nodes, edges, formulaNode }) {
+      const roundedBase = roundMoney(basePrice);
+      nodes.push('projectMode');
+      edges.push(`${formulaNode}-projectMode`);
+
+      if (dMode !== 'project') {
+        nodes.push('baseFinal');
+        edges.push('projectMode-baseFinal');
+        steps.push({ title:'项目调拨参考价模式：否', text:'当前使用固定结算价，不执行市场价后置比较。' });
+        showResult(createResult({ method, price:roundedBase, basePrice:roundedBase, marketBefore:null, writeback:'不适用', hitRule:'固定结算价模式，不进入市场价比较', formula, substitution, source, steps, nodes, edges, finalNode:'baseFinal' }));
+        return;
+      }
+
+      nodes.push('marketEmpty');
+      edges.push('projectMode-marketEmpty');
+      steps.push({ title:'项目调拨参考价模式：是', text:'基础计算结果与市场价均先保留两位小数，再执行后置比较。' });
+      const roundedMarket = prices.X === null ? null : roundMoney(prices.X);
+      let finalPrice = roundedBase;
+      let writeback = '否';
+      let hitRule = '';
+      let finalNode = '';
+      let comparisonText = '';
+
+      if (roundedMarket === null || roundedMarket === 0) {
+        nodes.push('writebackMarket');
+        edges.push('marketEmpty-writebackMarket');
+        writeback = `是，模拟反写为 ¥${formatMoney(roundedBase)}`;
+        hitRule = '市场价为空或为 0，最终商城价取基础计算结果';
+        finalNode = 'writebackMarket';
+        comparisonText = `市场价=${roundedMarket === null ? '空' : '0.00'}\n最终商城价=${formatMoney(roundedBase)}，模拟反写市场价=${formatMoney(roundedBase)}`;
+        steps.push({ title:'市场价为空或 0：是', text:`最终商城价取 ¥${formatMoney(roundedBase)}，并展示模拟反写市场价。` });
+      } else {
+        nodes.push('compareMarket');
+        edges.push('marketEmpty-compareMarket');
+        steps.push({ title:'市场价为空或 0：否', text:`比较基础结果 ¥${formatMoney(roundedBase)} 与市场价 ¥${formatMoney(roundedMarket)}。` });
+        if (roundedBase > roundedMarket) {
+          nodes.push('writebackMarket');
+          edges.push('compareMarket-writebackMarket');
+          writeback = `是，模拟反写为 ¥${formatMoney(roundedBase)}`;
+          hitRule = '基础计算结果大于市场价，最终商城价取基础结果';
+          finalNode = 'writebackMarket';
+          comparisonText = `${formatMoney(roundedBase)} > ${formatMoney(roundedMarket)}\n最终商城价=${formatMoney(roundedBase)}，模拟反写市场价=${formatMoney(roundedBase)}`;
+          steps.push({ title:'基础结果大于市场价', text:'最终商城价取基础计算结果，并展示模拟反写。' });
+        } else if (roundedBase < roundedMarket) {
+          finalPrice = roundedMarket;
+          nodes.push('marketWins');
+          edges.push('compareMarket-marketWins');
+          hitRule = '基础计算结果小于市场价，最终商城价取市场价';
+          finalNode = 'marketWins';
+          comparisonText = `${formatMoney(roundedBase)} < ${formatMoney(roundedMarket)}\n最终商城价=${formatMoney(roundedMarket)}，不反写市场价`;
+          steps.push({ title:'基础结果小于市场价', text:'最终商城价取市场价，不反写。' });
+        } else {
+          nodes.push('equalResult');
+          edges.push('compareMarket-equalResult');
+          hitRule = '基础计算结果与市场价相等，直接取相等值';
+          finalNode = 'equalResult';
+          comparisonText = `${formatMoney(roundedBase)} = ${formatMoney(roundedMarket)}\n最终商城价=${formatMoney(roundedBase)}，不产生反写记录`;
+          steps.push({ title:'基础结果与市场价相等', text:'直接采用相等值，不产生模拟反写记录。' });
+        }
+      }
+
+      showResult(createResult({
+        method,
+        price:finalPrice,
+        basePrice:roundedBase,
+        marketBefore:roundedMarket,
+        writeback,
+        hitRule,
+        formula,
+        substitution:`${substitution}\n\n市场价后置比较（两位小数）：\n${comparisonText}`,
+        source:`${source}；后置比较仅为模拟，不修改真实市场价`,
+        steps, nodes, edges, finalNode
+      }));
+    }
+
+    function clearComputedResult() {
+      lastResult = null;
+      document.getElementById('resultEmpty').style.display = 'grid';
+      document.getElementById('resultContent').classList.remove('show');
+      document.getElementById('copyBtn').disabled = true;
+      highlightFlow([], [], null, false);
+    }
+
+    function calculate() {
+      clearErrors();
+      const prices = collectPrices();
+      const temporary = document.querySelector('input[name="temporary"]:checked').value === 'yes';
+      const ownBrand = document.querySelector('input[name="ownBrand"]:checked').value === 'yes';
+      clearComputedResult();
+      const nodes = ['start', 'temporary'];
+      const edges = ['start-temporary'];
+      const steps = [{ title:'开始计算', text:'读取物料价格与当前配置。' }];
+
+      if (temporary) {
+        nodes.push('stop'); edges.push('temporary-stop');
+        steps.push({ title:'临时改价：是', text:'当前物料已临时改价，自动计算终止。' });
+        showResult(createResult({ method:'已终止', price:null, formula:'不执行计算公式', substitution:'当前物料商城价格已被临时改价。', source:'请先取消临时改价，再执行自动计算。', steps, nodes, edges, finalNode:'stop', blocked:true }));
+        return;
+      }
+
+      nodes.push('ownBrand'); edges.push('temporary-ownBrand');
+      steps.push({ title:'临时改价：否', text:'继续判断是否为自有品牌。' });
+
+      if (ownBrand) {
+        if (Number.isNaN(prices.manual)) { markError('manualMallPrice', '请输入有效数字'); document.getElementById('manualMallPrice').focus(); showToast('请修正人工商城价'); return; }
+        if (prices.manual !== null && prices.manual < 0) { markError('manualMallPrice', '价格不能小于 0'); document.getElementById('manualMallPrice').focus(); showToast('请修正人工商城价'); return; }
+        if (prices.manual === null) { markError('manualMallPrice', '请填写人工商城价'); document.getElementById('manualMallPrice').focus(); showToast('自有品牌需填写人工商城价'); return; }
+        nodes.push('manual'); edges.push('ownBrand-manual');
+        steps.push({ title:'自有品牌：是', text:'采用人工填写的商城价，系统不执行自动公式。' });
+        showResult(createResult({ method:'自主定价', price:prices.manual, formula:'S = 人工商城价', substitution:`S = ¥${formatRaw(prices.manual)}`, source:'价格来源：人工商城价', steps, nodes, edges, finalNode:'manual' }));
+        return;
+      }
+
+      if (!validatePrices(prices)) { showToast('请先修正输入错误'); return; }
+
+      nodes.push('resolveD'); edges.push('ownBrand-resolveD');
+      steps.push({ title:'自有品牌：否', text:'进入自动价格计算流程。' });
+      const projectParticipates = document.querySelector('input[name="projectParticipates"]:checked').value === 'yes';
+      let D = null;
+      let dSource = '无';
+      let dMode = 'none';
+      if (prices.settlement !== null) {
+        D = prices.settlement;
+        dSource = '固定结算价';
+        dMode = 'settlement';
+        nodes.push('hasD'); edges.push('resolveD-hasD');
+        steps.push({ title:'固定结算价：存在', text:`D 取固定结算价，值为 ¥${formatRaw(D)}；不判断项目调拨参考价参与状态。` });
+      } else if (prices.project !== null) {
+        nodes.push('projectParticipates', 'hasD');
+        edges.push('resolveD-projectParticipates', projectParticipates ? 'projectParticipates-hasD-yes' : 'projectParticipates-hasD-no');
+        if (projectParticipates) {
+          D = prices.project;
+          dSource = '项目调拨参考价';
+          dMode = 'project';
+          steps.push({ title:'固定结算价：为空', text:'继续判断项目调拨参考价参与状态。' });
+          steps.push({ title:'项目调拨参考价参与计算：是', text:`D 取项目调拨参考价，值为 ¥${formatRaw(D)}。` });
+        } else {
+          steps.push({ title:'固定结算价：为空', text:'继续判断项目调拨参考价参与状态。' });
+          steps.push({ title:'项目调拨参考价参与计算：否', text:`保留原值 ¥${formatRaw(prices.project)}，但计算时 D 视为空。` });
+        }
+      } else {
+        nodes.push('hasD'); edges.push('resolveD-hasD');
+        steps.push({ title:'确定有效调拨价 D', text:'固定结算价和项目调拨参考价均为空。' });
+      }
+
+      const F = percentDecimal(currentConfig.F);
+      const Mreg = percentDecimal(currentConfig.Mreg);
+      const N = currentConfig.N === null || currentConfig.N === '' ? null : percentDecimal(currentConfig.N);
+      const Mmin = percentDecimal(currentConfig.Mmin);
+      const Mmax = percentDecimal(currentConfig.Mmax);
+
+      if (D !== null) {
+        nodes.push('hasWD'); edges.push('hasD-hasWD');
+        steps.push({ title:'有效调拨价：是', text:'继续判断 MPM 外联价 W。' });
+        if (prices.W !== null) {
+          const protectedPrice = D / (1 - Mmin);
+          const price = Math.max(protectedPrice, prices.W);
+          nodes.push('externalFallback'); edges.push('hasWD-externalFallback');
+          steps.push({ title:'外联价：存在', text:'在最低毛利保护价与外联价中取较大值。' });
+          completeDResult({ method:'外链兜底计价', basePrice:price, formula:'S = Max[D / (1 - Mmin), W]', substitution:`S = Max[${formatRaw(D)} / (1 - ${currentConfig.Mmin}%), ${formatRaw(prices.W)}]\n  = Max[${formatRaw(protectedPrice)}, ${formatRaw(prices.W)}]\n  = ${formatRaw(price)}`, source:`D 来源：${dSource}；W 来源：MPM 外联价`, prices, dMode, steps, nodes, edges, formulaNode:'externalFallback' });
+          return;
+        }
+
+        nodes.push('hasN'); edges.push('hasWD-hasN');
+        steps.push({ title:'外联价：不存在', text:'继续判断品牌平均毛利率 N。' });
+        if (N !== null) {
+          const minPrice = D / (1 - Mmin);
+          const brandPrice = D / (1 - N);
+          const price = Math.max(minPrice, brandPrice);
+          nodes.push('brandFormula'); edges.push('hasN-brandFormula');
+          steps.push({ title:'品牌平均毛利率：存在', text:'在最低毛利保护价与品牌毛利价中取较大值。' });
+          completeDResult({ method:'品牌核准计价', basePrice:price, formula:'S = Max[D / (1 - Mmin), D / (1 - N)]', substitution:`S = Max[${formatRaw(D)} / (1 - ${currentConfig.Mmin}%), ${formatRaw(D)} / (1 - ${currentConfig.N}%)]\n  = Max[${formatRaw(minPrice)}, ${formatRaw(brandPrice)}]\n  = ${formatRaw(price)}`, source:`D 来源：${dSource}；N 来源：MPM 品牌下三级类目平均毛利率`, prices, dMode, steps, nodes, edges, formulaNode:'brandFormula' });
+          return;
+        }
+
+        const price = D / (1 - Mreg);
+        nodes.push('fixedFormula'); edges.push('hasN-fixedFormula');
+        steps.push({ title:'品牌平均毛利率：不存在', text:'使用全局中位毛利率计算。' });
+        completeDResult({ method:'固定毛利计价', basePrice:price, formula:'S = D / (1 - Mreg)', substitution:`S = ${formatRaw(D)} / (1 - ${currentConfig.Mreg}%)\n  = ${formatRaw(price)}`, source:`D 来源：${dSource}；Mreg 来源：全局毛利配置`, prices, dMode, steps, nodes, edges, formulaNode:'fixedFormula' });
+        return;
+      }
+
+      nodes.push('hasWNoD'); edges.push('hasD-hasWNoD');
+      steps.push({ title:'有效调拨价：否', text:'继续判断 MPM 外联价 W。' });
+      if (prices.W !== null) {
+        const price = prices.W * (1 + F);
+        nodes.push('externalCoeff'); edges.push('hasWNoD-externalCoeff');
+        steps.push({ title:'外联价：存在', text:'使用外联价和外链加价系数计算。' });
+        showResult(createResult({ method:'外链系数计价', price, formula:'S = W × (1 + F)', substitution:`S = ${formatRaw(prices.W)} × (1 + ${currentConfig.F}%)\n  = ${formatRaw(price)}`, source:'W 来源：MPM 外联价；F 来源：外链加价系数配置', steps, nodes, edges, finalNode:'externalCoeff' }));
+        return;
+      }
+
+      nodes.push('hasG'); edges.push('hasWNoD-hasG');
+      steps.push({ title:'外联价：不存在', text:'进入成交价、成本价和市场价兜底计算。' });
+      if (prices.G !== null) {
+        nodes.push('hasLWithG'); edges.push('hasG-hasLWithG');
+        steps.push({ title:'最高成交价：存在', text:'继续判断对内最新成本价 L。' });
+        if (prices.L !== null) {
+          const costBased = prices.L / (1 - Mmax);
+          const price = Math.max(costBased, prices.G);
+          nodes.push('bothFormula'); edges.push('hasLWithG-bothFormula');
+          steps.push({ title:'最新成本价：存在', text:'在成本毛利价与最高成交价中取较大值。' });
+          showResult(createResult({ method:'成交价与成本价标准计价', price, formula:'S = Max[L / (1 - Mmax), G]', substitution:`S = Max[${formatRaw(prices.L)} / (1 - ${currentConfig.Mmax}%), ${formatRaw(prices.G)}]\n  = Max[${formatRaw(costBased)}, ${formatRaw(prices.G)}]\n  = ${formatRaw(price)}`, source:'L 来源：对内最新成本价；G 来源：对外最高成交价', steps, nodes, edges, finalNode:'bothFormula' }));
+          return;
+        }
+        nodes.push('dealFormula'); edges.push('hasLWithG-dealFormula');
+        steps.push({ title:'最新成本价：不存在', text:'直接使用对外最高成交价。' });
+        showResult(createResult({ method:'成交价计价', price:prices.G, formula:'S = G', substitution:`S = ${formatRaw(prices.G)}`, source:'G 来源：对外最高成交价', steps, nodes, edges, finalNode:'dealFormula' }));
+        return;
+      }
+
+      nodes.push('hasLNoG'); edges.push('hasG-hasLNoG');
+      steps.push({ title:'最高成交价：不存在', text:'继续判断对内最新成本价 L。' });
+      if (prices.L !== null) {
+        const price = prices.L / (1 - Mmax);
+        nodes.push('costFormula'); edges.push('hasLNoG-costFormula');
+        steps.push({ title:'最新成本价：存在', text:'按成本价与最大毛利率计算。' });
+        showResult(createResult({ method:'成本价计价', price, formula:'S = L / (1 - Mmax)', substitution:`S = ${formatRaw(prices.L)} / (1 - ${currentConfig.Mmax}%)\n  = ${formatRaw(price)}`, source:'L 来源：对内最新成本价；Mmax 来源：最大毛利率配置', steps, nodes, edges, finalNode:'costFormula' }));
+        return;
+      }
+
+      nodes.push('marketFormula'); edges.push('hasLNoG-marketFormula');
+      steps.push({ title:'最新成本价：不存在', text:'最后使用市场价 X 兜底。' });
+      if (prices.X === null) {
+        markError('marketPrice', '当其他价格均为空时，市场价必填');
+        document.getElementById('marketPrice').focus();
+        showToast('未找到可用价格，请填写市场价');
+        highlightFlow(nodes, edges, 'marketFormula', true);
+        return;
+      }
+      showResult(createResult({ method:'市场价计价', price:prices.X, formula:'S = X', substitution:`S = ${formatRaw(prices.X)}`, source:'X 来源：市场价', steps, nodes, edges, finalNode:'marketFormula' }));
+    }
+
+    function showResult(result) {
+      lastResult = result;
+      document.getElementById('resultEmpty').style.display = 'none';
+      document.getElementById('resultContent').classList.add('show');
+      const methodTag = document.getElementById('methodTag');
+      methodTag.textContent = result.method;
+      methodTag.classList.toggle('blocked', result.blocked);
+      document.getElementById('calculatedAt').textContent = result.time;
+      document.getElementById('priceLabel').textContent = result.blocked ? '计算状态' : '最终商城价';
+      document.getElementById('priceValue').textContent = result.price === null ? '未生成价格' : `¥ ${formatMoney(result.price)}`;
+      document.getElementById('basePriceValue').textContent = result.basePrice === null ? '未生成' : `¥ ${formatMoney(result.basePrice)}`;
+      document.getElementById('marketBeforeValue').textContent = result.marketBefore === null ? (result.hitRule.includes('市场价为空') ? '未填写' : '不适用') : `¥ ${formatMoney(result.marketBefore)}`;
+      document.getElementById('finalPriceValue').textContent = result.price === null ? '未生成' : `¥ ${formatMoney(result.price)}`;
+      document.getElementById('writebackValue').textContent = result.writeback;
+      document.getElementById('hitRuleValue').textContent = result.hitRule;
+      document.getElementById('formulaBox').textContent = `${result.formula}\n${result.substitution}`;
+      document.getElementById('sourceLine').textContent = result.source;
+      document.getElementById('stepList').innerHTML = result.steps.map(step => `<li class="step-item"><strong>${step.title}</strong><br>${step.text}</li>`).join('');
+      document.getElementById('copyBtn').disabled = false;
+      highlightFlow(result.nodes, result.edges, result.finalNode, result.blocked);
+    }
+
+    function resultAsText() {
+      if (!lastResult) return '';
+      return [
+        `计价方式：${lastResult.method}`,
+        `基础公式计算结果：${lastResult.basePrice === null ? '未生成' : `¥${formatMoney(lastResult.basePrice)}`}`,
+        `比较前市场价：${lastResult.marketBefore === null ? '不适用/未填写' : `¥${formatMoney(lastResult.marketBefore)}`}`,
+        `最终商城价：${lastResult.price === null ? '未生成' : `¥${formatMoney(lastResult.price)}`}`,
+        `是否需要反写：${lastResult.writeback}`,
+        `命中规则：${lastResult.hitRule}`,
+        `公式：${lastResult.formula}`,
+        `代入过程：\n${lastResult.substitution}`,
+        lastResult.source,
+        '判断路径：',
+        ...lastResult.steps.map((step, index) => `${index + 1}. ${step.title} - ${step.text}`)
+      ].join('\n');
+    }
+
+    async function copyResult() {
+      const text = resultAsText();
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast('计算明细已复制');
+      } catch (error) {
+        const area = document.createElement('textarea');
+        area.value = text; document.body.appendChild(area); area.select(); document.execCommand('copy'); area.remove();
+        showToast('计算明细已复制');
+      }
+    }
+
+    function resetData() {
+      priceFieldIds.forEach(id => document.getElementById(id).value = '');
+      document.querySelector('input[name="temporary"][value="no"]').checked = true;
+      document.querySelector('input[name="ownBrand"][value="no"]').checked = true;
+      document.querySelector('input[name="projectParticipates"][value="yes"]').checked = true;
+      syncBusinessFields(); syncEffectiveD(); clearErrors();
+      clearComputedResult();
+      document.getElementById('nodeDetail').textContent = '点击任一节点，可查看该节点的业务说明；完成计算后会同步显示本次取值。';
+    }
+
+    function fillSample() {
+      resetData();
+      document.getElementById('marketPrice').value = '135';
+      document.getElementById('projectTransferPrice').value = '100';
+      document.getElementById('costPrice').value = '88';
+      document.getElementById('highestDealPrice').value = '112';
+      syncEffectiveD();
+      showToast('已填入“项目调拨参考价与市场价比较”示例');
+    }
+
+    function renderFlow() {
+      const edgeLayer = document.getElementById('edgeLayer');
+      const nodeLayer = document.getElementById('nodeLayer');
+      edgeLayer.innerHTML = flowEdges.map(edge => `
+        <g data-edge="${edge.id}">
+          <path class="flow-edge" d="${edge.path}" />
+          ${edge.label ? `<rect class="edge-label-bg" x="${edge.lx - 14}" y="${edge.ly - 14}" width="28" height="20" rx="2"></rect><text class="edge-label" x="${edge.lx}" y="${edge.ly}">${edge.label}</text>` : ''}
+        </g>
+      `).join('');
+      nodeLayer.innerHTML = flowNodes.map(node => {
+        const lines = node.title.map((line, index) => `<text x="${node.x}" y="${node.y - ((node.title.length - 1) * 10) + index * 20}">${line}</text>`).join('');
+        const sub = node.sub ? `<text class="node-sub" x="${node.x}" y="${node.y + node.h / 2 + 21}">${node.sub}</text>` : '';
+        const shape = node.type === 'diamond'
+          ? `<polygon class="flow-node-shape" points="${node.x},${node.y - node.h/2} ${node.x + node.w/2},${node.y} ${node.x},${node.y + node.h/2} ${node.x - node.w/2},${node.y}" />`
+          : `<rect class="flow-node-shape" x="${node.x - node.w/2}" y="${node.y - node.h/2}" width="${node.w}" height="${node.h}" rx="4" />`;
+        return `<g class="flow-node" data-node="${node.id}" tabindex="0" role="button" aria-label="${node.title.join('')}" transform="translate(0 0)">${shape}${lines}${sub}</g>`;
+      }).join('');
+      document.querySelectorAll('.flow-node').forEach(element => {
+        const showDetail = () => showNodeDetail(element.dataset.node);
+        element.addEventListener('click', showDetail);
+        element.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); showDetail(); } });
+      });
+    }
+
+    function showNodeDetail(id) {
+      const node = flowNodes.find(item => item.id === id);
+      if (!node) return;
+      let text = node.detail;
+      if (lastResult && lastResult.nodes.includes(id)) {
+        const related = lastResult.steps.find(step => step.title.includes(node.title[0].replace('是否','').trim()) || step.text.includes(node.title[0].replace('是否','').trim()));
+        if (related) text += ` 本次计算：${related.title}，${related.text}`;
+      }
+      document.getElementById('nodeDetail').textContent = text;
+    }
+
+    function highlightFlow(nodeIds, edgeIds, finalNode, blocked) {
+      document.querySelectorAll('.flow-node').forEach(node => {
+        node.classList.toggle('active', nodeIds.includes(node.dataset.node));
+        node.classList.remove('final', 'blocked');
+      });
+      document.querySelectorAll('[data-edge]').forEach(group => {
+        const path = group.querySelector('.flow-edge');
+        path.classList.toggle('active', edgeIds.includes(group.dataset.edge));
+        path.classList.remove('blocked');
+      });
+      if (finalNode) {
+        const finalElement = document.querySelector(`[data-node="${finalNode}"]`);
+        if (finalElement) finalElement.classList.add(blocked ? 'blocked' : 'final');
+        if (blocked && edgeIds.length) {
+          const finalEdge = document.querySelector(`[data-edge="${edgeIds[edgeIds.length - 1]}"] .flow-edge`);
+          if (finalEdge) finalEdge.classList.add('blocked');
+        }
+      }
+    }
+
+    function switchTab(tab) {
+      const calcActive = tab === 'calc';
+      document.getElementById('calcTab').setAttribute('aria-selected', String(calcActive));
+      document.getElementById('configTab').setAttribute('aria-selected', String(!calcActive));
+      document.getElementById('calcPage').classList.toggle('is-hidden', !calcActive);
+      document.getElementById('configPage').classList.toggle('active', !calcActive);
+      if (!calcActive) populateConfigForm();
+    }
+
+    function populateConfigForm(config = currentConfig) {
+      document.getElementById('configF').value = config.F ?? '';
+      document.getElementById('configMreg').value = config.Mreg ?? '';
+      document.getElementById('configN').value = config.N ?? '';
+      document.getElementById('configMmin').value = config.Mmin ?? '';
+      document.getElementById('configMmax').value = config.Mmax ?? '';
+      document.getElementById('configSaveState').textContent = '';
+      clearErrors();
+    }
+
+    function readConfigForm() {
+      return {
+        F: parseOptionalNumber(document.getElementById('configF').value),
+        Mreg: parseOptionalNumber(document.getElementById('configMreg').value),
+        N: parseOptionalNumber(document.getElementById('configN').value),
+        Mmin: parseOptionalNumber(document.getElementById('configMmin').value),
+        Mmax: parseOptionalNumber(document.getElementById('configMmax').value)
+      };
+    }
+
+    function validateConfig(config) {
+      clearErrors();
+      const mapping = { F:'configF', Mreg:'configMreg', N:'configN', Mmin:'configMmin', Mmax:'configMmax' };
+      let valid = true;
+      ['F', 'Mreg', 'Mmin', 'Mmax'].forEach(key => {
+        if (config[key] === null) { markError(mapping[key], '此配置必填'); valid = false; }
+      });
+      Object.entries(config).forEach(([key, value]) => {
+        if (Number.isNaN(value)) { markError(mapping[key], '请输入有效数字'); valid = false; }
+        else if (value !== null && (value < 0 || value >= 100)) { markError(mapping[key], '请输入 0 至 99.99'); valid = false; }
+      });
+      if (config.Mmin !== null && config.Mmax !== null && config.Mmin > config.Mmax) {
+        markError('configMmin', '最小毛利率不能大于最大毛利率'); valid = false;
+      }
+      return valid;
+    }
+
+    function saveConfig() {
+      const config = readConfigForm();
+      if (!validateConfig(config)) { showToast('请先修正配置数据'); return; }
+      currentConfig = config;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+      renderConfigSummary();
+      document.getElementById('configSaveState').textContent = `已保存，更新时间：${nowText()}`;
+      showToast('配置已保存并生效');
+    }
+
+    function setFlowWidth(width) {
+      flowWidth = Math.max(980, Math.min(2100, width));
+      const svg = document.getElementById('flowSvg');
+      svg.classList.remove('is-fit');
+      svg.style.width = `${flowWidth}px`;
+    }
+
+    document.getElementById('calcTab').addEventListener('click', () => switchTab('calc'));
+    document.getElementById('configTab').addEventListener('click', () => switchTab('config'));
+    document.querySelectorAll('input[name="ownBrand"]').forEach(input => input.addEventListener('change', syncBusinessFields));
+    document.querySelectorAll('input[name="projectParticipates"]').forEach(input => input.addEventListener('change', syncEffectiveD));
+    document.getElementById('settlementPrice').addEventListener('input', syncEffectiveD);
+    document.getElementById('projectTransferPrice').addEventListener('input', syncEffectiveD);
+    document.getElementById('calculateBtn').addEventListener('click', calculate);
+    document.getElementById('resetBtn').addEventListener('click', resetData);
+    document.getElementById('sampleBtn').addEventListener('click', fillSample);
+    document.getElementById('copyBtn').addEventListener('click', copyResult);
+    document.getElementById('saveConfigBtn').addEventListener('click', saveConfig);
+    document.getElementById('restoreConfigBtn').addEventListener('click', () => { populateConfigForm(DEFAULT_CONFIG); showToast('已填入默认值，点击保存后生效'); });
+    document.getElementById('zoomOutBtn').addEventListener('click', () => setFlowWidth(flowWidth - 180));
+    document.getElementById('zoomInBtn').addEventListener('click', () => setFlowWidth(flowWidth + 180));
+    document.getElementById('fitBtn').addEventListener('click', () => { const svg = document.getElementById('flowSvg'); svg.style.width = ''; svg.classList.add('is-fit'); });
+    priceFieldIds.forEach(id => document.getElementById(id).addEventListener('input', () => { document.getElementById(id).classList.remove('is-invalid'); const error = document.getElementById(`${id}Error`); if (error) error.textContent = ''; }));
+
+    renderFlow();
+    renderConfigSummary();
+    populateConfigForm();
+    syncBusinessFields();
+    syncEffectiveD();
+  </script>
+</body>
+</html>

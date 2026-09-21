@@ -79,6 +79,12 @@
     .view-button:hover{color:#2463e8;background:#f5f8ff}
     .view-button.active{color:#fff;background:#3146d3}
     .view-button:focus-visible{outline:2px solid rgba(49,70,211,.3);outline-offset:-2px}
+    .pool-status-tabs{height:42px;display:flex;align-items:center;gap:0;padding:0 16px;border:1px solid #d8dde6;border-bottom:0;background:#f5f7fa}
+    .pool-status-tab{position:relative;height:34px;margin-left:-1px;border:1px solid #e5e7eb;border-top:2px solid transparent;padding:0 18px;background:#f5f6f8;color:#263449;font:inherit;font-size:13px;cursor:pointer}
+    .pool-status-tab:first-child{margin-left:0}
+    .pool-status-tab:hover{z-index:1;color:#3146d3;background:#fff}
+    .pool-status-tab.active{z-index:2;border-top-color:#3146d3;background:#fff;color:#263449;font-weight:500}
+    .pool-status-tab:focus-visible{z-index:3;outline:2px solid rgba(49,70,211,.3);outline-offset:2px}
     .pool-table-wrap{overflow:auto;border:1px solid #d8dde6;scrollbar-color:#c4c8cf #f2f3f5;scrollbar-width:thin}
     .pool-table-wrap.view-hidden{display:none}
     .pool-material-table{width:100%;min-width:2420px;border-collapse:separate;border-spacing:0;table-layout:fixed;background:#fff}
@@ -108,23 +114,34 @@
     .pool-card-wrap.active{display:block}
     .pool-card-selectbar{height:38px;display:flex;align-items:center;padding:0 14px;border-bottom:1px solid #e3e7ed;background:#fafbfd}
     .pool-card-selectbar label{display:inline-flex;align-items:center;gap:7px;cursor:pointer}
-    .pool-card-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding:16px;background:#f5f5f5}
-    .pool-card{min-width:0;overflow:hidden;border:1px solid #f0f0f0;border-radius:8px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.03);transition:border-color .2s,box-shadow .2s}
-    .pool-card:hover{border-color:#d9d9d9;box-shadow:0 6px 16px rgba(0,0,0,.08)}
-    .pool-card-media{position:relative;border-bottom:1px solid #f0f0f0}
-    .pool-card-check{position:absolute;top:10px;left:10px;z-index:2}
-    .pool-card-thumb{width:100%;aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;background:#fafafa}
+    .pool-card-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:max-content;align-content:start;gap:16px;padding:16px;background:#f5f5f5}
+    .pool-card{min-width:0;align-self:start;overflow:hidden;border:1px solid #e5e7eb;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.05);cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .15s ease}
+    .pool-card:hover{border-color:#91caff;box-shadow:0 6px 18px rgba(15,23,42,.10)}
+    .pool-card:focus-visible{outline:2px solid rgba(22,119,255,.34);outline-offset:2px}
+    .pool-card:active{transform:translateY(1px)}
+    .pool-card-main{position:relative}
+    .pool-card-media{background:#fff}
+    .pool-card-check{position:absolute;top:14px;left:14px;z-index:2;width:24px;height:24px;display:grid;place-items:center;border-radius:4px;background:rgba(255,255,255,.94);box-shadow:0 1px 4px rgba(15,23,42,.12)}
+    .pool-card-thumb{width:100%;aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;padding:20px;background:#fff}
     .pool-card-thumb img{width:84%;height:84%;display:block;object-fit:contain}
-    .pool-card-title{min-height:50px;display:-webkit-box;overflow:hidden;padding:10px 12px 0;color:rgba(0,0,0,.88);font-weight:600;line-height:22px;text-decoration:none;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+    .pool-card-title{min-height:46px;display:-webkit-box;overflow:hidden;padding:11px 14px 0;color:rgba(0,0,0,.88);font-size:14px;font-weight:600;line-height:22px;text-decoration:none;-webkit-box-orient:vertical;-webkit-line-clamp:2}
     .pool-card-title:hover{color:#1677ff}
-    .pool-card-status-row{min-height:36px;display:flex;align-items:flex-start;padding:6px 12px 8px}
-    .pool-card-status{height:22px;display:inline-flex;align-items:center;padding:0 8px;border:1px solid #b7eb8f;border-radius:4px;background:#f6ffed;color:#389e0d;font-size:12px;line-height:20px}
+    .pool-card-status-row{min-height:42px;display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:7px 14px 12px}
+    .pool-card-status{max-width:100%;height:24px;display:inline-flex;align-items:center;overflow:hidden;padding:0 8px;border:1px solid #b7eb8f;border-radius:4px;background:#f6ffed;color:#389e0d;font-size:12px;line-height:22px;text-overflow:ellipsis;white-space:nowrap}
     .pool-card-status.off{border-color:#ffccc7;background:#fff2f0;color:#cf1322}
-    .pool-card-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px;padding:14px 12px 16px}
-    .pool-card-field{min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:8px}
-    .pool-card-label{color:rgba(0,0,0,.65);font-size:12px;font-weight:600;white-space:nowrap}
-    .pool-card-value{min-width:0;overflow:hidden;color:rgba(0,0,0,.65);font-size:12px;text-overflow:ellipsis;white-space:nowrap}
-    .pool-card-value.price{color:#ff4d4f;font-weight:600;font-variant-numeric:tabular-nums}
+    .pool-card-flag{height:24px;display:inline-flex;align-items:center;padding:0 8px;border:1px solid #ff7875;border-radius:4px;background:#fff;color:#f5222d;font-size:12px;line-height:22px;white-space:nowrap}
+    .material-flag{position:relative;width:24px;height:24px;display:inline-grid;place-items:center;border-radius:50%;outline:0;color:transparent;font-size:12px;line-height:1;font-weight:600;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);transition:color .16s ease,background-color .16s ease,box-shadow .16s ease}
+    .material-flag.factory{background:#f5222d}
+    .material-flag.supply{background:#faad14}
+    .material-flag.off{background:#bfbfbf}
+    .material-flag:hover,.material-flag:focus-visible{color:#fff}
+    .material-flag.supply:not(.off):hover,.material-flag.supply:not(.off):focus-visible{color:#6b4300}
+    .material-flag:focus-visible{box-shadow:0 0 0 2px rgba(22,119,255,.28),inset 0 0 0 1px rgba(0,0,0,.05)}
+    .pool-card-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;row-gap:10px;padding:14px;border-top:1px solid #f0f0f0}
+    .pool-card-field{min-width:0;display:grid;grid-template-columns:64px minmax(0,1fr);align-items:center;gap:6px}
+    .pool-card-label{color:rgba(0,0,0,.55);font-size:12px;font-weight:400;white-space:nowrap}
+    .pool-card-value{min-width:0;overflow:hidden;color:rgba(0,0,0,.72);font-size:12px;line-height:20px;text-overflow:ellipsis;white-space:nowrap}
+    .pool-card-value.price{color:#f5222d;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
     .pool-card-code{color:#1677ff;text-decoration:none}
     .pool-card-code:hover{text-decoration:underline}
     .pool-card-empty{display:none;height:180px;align-items:center;justify-content:center;color:#8a94a6;background:#fff}
@@ -133,37 +150,44 @@
     body.detail-open{overflow:hidden}
     .material-detail-mask{position:fixed;inset:0;z-index:3200;display:flex;justify-content:flex-end;visibility:hidden;background:rgba(20,31,48,.28);opacity:0;transition:opacity .2s ease,visibility .2s ease}
     .material-detail-mask.active{visibility:visible;opacity:1}
-    .material-detail-drawer{width:min(840px,calc(100vw - 48px));height:100%;display:flex;flex-direction:column;background:#fff;box-shadow:-8px 0 24px rgba(21,35,55,.16);transform:translateX(100%);transition:transform .24s ease-out}
+    .material-detail-drawer{width:min(860px,calc(100vw - 48px));height:100%;display:flex;flex-direction:column;background:#fff;box-shadow:-8px 0 24px rgba(21,35,55,.16);transform:translateX(100%);transition:transform .24s ease-out}
     .material-detail-mask.active .material-detail-drawer{transform:translateX(0)}
     .material-detail-head{height:62px;display:flex;align-items:center;gap:14px;padding:0 22px;border-top:2px solid #1677ff;border-bottom:1px solid #e8ebef;flex:0 0 auto}
     .material-detail-close{width:32px;height:32px;display:grid;place-items:center;border:0;background:transparent;color:#7c8592;font-size:26px;cursor:pointer}
+    .material-detail-close:hover{color:#1f2937}
+    .material-detail-close:focus-visible{outline:2px solid rgba(22,119,255,.3);outline-offset:1px}
     .material-detail-title{margin:0;color:#202938;font-size:17px;font-weight:700}
     .material-detail-body{min-height:0;padding:24px;overflow-y:auto;background:#fafbfc;flex:1}
-    .material-detail-overview{display:grid;grid-template-columns:240px minmax(0,1fr);gap:28px;padding-bottom:24px}
-    .material-detail-image{width:240px;height:240px;display:grid;place-items:center;overflow:hidden;padding:0;border:1px solid #edf0f3;background:#fff;box-shadow:0 4px 15px rgba(25,39,59,.05);cursor:zoom-in}
+    .material-detail-overview{display:grid;grid-template-columns:280px minmax(0,1fr);gap:32px;padding-bottom:24px}
+    .material-detail-gallery{width:280px;min-width:0}
+    .material-detail-image{position:relative;width:280px;height:280px;display:grid;place-items:center;overflow:hidden;padding:0;border:1px solid #edf0f3;border-radius:6px;background:#fff;box-shadow:0 4px 15px rgba(25,39,59,.05);cursor:zoom-in}
     .material-detail-image:hover{border-color:#1677ff;box-shadow:0 0 0 2px rgba(22,119,255,.1)}
-    .material-detail-image img{width:88%;height:88%;object-fit:contain}
+    .material-detail-image img{width:88%;height:88%;display:block;object-fit:contain}
+    .material-detail-main-counter{position:absolute;right:8px;bottom:8px;min-width:42px;height:22px;display:inline-flex;align-items:center;justify-content:center;padding:0 7px;border-radius:11px;background:rgba(0,0,0,.56);color:#fff;font-size:12px;font-variant-numeric:tabular-nums;pointer-events:none}
+    .material-detail-main-thumbs{display:grid;grid-template-columns:repeat(4,56px);gap:10px;margin-top:12px}
+    .material-detail-main-thumb{width:56px;height:56px;display:grid;place-items:center;padding:3px;overflow:hidden;border:1px solid #d9d9d9;border-radius:4px;background:#fff;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+    .material-detail-main-thumb:hover{border-color:#69b1ff}
+    .material-detail-main-thumb.active{border-color:#1677ff;box-shadow:0 0 0 1px #1677ff}
+    .material-detail-main-thumb:focus-visible{outline:2px solid rgba(22,119,255,.3);outline-offset:2px}
+    .material-detail-main-thumb img{width:100%;height:100%;display:block;object-fit:contain}
     .material-detail-summary{display:grid;align-content:start}
     .material-detail-summary-row{min-height:44px;display:grid;grid-template-columns:112px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid #f0f1f3;line-height:22px}
     .material-detail-label{color:#6f7783}
     .material-detail-value{min-width:0;color:#222b38;overflow-wrap:anywhere}
-    .material-detail-value.title{font-weight:600}
+    .material-detail-value.title{display:-webkit-box;overflow:hidden;font-weight:600;-webkit-box-orient:vertical;-webkit-line-clamp:2}
     .material-detail-value.price{color:#f5222d;font-size:18px;font-weight:700}
     .material-detail-tag{height:22px;display:inline-flex;align-items:center;padding:0 8px;border-radius:2px;background:#e8f8f2;color:#008c70;font-size:12px;font-weight:600}
     .material-detail-tag.off{background:#fff1f0;color:#cf1322}
-    .material-detail-section{margin-top:16px;border:1px solid #edf0f3;background:#fff}
+    .material-detail-status-group{display:flex;align-items:center;gap:8px;min-height:24px}
+    .material-detail-section{margin-top:16px;border:1px solid #edf0f3;background:#fff;box-shadow:0 3px 12px rgba(25,39,59,.035)}
     .material-detail-section-title{height:38px;display:flex;align-items:center;margin:0;padding:0 14px;border-bottom:1px solid #edf0f3;font-size:14px;font-weight:700}
     .material-detail-section-title::before{width:3px;height:16px;margin-right:8px;background:#1677ff;content:""}
     .material-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
-    .material-detail-item{min-width:0;min-height:50px;display:grid;grid-template-columns:136px minmax(0,1fr);align-items:center;gap:8px;padding:9px 14px;border-right:1px solid #edf0f3;border-bottom:1px solid #edf0f3}
+    .material-detail-item{min-width:0;min-height:50px;display:grid;grid-template-columns:136px minmax(0,1fr);align-items:start;gap:8px;padding:9px 14px;border-right:1px solid #edf0f3;border-bottom:1px solid #edf0f3}
     .material-detail-item:nth-child(2n){border-right:0}
     .material-detail-item:nth-last-child(-n+2){border-bottom:0}
-    .material-detail-item.wide{grid-column:1/-1;border-right:0}
+    .material-detail-item .material-detail-value{white-space:normal;overflow-wrap:anywhere;word-break:break-word}
     .material-detail-media{padding:16px}
-    .material-main-list{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px}
-    .material-main-image{width:200px;height:200px;display:grid;place-items:center;overflow:hidden;padding:0;border:1px solid #d9d9d9;border-radius:6px;background:#fafafa;cursor:zoom-in;transition:border-color .2s,box-shadow .2s}
-    .material-main-image:hover{border-color:#1677ff;box-shadow:0 0 0 2px rgba(22,119,255,.1)}
-    .material-main-image img{width:100%;height:100%;display:block;object-fit:contain}
     .material-detail-image-scroll{max-height:660px;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
     .material-detail-image-list{display:flex;flex-direction:column;gap:16px}
     .material-detail-long-image{width:100%;display:grid;place-items:center;overflow:hidden;padding:0;border:1px solid #e4e8ed;border-radius:6px;background:#fafafa;cursor:zoom-in}
@@ -185,6 +209,10 @@
     .toast-message{position:fixed;left:50%;top:76px;z-index:100;transform:translate(-50%,-8px);opacity:0;padding:9px 18px;border:1px solid #d6e4ff;border-radius:4px;background:#fff;color:#3146d3;box-shadow:0 6px 18px rgba(31,43,91,.14);transition:opacity .2s,transform .2s;pointer-events:none}
     .toast-message.show{opacity:1;transform:translate(-50%,0)}
     @media(min-width:1800px){.pool-card-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+    @media(max-width:1260px){.pool-card-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:920px){.pool-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:760px){.material-detail-drawer{width:100vw}.material-detail-body{padding:16px}.material-detail-overview{grid-template-columns:1fr;gap:16px}.material-detail-gallery{width:min(280px,100%);margin:0 auto}.material-detail-image{width:100%;height:auto;aspect-ratio:1}.material-detail-main-thumbs{justify-content:center}.material-detail-grid{grid-template-columns:1fr}.material-detail-item,.material-detail-item:nth-child(2n){border-right:0;border-bottom:1px solid #edf0f3}.material-detail-item:last-child{border-bottom:0}}
+    @media(max-width:620px){.pool-card-grid{grid-template-columns:minmax(0,1fr);padding:12px}}
     @media(max-width:1400px){.query-select{width:360px}.query-input{width:420px}.query-actions{margin-left:24px}.pool-filter-more{grid-template-columns:repeat(2,minmax(300px,1fr))}}
     @media(prefers-reduced-motion:reduce){.material-detail-mask,.material-detail-drawer,.image-preview-stage img{transition:none}}
   </style>
@@ -307,7 +335,7 @@
               <div class="pool-filter-field"><label for="poolCategory">客户类目</label><input class="pool-control" id="poolCategory" placeholder="请输入"></div>
               <div class="pool-filter-field"><label for="poolUnit">单位名称</label><input class="pool-control" id="poolUnit" placeholder="请输入"></div>
               <div class="pool-filter-field"><label for="poolPrice">项目售价</label><input class="pool-control" id="poolPrice" inputmode="decimal" placeholder="请输入金额"></div>
-              <div class="pool-filter-field"><label for="poolStatus">平台状态（上下架）</label><select class="pool-control" id="poolStatus"><option value="">全部</option><option value="上架">上架</option><option value="下架">下架</option></select></div>
+              <div class="pool-filter-field"><label for="poolStatus">平台状态</label><select class="pool-control" id="poolStatus" onchange="changePoolStatusFilter(this.value)"><option value="">全部</option><option value="已上架">已上架</option><option value="已下架">已下架</option><option value="审核中">审核中</option><option value="已驳回">已驳回</option><option value="已冻结">已冻结</option></select></div>
               <div class="pool-filter-field"><label for="poolSupplier">供应商名称</label><input class="pool-control" id="poolSupplier" placeholder="请输入"></div>
               <div class="pool-filter-field"><label for="poolFactory">厂控物料（是/否）</label><select class="pool-control" id="poolFactory"><option value="">全部</option><option value="是">是</option><option value="否">否</option></select></div>
               <div class="pool-filter-field"><label for="poolActual">实供物料（是/否）</label><select class="pool-control" id="poolActual"><option value="">全部</option><option value="是">是</option><option value="否">否</option></select></div>
@@ -325,6 +353,12 @@
               </div>
             </div>
           </section>
+
+          <div class="pool-status-tabs" role="tablist" aria-label="项目商品池状态">
+            <button class="pool-status-tab" id="poolStatusAll" type="button" role="tab" aria-selected="false" onclick="setPoolStatusTab('all')">全部</button>
+            <button class="pool-status-tab active" id="poolStatusOnline" type="button" role="tab" aria-selected="true" onclick="setPoolStatusTab('online')">已上架</button>
+            <button class="pool-status-tab" id="poolStatusOther" type="button" role="tab" aria-selected="false" onclick="setPoolStatusTab('other')">其他状态</button>
+          </div>
 
           <div class="pool-table-wrap" id="poolTableWrap" tabindex="0" role="region" aria-label="项目商品池列表，可横向滚动查看全部字段">
             <table class="pool-material-table">
@@ -397,15 +431,25 @@
       project,
       code: projectIndex ? seed[0].slice(0, -2) + String(projectIndex * 8 + index + 1).padStart(2, '0') : seed[0],
       customerCode: seed[1], title: seed[2], brand: seed[3], category: seed[4], unit: seed[5],
-      price: (Number(seed[6]) + projectIndex * 2).toFixed(2), status: seed[7], supplier: seed[8], controlPrice: seed[9],
-      factoryControlled: seed[10], actualSupply: seed[11], standardCode: seed[12], maxPrice: seed[13], minPrice: seed[14], sales: String(Number(seed[15]) + projectIndex * 18)
+      price: (Number(seed[6]) + projectIndex * 2).toFixed(2), status: index < 4 ? ['已下架','审核中','已驳回','已冻结'][index] : '已上架', supplier: seed[8], controlPrice: seed[9],
+      factoryControlled: seed[10], actualSupply: seed[11], standardCode: seed[12], maxPrice: seed[13], minPrice: seed[14], sales: String(Number(seed[15]) + projectIndex * 18),
+      xhTitle: `${seed[3]} ${seed[2]}（单位名称：${seed[5]}）`,
+      customerTitle: `${seed[3].split('/')[0]} ${seed[2]}`,
+      manualRemark: index % 4 === 0 ? `项目运营维护 ${String(index + 1).padStart(2, '0')}` : '-',
+      salesRegionInventory: index % 3 === 0 ? `全国：99999（启用，库存${120 + index}）；华南：805（启用，库存${36 + index}）` : `全国：99999（启用，库存${80 + index}）`,
+      multipleOrder: index % 3 === 0 ? '是' : '否',
+      minimumOrderQty: index % 3 === 0 ? '5' : '1',
+      materialCode: `WZ${seed[0].slice(1)}${String(projectIndex + 1).padStart(2, '0')}`
     })));
     let submittedFilteredRows = submittedMaterialRows.filter(row => row.submittedByMe && row.project === '华电商城');
-    let poolFilteredRows = poolMaterialRows.filter(row => row.project === '华电商城');
+    let poolFilteredRows = poolMaterialRows.filter(row => row.project === '华电商城' && row.status === '已上架');
     let activeMaterialView = 'submitted';
     let poolView = 'list';
+    let poolStatusTab = 'online';
+    const poolOtherStatuses = new Set(['已下架','审核中','已驳回','已冻结']);
     let materialDetailLastFocus = null;
     let previewGroups = { main: [], detail: [] };
+    let activeMainImageIndex = 0;
     let previewImages = [];
     let previewIndex = 0;
     let previewScale = 1;
@@ -480,6 +524,7 @@
       projectPanel.classList.toggle('active', view === 'project');
       submittedPanel.hidden = view !== 'submitted';
       projectPanel.hidden = view !== 'project';
+      if(view === 'project') applyPoolFilters();
       showToast(`已切换至${view === 'submitted' ? '我提报的' : '项目商品池'}`);
     }
 
@@ -492,28 +537,36 @@
         <td title="${escapeHtml(row.brand)}">${escapeHtml(row.brand)}</td>
         <td title="${escapeHtml(row.category)}">${escapeHtml(row.category)}</td>
         <td>${escapeHtml(row.unit)}</td><td>${escapeHtml(row.price)}</td>
-        <td class="${row.status === '上架' ? 'pool-status-on' : 'pool-status-off'}">${escapeHtml(row.status)}</td>
+        <td class="${row.status === '已上架' ? 'pool-status-on' : 'pool-status-off'}">${escapeHtml(row.status)}</td>
         <td title="${escapeHtml(row.supplier)}">${escapeHtml(row.supplier)}</td><td>${escapeHtml(row.controlPrice)}</td>
         <td>${escapeHtml(row.factoryControlled)}</td><td>${escapeHtml(row.actualSupply)}</td>
         <td title="${escapeHtml(row.standardCode)}">${escapeHtml(row.standardCode)}</td><td>${escapeHtml(row.maxPrice)}</td><td>${escapeHtml(row.minPrice)}</td><td>${escapeHtml(row.sales)}</td>
       </tr>`).join('');
       document.getElementById('poolCardGrid').innerHTML = poolFilteredRows.map(row => {
         const thumbIndex = (row.id - 1) % 6 + 1;
-        const statusOff = row.status !== '上架';
-        return `<article class="pool-card">
-          <div class="pool-card-media">
+        const statusOff = row.status !== '已上架';
+        const factoryOff = row.factoryControlled !== '是';
+        const supplyOff = row.actualSupply !== '是';
+        return `<article class="pool-card" role="button" tabindex="0" aria-label="查看${escapeHtml(row.title)}物料详情" onclick="handlePoolCardClick(event,${row.id})" onkeydown="handlePoolCardKeydown(event,${row.id})">
+          <div class="pool-card-main">
             <div class="pool-card-check"><input class="row-select pool-row-select" type="checkbox" aria-label="选择${escapeHtml(row.code)}"></div>
-            <div class="pool-card-thumb"><img src="../assets/material-thumbs/material-${thumbIndex}.png" alt="${escapeHtml(row.title)}商品图" width="280" height="210" loading="lazy"></div>
-            <a class="pool-card-title" href="#" title="${escapeHtml(row.title)}" onclick="openMaterialDetail(${row.id});return false;">${escapeHtml(row.title)}</a>
-            <div class="pool-card-status-row"><span class="pool-card-status ${statusOff ? 'off' : ''}">平台状态：${escapeHtml(row.status)}</span></div>
-          </div>
-          <div class="pool-card-meta">
-            <div class="pool-card-field"><span class="pool-card-label">咸亨编码</span><a class="pool-card-value pool-card-code" href="#" onclick="openMaterialDetail(${row.id});return false;">${escapeHtml(row.code)}</a></div>
-            <div class="pool-card-field"><span class="pool-card-label">客户编码</span><span class="pool-card-value" title="${escapeHtml(row.customerCode)}">${escapeHtml(row.customerCode)}</span></div>
-            <div class="pool-card-field"><span class="pool-card-label">项目售价</span><span class="pool-card-value price">¥${escapeHtml(row.price)}</span></div>
-            <div class="pool-card-field"><span class="pool-card-label">品牌名称</span><span class="pool-card-value" title="${escapeHtml(row.brand)}">${escapeHtml(row.brand)}</span></div>
-            <div class="pool-card-field"><span class="pool-card-label">类目名称</span><span class="pool-card-value" title="${escapeHtml(row.category)}">${escapeHtml(row.category)}</span></div>
-            <div class="pool-card-field"><span class="pool-card-label">供应商名称</span><span class="pool-card-value" title="${escapeHtml(row.supplier)}">${escapeHtml(row.supplier)}</span></div>
+            <div class="pool-card-media">
+              <div class="pool-card-thumb"><img src="../assets/material-thumbs/material-${thumbIndex}.png" alt="${escapeHtml(row.title)}商品图" width="280" height="238" loading="lazy"></div>
+              <a class="pool-card-title" href="#" title="${escapeHtml(row.title)}" onclick="openMaterialDetail(${row.id});return false;">${escapeHtml(row.title)}</a>
+              <div class="pool-card-status-row">
+                <span class="pool-card-status ${statusOff ? 'off' : ''}">平台状态：${escapeHtml(row.status)}</span>
+                <span class="material-flag factory ${factoryOff ? 'off' : ''}" tabindex="0" role="img" aria-label="厂控：${escapeHtml(row.factoryControlled)}">控</span>
+                <span class="material-flag supply ${supplyOff ? 'off' : ''}" tabindex="0" role="img" aria-label="实供：${escapeHtml(row.actualSupply)}">实</span>
+              </div>
+            </div>
+            <div class="pool-card-meta">
+              <div class="pool-card-field"><span class="pool-card-label">咸亨编码</span><a class="pool-card-value pool-card-code" href="#" onclick="openMaterialDetail(${row.id});return false;">${escapeHtml(row.code)}</a></div>
+              <div class="pool-card-field"><span class="pool-card-label">客户编码</span><span class="pool-card-value" title="${escapeHtml(row.customerCode)}">${escapeHtml(row.customerCode)}</span></div>
+              <div class="pool-card-field"><span class="pool-card-label">项目售价</span><span class="pool-card-value price">¥${escapeHtml(row.price)}</span></div>
+              <div class="pool-card-field"><span class="pool-card-label">品牌名称</span><span class="pool-card-value" title="${escapeHtml(row.brand)}">${escapeHtml(row.brand)}</span></div>
+              <div class="pool-card-field"><span class="pool-card-label">类目名称</span><span class="pool-card-value" title="${escapeHtml(row.category)}">${escapeHtml(row.category)}</span></div>
+              <div class="pool-card-field"><span class="pool-card-label">单位名称</span><span class="pool-card-value">${escapeHtml(row.unit)}</span></div>
+            </div>
           </div>
         </article>`;
       }).join('');
@@ -537,6 +590,17 @@
       document.getElementById('poolCardWrap').classList.toggle('active', poolView === 'card');
     }
 
+    function handlePoolCardClick(event,id){
+      if(event.target.closest('a,button,input,select,textarea,label')) return;
+      openMaterialDetail(id);
+    }
+
+    function handlePoolCardKeydown(event,id){
+      if(event.target !== event.currentTarget || (event.key !== 'Enter' && event.key !== ' ')) return;
+      event.preventDefault();
+      openMaterialDetail(id);
+    }
+
     function includesValue(value, keyword){ return !keyword || String(value || '').toLowerCase().includes(keyword.toLowerCase()); }
 
     function applyPoolFilters(){
@@ -549,7 +613,9 @@
         price: document.getElementById('poolPrice').value.trim(), status: document.getElementById('poolStatus').value, supplier: document.getElementById('poolSupplier').value.trim(),
         factoryControlled: document.getElementById('poolFactory').value, actualSupply: document.getElementById('poolActual').value, standardCode: document.getElementById('poolStandardCode').value.trim()
       };
+      const matchesStatusTab = row => poolStatusTab === 'all' || (poolStatusTab === 'online' ? row.status === '已上架' : poolOtherStatuses.has(row.status));
       poolFilteredRows = poolMaterialRows.filter(row => row.project === project
+        && matchesStatusTab(row)
         && (!codes.length || codes.some(code => row.code.toLowerCase().includes(code)))
         && includesValue(row.customerCode, values.customerCode) && includesValue(row.title, values.title)
         && includesValue(row.brand, values.brand) && includesValue(row.category, values.category) && includesValue(row.unit, values.unit)
@@ -559,10 +625,34 @@
       renderPoolMaterials();
     }
 
+    function updatePoolStatusTabs(){
+      [['all','poolStatusAll'],['online','poolStatusOnline'],['other','poolStatusOther']].forEach(([value,id]) => {
+        const button = document.getElementById(id);
+        const active = poolStatusTab === value;
+        button.classList.toggle('active',active);
+        button.setAttribute('aria-selected',active ? 'true' : 'false');
+      });
+    }
+
+    function setPoolStatusTab(tab){
+      poolStatusTab = ['all','online','other'].includes(tab) ? tab : 'online';
+      document.getElementById('poolStatus').value = '';
+      updatePoolStatusTabs();
+      applyPoolFilters();
+    }
+
+    function changePoolStatusFilter(value){
+      poolStatusTab = value === '已上架' ? 'online' : value ? 'other' : 'all';
+      updatePoolStatusTabs();
+      applyPoolFilters();
+    }
+
     function searchPoolMaterials(event){ if(event) event.preventDefault(); applyPoolFilters(); showToast(`查询完成，共${poolFilteredRows.length}条`); }
     function resetPoolMaterials(){
       document.getElementById('poolFilter').reset();
       document.getElementById('poolProject').value = '华电商城';
+      poolStatusTab = 'online';
+      updatePoolStatusTabs();
       applyPoolFilters();
       showToast('项目商品池筛选条件已重置');
     }
@@ -590,17 +680,26 @@
         const imageIndex = (thumbIndex + index) % 6 + 1;
         return {src:`../assets/material-thumbs/material-${imageIndex}.png`,alt:`${row.title}详情图${index + 1}`};
       });
-      const mainImagesHtml = previewGroups.main.map((image,index) => `<button class="material-main-image" type="button" aria-label="预览${escapeHtml(image.alt)}" onclick="openImagePreview('main',${index})"><img src="${image.src}" alt="${escapeHtml(image.alt)}" width="200" height="200" loading="lazy"></button>`).join('');
+      activeMainImageIndex = 0;
+      const activeMainImage = previewGroups.main[0];
+      const mainThumbsHtml = previewGroups.main.map((image,index) => `<button class="material-detail-main-thumb ${index === 0 ? 'active' : ''}" type="button" aria-label="切换为${escapeHtml(image.alt)}" aria-pressed="${index === 0 ? 'true' : 'false'}" onclick="selectMaterialMainImage(${index})"><img src="${image.src}" alt="" width="56" height="56" loading="lazy"></button>`).join('');
       const detailImagesHtml = previewGroups.detail.map((image,index) => `<button class="material-detail-long-image" type="button" aria-label="预览${escapeHtml(image.alt)}" onclick="openImagePreview('detail',${index})"><img src="${image.src}" alt="${escapeHtml(image.alt)}" width="760" height="560" loading="lazy"></button>`).join('');
       document.getElementById('materialDetailBody').innerHTML = `
         <section class="material-detail-overview" aria-label="物料核心信息">
-          <button class="material-detail-image" type="button" aria-label="预览${escapeHtml(row.title)}主图" onclick="openImagePreview('main',0)"><img src="../assets/material-thumbs/material-${thumbIndex}.png" alt="${escapeHtml(row.title)}商品图" width="240" height="240"></button>
+          <div class="material-detail-gallery" aria-label="主图图库">
+            <button class="material-detail-image" id="materialDetailMainView" type="button" aria-label="放大预览${escapeHtml(activeMainImage.alt)}" onclick="openSelectedMaterialMainImage()">
+              <img id="materialDetailMainViewImage" src="${activeMainImage.src}" alt="${escapeHtml(activeMainImage.alt)}" width="280" height="280">
+              <span class="material-detail-main-counter" id="materialDetailMainCounter">1 / ${previewGroups.main.length}</span>
+            </button>
+            <div class="material-detail-main-thumbs" id="materialDetailMainThumbs" aria-label="选择主图">${mainThumbsHtml}</div>
+          </div>
           <div class="material-detail-summary">
-            <div class="material-detail-summary-row"><span class="material-detail-label">商品标题</span><span class="material-detail-value title">${escapeHtml(row.title)}</span></div>
+            <div class="material-detail-summary-row"><span class="material-detail-label">咸亨标题</span><span class="material-detail-value title" title="${escapeHtml(row.xhTitle)}">${escapeHtml(row.xhTitle)}</span></div>
+            <div class="material-detail-summary-row"><span class="material-detail-label">客户标题</span><span class="material-detail-value title" title="${escapeHtml(row.customerTitle)}">${escapeHtml(row.customerTitle)}</span></div>
             <div class="material-detail-summary-row"><span class="material-detail-label">咸亨编码</span><span class="material-detail-value">${escapeHtml(row.code)}</span></div>
             <div class="material-detail-summary-row"><span class="material-detail-label">客户编码（sku/spu）</span><span class="material-detail-value">${escapeHtml(row.customerCode)}</span></div>
             <div class="material-detail-summary-row"><span class="material-detail-label">项目售价</span><span class="material-detail-value price">¥${escapeHtml(row.price)}</span></div>
-            <div class="material-detail-summary-row"><span class="material-detail-label">平台状态</span><span><span class="material-detail-tag ${row.status === '上架' ? '' : 'off'}">${escapeHtml(row.status)}</span></span></div>
+            <div class="material-detail-summary-row"><span class="material-detail-label">平台状态</span><span class="material-detail-status-group"><span class="material-detail-tag ${row.status === '已上架' ? '' : 'off'}">${escapeHtml(row.status)}</span><span class="material-flag factory ${row.factoryControlled === '是' ? '' : 'off'}" tabindex="0" role="img" aria-label="厂控：${escapeHtml(row.factoryControlled)}">控</span><span class="material-flag supply ${row.actualSupply === '是' ? '' : 'off'}" tabindex="0" role="img" aria-label="实供：${escapeHtml(row.actualSupply)}">实</span></span></div>
           </div>
         </section>
         <section class="material-detail-section">
@@ -610,7 +709,12 @@
             <div class="material-detail-item"><span class="material-detail-label">客户类目</span><span class="material-detail-value">${escapeHtml(row.category)}</span></div>
             <div class="material-detail-item"><span class="material-detail-label">单位名称</span><span class="material-detail-value">${escapeHtml(row.unit)}</span></div>
             <div class="material-detail-item"><span class="material-detail-label">供应商名称</span><span class="material-detail-value">${escapeHtml(row.supplier)}</span></div>
-            <div class="material-detail-item wide"><span class="material-detail-label">标准库编码/产品编码</span><span class="material-detail-value">${escapeHtml(row.standardCode)}</span></div>
+            <div class="material-detail-item"><span class="material-detail-label">标准库编码/产品编码</span><span class="material-detail-value">${escapeHtml(row.standardCode)}</span></div>
+            <div class="material-detail-item"><span class="material-detail-label">备注（手动导入）</span><span class="material-detail-value">${escapeHtml(row.manualRemark)}</span></div>
+            <div class="material-detail-item"><span class="material-detail-label">销售区域&库存</span><span class="material-detail-value">${escapeHtml(row.salesRegionInventory)}</span></div>
+            <div class="material-detail-item"><span class="material-detail-label">是否倍数下单</span><span class="material-detail-value">${escapeHtml(row.multipleOrder)}</span></div>
+            <div class="material-detail-item"><span class="material-detail-label">起订量</span><span class="material-detail-value">${escapeHtml(row.minimumOrderQty)}</span></div>
+            <div class="material-detail-item"><span class="material-detail-label">物资编码</span><span class="material-detail-value">${escapeHtml(row.materialCode)}</span></div>
           </div>
         </section>
         <section class="material-detail-section">
@@ -623,17 +727,6 @@
           </div>
         </section>
         <section class="material-detail-section">
-          <h3 class="material-detail-section-title">业务属性</h3>
-          <div class="material-detail-grid">
-            <div class="material-detail-item"><span class="material-detail-label">厂控物料（是/否）</span><span class="material-detail-value">${escapeHtml(row.factoryControlled)}</span></div>
-            <div class="material-detail-item"><span class="material-detail-label">实供物料（是/否）</span><span class="material-detail-value">${escapeHtml(row.actualSupply)}</span></div>
-          </div>
-        </section>
-        <section class="material-detail-section">
-          <h3 class="material-detail-section-title">主图</h3>
-          <div class="material-detail-media"><div class="material-main-list">${mainImagesHtml}</div></div>
-        </section>
-        <section class="material-detail-section">
           <h3 class="material-detail-section-title">详情图</h3>
           <div class="material-detail-media"><div class="material-detail-image-scroll" tabindex="0" role="region" aria-label="详情图列表，可上下滚动查看"><div class="material-detail-image-list">${detailImagesHtml}</div></div></div>
         </section>`;
@@ -643,6 +736,28 @@
       mask.setAttribute('aria-hidden','false');
       document.body.classList.add('detail-open');
       requestAnimationFrame(() => mask.querySelector('.material-detail-close').focus());
+    }
+
+    function selectMaterialMainImage(index){
+      if(!previewGroups.main.length) return;
+      activeMainImageIndex = Math.min(Math.max(0,Number(index) || 0),previewGroups.main.length - 1);
+      const image = previewGroups.main[activeMainImageIndex];
+      const mainView = document.getElementById('materialDetailMainView');
+      const mainViewImage = document.getElementById('materialDetailMainViewImage');
+      if(!mainView || !mainViewImage) return;
+      mainViewImage.src = image.src;
+      mainViewImage.alt = image.alt;
+      mainView.setAttribute('aria-label',`放大预览${image.alt}`);
+      document.getElementById('materialDetailMainCounter').textContent = `${activeMainImageIndex + 1} / ${previewGroups.main.length}`;
+      document.querySelectorAll('#materialDetailMainThumbs .material-detail-main-thumb').forEach((button,buttonIndex) => {
+        const active = buttonIndex === activeMainImageIndex;
+        button.classList.toggle('active',active);
+        button.setAttribute('aria-pressed',active ? 'true' : 'false');
+      });
+    }
+
+    function openSelectedMaterialMainImage(){
+      openImagePreview('main',activeMainImageIndex);
     }
 
     function closeMaterialDetail(){
