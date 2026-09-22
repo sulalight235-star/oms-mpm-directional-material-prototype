@@ -1,0 +1,12 @@
+stages:
+  - deploy
+
+publish-pages:
+  stage: deploy
+  image: alpine:3.21
+  script:
+    - sh scripts/build-pages.sh public "$CI_PAGES_URL"
+  pages:
+    publish: public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
