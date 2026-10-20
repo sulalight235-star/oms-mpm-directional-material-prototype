@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>品牌管理 - 审核详情</title>
+  <title>品牌-待我审核-审核详情 - MPM物料主数据系统</title>
   <style>
     :root {
       --primary: #1677ff;
@@ -21,7 +21,7 @@
 
     html, body {
       width: 100%;
-      min-width: 1180px;
+      min-width: 0;
       min-height: 100%;
     }
 
@@ -420,8 +420,8 @@
       .form-grid { gap: 18px 24px; }
     }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
   <header class="topbar">
     <div class="brand">
       <div class="brand-logo">咸</div>
@@ -450,10 +450,10 @@
     <div class="tabs-clear" onclick="location.href='MPM-工作台-首页.html'">清除</div>
   </div>
 
-  <main class="page-shell">
+  <main id="main-content" class="page-shell" tabindex="-1">
     <section class="action-bar" aria-label="审核操作">
       <div class="action-group">
-        <input class="reason-input" id="rejectReason" type="text" placeholder="驳回理由（驳回时必填）" />
+        <input class="reason-input" id="rejectReason" type="text" placeholder="驳回理由（驳回时必填）"  aria-label="驳回理由"/>
         <button class="button primary" id="approveButton" type="button">通过</button>
         <button class="button danger" id="rejectButton" type="button">驳回</button>
       </div>
@@ -499,7 +499,7 @@
           </div>
           <div class="form-item">
             <span class="form-label">品牌注册地</span>
-            <input class="control" id="registrationPlace" type="text" value="中国" />
+            <input class="control" id="registrationPlace" type="text" value="中国"  aria-label="品牌注册地"/>
           </div>
           <div class="form-item">
             <span class="form-label">热门搜索</span>
@@ -659,5 +659,5 @@
     document.getElementById('uploadZone').addEventListener('click', () => showToast('打开品牌图片选择器（原型）'));
   </script>
   <script src="mpm-topnav-links.js"></script>
-</body>
+<script src="assets/js/prototype-common.js" defer></script></body>
 </html>

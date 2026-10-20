@@ -31,7 +31,7 @@ mpm/integration/products	MPM-物料对接-对接物料列表管理.html
 mpm/integration/pending-push/detail	MPM-物料对接-待推送物料列表-提报商品详情.html
 mpm/integration/pending-push	MPM-物料对接-待推送物料列表.html
 mpm/integration/project-price-monitor	MPM-物料对接-项目价格监控中心.html
-mpm/integration/project-material-pool	MPM-物料对接-项目物料池-销售员工作台.html
+mpm/integration/project-material-pool	MPM-物料对接-项目商品池-销售员工作台.html
 mpm/categories/qualification-rules/batch	MPM-类目属性-类目列表-资质规则批量维护.html
 mpm/categories/qualification-config/edit-by-scenario	MPM-类目属性-类目列表-资质配置-编辑-场景区分.html
 mpm/categories/qualification-config/edit	MPM-类目属性-类目列表-资质配置-编辑.html
@@ -39,11 +39,6 @@ mpm/admin/organizations	MPM-系统管理-使用组织.html
 mpm/admin/organizations/detail	MPM-系统管理-使用组织详情.html
 mpm/admin/tax-classification-codes	MPM-系统管理-税收分类编码库.html
 oms/orders	OMS-订单管理-订单列表.html
-reference/crm/workbench	云端截图-CRM-工作台-首页.html
-reference/mpm/customer-products	云端截图-MPM-客户商品清单.html
-reference/mpm/integration-products	云端截图-MPM-对接物料列表管理.html
-reference/mpm/project-material-pool	云端截图-MPM-项目物料池.html
-reference/oms/orders	云端截图-OMS-订单管理-订单列表.html
 scp/materials/pending/detail	原型-SCP新增物料/SCP-物料管理-待提交物料-物料详情.html
 scp/materials/pending	原型-SCP新增物料/SCP-物料管理-待提交物料.html
 scp/materials/mine/detail	原型-SCP新增物料/SCP-物料管理-我的物料-物料详情.html
@@ -51,10 +46,12 @@ scp/materials/mine	原型-SCP新增物料/SCP-物料管理-我的物料.html
 scp/materials/applications/detail	原型-SCP新增物料/SCP-物料管理-我的申请-物料详情.html
 scp/materials/applications	原型-SCP新增物料/SCP-物料管理-我的申请.html
 scp/materials/create/single	原型-SCP新增物料/SCP-物料管理-新增物料-单个新增.html
+scp/workbench	原型-SCP新增物料/SCP-工作台-首页.html
+scp/messages	原型-SCP新增物料/SCP-消息中心-列表.html
 scp/materials/create/batch	原型-SCP新增物料/SCP-物料管理-新增物料-批量新增.html
 scp/materials/detail	原型-SCP新增物料/SCP-物料管理-物料列表-物料详情.html
 scp/project-submissions/records/detail	原型-SCP新增物料/SCP-项目物料提报管理-提报记录-详情.html
 scp/project-submissions/mine	原型-SCP新增物料/SCP-项目物料提报管理-项目物料-我提报的.html
 scp/project-submissions	原型-SCP新增物料/SCP-项目物料提报管理-项目物料列表.html
-reference/scp/project-material-pool	原型-SCP新增物料/云端截图-SCP-项目物料池.html
-mall/products/reward-display	咸亨商城-商品详情-奖励展示.html
+mall/products/reward-display	MALL-商品详情-奖励展示.html
+mpm/integration/external-link-sync-logs	MPM-物料对接-外链同步日志.html

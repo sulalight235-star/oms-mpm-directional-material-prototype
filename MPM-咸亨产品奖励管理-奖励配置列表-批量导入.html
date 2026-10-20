@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>咸亨产品奖励管理 - 批量导入</title>
+  <title>咸亨产品奖励管理-奖励配置列表-批量导入 - MPM物料主数据系统</title>
   <style>
     :root {
       --primary: #1677ff;
@@ -32,7 +32,7 @@
       font-size: 14px;
       background: var(--bg-layout);
       color: var(--text-body);
-      min-width: 1280px;
+      min-width: 0;
       padding-bottom: 48px;
     }
     a { color: inherit; text-decoration: none; }
@@ -544,8 +544,8 @@
       .result-grid { grid-template-columns: repeat(2, minmax(200px, 1fr)); }
     }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
   <!-- 顶栏 -->
   <header class="topbar">
     <div class="brand">
@@ -583,7 +583,7 @@
       <strong>批量导入</strong>支持新增、修改、作废三种操作，导入前请先下载模板并按字段说明填写。
       修改 / 作废必须填写奖励配置 ID，否则无法匹配到现有数据。
     </div>
-    <button class="alert-close" id="topAlertClose" type="button">×</button>
+    <button class="alert-close" id="topAlertClose" type="button" aria-label="关闭提示">×</button>
   </div>
 
   <!-- action-bar -->
@@ -608,7 +608,7 @@
   </section>
 
   <!-- 主体 -->
-  <main class="page">
+  <main id="main-content" class="page" tabindex="-1">
     <!-- 卡片1：导入说明 -->
     <section class="card-block" id="cardNotes">
       <div class="card-block-head">
@@ -682,12 +682,12 @@
       </div>
       <div class="card-block-body">
         <div class="upload-zone" id="rewardUploadZone">
-          <div class="upload-icon">📄</div>
+          <div class="upload-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-document"></use></svg></div>
           <div class="upload-title">
             拖拽文件到此处，或<span class="tx-link">点击上传</span>
           </div>
           <div class="upload-tip">仅支持 .xlsx 文件，单次最多 5000 行，文件大小不超过 10MB</div>
-          <input type="file" id="rewardUploadInput" accept=".xlsx" hidden />
+          <input type="file" id="rewardUploadInput" accept=".xlsx" hidden  aria-label="上传奖励配置文件"/>
         </div>
 
         <div class="file-meta empty" id="rewardFileMeta">
@@ -774,7 +774,7 @@
   <aside class="drawer" id="fieldSpecDrawer" aria-hidden="true">
     <div class="drawer-head">
       字段说明
-      <button class="drawer-close" id="drawerCloseBtn" type="button">×</button>
+      <button class="drawer-close" id="drawerCloseBtn" type="button" aria-label="关闭任务详情">×</button>
     </div>
     <div class="drawer-body">
       <p class="muted" style="margin-bottom:10px;">以下字段与页面一致，导入模板列顺序请保持不变。</p>
@@ -1066,6 +1066,6 @@
     });
   </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+<script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>咸亨CRM客户关系管理系统</title>
+  <title>工作台首页 - CRM</title>
   <style>
     :root{
       --primary:#2583ed;
@@ -14,7 +14,7 @@
       --page:#f2f2f2;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;min-width:1180px;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;color:var(--text);background:#fff;font-size:14px}
+    html,body{margin:0;min-width:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;color:var(--text);background:#fff;font-size:14px}
     button,a{font:inherit}
     button:focus-visible,a:focus-visible{outline:2px solid rgba(37,131,237,.35);outline-offset:2px}
     .crm-topbar{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 10px;border-bottom:1px solid #e9ecef;background:#fff}
@@ -86,10 +86,27 @@
     .person-multiselect{position:relative;min-width:0}.person-select-trigger{width:100%;min-height:32px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:3px 9px;border:1px solid #d9d9d9;border-radius:3px;background:#fff;color:#454b54;text-align:left;cursor:pointer}.person-select-trigger:hover{border-color:#40a9ff}.person-select-trigger:focus-visible{outline:0;border-color:#1677ff;box-shadow:0 0 0 2px rgba(24,144,255,.15)}.person-select-values{min-width:0;display:flex;align-items:center;flex-wrap:wrap;gap:4px}.person-select-placeholder{color:#a3a8af}.person-select-arrow{color:#8c929a;flex:none}.person-select-menu{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;display:none;max-height:230px;overflow-y:auto;border:1px solid #d9d9d9;border-radius:3px;background:#fff;box-shadow:0 6px 18px rgba(31,54,90,.16)}.person-multiselect.open .person-select-menu{display:block}.person-select-option{min-height:36px;display:flex;align-items:center;gap:9px;padding:7px 10px;cursor:pointer}.person-select-option:hover{background:#f5f8ff}.person-select-option input{width:15px;height:15px;accent-color:#1677ff}.person-option-code{margin-left:auto;color:#8a9099;font-size:12px}.person-selected-tag{display:inline-flex;align-items:center;height:22px;padding:0 6px;border:1px solid #91caff;border-radius:2px;background:#e6f4ff;color:#1677ff;font-size:12px}
     @media(max-width:1500px){.crm-top-actions{gap:18px}.profile-panel{grid-template-columns:minmax(500px,1fr) minmax(560px,1fr)}}
     @media(max-width:1400px){.project-filter{grid-template-columns:auto 160px auto 180px auto 170px auto minmax(220px,1fr) auto}.detail-grid{column-gap:12px}.detail-field{grid-template-columns:105px minmax(0,1fr)}}
-    @media(prefers-reduced-motion:reduce){.menu-icon,.toast{transition:none}}
+    @media(max-width:1024px){
+      .crm-top-actions{gap:12px;font-size:14px}.profile-panel{height:auto;grid-template-columns:1fr}.profile-stats{border-top:1px solid var(--line)}
+      .shortcut-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.project-filter{grid-template-columns:auto minmax(140px,1fr) auto minmax(160px,1fr)}
+      .project-filter .filter-actions{grid-column:1/-1}.detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.project-table-wrap{overflow-x:auto}
+    }
+    @media(max-width:768px){
+      .crm-topbar{height:auto;min-height:48px;align-items:flex-start;gap:8px;padding:8px 12px}.crm-brand{font-size:17px}.crm-top-actions{overflow-x:auto;max-width:58vw;min-height:36px}
+      .crm-tabbar{overflow-x:auto}.crm-home,.crm-tab,.crm-tab-close{min-height:44px}.crm-workspace{padding:10px 10px 56px}
+      .profile-main{padding:18px 14px}.profile-avatar{width:72px;height:72px;flex-basis:72px}.profile-avatar::before{left:26px;top:15px}.profile-avatar::after{left:17px;bottom:14px;width:39px;height:26px}
+      .profile-copy{margin-left:12px}.profile-copy h1{font-size:18px}.profile-copy p{white-space:normal}.shortcut-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .project-filter,.detail-grid{grid-template-columns:1fr}.project-filter label,.detail-field label{text-align:left}.detail-field{grid-template-columns:1fr;gap:4px}.project-toolbar{align-items:flex-start;gap:10px;flex-wrap:wrap}.project-toolbar-right{overflow-x:auto;max-width:100%}
+      button,.crm-btn,.toolbar-link{min-height:44px}.toast{max-width:calc(100vw - 24px)}
+    }
+    @media(max-width:420px){.shortcut-grid{grid-template-columns:1fr}.crm-top-actions a:not(:first-child),.crm-user-name{display:none}.profile-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
   </style>
+  <link rel="stylesheet" href="assets/css/prototype-tokens.css">
+  <link rel="stylesheet" href="assets/css/prototype-components.css">
 </head>
 <body>
+<a class="prototype-skip-link" href="#main-content">跳转到主内容</a>
   <header class="crm-topbar">
     <div class="crm-brand"><span class="crm-logo">CRM</span><span>咸亨CRM客户关系管理系统</span></div>
     <nav class="crm-top-actions" aria-label="系统工具">
@@ -108,7 +125,7 @@
     <button class="crm-tab-close" type="button" aria-label="关闭当前页签" title="关闭当前页签" onclick="showToast('关闭当前页签（原型）')">⊗</button>
   </nav>
 
-  <main class="crm-workspace">
+  <main id="main-content" class="crm-workspace">
     <div class="crm-view" id="dashboardView">
     <section class="profile-panel" aria-label="销售个人概览">
       <div class="profile-main">
@@ -158,15 +175,15 @@
     <section class="crm-view project-list-view" id="projectListView" hidden aria-label="项目列表">
       <form class="project-filter" onsubmit="searchProjects(event)">
         <span class="project-filter-title">筛选</span>
-        <label class="project-filter-label" for="projectCodeFilter">CRM项目编号</label><input class="project-filter-control" id="projectCodeFilter" placeholder="请输入" autocomplete="off">
-        <label class="project-filter-label" for="projectNameFilter">项目全称</label><input class="project-filter-control" id="projectNameFilter" placeholder="请输入" autocomplete="off">
-        <label class="project-filter-label" for="biddingCodeFilter">招标编号</label><input class="project-filter-control" id="biddingCodeFilter" placeholder="请输入" autocomplete="off">
-        <label class="project-filter-label" for="projectStatusFilter">项目状态</label><select class="project-filter-control" id="projectStatusFilter"><option value="">请选择</option><option>中标</option><option>待开标</option></select>
+        <label class="project-filter-label" for="projectCodeFilter">CRM项目编号</label><input aria-label="CRM项目编号" class="project-filter-control" id="projectCodeFilter" placeholder="请输入" autocomplete="off">
+        <label class="project-filter-label" for="projectNameFilter">项目全称</label><input aria-label="项目全称" class="project-filter-control" id="projectNameFilter" placeholder="请输入" autocomplete="off">
+        <label class="project-filter-label" for="biddingCodeFilter">招标编号</label><input aria-label="招标编号" class="project-filter-control" id="biddingCodeFilter" placeholder="请输入" autocomplete="off">
+        <label class="project-filter-label" for="projectStatusFilter">项目状态</label><select aria-label="项目状态" class="project-filter-control" id="projectStatusFilter"><option value="">请选择</option><option>中标</option><option>待开标</option></select>
         <div class="project-filter-actions"><button class="crm-btn primary" type="submit">查询</button><button class="crm-btn" type="button" onclick="resetProjectFilters()">重置</button><button class="crm-btn" type="button" aria-label="展开筛选" title="展开筛选" onclick="showToast('暂无更多筛选条件')">⌄</button></div>
       </form>
-      <div class="project-toolbar"><div class="project-toolbar-left"><span class="toolbar-label">操作：</span><button class="toolbar-link" type="button" onclick="resetProjectFilters()">刷新</button></div><div class="project-toolbar-right"><button class="crm-btn small" type="button">新 增</button><button class="crm-btn small" type="button">导入⌄</button><button class="crm-btn small" type="button">下载模板⌄</button><button class="crm-btn small" type="button">导 出</button><button class="toolbar-link" type="button" aria-label="表格列设置" title="表格列设置">☷</button></div></div>
+      <div class="project-toolbar"><div class="project-toolbar-left"><span class="toolbar-label">操作：</span><button class="toolbar-link" type="button" onclick="resetProjectFilters()">刷新</button></div><div class="project-toolbar-right"><button class="crm-btn small" type="button">新 增</button><button class="crm-btn small" type="button">导入⌄</button><button class="crm-btn small" type="button">下载模板⌄</button><button class="crm-btn small" type="button">导 出</button><button class="toolbar-link" type="button" aria-label="表格列设置" title="表格列设置"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-settings"></use></svg></button></div></div>
       <div class="project-table-shell"><table class="project-table" aria-label="项目管理列表"><thead><tr><th class="check-col"><input type="checkbox" aria-label="全选项目"></th><th class="code-col">CRM项目编号</th><th class="name-col">项目全称</th><th class="medium-col">合同归档号</th><th class="medium-col">招标编号</th><th class="medium-col">项目状态</th><th class="wide-col">创建组织</th><th class="wide-col">授权组织</th><th class="wide-col">中标公司</th><th class="wide-col">履约公司</th><th class="wide-col">合作履约公司</th><th class="date-col">创建时间</th><th class="date-col">审核时间</th><th class="medium-col">合同附件</th><th class="medium-col">使用履约平台</th><th class="medium-col">项目大类</th><th class="medium-col">项目缩写</th><th class="date-col">服务开始日期</th><th class="date-col">服务结束日期</th><th class="medium-col">是否代开</th><th class="medium-col">平台对接模式</th><th class="wide-col">平台名称</th><th class="medium-col">销售分工</th><th class="medium-col">操作</th></tr></thead><tbody id="projectTableBody"></tbody></table></div>
-      <div class="project-pager"><span>已选：<b class="selected-count">0条数据</b></span><div class="pager-actions"><span>共107条数据</span><span class="page-chip active">1</span><span class="page-chip">2</span><span class="page-chip">3</span><span class="page-chip">4</span><span>›</span><select class="page-size"><option>30 条/页</option></select><span>跳至</span><input class="page-jump" aria-label="跳转页码"><span>页</span></div></div>
+      <div class="project-pager"><span>已选：<b class="selected-count">0条数据</b></span><div class="pager-actions"><span>共107条数据</span><span class="page-chip active">1</span><span class="page-chip">2</span><span class="page-chip">3</span><span class="page-chip">4</span><span>›</span><select aria-label="每页条数" class="page-size"><option>30 条/页</option></select><span>跳至</span><input class="page-jump" aria-label="跳转页码"><span>页</span></div></div>
     </section>
 
     <section class="crm-view project-detail-view" id="projectDetailView" hidden aria-label="项目详情">
@@ -248,12 +265,12 @@
     function searchProjects(event){event?.preventDefault();const code=document.getElementById('projectCodeFilter').value.trim().toLowerCase(),name=document.getElementById('projectNameFilter').value.trim().toLowerCase(),bidding=document.getElementById('biddingCodeFilter').value.trim().toLowerCase(),status=document.getElementById('projectStatusFilter').value;renderProjects(projectRows.filter(row=>(!code||row.code.toLowerCase().includes(code))&&(!name||row.name.toLowerCase().includes(name))&&(!bidding||row.bidding.toLowerCase().includes(bidding))&&(!status||row.status===status)))}
     function resetProjectFilters(){document.getElementById('projectCodeFilter').value='';document.getElementById('projectNameFilter').value='';document.getElementById('biddingCodeFilter').value='';document.getElementById('projectStatusFilter').value='';renderProjects(projectRows)}
     function openProjectMaterialPool(){
-      window.open('MPM-物料对接-项目物料池-销售员工作台.html','_blank','noopener');
+      window.open('MPM-物料对接-项目商品池-销售员工作台.html','_blank','noopener');
     }
     function renderProjectSalesOptions(){
       const menu=document.getElementById('projectSalesMenu');
       if(!menu)return;
-      menu.innerHTML=projectSalesPeople.map(person=>`<label class="person-select-option"><input type="checkbox" value="${escapeCrmHtml(person.code)}" ${selectedProjectSales.has(person.code)?'checked':''} onchange="toggleProjectSalesPerson('${person.code}',this.checked)"><span>${escapeCrmHtml(person.name)}</span><span class="person-option-code">${escapeCrmHtml(person.code)}</span></label>`).join('');
+      menu.innerHTML=projectSalesPeople.map(person=>`<label class="person-select-option"><input aria-label="${escapeCrmHtml(person.name)} ${escapeCrmHtml(person.code)}" type="checkbox" value="${escapeCrmHtml(person.code)}" ${selectedProjectSales.has(person.code)?'checked':''} onchange="toggleProjectSalesPerson('${person.code}',this.checked)"><span>${escapeCrmHtml(person.name)}</span><span class="person-option-code">${escapeCrmHtml(person.code)}</span></label>`).join('');
     }
     function renderProjectSalesValues(){
       const values=document.getElementById('projectSalesValues');
@@ -294,5 +311,6 @@
     renderProjectSalesValues();
     renderProjects(projectRows);
   </script>
+<script src="assets/js/prototype-common.js"></script>
 </body>
 </html>

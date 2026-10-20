@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>配置数据新增/编辑</title>
+  <title>关系设置-数据配置表-新增编辑 - MPM物料主数据系统</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{min-width:1280px;background:#f3f6fa;color:#252525;font:13px/1.5 Arial,"Microsoft YaHei",sans-serif}
+    body{min-width: 0;background:#f3f6fa;color:#252525;font:13px/1.5 Arial,"Microsoft YaHei",sans-serif}
     button,input,select{font:inherit}
     .top-actions{height:42px;background:#fff;border-bottom:1px solid #e6e9ef;display:flex;align-items:center;gap:16px;padding:0 22px;position:sticky;top:0;z-index:30}
     .top-link{border:0;background:transparent;color:#2468f2;cursor:pointer;padding:4px 0}
@@ -63,20 +63,20 @@
     .toast.show{opacity:1;transform:translate(-50%,0)}
     @media(max-width:1500px){.data-grid{grid-template-columns:repeat(2,minmax(300px,1fr))}}
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
   <div class="top-actions">
     <button class="top-link" id="saveBtn" type="button">保存</button>
     <button class="top-link" id="closeBtn" type="button">关闭</button>
     <span class="page-title" id="pageModeTitle">新增配置数据</span>
   </div>
-  <main class="page">
+  <main id="main-content" class="page" tabindex="-1">
     <section class="section">
       <div class="section-title">配置规则</div>
       <div class="section-body">
         <div class="rule-row">
           <label class="label required">名称</label>
-          <input class="text-input" id="configName" placeholder="请输入" />
+          <input class="text-input" id="configName" placeholder="请输入"  aria-label="配置规则名称"/>
         </div>
         <div class="rule-row">
           <label class="label required">设置类型</label>
@@ -107,7 +107,7 @@
             <div>
               <div class="category-head"><b>共计<span id="categoryCount">0</span>个</b><span class="category-clear" id="clearCategories">清空</span></div>
               <div class="category-box">
-                <div class="category-search"><input id="categorySearch" placeholder="输入实现搜索" /><button type="button">⌕</button></div>
+                <div class="category-search"><input id="categorySearch" placeholder="输入实现搜索"  aria-label="搜索类目"/><button type="button" aria-label="搜索类目">⌕</button></div>
                 <div class="category-list" id="categoryList"></div>
               </div>
             </div>
@@ -150,7 +150,7 @@
       list.innerHTML='';
       categories.filter(item=>item.includes(filter.trim())).forEach((item,index)=>{
         const row=document.createElement('div');row.className='category-item';
-        row.innerHTML=`<button class="category-arrow" type="button">▶</button><input class="category-checkbox" type="checkbox" value="${item}"><b>|${item}</b>`;
+        row.innerHTML=`<button class="category-arrow" type="button" aria-label="展开类目 ${item}">+</button><input class="category-checkbox" type="checkbox" value="${item}"><b>|${item}</b>`;
         const child=document.createElement('div');child.className='category-item category-child';child.textContent=`${item.split('|')[0]}01 示例四级类目`;
         row.querySelector('.category-arrow').onclick=()=>child.classList.toggle('open');
         row.querySelector('.category-checkbox').onchange=updateCategoryCount;
@@ -193,7 +193,7 @@
         checked.forEach(input=>{
           const option=tagOptions.find(item=>item.value===input.value);
           const tag=document.createElement('span');tag.className='multi-tag';tag.dataset.value=input.value;
-          tag.innerHTML=`${option.label}<button type="button">×</button>`;
+          tag.innerHTML=`${option.label}<button type="button" aria-label="移除${option.label}">×</button>`;
           tag.querySelector('button').onclick=event=>{event.stopPropagation();input.checked=false;render()};
           control.insertBefore(tag,root.querySelector('.multi-caret'));
         });
@@ -256,5 +256,5 @@
     appendOwner(mode==='edit');
     updateConditionVisibility();
   </script>
-</body>
+<script src="assets/js/prototype-common.js" defer></script></body>
 </html>

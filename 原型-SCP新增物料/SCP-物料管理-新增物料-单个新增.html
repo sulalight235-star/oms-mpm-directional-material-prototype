@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>新增物料 · 咸亨国际供应商协同平台（SCP）</title>
+<title>物料管理-新增物料-单个新增 - SCP</title>
 <style>
   :root{
     --primary:#1677ff; --primary-hover:#4096ff; --primary-active:#0958d9;
@@ -499,54 +499,66 @@
     .preaudit-panel-body{padding:18px 16px;}
   }
 </style>
+  <link rel="stylesheet" href="../assets/css/prototype-tokens.css">
+  <link rel="stylesheet" href="../assets/css/prototype-components.css">
+<style data-prototype-responsive>
+html,body{max-width:100%;overflow-x:hidden}
+.prototype-icon{width:1em;height:1em;display:inline-block;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.table-wrap,.project-table-wrap,.asset-table-wrap{max-width:100%;overflow:auto}
+@media(max-width:1024px){.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}.tree-layout{grid-template-columns:220px minmax(0,1fr)!important}.filter-row,.toolbar,.toolbar-left{flex-wrap:wrap}}
+@media(max-width:768px){.top,.topbar{position:sticky!important;top:0!important;min-height:48px;height:auto!important;overflow:hidden}.brand{min-width:0;font-size:14px!important;padding:0 10px}.top-right,.topbar .right{max-width:55vw;overflow-x:auto}.top-right>span:not(:last-child),.topbar .right>.item:not(:first-child):not(:last-child){display:none!important}.layout{height:auto!important;min-height:calc(100dvh - 48px);padding-top:0!important;display:block!important}.side,.sider{display:none!important}.main{margin-left:0!important;width:100%!important;height:auto!important;min-height:calc(100dvh - 48px)}.tabs,.tabbar{overflow-x:auto;white-space:nowrap}.page,.content,.main-content{padding:12px!important;overflow:auto}.filter-row,.toolbar,.toolbar-left,.toolbar-right,.pager,.asset-head,.radio-line,.check-line{align-items:flex-start;flex-wrap:wrap}.input,.select{min-width:0!important;max-width:100%}.btn,button,.nav-row,.nav-item,.tab{min-height:44px}.form-grid,.summary,.detail-grid,.pool-filter-more{grid-template-columns:1fr!important}.field,.detail-field{grid-template-columns:1fr!important}.field label,.detail-field label{text-align:left!important}.tree-layout{grid-template-columns:1fr!important}.tree{max-height:240px}.table,.asset-table{min-width:760px}.pic-row{flex-wrap:wrap}.text-area,.field .wide{grid-column:span 1!important}.modal,.tax-modal{width:calc(100vw - 12px)!important;max-width:calc(100vw - 12px)!important}.scp-demo-tips{max-width:calc(100vw - 24px)!important}}
+@media(max-width:420px){.top-right,.topbar .right{max-width:48vw}.summary{gap:10px!important}.qual-list{grid-template-columns:1fr}.dashed-add{max-width:100%}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
 </head>
 <body>
+<a class="prototype-skip-link" href="#main-content">跳转到主内容</a>
   <!-- 顶部条 -->
   <div class="topbar">
     <div class="brand">咸亨国际供应商协同平台（SCP）</div>
     <div class="right">
-      <div class="item" onclick="go('../index.html')" title="返回原型门户">🔄 切换系统</div>
+      <div role="button" tabindex="0" class="item" onclick="go('../index.html')" title="返回原型门户"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-link"></use></svg> 切换系统</div>
       <div class="item">更新通知</div>
-      <div class="item"><span class="icon">🔔<span class="dot"></span></span></div>
-      <div class="item"><span class="icon">📋<span class="dot"></span></span></div>
+      <div class="item"><span class="icon"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-bell"></use></svg><span class="dot"></span></span></div>
+      <div class="item"><span class="icon"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-document"></use></svg><span class="dot"></span></span></div>
       <div class="item">黄战领 ▾</div>
-      <div class="clear" onclick="toast('已清除当前会话标签','info')">清除</div>
+      <div role="button" tabindex="0" class="clear" onclick="toast('已清除当前会话标签','info')">清除</div>
     </div>
   </div>
 
   <div class="layout">
     <!-- 左侧导航 -->
     <aside class="sider">
-      <div class="nav-item" onclick="toast('原型仅演示物料管理相关页面','info')"><span class="ic">🏠</span>工作台</div>
-      <div class="nav-item" onclick="toast('原型仅演示物料管理相关页面','info')"><span class="ic">📢</span>咸亨公告</div>
-      <div class="nav-item group" onclick="toggleGroup(this)"><span class="ic">👤</span>基本信息<span class="chev">▾</span></div>
-      <div class="nav-item group open" onclick="toggleGroup(this)"><span class="ic">✉️</span>物料管理<span class="chev">▾</span></div>
+      <a class="nav-item proto-workbench-link" data-workbench-link href="SCP-工作台-首页.html"><span class="ic"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-home"></use></svg></span>工作台</a>
+      <div role="button" tabindex="0" class="nav-item" onclick="toast('原型仅演示物料管理相关页面','info')"><span class="ic"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-bell"></use></svg></span>咸亨公告</div>
+      <div role="button" tabindex="0" class="nav-item group" onclick="toggleGroup(this)"><span class="ic"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-user"></use></svg></span>基本信息<span class="chev">▾</span></div>
+      <div role="button" tabindex="0" class="nav-item group open" onclick="toggleGroup(this)"><span class="ic"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-document"></use></svg></span>物料管理<span class="chev">▾</span></div>
       <div class="sub open">
-        <div class="nav-item" onclick="go('SCP-项目物料提报管理-项目物料列表.html')">项目物料提报管理</div>
-        <div class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">项目物料</div>
-        <div class="nav-item" onclick="go('SCP-物料管理-我的物料.html')">我的物料</div>
-        <div class="nav-item active" onclick="go('SCP-物料管理-新增物料-单个新增.html')">新增物料</div>
-        <div class="nav-item" onclick="go('SCP-物料管理-新增物料-批量新增.html')">批量新增</div>
-        <div class="nav-item" onclick="go('SCP-物料管理-待提交物料.html')">待提交物料</div>
-        <div class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">我新增的品牌</div>
-        <div class="nav-item" onclick="go('SCP-物料管理-我的申请.html')">我的申请</div>
+        <div role="button" tabindex="0" class="nav-item" onclick="go('SCP-项目物料提报管理-项目物料列表.html')">项目物料提报管理</div>
+        <div role="button" tabindex="0" class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">项目物料</div>
+        <div role="button" tabindex="0" class="nav-item" onclick="go('SCP-物料管理-我的物料.html')">我的物料</div>
+        <div role="button" tabindex="0" class="nav-item active" onclick="go('SCP-物料管理-新增物料-单个新增.html')">新增物料</div>
+        <div role="button" tabindex="0" class="nav-item" onclick="go('SCP-物料管理-新增物料-批量新增.html')">批量新增</div>
+        <div role="button" tabindex="0" class="nav-item" onclick="go('SCP-物料管理-待提交物料.html')">待提交物料</div>
+        <div role="button" tabindex="0" class="nav-item" onclick="toast('原型仅演示新增/批量新增','info')">我新增的品牌</div>
+        <div role="button" tabindex="0" class="nav-item" onclick="go('SCP-物料管理-我的申请.html')">我的申请</div>
       </div>
-      <div class="nav-item group" onclick="toggleGroup(this)"><span class="ic">📄</span>订单管理<span class="chev">▾</span></div>
-      <div class="nav-item group" onclick="toggleGroup(this)"><span class="ic">👤</span>客户开票<span class="chev">▾</span></div>
+      <div role="button" tabindex="0" class="nav-item group" onclick="toggleGroup(this)"><span class="ic"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-document"></use></svg></span>订单管理<span class="chev">▾</span></div>
+      <div role="button" tabindex="0" class="nav-item group" onclick="toggleGroup(this)"><span class="ic"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-user"></use></svg></span>客户开票<span class="chev">▾</span></div>
     </aside>
 
-    <main class="main">
+    <main id="main-content" class="main">
       <div class="tabbar">
-        <div class="tab plain" onclick="toast('原型仅演示新增/批量新增','info')">工作台</div>
-        <div class="tab active">新增物料 <span class="x" onclick="event.stopPropagation();toast('原型页，关闭无效','info')">✕</span></div>
-        <div class="tab" onclick="go('SCP-物料管理-新增物料-批量新增.html')">批量新增 <span class="x">✕</span></div>
-        <div class="tab" onclick="toast('原型仅演示新增/批量新增','info')">任务中心 <span class="x">✕</span></div>
+        <a class="tab plain" href="SCP-工作台-首页.html">工作台</a>
+        <div class="tab active">新增物料 <span role="button" tabindex="0" class="x" onclick="event.stopPropagation();toast('原型页，关闭无效','info')">✕</span></div>
+        <div role="button" tabindex="0" class="tab" onclick="go('SCP-物料管理-新增物料-批量新增.html')">批量新增 <span class="x">✕</span></div>
+        <div role="button" tabindex="0" class="tab" onclick="toast('原型仅演示新增/批量新增','info')">任务中心 <span class="x">✕</span></div>
       </div>
       <div class="actionbar">
-        <span id="smartEntryAct" class="act act-strong" onclick="toggleCreateMode()">智能新增物料</span>
-        <span class="act" onclick="save()">保存</span>
-        <span class="act" onclick="submitForm()">提交</span>
-        <span class="act" onclick="toast('已关闭（原型）','info')">关闭</span>
+        <span role="button" tabindex="0" id="smartEntryAct" class="act act-strong" onclick="toggleCreateMode()">智能新增物料</span>
+        <span role="button" tabindex="0" class="act" onclick="save()">保存</span>
+        <span role="button" tabindex="0" class="act" onclick="submitForm()">提交</span>
+        <span role="button" tabindex="0" class="act" onclick="toast('已关闭（原型）','info')">关闭</span>
       </div>
 
       <div class="content">
@@ -607,7 +619,7 @@
                       </span>
                     </div>
                     <div class="smart-card-body">
-                      <textarea id="smartMaterialText" class="smart-textarea" placeholder="请输入物料名称、品牌、型号、规格、用途等信息。支持多个物料数据新增，一行一个物料，例如：&#10;3M 防尘口罩 9501+ KN95 白色 头戴式&#10;公牛插座 GN-B3440 8位 3米 白色"></textarea>
+                      <textarea aria-label="智能解析物料描述" id="smartMaterialText" class="smart-textarea" placeholder="请输入物料名称、品牌、型号、规格、用途等信息。支持多个物料数据新增，一行一个物料，例如：&#10;3M 防尘口罩 9501+ KN95 白色 头戴式&#10;公牛插座 GN-B3440 8位 3米 白色"></textarea>
                       <div class="smart-note">点击提交后，系统提示提交成功，并从右向左滑动进入第二步识别结果。若传统字段已有值，不允许静默覆盖。</div>
                     </div>
                   </div>
@@ -645,33 +657,33 @@
                           </thead>
                           <tbody>
                             <tr data-parse-row="1">
-                              <td><input class="parse-edit-input" value="防尘口罩"></td>
-                              <td><input class="parse-edit-input" list="brandLibraryOptions" value="3M" placeholder="输入关键词搜索品牌库"></td>
-                              <td><input class="parse-edit-input" list="categoryLibraryOptions" value="呼吸防护用品" placeholder="输入关键词搜索类目库"></td>
-                              <td><input class="parse-edit-input" value="9501+"></td>
-                              <td><input class="parse-edit-input" value="KN95 / 白色 / 头戴式 / 无呼吸阀"></td>
-                              <td><input class="parse-edit-input" value="12.80"></td>
-                              <td><textarea class="parse-edit-area">3M 防尘口罩 KN95 / 白色 / 头戴式 / 无呼吸阀 9501+</textarea></td>
+                              <td><input aria-label="名称" class="parse-edit-input" value="防尘口罩"></td>
+                              <td><input aria-label="推荐品牌" class="parse-edit-input" list="brandLibraryOptions" value="3M" placeholder="输入关键词搜索品牌库"></td>
+                              <td><input aria-label="推荐类目" class="parse-edit-input" list="categoryLibraryOptions" value="呼吸防护用品" placeholder="输入关键词搜索类目库"></td>
+                              <td><input aria-label="型号" class="parse-edit-input" value="9501+"></td>
+                              <td><input aria-label="规格" class="parse-edit-input" value="KN95 / 白色 / 头戴式 / 无呼吸阀"></td>
+                              <td><input aria-label="市场价" class="parse-edit-input" value="12.80"></td>
+                              <td><textarea aria-label="描述" class="parse-edit-area">3M 防尘口罩 KN95 / 白色 / 头戴式 / 无呼吸阀 9501+</textarea></td>
                               <td>
                                 <span class="recommend-code-cell">
                                   <span class="recommend-code">B0401025928</span>
-                                  <span class="more-link" onclick="openRecommendDrawer(1)">【更多】</span>
+                                  <span role="button" tabindex="0" class="more-link" onclick="openRecommendDrawer(1)">【更多】</span>
                                 </span>
                               </td>
                               <td><span class="recommend-score">92%</span></td>
                             </tr>
                             <tr data-parse-row="2">
-                              <td><input class="parse-edit-input" value="插座"></td>
-                              <td><input class="parse-edit-input" list="brandLibraryOptions" value="公牛" placeholder="输入关键词搜索品牌库"></td>
-                              <td><input class="parse-edit-input" list="categoryLibraryOptions" value="插座/排插" placeholder="输入关键词搜索类目库"></td>
-                              <td><input class="parse-edit-input" value="GN-B3440"></td>
-                              <td><input class="parse-edit-input" value="8位 / 3米 / 白色 / 总控开关"></td>
-                              <td><input class="parse-edit-input" value="68.00"></td>
-                              <td><textarea class="parse-edit-area">公牛 插座 8位 / 3米 / 白色 / 总控开关 GN-B3440</textarea></td>
+                              <td><input aria-label="名称" class="parse-edit-input" value="插座"></td>
+                              <td><input aria-label="推荐品牌" class="parse-edit-input" list="brandLibraryOptions" value="公牛" placeholder="输入关键词搜索品牌库"></td>
+                              <td><input aria-label="推荐类目" class="parse-edit-input" list="categoryLibraryOptions" value="插座/排插" placeholder="输入关键词搜索类目库"></td>
+                              <td><input aria-label="型号" class="parse-edit-input" value="GN-B3440"></td>
+                              <td><input aria-label="规格" class="parse-edit-input" value="8位 / 3米 / 白色 / 总控开关"></td>
+                              <td><input aria-label="市场价" class="parse-edit-input" value="68.00"></td>
+                              <td><textarea aria-label="描述" class="parse-edit-area">公牛 插座 8位 / 3米 / 白色 / 总控开关 GN-B3440</textarea></td>
                               <td>
                                 <span class="recommend-code-cell">
                                   <span class="recommend-code">B0803012048</span>
-                                  <span class="more-link" onclick="openRecommendDrawer(2)">【更多】</span>
+                                  <span role="button" tabindex="0" class="more-link" onclick="openRecommendDrawer(2)">【更多】</span>
                                 </span>
                               </td>
                               <td><span class="recommend-score">89%</span></td>
@@ -728,25 +740,25 @@
                             <tr data-supply-row="1">
                               <td>防尘口罩</td>
                               <td data-supply-code="1">B0401025928</td>
-                              <td><input class="supplier-input" data-supply-field="supplier" value="杭州劳保用品有限公司"></td>
-                              <td><input class="supplier-input" data-supply-field="price" value="9.80"></td>
-                              <td><select class="supplier-input" data-supply-field="feeType"><option>包装费</option><option>检测费</option><option>安装费</option></select></td>
-                              <td><input class="supplier-input" data-supply-field="feeAmount" value="0.30"></td>
-                              <td><select class="supplier-input" data-supply-field="negotiable"><option>是</option><option selected>否</option></select></td>
-                              <td><select class="supplier-input" data-supply-field="scope"><option>全国</option><option>华东</option><option>指定项目</option></select></td>
-                              <td><input class="supplier-input" data-supply-field="stock" value="5000"></td>
+                              <td><input aria-label="供应商" class="supplier-input" data-supply-field="supplier" value="杭州劳保用品有限公司"></td>
+                              <td><input aria-label="供货价" class="supplier-input" data-supply-field="price" value="9.80"></td>
+                              <td><select aria-label="费用类型" class="supplier-input" data-supply-field="feeType"><option>包装费</option><option>检测费</option><option>安装费</option></select></td>
+                              <td><input aria-label="费用金额" class="supplier-input" data-supply-field="feeAmount" value="0.30"></td>
+                              <td><select aria-label="是否可议价" class="supplier-input" data-supply-field="negotiable"><option>是</option><option selected>否</option></select></td>
+                              <td><select aria-label="供货范围" class="supplier-input" data-supply-field="scope"><option>全国</option><option>华东</option><option>指定项目</option></select></td>
+                              <td><input aria-label="库存数量" class="supplier-input" data-supply-field="stock" value="5000"></td>
                               <td><span class="supplier-status done" data-supply-state="1">已维护</span></td>
                             </tr>
                             <tr data-supply-row="2">
                               <td>插座</td>
                               <td data-supply-code="2">B0803012048</td>
-                              <td><input class="supplier-input" data-supply-field="supplier" value="宁波电工渠道商"></td>
-                              <td><input class="supplier-input" data-supply-field="price" value="58.00"></td>
-                              <td><select class="supplier-input" data-supply-field="feeType"><option>包装费</option><option selected>检测费</option><option>安装费</option></select></td>
-                              <td><input class="supplier-input" data-supply-field="feeAmount" value=""></td>
-                              <td><select class="supplier-input" data-supply-field="negotiable"><option selected>是</option><option>否</option></select></td>
-                              <td><select class="supplier-input" data-supply-field="scope"><option>全国</option><option selected>华东</option><option>指定项目</option></select></td>
-                              <td><input class="supplier-input" data-supply-field="stock" value="120"></td>
+                              <td><input aria-label="供应商" class="supplier-input" data-supply-field="supplier" value="宁波电工渠道商"></td>
+                              <td><input aria-label="供货价" class="supplier-input" data-supply-field="price" value="58.00"></td>
+                              <td><select aria-label="费用类型" class="supplier-input" data-supply-field="feeType"><option>包装费</option><option selected>检测费</option><option>安装费</option></select></td>
+                              <td><input aria-label="费用金额" class="supplier-input" data-supply-field="feeAmount" value=""></td>
+                              <td><select aria-label="是否可议价" class="supplier-input" data-supply-field="negotiable"><option selected>是</option><option>否</option></select></td>
+                              <td><select aria-label="供货范围" class="supplier-input" data-supply-field="scope"><option>全国</option><option selected>华东</option><option>指定项目</option></select></td>
+                              <td><input aria-label="库存数量" class="supplier-input" data-supply-field="stock" value="120"></td>
                               <td><span class="supplier-status done" data-supply-state="2">已维护</span></td>
                             </tr>
                           </tbody>
@@ -814,103 +826,103 @@
           <div>
             <div class="title">操作流程</div>
             <div class="step">第一步：新增物料前，请先维护好您的品牌信息</div>
-            <div class="step">第二步：填写好物料信息，并提交审核 <span class="link" onclick="toast('打开填写说明（原型）','info')">查看填写说明</span></div>
+            <div class="step">第二步：填写好物料信息，并提交审核 <span role="button" tabindex="0" class="link" onclick="toast('打开填写说明（原型）','info')">查看填写说明</span></div>
             <div class="step">第三步：咸亨管理员审核通过后，物料生效。如果你的申请被驳回了，请前往【我的申请】重新提交</div>
           </div>
         </div>
 
         <!-- 物料类型 -->
-        <div class="mtype-row"><span class="req">*</span>物料类型 <label class="radio"><input type="radio" name="mtype" checked> 电商供应商物料</label></div>
+        <div class="mtype-row"><span class="req">*</span>物料类型 <label class="radio"><input aria-label="电商供应商物料" type="radio" name="mtype" checked> 电商供应商物料</label></div>
 
         <!-- 主要信息 -->
         <div class="section">
           <div class="section-head">
             <div class="section-title">主要信息</div>
-            <div class="hot" onclick="toast('快捷拾取：从历史物料拾取信息（原型）','info')">🔥 快捷拾取</div>
+            <div role="button" tabindex="0" class="hot" onclick="toast('快捷拾取：从历史物料拾取信息（原型）','info')"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-download"></use></svg> 快捷拾取</div>
           </div>
           <div class="grid3">
             <div class="field">
               <div class="flabel">编码</div>
-              <input class="input" value="SRMHZS410406995" readonly>
+              <input aria-label="编码" class="input" value="SRMHZS410406995" readonly>
             </div>
             <div class="field">
               <div class="flabel"><span class="req">*</span>品牌</div>
-              <input class="input req-f" data-name="品牌" placeholder="请输入">
+              <input aria-label="品牌" class="input req-f" data-name="品牌" placeholder="请输入">
             </div>
             <div class="field">
               <div class="flabel"><span class="req">*</span>名称</div>
-              <input class="input req-f" data-name="名称" placeholder="请输入">
+              <input aria-label="名称" class="input req-f" data-name="名称" placeholder="请输入">
               <div class="fhint">以名词结尾；描述性词语放描述中；不能过长。</div>
             </div>
 
             <div class="field">
               <div class="flabel"><span class="req">*</span>型号</div>
-              <input class="input req-f" data-name="型号" placeholder="请输入">
+              <input aria-label="型号" class="input req-f" data-name="型号" placeholder="请输入">
               <div class="fhint">无型号可填规格，都无填 /（不能写通用、常规）</div>
             </div>
             <div class="field">
               <div class="flabel"><span class="req">*</span>基本单位</div>
-              <input class="input req-f" data-name="基本单位" placeholder="请输入">
+              <input aria-label="基本单位" class="input req-f" data-name="基本单位" placeholder="请输入">
               <div class="fhint red">审核后无法修改，请确认！</div>
             </div>
             <div class="field" id="categoryFormItem">
               <div class="flabel"><span class="req">*</span>类目</div>
               <div class="category-picker">
-                <input class="input req-f" id="catInput" data-name="类目" placeholder="请选择四级类目" readonly onclick="openCategoryModal()" title="点击选择四级类目">
+                <input aria-label="类目" class="input req-f" id="catInput" data-name="类目" placeholder="请选择四级类目" readonly onclick="openCategoryModal()" title="点击选择四级类目">
                 <button class="ai-category-btn" type="button" onclick="showInlineCategorySuggestion(event)">AI建议</button>
               </div>
             </div>
 
             <div class="field">
               <div class="flabel"><span class="req">*</span>毛重</div>
-              <div class="unit"><input class="req-f" data-name="毛重" placeholder="请输入"><span class="u">kg</span></div>
+              <div class="unit"><input aria-label="毛重" class="req-f" data-name="毛重" placeholder="请输入"><span class="u">kg</span></div>
             </div>
             <div class="field">
               <div class="flabel"><span class="req">*</span>市场价</div>
-              <div class="unit"><input class="req-f" id="marketPriceInput" data-name="市场价" placeholder="请输入"><span class="u">元</span></div>
+              <div class="unit"><input aria-label="市场价" class="req-f" id="marketPriceInput" data-name="市场价" placeholder="请输入"><span class="u">元</span></div>
             </div>
             <div class="field">
               <div class="flabel">参考供货价 <span data-tip="参考供货价用于平台比价，请填写含税价" style="color:#b0b6c0;cursor:help;">ⓘ</span></div>
-              <div class="unit"><input placeholder="请输入"><span class="u">元</span></div>
+              <div class="unit"><input aria-label="参考供货价" placeholder="请输入"><span class="u">元</span></div>
               <div class="fhint">请填写含税价</div>
             </div>
 
             <div class="field">
               <div class="flabel"><span class="req">*</span>起订量</div>
-              <input class="input req-f" data-name="起订量" placeholder="请输入">
+              <input aria-label="起订量" class="input req-f" data-name="起订量" placeholder="请输入">
             </div>
             <div class="field">
               <div class="flabel">是否倍数下单</div>
-              <div class="inline"><label class="check"><input type="checkbox"> 是否倍数下单</label></div>
+              <div class="inline"><label class="check"><input aria-label="是否倍数下单" type="checkbox"> 是否倍数下单</label></div>
             </div>
             <div class="field">
               <div class="flabel">含安装费</div>
               <div class="inline">
-                <label class="check"><input type="checkbox" name="install"> 含</label>
-                <label class="check"><input type="checkbox" name="install"> 不含</label>
+                <label class="check"><input aria-label="含" type="checkbox" name="install"> 含</label>
+                <label class="check"><input aria-label="不含" type="checkbox" name="install"> 不含</label>
               </div>
             </div>
 
             <div class="field">
               <div class="flabel">含检测费</div>
               <div class="inline" style="height:auto;flex-direction:column;align-items:flex-start;gap:6px;">
-                <label class="check"><input type="checkbox"> 不含检测费</label>
-                <label class="check"><input type="checkbox"> 含第三方检测费</label>
-                <label class="check"><input type="checkbox"> 含出厂检测费</label>
+                <label class="check"><input aria-label="不含检测费" type="checkbox"> 不含检测费</label>
+                <label class="check"><input aria-label="含第三方检测费" type="checkbox"> 含第三方检测费</label>
+                <label class="check"><input aria-label="含出厂检测费" type="checkbox"> 含出厂检测费</label>
               </div>
             </div>
             <div class="field">
               <div class="flabel"><span class="req">*</span>含运费</div>
               <div class="inline">
-                <label class="radio"><input type="radio" name="freight" checked> 含</label>
-                <label class="radio"><input type="radio" name="freight"> 不含</label>
+                <label class="radio"><input aria-label="含" type="radio" name="freight" checked> 含</label>
+                <label class="radio"><input aria-label="不含" type="radio" name="freight"> 不含</label>
               </div>
             </div>
             <div class="field"></div>
 
             <div class="field col3">
               <div class="flabel">描述</div>
-              <textarea class="input" placeholder="请输入"></textarea>
+              <textarea aria-label="描述" class="input" placeholder="请输入"></textarea>
               <div class="fhint">1、单位为大规格如包/箱时描述需注明规格个数；2、名称、型号、描述中的内容不允许重复；3、产品本身若有不同的颜色款式，需在描述中注明，且和主图的颜色或款式描述一致。</div>
             </div>
           </div>
@@ -922,56 +934,56 @@
           <div class="grid3">
             <div class="field">
               <div class="flabel">条形码</div>
-              <input class="input" placeholder="请输入">
+              <input aria-label="条形码" class="input" placeholder="请输入">
             </div>
             <div class="field">
               <div class="flabel">净重</div>
-              <div class="unit"><input placeholder="请输入"><span class="u">kg</span></div>
+              <div class="unit"><input aria-label="净重" placeholder="请输入"><span class="u">kg</span></div>
             </div>
             <div class="field">
               <div class="flabel"><span class="req">*</span>已停产</div>
               <div class="inline">
-                <label class="radio"><input type="radio" name="stop"> 是</label>
-                <label class="radio"><input type="radio" name="stop" checked> 否</label>
+                <label class="radio"><input aria-label="是" type="radio" name="stop"> 是</label>
+                <label class="radio"><input aria-label="否" type="radio" name="stop" checked> 否</label>
               </div>
             </div>
 
             <div class="field col2">
               <div class="flabel">尺寸 / 体积</div>
               <div class="inline" style="gap:8px;height:auto;">
-                <div class="unit" style="width:120px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">长</span><input placeholder="请输入"><span class="u">mm</span></div>
-                <div class="unit" style="width:120px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">宽</span><input placeholder="请输入"><span class="u">mm</span></div>
-                <div class="unit" style="width:120px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">高</span><input placeholder="请输入"><span class="u">mm</span></div>
-                <div class="unit" style="width:140px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">体积</span><input placeholder="请输入"><span class="u">mm³</span></div>
+                <div class="unit" style="width:120px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">长</span><input aria-label="长" placeholder="请输入"><span class="u">mm</span></div>
+                <div class="unit" style="width:120px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">宽</span><input aria-label="宽" placeholder="请输入"><span class="u">mm</span></div>
+                <div class="unit" style="width:120px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">高</span><input aria-label="高" placeholder="请输入"><span class="u">mm</span></div>
+                <div class="unit" style="width:140px;"><span class="u" style="border-left:none;border-right:1px solid var(--border);">体积</span><input aria-label="体积" placeholder="请输入"><span class="u">mm³</span></div>
               </div>
             </div>
             <div class="field">
               <div class="flabel">发货期 / 详询客服</div>
               <div class="inline" style="gap:12px;">
-                <div class="unit" style="width:120px;"><input placeholder="请输入"><span class="u">天</span></div>
-                <label class="check"><input type="checkbox" checked> 详询客服</label>
+                <div class="unit" style="width:120px;"><input aria-label="发货期" placeholder="请输入"><span class="u">天</span></div>
+                <label class="check"><input aria-label="详询客服" type="checkbox" checked> 详询客服</label>
               </div>
             </div>
 
             <div class="field col2">
               <div class="flabel">税收分类编码</div>
               <div class="with-btn">
-                <input class="input tax-code-trigger" id="taxCode" placeholder="点击选择税收分类编码" readonly role="button" aria-haspopup="dialog" title="点击选择税收分类编码" onclick="openTaxModal('search')" onkeydown="handleTaxCodeKeydown(event)">
+                <input aria-label="税收分类编码" class="input tax-code-trigger" id="taxCode" placeholder="点击选择税收分类编码" readonly role="button" aria-haspopup="dialog" title="点击选择税收分类编码" onclick="openTaxModal('search')" onkeydown="handleTaxCodeKeydown(event)">
                 <button class="mini-btn" type="button" onclick="smartTax()">智能赋码</button>
               </div>
             </div>
             <div class="field">
               <div class="flabel"><span class="req">*</span>税收分类名称</div>
-              <input class="input req-f tax-readonly" id="taxName" data-name="税收分类名称" placeholder="选择编码后自动带出" readonly aria-readonly="true">
+              <input aria-label="税收分类名称" class="input req-f tax-readonly" id="taxName" data-name="税收分类名称" placeholder="选择编码后自动带出" readonly aria-readonly="true">
             </div>
 
             <div class="field">
               <div class="flabel"><span class="req">*</span>简称</div>
-              <input class="input req-f tax-readonly" id="taxShort" data-name="简称" placeholder="选择编码后自动带出" readonly aria-readonly="true">
+              <input aria-label="简称" class="input req-f tax-readonly" id="taxShort" data-name="简称" placeholder="选择编码后自动带出" readonly aria-readonly="true">
             </div>
             <div class="field">
               <div class="flabel"><span class="req">*</span>税率</div>
-              <input class="input req-f tax-readonly" id="taxRate" data-name="税率" placeholder="选择编码后自动带出" readonly aria-readonly="true">
+              <input aria-label="税率" class="input req-f tax-readonly" id="taxRate" data-name="税率" placeholder="选择编码后自动带出" readonly aria-readonly="true">
             </div>
           </div>
         </div>
@@ -980,7 +992,7 @@
         <div class="section">
           <div class="section-head"><div class="section-title">关联项目信息 <span class="req-note">*请至少添加一个关联项目</span></div></div>
           <div class="project-picker" id="projectPicker">
-            <input class="req-f project-picker-input" id="projInput" data-name="关联项目" tabindex="-1" aria-hidden="true">
+            <input aria-label="关联项目" class="req-f project-picker-input" id="projInput" data-name="关联项目" tabindex="-1" aria-hidden="true">
             <div class="project-select" id="projectSelect" data-name="关联项目" role="combobox" aria-haspopup="listbox" aria-expanded="false" tabindex="0" onclick="toggleProjectMenu()" onkeydown="handleProjectSelectKeydown(event)">
               <span id="projectTags"><span class="project-placeholder">请选择关联项目</span></span>
               <span class="project-select-actions">
@@ -1002,15 +1014,15 @@
           <div class="grid3">
             <div class="field">
               <div class="flabel" style="color:var(--primary);cursor:help;" data-tip="平台项目「咸亨商城自营」要求：含锌量">含锌量</div>
-              <input class="input" placeholder="请输入">
+              <input aria-label="含锌量" class="input" placeholder="请输入">
             </div>
             <div class="field">
               <div class="flabel" style="color:var(--primary);cursor:help;" data-tip="平台项目「电工仪表专项」要求：防护等级">防护等级</div>
-              <input class="input" placeholder="请输入">
+              <input aria-label="防护等级" class="input" placeholder="请输入">
             </div>
             <div class="field">
               <div class="flabel">材质</div>
-              <input class="input" placeholder="请输入">
+              <input aria-label="材质" class="input" placeholder="请输入">
             </div>
           </div>
         </div>
@@ -1019,7 +1031,7 @@
         <div class="section">
           <div class="section-head">
             <div class="section-title">资料附件 <span class="sub-note">命中规则的必传资质需齐全；图片资质类型仅可选本期 12 类；单文件 ≤ 10MB</span></div>
-            <button class="sec-upload-btn" onclick="openQAUploadModal('')">📤 上传资质图片</button>
+            <button class="sec-upload-btn" onclick="openQAUploadModal('')"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-download"></use></svg> 上传资质图片</button>
           </div>
           <table class="qa-table" id="qaTable">
             <thead>
@@ -1036,7 +1048,7 @@
                 <td class="qa-file-name">CCC认证报告.pdf</td>
                 <td><a class="oss-link" href="https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/CCC_TEST_REPORT/CCC认证报告.pdf" target="_blank" rel="noopener">https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/CCC_TEST_REPORT/CCC认证报告.pdf</a></td>
                 <td>
-                  <span class="op danger" onclick="onQADeleteRow(this,'CCC_TEST_REPORT')">删除</span>
+                  <span role="button" tabindex="0" class="op danger" onclick="onQADeleteRow(this,'CCC_TEST_REPORT')">删除</span>
                 </td>
               </tr>
               <tr>
@@ -1044,13 +1056,13 @@
                 <td class="qa-file-name">LA标志证书.pdf</td>
                 <td><a class="oss-link" href="https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/LA/LA标志证书.pdf" target="_blank" rel="noopener">https://mpm-oss.xianheng.cn/mpm/qual/2026/05/SRMHZS410406995/LA/LA标志证书.pdf</a></td>
                 <td>
-                  <span class="op danger" onclick="onQADeleteRow(this,'LA')">删除</span>
+                  <span role="button" tabindex="0" class="op danger" onclick="onQADeleteRow(this,'LA')">删除</span>
                 </td>
               </tr>
             </tbody>
           </table>
           <div class="qa-alert qa-alert-warning" id="qaMissingAlert">
-            <span class="qa-alert-icon">⚠</span>
+            <span class="qa-alert-icon"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-warning"></use></svg></span>
             <div><strong>还需上传 1 项必传资质：</strong>产品质量检验检测报告</div>
           </div>
         </div>
@@ -1059,23 +1071,23 @@
         <div class="section">
           <div class="section-head"><div class="section-title">外部链接 / 价格佐证</div></div>
           <div id="extList"></div>
-          <div class="ext-add" onclick="openExternalLinkModal()">+ 点击添加</div>
+          <div role="button" tabindex="0" class="ext-add" onclick="openExternalLinkModal()">+ 点击添加</div>
         </div>
 
         <!-- 图文信息 -->
         <div class="section">
-          <div class="section-head"><div class="section-title">图文信息 <span class="hot" onclick="toast('链接取图：粘贴外部链接抓取图片（原型）','info')" style="margin-left:8px;">🔥 链接取图</span> <span class="sub-note">支持类型：.bmp / .gif / .jpg / .png / .webp / .heic</span></div></div>
+          <div class="section-head"><div class="section-title">图文信息 <span role="button" tabindex="0" class="hot" onclick="toast('链接取图：粘贴外部链接抓取图片（原型）','info')" style="margin-left:8px;"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-download"></use></svg> 链接取图</span> <span class="sub-note">支持类型：.bmp / .gif / .jpg / .png / .webp / .heic</span></div></div>
           <div class="img-block">
             <div class="cap"><b>主图：</b>尺寸 800*800 以上，3 张以上，越多越好。第一张白底，其它尽量白底。主图要求颜色唯一，需要与描述或者拓展属性值一致【最低标准：不低于在其他平台上架的标准】</div>
             <div class="thumbs" id="mainThumbs">
-              <div class="up-box" onclick="addThumb('mainThumbs')">＋<span>上传</span></div>
+              <div role="button" tabindex="0" class="up-box" onclick="addThumb('mainThumbs')">＋<span>上传</span></div>
             </div>
           </div>
           <div class="img-block">
             <div class="cap"><b>详情图：</b>宽度要求 800，长度无要求。要图文丰富，需包含产品图、细节图、参数图、使用场景图【最低标准：不低于在其他平台上架的标准】。一定不能包含：7 天无理由退换货、送货上门、免费开票、水印、其它店铺信息、质保、包邮、链接、二维码、电话号码……等</div>
             <div class="cap" style="color:var(--text-sub);">敏感词汇</div>
             <div class="thumbs" id="detailThumbs">
-              <div class="up-box" onclick="addThumb('detailThumbs')">＋<span>上传</span></div>
+              <div role="button" tabindex="0" class="up-box" onclick="addThumb('detailThumbs')">＋<span>上传</span></div>
             </div>
           </div>
         </div>
@@ -1093,7 +1105,7 @@
   </div>
 
   <!-- 税收分类选择 / 智能赋码弹窗 -->
-  <div class="modal-overlay" id="taxModal" onclick="handleTaxOverlayClick(event)">
+  <div role="button" tabindex="0" class="modal-overlay" id="taxModal" onclick="handleTaxOverlayClick(event)">
     <div class="modal tax-modal" role="dialog" aria-modal="true" aria-labelledby="taxModalTitle">
       <div class="modal-header">
         <span class="modal-header-title" id="taxModalTitle">选择税收分类</span>
@@ -1101,9 +1113,9 @@
       </div>
       <div class="modal-body">
         <div class="tax-filter" id="taxFilterPanel">
-          <div class="tax-filter-item"><label for="taxFilterCode">税收分类编码：</label><input id="taxFilterCode" placeholder="请输入"></div>
-          <div class="tax-filter-item"><label for="taxFilterName">税收分类名称：</label><input id="taxFilterName" placeholder="请输入"></div>
-          <div class="tax-filter-item"><label for="taxFilterShort">简称：</label><input id="taxFilterShort" placeholder="请输入"></div>
+          <div class="tax-filter-item"><label for="taxFilterCode">税收分类编码：</label><input aria-label="税收分类编码" id="taxFilterCode" placeholder="请输入"></div>
+          <div class="tax-filter-item"><label for="taxFilterName">税收分类名称：</label><input aria-label="税收分类名称" id="taxFilterName" placeholder="请输入"></div>
+          <div class="tax-filter-item"><label for="taxFilterShort">简称：</label><input aria-label="简称" id="taxFilterShort" placeholder="请输入"></div>
           <button class="btn btn-primary" type="button" onclick="queryTaxRows()">查询</button>
         </div>
         <div class="tax-name-hint" id="taxNameHint" hidden>依据物料名称 <strong id="taxMaterialName">—</strong> 智能加载以下候选结果</div>
@@ -1126,7 +1138,7 @@
     <div class="modal external-link-modal">
       <div class="modal-header">
         <span class="modal-header-title">外部链接管理</span>
-        <span class="modal-close" onclick="closeExternalLinkModal()">×</span>
+        <span role="button" tabindex="0" class="modal-close" onclick="closeExternalLinkModal()">×</span>
       </div>
       <div class="modal-body">
         <div class="external-link-tip">
@@ -1138,7 +1150,7 @@
           <div class="external-link-row">
             <label class="external-link-field">
               <span class="external-link-label"><span class="req">*</span>链接类型：</span>
-              <select class="external-link-select" id="externalLinkType">
+              <select aria-label="外部链接类型" class="external-link-select" id="externalLinkType">
                 <option selected>匹配</option>
                 <option>相似</option>
                 <option>采集</option>
@@ -1146,7 +1158,7 @@
             </label>
             <label class="external-link-field">
               <span class="external-link-label"><span class="req">*</span>平台类型：</span>
-              <select class="external-link-select" id="externalPlatformType">
+              <select aria-label="外部平台类型" class="external-link-select" id="externalPlatformType">
                 <option selected>京东</option>
                 <option>淘宝</option>
                 <option>天猫</option>
@@ -1155,7 +1167,7 @@
             </label>
             <label class="external-link-field">
               <span class="external-link-label"><span class="req">*</span>店铺类型：</span>
-              <select class="external-link-select" id="externalShopType">
+              <select aria-label="外部店铺类型" class="external-link-select" id="externalShopType">
                 <option selected>自营</option>
                 <option>第三方</option>
                 <option>品牌旗舰店</option>
@@ -1172,25 +1184,25 @@
           <div class="external-link-row">
             <label class="external-link-field">
               <span class="external-link-label"><span class="req">*</span>外链价格：</span>
-              <input class="external-link-input" id="externalLinkPrice" value="88.36" />
+              <input aria-label="外链价格" class="external-link-input" id="externalLinkPrice" value="88.36" />
             </label>
             <button class="btn btn-default btn-sm" type="button" onclick="fetchExternalLinkPrice()">获取价格</button>
           </div>
           <div class="external-link-row">
             <label class="external-link-field">
               <span class="external-link-label">咸亨外链价格：</span>
-              <input class="external-link-input external-link-calculated" id="xianhengExternalLinkPrice" value="88.36" readonly />
+              <input aria-label="咸亨外链价格" class="external-link-input external-link-calculated" id="xianhengExternalLinkPrice" value="88.36" readonly />
             </label>
             <label class="external-link-field">
               <span class="external-link-label">评价/销量：</span>
-              <input class="external-link-input" id="externalLinkReviewSales" value="" placeholder="请输入数量" />
+              <input aria-label="评价/销量" class="external-link-input" id="externalLinkReviewSales" value="" placeholder="请输入数量" />
             </label>
           </div>
           <div class="external-link-row">
             <label class="external-link-field external-link-url-field">
               <span class="external-link-label"><span class="req">*</span>链接：</span>
               <span class="external-link-control">
-                <textarea class="external-link-textarea" id="externalLinkUrl" placeholder="请输入外部链接"></textarea>
+                <textarea aria-label="外部链接地址" class="external-link-textarea" id="externalLinkUrl" placeholder="请输入外部链接"></textarea>
               </span>
             </label>
           </div>
@@ -1208,13 +1220,13 @@
     <div class="modal">
       <div class="modal-header">
         <span class="modal-header-title" id="qaModalTitle">批量上传</span>
-        <span class="modal-close" onclick="closeQAUploadModal()">×</span>
+        <span role="button" tabindex="0" class="modal-close" onclick="closeQAUploadModal()">×</span>
       </div>
       <div class="modal-body">
         <div class="qa-form-row">
           <label class="qa-form-label qa-form-label-required">图片资质类型：</label>
           <div class="qa-form-content">
-            <select class="qa-select" id="qaTypeSelect">
+            <select aria-label="资质类型" class="qa-select" id="qaTypeSelect">
               <option value="">请选择图片资质类型</option>
               <option value="SAFETY_PRODUCTION_LICENSE">安全生产许可证</option>
               <option value="PRODUCTION_LICENSE">生产许可证</option>
@@ -1231,8 +1243,8 @@
             </select>
           </div>
         </div>
-        <div class="qa-upload-dragger" onclick="onQAMockUpload()">
-          <div class="qa-upload-icon">📤</div>
+        <div role="button" tabindex="0" class="qa-upload-dragger" onclick="onQAMockUpload()">
+          <div class="qa-upload-icon"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-download"></use></svg></div>
           <div class="qa-upload-text">点击或拖拽文件到此处</div>
           <div class="qa-upload-hint">支持: jpg / png / pdf /<br/>单文件 ≤ 10MB · 数量不限</div>
         </div>
@@ -1249,7 +1261,7 @@
   <div class="qa-popconfirm-mask" id="qaPopconfirm">
     <div class="qa-popconfirm-box">
       <div class="qa-popconfirm-title">
-        <span class="qa-popconfirm-title-icon">⚠</span>
+        <span class="qa-popconfirm-title-icon"><svg class="prototype-icon" aria-hidden="true"><use href="../assets/icons/prototype-icons.svg#icon-warning"></use></svg></span>
         <span>确认删除此资质文件吗？<br/><span style="color:var(--text-sub);font-size:12px;">删除后将记录到物料操作历史，已审核通过的历史不受影响。</span></span>
       </div>
       <div class="qa-popconfirm-actions">
@@ -1260,8 +1272,8 @@
   </div>
 
   <!-- 推荐咸亨编码抽屉 -->
-  <div class="recommend-mask" id="recommendDrawerMask" onclick="closeRecommendDrawer(event)">
-    <div class="recommend-drawer" onclick="event.stopPropagation()">
+  <div role="button" tabindex="0" class="recommend-mask" id="recommendDrawerMask" onclick="closeRecommendDrawer(event)">
+    <div role="button" tabindex="0" class="recommend-drawer" onclick="event.stopPropagation()">
       <div class="recommend-drawer-header">
         <span>推荐咸亨物料编码</span>
         <button type="button" class="drawer-close" onclick="closeRecommendDrawer()">×</button>
@@ -1331,11 +1343,11 @@
     <div class="modal cat-modal" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
       <div class="modal-header">
         <span class="modal-header-title" id="categoryModalTitle">类目</span>
-        <span class="modal-close" onclick="closeCategoryModal()">×</span>
+        <span role="button" tabindex="0" class="modal-close" onclick="closeCategoryModal()">×</span>
       </div>
       <div class="modal-body">
         <div class="cat-search-bar">
-          <input class="cat-search-input" id="catSearchInput" placeholder="请输入名称或编码" oninput="filterCategoryTree()">
+          <input aria-label="类目名称或编码" class="cat-search-input" id="catSearchInput" placeholder="请输入名称或编码" oninput="filterCategoryTree()">
           <button class="cat-search-btn" type="button" onclick="filterCategoryTree()">查询</button>
         </div>
         <div class="cat-body">
@@ -1349,7 +1361,7 @@
           <div class="cat-right">
             <div class="cat-pane-title">
               <span class="cat-pane-title-l">四级类目（AI建议）</span>
-              <span class="cat-ai-retry" onclick="retryAiCategory()">重新获取</span>
+              <span role="button" tabindex="0" class="cat-ai-retry" onclick="retryAiCategory()">重新获取</span>
             </div>
             <div class="cat-ai-zone">
               <div class="cat-ai-list" id="catAiList"></div>
@@ -1440,33 +1452,33 @@
     <div class="modal material-edit-modal">
       <div class="modal-header">
         <span class="modal-header-title" id="materialEditTitle">物料详情编辑</span>
-        <span class="modal-close" onclick="closeMaterialEditModal()">×</span>
+        <span role="button" tabindex="0" class="modal-close" onclick="closeMaterialEditModal()">×</span>
       </div>
       <div class="modal-body">
         <div class="material-edit-grid">
           <div class="field">
             <div class="flabel">名称</div>
-            <input class="input" id="editMaterialName">
+            <input aria-label="物料名称" class="input" id="editMaterialName">
           </div>
           <div class="field">
             <div class="flabel">推荐品牌</div>
-            <input class="input" id="editMaterialBrand">
+            <input aria-label="物料品牌" class="input" id="editMaterialBrand">
           </div>
           <div class="field">
             <div class="flabel">推荐类目</div>
-            <input class="input" id="editMaterialCategory">
+            <input aria-label="物料类目" class="input" id="editMaterialCategory">
           </div>
           <div class="field">
             <div class="flabel">型号</div>
-            <input class="input" id="editMaterialModel">
+            <input aria-label="规格型号" class="input" id="editMaterialModel">
           </div>
           <div class="field">
             <div class="flabel">推荐咸亨编码</div>
-            <input class="input" id="editMaterialCode">
+            <input aria-label="物料编码" class="input" id="editMaterialCode">
           </div>
           <div class="field">
             <div class="flabel">供应商</div>
-            <input class="input" id="editMaterialSupplier">
+            <input aria-label="供应商" class="input" id="editMaterialSupplier">
           </div>
           <div class="field col2">
             <div class="flabel">当前问题类型</div>
@@ -1474,7 +1486,7 @@
           </div>
           <div class="field col2">
             <div class="flabel">问题处理说明</div>
-            <textarea class="input" id="editMaterialRemark" placeholder="补充处理说明，保存后可重新预审"></textarea>
+            <textarea aria-label="处理说明" class="input" id="editMaterialRemark" placeholder="补充处理说明，保存后可重新预审"></textarea>
           </div>
         </div>
       </div>
@@ -1486,7 +1498,7 @@
   </div>
 
   <div class="toast-wrap" id="toastWrap"></div>
-  <input type="file" id="hiddenFile" hidden>
+  <input aria-label="上传文件" type="file" id="hiddenFile" hidden>
 
 <script>
   function go(path){ window.location.href = path; }
@@ -1613,7 +1625,7 @@
     const body=document.getElementById('drawerRecommendRows');
     body.innerHTML=rows.map(item=>
       '<tr data-recommend-code="'+item.code+'" class="'+(drawerSelectedCode===item.code?'selected':'')+'">'+
-      '<td><span class="parse-op" onclick="selectDrawerRecommend(\''+item.code+'\')">选用</span></td>'+
+      '<td><span role="button" tabindex="0" class="parse-op" onclick="selectDrawerRecommend(\''+item.code+'\')">选用</span></td>'+
       '<td><span class="recommend-score">'+item.score+'</span></td>'+
       '<td><b>'+item.code+'</b>'+(drawerSelectedCode===item.code?'<div class="current-selected-tag">当前选中</div>':'')+'</td>'+
       '<td>'+item.name+'</td><td>'+item.brand+'</td><td>'+item.spec+'</td><td>'+item.unit+'</td>'+
@@ -1805,7 +1817,7 @@
       '<td><span class="preaudit-status '+row.status+'">'+(row.status==='pass'?'预审通过':'预审异常')+'</span></td>'+
       '<td><div class="issue-tags">'+renderIssueTags(row.issues)+'</div></td>'+
       '<td>'+escapeHtml(row.message)+'</td>'+
-      '<td><span class="parse-op" onclick="openMaterialEdit('+row.index+')">编辑详情</span></td>'+
+      '<td><span role="button" tabindex="0" class="parse-op" onclick="openMaterialEdit('+row.index+')">编辑详情</span></td>'+
       '</tr>'
     ).join('');
   }
@@ -1937,7 +1949,7 @@
     if(preAuditWrap) preAuditWrap.style.display='none';
     if(actions) actions.style.display='none';
     if(success) success.classList.add('show');
-    if(desc) desc.innerHTML='提交成功 '+count+' 条数据；请在<span class="success-link" onclick="toast(\'打开'+entryName+'（原型演示）\',\'info\')">【'+entryName+'】</span>点击查看。';
+    if(desc) desc.innerHTML='提交成功 '+count+' 条数据；请在<span role="button" tabindex="0" class="success-link" onclick="toast(\'打开'+entryName+'（原型演示）\',\'info\')">【'+entryName+'】</span>点击查看。';
     if(status) status.textContent='提交成功';
     updateSmartStep(4);
     toast('提交成功，共 '+count+' 条数据','success');
@@ -2078,7 +2090,7 @@
       const conf=Math.round(s.confidence*100);
       const lowCls=s.confidence<0.7?' low':'';
       const confColor=s.confidence>=0.7?'#1677ff':'#faad14';
-      return '<div class="cat-ai-item" onclick="useAiSuggestion('+i+')" title="点击采用此类目">'+
+      return '<div role="button" tabindex="0" class="cat-ai-item" onclick="useAiSuggestion('+i+')" title="点击采用此类目">'+
         '<div class="cat-ai-name"><span class="ai-rank r'+(i+1)+'">'+(i+1)+'</span>'+escapeHtml(s.name)+' <span class="cat-code">('+escapeHtml(s.code)+')</span></div>'+
         '<div class="cat-ai-meta"><span class="cat-ai-conf">置信度 <b style="color:'+confColor+';">'+conf+'%</b><span class="cat-ai-bar"><span class="cat-ai-bar-fill'+lowCls+'" style="width:'+conf+'%;"></span></span></span></div>'+
         '<div class="cat-ai-reason">'+escapeHtml(s.reason)+'</div>'+
@@ -2118,8 +2130,8 @@
     const toggleSym=hasChildren?(isExpanded?'−':'+'):'';
     const toggleCls=hasChildren?'':' leaf';
     const action=hasChildren?'toggleCategoryNode(\''+node.code+'\')':'selectCategoryLeaf(\''+node.code+'\')';
-    const self='<div class="cat-node l'+level+(isSelected?' selected':'')+'" onclick="'+action+'">'+
-      '<span class="cat-toggle'+toggleCls+'" onclick="event.stopPropagation();'+action+'">'+toggleSym+'</span>'+
+    const self='<div role="button" tabindex="0" class="cat-node l'+level+(isSelected?' selected':'')+'" onclick="'+action+'">'+
+      '<span role="button" tabindex="0" class="cat-toggle'+toggleCls+'" onclick="event.stopPropagation();'+action+'">'+toggleSym+'</span>'+
       '<span class="cat-code">|'+escapeHtml(node.code)+'|</span>'+escapeHtml(node.name)+
     '</div>';
     return self+childrenHtml;
@@ -2191,7 +2203,7 @@
     input.value=selectedProjects.join(' / ');
     menu.innerHTML=PROJECT_OPTIONS.map(name=>{
       const checked=selectedProjects.includes(name);
-      return '<label class="project-option'+(checked?' selected':'')+'"><input type="checkbox" '+(checked?'checked':'')+' onchange="toggleProject(\''+name+'\')"><span>'+name+'</span></label>';
+      return '<label class="project-option'+(checked?' selected':'')+'"><input aria-label="'+name+'" title="选择项目" type="checkbox" '+(checked?'checked':'')+' onchange="toggleProject(\''+name+'\')"><span>'+name+'</span></label>';
     }).join('');
     if(clearBtn) clearBtn.classList.toggle('show',selectedProjects.length>0);
     if(selectedProjects.length) document.getElementById('projectSelect').classList.remove('invalid');
@@ -2310,7 +2322,7 @@
       const indent=taxModalMode==='search'?row.level*16:0;
       const treeToggle=taxModalMode==='search'?(row.level<4?'<span class="tax-tree-toggle" aria-hidden="true">−</span>':'<span class="tax-tree-spacer" aria-hidden="true"></span>'):'';
       if(isParent) tr.classList.add('tax-parent-row');
-      tr.innerHTML='<td class="radio-col"><input type="radio" name="taxClassificationChoice" aria-label="'+(isParent?'父级税收分类不可选择：':'选择')+row.name+'"'+(isParent?' disabled':'')+'></td>'+
+      tr.innerHTML='<td class="radio-col"><input type="radio" name="taxClassificationChoice" title="选择税收分类" aria-label="'+(isParent?'父级税收分类不可选择：':'选择')+row.name+'"'+(isParent?' disabled':'')+'></td>'+
         '<td><span class="tax-tree-name" style="padding-left:'+indent+'px">'+treeToggle+row.name+'</span></td><td>'+row.short+'</td><td>'+row.code+'</td><td>'+row.rate+'</td>';
       if(!isParent){
         tr.addEventListener('click',()=>selectTaxRow(row,tr));
@@ -2401,7 +2413,7 @@
       '<div class="qa-upload-item"><span style="color:var(--success);">✓</span>'+
       '<span class="qa-upload-item-name">'+f.name+'</span>'+
       '<span class="qa-upload-item-size">'+(f.size?f.size+' · ':'')+(f.existing?'已上传':'上传完成')+'</span>'+
-      '<span class="qa-upload-item-del" onclick="removeQAFile('+i+')">✕</span></div>').join('');
+      '<span role="button" tabindex="0" class="qa-upload-item-del" onclick="removeQAFile('+i+')">✕</span></div>').join('');
   }
   function removeQAFile(i){ qaMockFiles.splice(i,1); renderQAUploadList(); }
   function onQAUploadConfirm(){
@@ -2428,7 +2440,7 @@
     tr.innerHTML='<td>'+label+'</td>'+
       '<td class="qa-file-name">'+file.name+'</td>'+
       '<td><a class="oss-link" href="'+url+'" target="_blank" rel="noopener">'+url+'</a></td>'+
-      '<td><span class="op danger" onclick="onQADeleteRow(this,\''+type+'\')">删除</span></td>';
+      '<td><span role="button" tabindex="0" class="op danger" onclick="onQADeleteRow(this,\''+type+'\')">删除</span></td>';
     document.getElementById('qaTbody').appendChild(tr);
   }
   function onQADeleteRow(el,type){ qaPendingDeleteRow=el.closest('tr'); document.getElementById('qaPopconfirm').classList.add('open'); }
@@ -2513,7 +2525,7 @@
         <span>评价/销量：${escapeHtml(reviewSales||'-')}</span>
       </div>
       <div class="ext-item-url">${escapeHtml(url)}</div>
-    </div><span class="ext-item-remove" onclick="this.parentElement.remove()">删除</span>`;
+    </div><span role="button" tabindex="0" class="ext-item-remove" onclick="this.parentElement.remove()">删除</span>`;
     document.getElementById('extList').appendChild(row);
     closeExternalLinkModal();
     toast('外部链接已保存','success');
@@ -2539,7 +2551,7 @@
       const t=document.createElement('div');
       t.className='thumb';
       t.textContent=f.files[0].name;
-      t.innerHTML+='<span class="rm" onclick="this.parentElement.remove()">✕</span>';
+      t.innerHTML+='<span role="button" tabindex="0" class="rm" onclick="this.parentElement.remove()">✕</span>';
       wrap.insertBefore(t,box);
       toast('已上传图片：'+f.files[0].name,'success');
     };
@@ -2639,6 +2651,8 @@
   </div>
 </div><script src="scp-demo-tips.js"></script>
 <script src="../mpm-topnav-links.js"></script>
+<div class="prototype-live-region prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
+<script src="../assets/js/prototype-common.js"></script>
 </body>
 </html>
 

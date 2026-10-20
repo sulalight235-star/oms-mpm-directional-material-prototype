@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>税收分类编码库 - 咸亨国际主数据管理平台</title>
+  <title>系统管理-税收分类编码库 - MPM物料主数据系统</title>
   <style>
     :root {
       --primary: #2f66e8;
@@ -25,7 +25,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     [hidden] { display: none !important; }
     body {
-      min-width: 1080px;
+      min-width: 0;
       min-height: 100vh;
       background: var(--page);
       color: var(--text);
@@ -201,8 +201,8 @@
       *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#mainContent">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
   <header class="topbar">
     <div class="brand">
       <div class="brand-logo" aria-hidden="true">咸</div>
@@ -482,5 +482,5 @@
     if (isGlobalSyncLocked()) setSyncButtonState(true, true);
     document.getElementById("mainContent").focus();
   </script>
-</body>
+<script src="assets/js/prototype-common.js" defer></script></body>
 </html>

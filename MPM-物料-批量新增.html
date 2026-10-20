@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>批量新增物料列表 - 咸亨国际主数据管理平台</title>
-  <script src="../../node_modules/xlsx/dist/xlsx.full.min.js"></script>
+  <title>物料-批量新增 - MPM物料主数据系统</title>
+  <script src="assets/vendor/xlsx.full.min.js"></script>
   <style>
     :root {
       --primary: #1677ff;
@@ -26,7 +26,7 @@
       --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 1px 6px rgba(0,0,0,0.04);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif; font-size: 14px; background: var(--bg-layout); color: var(--text-body); min-width: 1440px; }
+    body { font-family: -apple-system, "Microsoft YaHei", "PingFang SC", Arial, sans-serif; font-size: 14px; background: var(--bg-layout); color: var(--text-body); min-width: 0; }
     a { color: inherit; text-decoration: none; }
     button, input, select { font: inherit; }
 
@@ -61,7 +61,7 @@
     .filter-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 16px 24px; align-items: center; }
     .filter-item { display: flex; align-items: center; gap: 8px; }
     .filter-label { color: var(--text-body); font-size: 14px; white-space: nowrap; min-width: 56px; text-align: right; position: relative; }
-    .filter-label.required::before { content: "🔍"; position: absolute; left: -18px; color: var(--text-sub); font-size: 13px; }
+    .filter-label.required::before { content: ""; position: absolute; left: -18px; color: var(--text-sub); font-size: 13px; }
     .filter-input { flex: 1; height: 32px; padding: 0 11px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; outline: none; background: #fff; }
     .filter-input:hover { border-color: var(--primary-hover); }
     .filter-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(22,119,255,0.1); }
@@ -153,7 +153,7 @@
     .filter-row-multi .filter-actions { display: flex; gap: 6px; align-items: center; justify-content: flex-end; }
     .filter-row-multi .filter-item { display: flex; align-items: center; gap: 8px; min-width: 0; }
     .filter-row-multi .filter-label { width: 84px; min-width: 84px; text-align: right; font-size: 14px; color: var(--text-body); white-space: nowrap; position: relative; }
-    .filter-row-multi .filter-label.required::before { content: "🔍"; position: absolute; left: -2px; color: var(--text-sub); font-size: 13px; }
+    .filter-row-multi .filter-label.required::before { content: ""; position: absolute; left: -2px; color: var(--text-sub); font-size: 13px; }
     .filter-row-multi .filter-input { flex: 1; height: 32px; padding: 0 11px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; outline: none; background: #fff; min-width: 0; width: 100%; }
     .filter-row-multi .filter-input::placeholder { color: var(--text-sub); font-size: 12.5px; }
     .filter-row-multi .filter-select { flex: 1; min-width: 0; position: relative; }
@@ -208,20 +208,20 @@
     .upload-file-row .remove-link { color: var(--error); cursor: pointer; font-size: 12px; }
     .upload-file-row .remove-link:hover { text-decoration: underline; }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div><main id="main-content" tabindex="-1">
 
 <!-- 顶栏 -->
 <div class="topbar">
   <div class="brand">
     <div class="brand-logo">咸</div>
     <div class="brand-name" style="cursor:pointer;" onclick="location.href='MPM-工作台-首页.html'">咸亨国际主数据管理平台</div>
-    <button class="switch-btn" onclick="window.location.href='index.html'">🔥 切换系统</button>
+    <button class="switch-btn" onclick="window.location.href='index.html'"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-settings"></use></svg> 切换系统</button>
   </div>
   <div class="nav-menu">
-    <div class="nav-item">💬 消息通知<span class="badge-dot" style="top:8px;right:8px;"></span></div>
+    <div class="nav-item"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-bell"></use></svg> 消息通知<span class="badge-dot" style="top:8px;right:8px;"></span></div>
     <div class="nav-divider"></div>
-    <div class="nav-item">📋 价格审核<span class="badge-dot" style="top:8px;right:8px;"></span></div>
+    <div class="nav-item"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-task"></use></svg> 价格审核<span class="badge-dot" style="top:8px;right:8px;"></span></div>
     <div class="nav-divider"></div>
     <div class="nav-item">版本更新</div>
     <div class="nav-divider"></div>
@@ -261,7 +261,7 @@
       <div class="filter-item">
         <div class="filter-label required">货主</div>
         <div class="filter-select">
-          <select class="filter-input">
+          <select class="filter-input" aria-label="货主">
             <option value="">请选择</option>
             <option>万聚国际(杭州)供应链有限公司</option>
             <option>咸亨国际(温州)供应链有限公司</option>
@@ -271,12 +271,12 @@
       </div>
       <div class="filter-item">
         <div class="filter-label">导入批号</div>
-        <input class="filter-input" placeholder="请输入" />
+        <input class="filter-input" placeholder="请输入"  aria-label="导入批号"/>
       </div>
       <div class="filter-item">
         <div class="filter-label">OSS</div>
         <div class="filter-select">
-          <select class="filter-input">
+          <select class="filter-input" aria-label="OSS">
             <option value="">请选择</option>
             <option>OSS-1</option>
             <option>OSS-2</option>
@@ -298,7 +298,7 @@
         <div class="filter-item">
           <div class="filter-label">订单执行员</div>
           <div class="filter-select">
-            <select class="filter-input">
+            <select class="filter-input" aria-label="订单执行员">
               <option value="">请选择</option>
               <option>张三</option>
               <option>李四</option>
@@ -308,7 +308,7 @@
         <div class="filter-item">
           <div class="filter-label">部门</div>
           <div class="filter-select">
-            <select class="filter-input">
+            <select class="filter-input" aria-label="部门">
               <option value="">请选择</option>
               <option>采购部</option>
               <option>运营部</option>
@@ -318,7 +318,7 @@
         <div class="filter-item">
           <div class="filter-label">物料等级</div>
           <div class="filter-select">
-            <select class="filter-input">
+            <select class="filter-input" aria-label="物料等级">
               <option value="">请选择</option>
               <option>A 级</option>
               <option>B 级</option>
@@ -329,7 +329,7 @@
         <div class="filter-item">
           <div class="filter-label">自动赋值采购</div>
           <div class="filter-select">
-            <select class="filter-input">
+            <select class="filter-input" aria-label="自动赋值采购">
               <option value="">请选择</option>
               <option>是</option>
               <option>否</option>
@@ -343,7 +343,7 @@
         <div class="filter-item">
           <div class="filter-label">图片关系</div>
           <div class="filter-select">
-            <select class="filter-input">
+            <select class="filter-input" aria-label="图片关系">
               <option value="">请选择</option>
               <option>已上传主图</option>
               <option>未上传主图</option>
@@ -355,7 +355,7 @@
         <div class="filter-item">
           <div class="filter-label">主图</div>
           <div class="filter-select">
-            <select class="filter-input">
+            <select class="filter-input" aria-label="主图">
               <option value="">请选择</option>
               <option>已上传</option>
               <option>未上传</option>
@@ -365,7 +365,7 @@
         <div class="filter-item">
           <div class="filter-label">详情图</div>
           <div class="filter-select">
-            <select class="filter-input">
+            <select class="filter-input" aria-label="详情图">
               <option value="">请选择</option>
               <option>已上传</option>
               <option>未上传</option>
@@ -375,7 +375,7 @@
         <div class="filter-item">
           <div class="filter-label">类目</div>
           <div class="filter-select">
-            <select class="filter-input">
+            <select class="filter-input" aria-label="类目">
               <option value="">请选择</option>
               <option>仪器仪表 / 电工测量 / 钳形表</option>
               <option>应急装备</option>
@@ -388,16 +388,16 @@
       <div class="filter-row-multi">
         <div class="filter-item">
           <div class="filter-label">型号</div>
-          <input class="filter-input" placeholder="请输入" />
+          <input class="filter-input" placeholder="请输入"  aria-label="型号"/>
         </div>
         <div class="filter-item">
           <div class="filter-label">规格</div>
-          <input class="filter-input" placeholder="请输入" />
+          <input class="filter-input" placeholder="请输入"  aria-label="规格"/>
         </div>
         <div class="filter-item">
           <div class="filter-label">品牌</div>
           <div class="filter-select">
-            <select class="filter-input">
+            <select class="filter-input" aria-label="品牌">
               <option value="">请选择</option>
               <option>钢炬/GANGJU</option>
               <option>范沃克/fanwoke</option>
@@ -406,7 +406,7 @@
         </div>
         <div class="filter-item">
           <div class="filter-label">助记码</div>
-          <input class="filter-input" placeholder="多个英文逗号间隔" />
+          <input class="filter-input" placeholder="多个英文逗号间隔"  aria-label="助记码"/>
         </div>
       </div>
 
@@ -414,11 +414,11 @@
       <div class="filter-row-multi">
         <div class="filter-item">
           <div class="filter-label">物料编码</div>
-          <input class="filter-input" placeholder="多个英文逗号间隔;或在表格中复制" />
+          <input class="filter-input" placeholder="多个英文逗号间隔;或在表格中复制"  aria-label="物料编码"/>
         </div>
         <div class="filter-item">
           <div class="filter-label">物料名称</div>
-          <input class="filter-input" placeholder="多个英文逗号间隔;或在表格中复制" />
+          <input class="filter-input" placeholder="多个英文逗号间隔;或在表格中复制"  aria-label="物料名称"/>
         </div>
         <div></div>
         <div></div>
@@ -462,7 +462,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th class="checkbox-col"><input type="checkbox" class="checkbox" id="checkAll" onclick="toggleAll(this)"/></th>
+            <th class="checkbox-col"><input type="checkbox" class="checkbox" id="checkAll" onclick="toggleAll(this)" aria-label="全选当前列表"/></th>
             <th>名称</th>
             <th>四级类目</th>
             <th>型号</th>
@@ -484,7 +484,7 @@
         </thead>
         <tbody id="tbody">
           <tr>
-            <td class="checkbox-col"><input type="checkbox" class="checkbox row-check" onclick="onRowCheck(this)"/></td>
+            <td class="checkbox-col"><input type="checkbox" class="checkbox row-check" onclick="onRowCheck(this)" aria-label="选择惰性氧化铝瓷..."/></td>
             <td><span class="text-truncate" title="惰性氧化铝瓷球填料 0.5~2mm">惰性氧化铝瓷...</span></td>
             <td><span class="text-truncate" title="其它实验室耗材">其它实验室耗...</span></td>
             <td>0.5~2mm</td>
@@ -504,7 +504,7 @@
             <td><span class="badge-not-cover">未覆盖</span></td>
           </tr>
           <tr>
-            <td class="checkbox-col"><input type="checkbox" class="checkbox row-check" onclick="onRowCheck(this)"/></td>
+            <td class="checkbox-col"><input type="checkbox" class="checkbox row-check" onclick="onRowCheck(this)" aria-label="选择惰性氧化铝瓷..."/></td>
             <td><span class="text-truncate" title="惰性氧化铝瓷球填料 3~18mm">惰性氧化铝瓷...</span></td>
             <td><span class="text-truncate" title="其它实验室耗材">其它实验室耗...</span></td>
             <td>3~18mm</td>
@@ -524,7 +524,7 @@
             <td><span class="badge-not-cover">未覆盖</span></td>
           </tr>
           <tr>
-            <td class="checkbox-col"><input type="checkbox" class="checkbox row-check" onclick="onRowCheck(this)"/></td>
+            <td class="checkbox-col"><input type="checkbox" class="checkbox row-check" onclick="onRowCheck(this)" aria-label="选择网络球机1212..."/></td>
             <td><span class="text-truncate" title="网络球机 1212 系列">网络球机1212...</span></td>
             <td>球型摄像机</td>
             <td><span class="text-truncate" title="DH-SD6C82F-GBL-NR">DH-SD6C82F-...</span></td>
@@ -544,7 +544,7 @@
             <td><span class="badge-not-cover">未覆盖</span></td>
           </tr>
           <tr>
-            <td class="checkbox-col"><input type="checkbox" class="checkbox row-check" onclick="onRowCheck(this)"/></td>
+            <td class="checkbox-col"><input type="checkbox" class="checkbox row-check" onclick="onRowCheck(this)" aria-label="选择半球型网络监..."/></td>
             <td><span class="text-truncate" title="半球型网络监控摄像机">半球型网络监...</span></td>
             <td>半球摄像机</td>
             <td><span class="text-truncate" title="DS-2CD3325-I">DS-2CD3325-...</span></td>
@@ -576,7 +576,7 @@
           <button class="pager-btn active">1</button>
           <button class="pager-btn" disabled>›</button>
         </div>
-        <select class="page-size-select">
+        <select class="page-size-select" aria-label="每页显示条数">
           <option>25 条/页</option>
           <option>50 条/页</option>
           <option>100 条/页</option>
@@ -588,21 +588,21 @@
 
 <!-- 浮动客服 -->
 <div class="floating-help" title="在线客服">
-  <div class="floating-help-icon">💬</div>
+  <div class="floating-help-icon" aria-hidden="true"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-bell"></use></svg></div>
   <div>客服</div>
 </div>
 
 <!-- 演示提示 -->
 <div class="demo-tips">
   <div class="demo-tips-section">
-    <b>💡 演示操作：</b><br/>
+    <b><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> 演示操作：</b><br/>
     1. 入口：<b>工作台 → 批量新增</b> 按钮<br/>
     2. 顶部筛选区按 <b>货主 / 导入批号 / OSS</b> 过滤，「✎」可编辑筛选项<br/>
     3. 操作行：<b>错误批改 / 手动覆盖 / 删除 / 下载模板 / 预导入 / 预导出 / 导入拓展属性 / 关联 / 提交</b><br/>
     4. 勾选行后 → 「关联」可挂资质文件、「提交」进入审核流程
   </div>
   <div class="demo-tips-section">
-    <b>🆕 本期相关：</b><br/>
+    <b>本期相关：</b><br/>
     • 批量新增物料属于<span class="ti">「两步制」第一步</span>暂存区入口<br/>
     • 「关联」按钮承接 MPM v2.0.0 资质资料的批量挂接能力<br/>
     • 「提交」触发统一资质校验，命中规则缺资质会被拦截<br/>
@@ -862,7 +862,7 @@
     if (!header) {
       header = document.createElement('div');
       header.className = prefix + '-header';
-      header.innerHTML = '<span class="' + prefix + '-title">💡 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
+      header.innerHTML = '<span class="' + prefix + '-title"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
       tip.insertBefore(header, body);
     }
 
@@ -894,6 +894,6 @@
 })();
 </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+</main><script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 

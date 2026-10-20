@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>物料审核详情 - A1901005067 - 咸亨国际主数据管理平台</title>
+  <title>物料-待我审核-新增物料审核详情 - MPM物料主数据系统</title>
   <style>
     :root {
       --primary:      #1677ff;
@@ -642,8 +642,8 @@
       .operation-table{min-width:680px;}
     }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div><main id="main-content" tabindex="-1">
 
 <!-- 顶部导航 -->
 <header class="topbar">
@@ -719,7 +719,7 @@
       <div class="form-grid-4" style="margin-bottom:12px;">
         <div class="form-item span2">
           <div class="form-label">货主</div>
-          <input class="f-input" readonly value="万聚国际（杭州）供应链有限公司" />
+          <input class="f-input" readonly value="万聚国际（杭州）供应链有限公司"  aria-label="货主"/>
         </div>
         <div class="form-item span2">
           <div class="form-label"><span class="req">*</span> 物料标签</div>
@@ -735,19 +735,19 @@
       <div class="form-grid" style="margin-bottom:12px;">
         <div class="form-item">
           <div class="form-label">编码</div>
-          <input class="f-input" readonly placeholder="提交后自动生成" />
+          <input class="f-input" readonly placeholder="提交后自动生成"  aria-label="编码"/>
         </div>
         <div class="form-item">
           <div class="form-label"><span class="req">*</span> 品牌</div>
-          <input class="f-input" value="钢炬/GANGJU" />
+          <input class="f-input" value="钢炬/GANGJU"  aria-label="品牌"/>
         </div>
         <div class="form-item">
           <div class="form-label"><span class="req">*</span> 名称</div>
-          <input class="f-input" id="materialName" value="PVC管" />
+          <input class="f-input" id="materialName" value="PVC管"  aria-label="名称"/>
         </div>
         <div class="form-item">
           <div class="form-label"><span class="req">*</span> 型号</div>
-          <input class="f-input" value="DN110*4m" />
+          <input class="f-input" value="DN110*4m"  aria-label="型号"/>
         </div>
       </div>
 
@@ -756,9 +756,9 @@
         <div class="form-item" style="position:relative;">
           <div class="form-label" style="display:flex;align-items:center;justify-content:space-between;">
             <span><span class="req">*</span> 基本单位</span>
-            <span style="color:var(--error);font-size:11px;font-weight:normal;">⚠ 审核后无法修改</span>
+            <span style="color:var(--error);font-size:11px;font-weight:normal;">注意：审核后无法修改</span>
           </div>
-          <input class="f-input" value="米" />
+          <input class="f-input" value="米"  aria-label="基本单位"/>
         </div>
         <div class="form-item" id="categoryFormItem">
           <div class="form-label"><span class="req">*</span> 类目</div>
@@ -770,11 +770,11 @@
         </div>
         <div class="form-item">
           <div class="form-label">订单执行员</div>
-          <select class="f-select"><option value="">请选择</option><option selected>胡乾礼-通用工具采购组</option></select>
+          <select class="f-select" aria-label="订单执行员"><option value="">请选择</option><option selected>胡乾礼-通用工具采购组</option></select>
         </div>
         <div class="form-item">
           <div class="form-label"><span class="req">*</span> 采购部门</div>
-          <select class="f-select"><option value="">请选择</option><option selected>通用工具采购组</option></select>
+          <select class="f-select" aria-label="采购部门"><option value="">请选择</option><option selected>通用工具采购组</option></select>
         </div>
       </div>
 
@@ -782,19 +782,19 @@
       <div class="form-grid" style="margin-bottom:12px;">
         <div class="form-item">
           <div class="form-label">项目报价员</div>
-          <select class="f-select"><option value="">请选择</option><option>赵艺珂</option></select>
+          <select class="f-select" aria-label="项目报价员"><option value="">请选择</option><option>赵艺珂</option></select>
         </div>
         <div class="form-item">
           <div class="form-label">产品经理</div>
-          <select class="f-select"><option value="">请选择</option></select>
+          <select class="f-select" aria-label="产品经理"><option value="">请选择</option></select>
         </div>
         <div class="form-item">
           <div class="form-label"><span class="req">*</span> 加价系数(%)</div>
-          <input class="f-input" value="0.00" placeholder="0.00" />
+          <input class="f-input" value="0.00" placeholder="0.00"  aria-label="加价系数(%)"/>
         </div>
         <div class="form-item">
           <div class="form-label"><span class="req">*</span> 物料税率</div>
-          <select class="f-select"><option selected>13%增值税</option><option>9%增值税</option><option>6%增值税</option><option>0%</option></select>
+          <select class="f-select" aria-label="物料税率"><option selected>13%增值税</option><option>9%增值税</option><option>6%增值税</option><option>0%</option></select>
         </div>
       </div>
 
@@ -803,20 +803,20 @@
         <div class="form-item">
           <div class="form-label">起订量</div>
           <div class="input-addon">
-            <input class="f-input" value="1" style="flex:1;" />
+            <input class="f-input" value="1" style="flex:1;"  aria-label="起订量"/>
             <label class="check-item" style="flex-shrink:0;font-size:12px;"><input type="checkbox" /> 是否倍数下单</label>
           </div>
         </div>
         <div class="form-item">
           <div class="form-label"><span class="req">*</span> 毛重</div>
           <div class="input-addon">
-            <input class="f-input" value="1" style="flex:1;" />
+            <input class="f-input" value="1" style="flex:1;"  aria-label="毛重"/>
             <span class="input-suffix">kg</span>
           </div>
         </div>
         <div class="form-item">
           <div class="form-label">别名</div>
-          <input class="f-input" placeholder="请输入" />
+          <input class="f-input" placeholder="请输入"  aria-label="别名"/>
         </div>
         <div class="form-item"></div>
       </div>
@@ -829,14 +829,14 @@
           <div class="form-item">
             <div class="form-label"><span class="req">*</span> 市场价</div>
             <div class="input-addon">
-              <input class="f-input" value="21.00" style="flex:1;" />
+              <input class="f-input" value="21.00" style="flex:1;"  aria-label="市场价"/>
               <span class="input-suffix">元</span>
             </div>
           </div>
           <div class="form-item">
             <div class="form-label"><span class="req">*</span> 商城价</div>
             <div class="input-addon">
-              <input class="f-input" placeholder="点击查询自动计算" style="flex:1;" />
+              <input class="f-input" placeholder="点击查询自动计算" style="flex:1;"  aria-label="商城价"/>
               <span class="input-suffix">元</span>
             </div>
             <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
@@ -847,14 +847,14 @@
           <div class="form-item">
             <div class="form-label">固定结算价</div>
             <div class="input-addon">
-              <input class="f-input" readonly placeholder="待询价" style="flex:1;color:var(--text-sub);" />
+              <input class="f-input" readonly placeholder="待询价" style="flex:1;color:var(--text-sub);"  aria-label="固定结算价"/>
               <span class="input-suffix">元</span>
             </div>
           </div>
           <div class="form-item">
             <div class="form-label">项目调拨参考价</div>
             <div class="input-addon">
-              <input class="f-input" readonly placeholder="待询价" style="flex:1;color:var(--text-sub);" />
+              <input class="f-input" readonly placeholder="待询价" style="flex:1;color:var(--text-sub);"  aria-label="项目调拨参考价"/>
               <span class="input-suffix">元</span>
             </div>
             <label class="check-item" style="font-size:12px;margin-top:4px;">
@@ -866,7 +866,7 @@
           <div class="form-item">
             <div class="form-label">参考供货价</div>
             <div class="input-addon">
-              <input class="f-input" readonly placeholder="待询价" style="flex:1;color:var(--text-sub);" />
+              <input class="f-input" readonly placeholder="待询价" style="flex:1;color:var(--text-sub);"  aria-label="参考供货价"/>
               <span class="input-suffix">元</span>
             </div>
           </div>
@@ -879,26 +879,26 @@
       <div class="form-grid" style="margin-bottom:12px;">
         <div class="form-item">
           <div class="form-label">规格</div>
-          <input class="f-input" placeholder="请输入" />
+          <input class="f-input" placeholder="请输入"  aria-label="规格"/>
         </div>
         <div class="form-item">
           <div class="form-label">对外最高成交价</div>
           <div class="input-addon">
-            <input class="f-input" placeholder="请输入" style="flex:1;" />
+            <input class="f-input" placeholder="请输入" style="flex:1;"  aria-label="对外最高成交价"/>
             <span class="input-suffix">元</span>
           </div>
         </div>
         <div class="form-item">
           <div class="form-label">对内最新成本价（组织间开票价）</div>
           <div class="input-addon">
-            <input class="f-input" placeholder="请输入" style="flex:1;" />
+            <input class="f-input" placeholder="请输入" style="flex:1;"  aria-label="对内最新成本价（组织间开票价）"/>
             <span class="input-suffix">元</span>
           </div>
         </div>
         <div class="form-item">
           <div class="form-label">品牌限价最低价</div>
           <div class="input-addon">
-            <input class="f-input" placeholder="请输入" style="flex:1;" />
+            <input class="f-input" placeholder="请输入" style="flex:1;"  aria-label="品牌限价最低价"/>
             <span class="input-suffix">元</span>
           </div>
         </div>
@@ -907,7 +907,7 @@
         <div class="form-item">
           <div class="form-label">品牌限价最高价</div>
           <div class="input-addon">
-            <input class="f-input" placeholder="请输入" style="flex:1;" />
+            <input class="f-input" placeholder="请输入" style="flex:1;"  aria-label="品牌限价最高价"/>
             <span class="input-suffix">元</span>
           </div>
         </div>
@@ -919,11 +919,11 @@
       <div class="form-grid-4" style="margin-bottom:12px;">
         <div class="form-item span2">
           <div class="form-label">描述</div>
-          <textarea class="f-textarea">4米/根</textarea>
+          <textarea class="f-textarea" aria-label="描述">4米/根</textarea>
         </div>
         <div class="form-item span2">
           <div class="form-label">内部备注</div>
-          <textarea class="f-textarea">复制生成物料（源物料编码B2002079386）</textarea>
+          <textarea class="f-textarea" aria-label="内部备注">复制生成物料（源物料编码B2002079386）</textarea>
         </div>
       </div>
 
@@ -938,7 +938,7 @@
         </div>
         <div class="form-item span2">
           <div class="form-label">收货地址</div>
-          <input class="f-input" placeholder="请输入收货地址(为空且含运费=是时,默认&quot;海宁库&quot;)" maxlength="200" />
+          <input class="f-input" placeholder="请输入收货地址(为空且含运费=是时,默认&quot;海宁库&quot;)" maxlength="200"  aria-label="收货地址"/>
         </div>
         <div class="form-item span2">
           <div class="form-label">检测费</div>
@@ -979,49 +979,49 @@
       <div class="form-grid-6" style="margin-bottom:12px;">
         <div class="form-item">
           <div class="form-label">条形码</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="条形码"/>
         </div>
         <div class="form-item">
           <div class="form-label">助记码</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="助记码"/>
         </div>
         <div class="form-item">
           <div class="form-label">旧料号</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="旧料号"/>
         </div>
         <div class="form-item">
           <div class="form-label">供应商</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="供应商"/>
         </div>
         <div class="form-item">
           <div class="form-label">销售</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="销售"/>
         </div>
         <div class="form-item">
           <div class="form-label">净重(kg)</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="净重(kg)"/>
         </div>
       </div>
       <div class="form-grid-6" style="margin-bottom:12px;">
         <div class="form-item">
           <div class="form-label">长(mm)</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="长(mm)"/>
         </div>
         <div class="form-item">
           <div class="form-label">宽(mm)</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="宽(mm)"/>
         </div>
         <div class="form-item">
           <div class="form-label">高(mm)</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="高(mm)"/>
         </div>
         <div class="form-item">
           <div class="form-label">体积(mm³)</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="体积(mm³)"/>
         </div>
         <div class="form-item">
           <div class="form-label">发货日</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="发货日"/>
         </div>
         <div class="form-item">
           <div class="form-label">咨询客服</div>
@@ -1038,29 +1038,29 @@
         </div>
         <div class="form-item span2">
           <div class="form-label">税收分类名称</div>
-          <input class="f-input tax-readonly" id="taxName" value="塑料管、棒、型材及异型材" placeholder="选择编码后自动带出" readonly aria-readonly="true" />
+          <input class="f-input tax-readonly" id="taxName" value="塑料管、棒、型材及异型材" placeholder="选择编码后自动带出" readonly aria-readonly="true"  aria-label="税收分类名称"/>
         </div>
         <div class="form-item">
           <div class="form-label">简称</div>
-          <input class="f-input tax-readonly" id="taxShort" value="塑料制品" placeholder="选择编码后自动带出" readonly aria-readonly="true" />
+          <input class="f-input tax-readonly" id="taxShort" value="塑料制品" placeholder="选择编码后自动带出" readonly aria-readonly="true"  aria-label="简称"/>
         </div>
         <div class="form-item">
           <div class="form-label">税率</div>
-          <input class="f-input tax-readonly" id="taxRate" value="13%" placeholder="选择编码后自动带出" readonly aria-readonly="true" />
+          <input class="f-input tax-readonly" id="taxRate" value="13%" placeholder="选择编码后自动带出" readonly aria-readonly="true"  aria-label="税率"/>
         </div>
       </div>
       <div class="form-grid-6" style="margin-bottom:12px;">
         <div class="form-item">
           <div class="form-label">报关关税税率(%)</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="报关关税税率(%)"/>
         </div>
         <div class="form-item span2">
           <div class="form-label">厂家订货号</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="厂家订货号"/>
         </div>
         <div class="form-item">
           <div class="form-label">产品线</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="产品线"/>
         </div>
       </div>
       <div class="form-grid-6" style="margin-bottom:0;">
@@ -1109,7 +1109,7 @@
       <div class="form-grid-4" style="margin-bottom:12px;">
         <div class="form-item span2">
           <div class="form-label">项目</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="项目"/>
         </div>
         <div class="form-item span2">
           <div class="form-label">品牌</div>
@@ -1121,12 +1121,12 @@
       <div class="form-grid-4" style="margin-bottom:0;">
         <div class="form-item">
           <div class="form-label">行业</div>
-          <input class="f-input" value="" placeholder="请输入" />
+          <input class="f-input" value="" placeholder="请输入"  aria-label="行业"/>
         </div>
         <div class="form-item">
           <div class="form-label">厂控物料</div>
           <div class="assign-field-group">
-            <select class="f-select assign-field-control" id="factoryControlledSelect">
+            <select class="f-select assign-field-control" id="factoryControlledSelect" aria-label="厂控物料">
               <option value="">请选择</option>
               <option>是</option>
               <option>否</option>
@@ -1136,7 +1136,7 @@
         </div>
         <div class="form-item">
           <div class="form-label">动销</div>
-          <select class="f-select">
+          <select class="f-select" aria-label="动销">
             <option value="">请选择</option>
             <option>超高动销</option>
             <option>高动销</option>
@@ -1309,12 +1309,12 @@
       <div class="form-grid-4" style="margin-bottom:12px;">
         <div class="form-item">
           <div class="form-label">尺寸</div>
-          <input class="f-input has-ai-hint" value="30*20mm" />
-          <div class="ai-inline-hint">⚠️ 【文本审核】文本前后逻辑错一致，【属性信息】与【描述】在文本中存在差异，建议【属性信息】改为尺寸:30*20mm,材质:PVC</div>
+          <input class="f-input has-ai-hint" value="30*20mm"  aria-label="尺寸"/>
+          <div class="ai-inline-hint">注意：【文本审核】文本前后逻辑错一致，【属性信息】与【描述】在文本中存在差异，建议【属性信息】改为尺寸:30*20mm,材质:PVC</div>
         </div>
         <div class="form-item">
           <div class="form-label">材质</div>
-          <input class="f-input has-ai-hint" value="" placeholder="请输入" />
+          <input class="f-input has-ai-hint" value="" placeholder="请输入"  aria-label="材质"/>
         </div>
       </div>
     </div>
@@ -1328,7 +1328,7 @@
         <span>§ 资料附件</span>
       </div>
       <div class="card-header-actions">
-        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openQAUploadModal('')">📤 上传资质图片</button>
+        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openQAUploadModal('')"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-upload"></use></svg> 上传资质图片</button>
         <span class="collapse-icon">▼</span>
       </div>
     </div>
@@ -1374,7 +1374,7 @@
 
       <!-- 缺失提示 -->
       <div class="qa-alert qa-alert-warning" style="margin-top:12px;" id="qaMissingAlert">
-        <span class="qa-alert-icon">⚠</span>
+        <span class="qa-alert-icon" aria-hidden="true">!</span>
         <div>
           <strong>还需上传 1 项必传资质：</strong>产品质量检验检测报告
         </div>
@@ -1413,22 +1413,22 @@
             </div>
             <!-- 模拟4张已上传缩略图 -->
             <div class="img-thumb">
-              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-placeholder"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-document"></use></svg></div>
               <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
               <div class="img-thumb-idx">1</div>
             </div>
             <div class="img-thumb">
-              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-placeholder"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-document"></use></svg></div>
               <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
               <div class="img-thumb-idx">2</div>
             </div>
             <div class="img-thumb">
-              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-placeholder"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-document"></use></svg></div>
               <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
               <div class="img-thumb-idx">3</div>
             </div>
             <div class="img-thumb">
-              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-placeholder"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-document"></use></svg></div>
               <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
               <div class="img-thumb-idx">4</div>
             </div>
@@ -1445,22 +1445,22 @@
               <span style="font-size:11px;margin-top:4px;">上传</span>
             </div>
             <div class="img-thumb">
-              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-placeholder"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-document"></use></svg></div>
               <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
               <div class="img-thumb-idx">1</div>
             </div>
             <div class="img-thumb">
-              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-placeholder"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-document"></use></svg></div>
               <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
               <div class="img-thumb-idx">2</div>
             </div>
             <div class="img-thumb">
-              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-placeholder"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-document"></use></svg></div>
               <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
               <div class="img-thumb-idx">3</div>
             </div>
             <div class="img-thumb">
-              <div class="img-thumb-placeholder">🖼</div>
+              <div class="img-thumb-placeholder"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-document"></use></svg></div>
               <div class="img-thumb-del" onclick="showMsg('已删除图片')">×</div>
               <div class="img-thumb-idx">4</div>
             </div>
@@ -1483,7 +1483,7 @@
         <div>
           <div style="font-size:12px;color:var(--text-sub);margin-bottom:6px;">大图预览</div>
           <div class="img-preview-large">
-            <div class="img-thumb-placeholder">🖼</div>
+            <div class="img-thumb-placeholder"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-document"></use></svg></div>
           </div>
           <div style="font-size:11px;color:var(--text-sub);margin-top:6px;text-align:center;">主图第1张</div>
         </div>
@@ -1653,15 +1653,15 @@
     <div class="modal-body">
       <div class="m-form-row">
         <div class="m-form-label">物料编码</div>
-        <input class="m-form-control" disabled value="A1901005067" />
+        <input class="m-form-control" disabled value="A1901005067"  aria-label="物料编码"/>
       </div>
       <div class="m-form-row">
         <div class="m-form-label">物料名称</div>
-        <input class="m-form-control" disabled value="PVC线槽" />
+        <input class="m-form-control" disabled value="PVC线槽"  aria-label="物料名称"/>
       </div>
       <div class="m-form-row">
         <div class="m-form-label">审核意见 <span class="req">*</span></div>
-        <textarea class="m-form-control" id="rejectRemark" placeholder="请输入驳回原因（必填）..."></textarea>
+        <textarea class="m-form-control" id="rejectRemark" placeholder="请输入驳回原因（必填）..." aria-label="审核意见"></textarea>
       </div>
     </div>
     <div class="modal-footer">
@@ -1682,7 +1682,7 @@
       <div class="qa-form-row">
         <label class="qa-form-label qa-form-label-required">图片资质类型：</label>
         <div class="qa-form-content">
-          <select class="qa-select" id="qaTypeSelect">
+      <select class="qa-select" id="qaTypeSelect" aria-label="图片资质类型">
             <option value="">请选择图片资质类型</option>
             <option value="SAFETY_PRODUCTION_LICENSE">安全生产许可证</option>
             <option value="PRODUCTION_LICENSE">生产许可证</option>
@@ -1701,7 +1701,7 @@
       </div>
 
       <div class="qa-upload-dragger" onclick="onQAMockUpload()">
-        <div class="qa-upload-icon">📤</div>
+        <div class="qa-upload-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-upload"></use></svg></div>
         <div class="qa-upload-text">点击或拖拽文件到此处</div>
         <div class="qa-upload-hint">
           支持: jpg / png / pdf /<br/>
@@ -1722,7 +1722,7 @@
 <div class="qa-popconfirm-mask" id="qaPopconfirm">
   <div class="qa-popconfirm-box">
     <div class="qa-popconfirm-title">
-      <span class="qa-popconfirm-title-icon">⚠</span>
+      <span class="qa-popconfirm-title-icon" aria-hidden="true">!</span>
       <span>确认删除此资质文件吗？<br/><span style="color:var(--text-sub);font-size:12px;">删除后将记录到物料操作历史，已审核通过的历史不受影响。</span></span>
     </div>
     <div class="qa-popconfirm-actions">
@@ -1742,8 +1742,8 @@
     <div class="modal-body">
       <!-- 顶部搜索框 -->
       <div class="cat-search-bar">
-        <input class="cat-search-input" id="catSearchInput" placeholder="请输入名称或编码" oninput="filterCategoryTree()" />
-        <button class="cat-search-btn" onclick="filterCategoryTree()">🔍</button>
+        <input class="cat-search-input" id="catSearchInput" placeholder="请输入名称或编码" oninput="filterCategoryTree()"  aria-label="搜索类目名称或编码"/>
+        <button class="cat-search-btn" type="button" onclick="filterCategoryTree()" aria-label="搜索类目"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-search"></use></svg></button>
       </div>
 
       <!-- 左右两栏 -->
@@ -1751,7 +1751,7 @@
         <!-- 左：类目树 -->
         <div class="cat-left">
           <div class="cat-pane-title">
-            <span class="cat-pane-title-l">📂 类目层级</span>
+            <span class="cat-pane-title-l"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-folder"></use></svg> 类目层级</span>
             <span style="font-size:11px;color:var(--text-sub);">必须选到四级</span>
           </div>
           <div class="cat-tree-wrap" id="catTreeWrap">
@@ -1762,8 +1762,8 @@
         <!-- 右：AI 建议 -->
         <div class="cat-right">
           <div class="cat-pane-title">
-            <span class="cat-pane-title-l">🤖 四级类目（AI建议）</span>
-            <span class="cat-ai-retry" onclick="retryAiCategory()">🔄 重试</span>
+            <span class="cat-pane-title-l"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-ai"></use></svg> 四级类目（AI建议）</span>
+            <span class="cat-ai-retry" onclick="retryAiCategory()"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-refresh"></use></svg> 重试</span>
           </div>
           <div class="cat-ai-zone">
             <div class="cat-ai-list" id="catAiList">
@@ -1839,8 +1839,8 @@
           <div class="price-toolbar">
             <span class="price-title" id="priceRecordSubTitle">商城价 历史记录</span>
             <div class="price-mode-switch" role="tablist">
-              <button class="active" data-mode="list" onclick="switchPriceMode('list')">📋 列表</button>
-              <button data-mode="chart" onclick="switchPriceMode('chart')">📈 折线</button>
+              <button class="active" data-mode="list" onclick="switchPriceMode('list')"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-task"></use></svg> 列表</button>
+              <button data-mode="chart" onclick="switchPriceMode('chart')"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-grid"></use></svg> 折线</button>
             </div>
           </div>
           <div id="priceRecordView" style="flex:1;display:flex;flex-direction:column;min-height:0;"></div>
@@ -2100,7 +2100,7 @@
   // 消息提示
   function showMsg(text, type = 'info', duration = 2200) {
     const wrap = document.getElementById('msgWrap');
-    const icons = { info: '💬', ok: '✅', warn: '⚠️', err: '❌' };
+    const icons = { info: '提示', ok: '成功', warn: '警告', err: '错误' };
     const el = document.createElement('div');
     el.className = 'msg-item';
     el.innerHTML = `<span>${icons[type] || icons.info}</span>${text}`;
@@ -2406,7 +2406,7 @@
       const conf = (s.confidence * 100).toFixed(0);
       const barCls = s.confidence >= 0.9 ? '' : (s.confidence >= 0.7 ? 'mid' : 'low');
       const confColor = s.confidence >= 0.7 ? '#1677ff' : '#faad14';
-      const reasonHtml = s.reason ? `<div class="cat-ai-reason">💡 ${s.reason}</div>` : '';
+      const reasonHtml = s.reason ? `<div class="cat-ai-reason"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> ${s.reason}</div>` : '';
       return `
         <div class="cat-ai-item" onclick="useAiSuggestion(${i})" title="点击采用此类目">
           <div class="cat-ai-info">
@@ -3018,6 +3018,6 @@
   renderRecommendTags();
 </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+</main><script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 

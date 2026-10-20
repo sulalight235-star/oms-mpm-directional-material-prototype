@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>咸亨产品奖励管理 - 列表页</title>
+  <title>咸亨产品奖励管理-奖励配置列表 - MPM物料主数据系统</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     :root {
@@ -32,7 +32,7 @@
       font-size: 14px;
       background: var(--bg-layout);
       color: var(--text-body);
-      min-width: 1280px;
+      min-width: 0;
     }
     a { color: inherit; text-decoration: none; }
     button, input, select { font: inherit; }
@@ -360,7 +360,7 @@
 
     /* ── 表格 ── */
     .table-wrap { overflow-x: auto; }
-    table { width: 100%; min-width: 1580px; border-collapse: collapse; font-size: 13px; }
+    table { width: 100%; min-width: 1950px; border-collapse: collapse; font-size: 13px; }
     thead tr { background: var(--bg-table-head); }
     thead th {
       padding: 10px 12px;
@@ -556,6 +556,17 @@
     @media (max-width: 1500px) {
       .reward-filter-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
     }
+    @media (max-width: 1024px) {
+      .topbar { gap: 8px; overflow: hidden; }
+      .brand { min-width: 0; flex: 1 1 auto; }
+      .brand-name { overflow: hidden; text-overflow: ellipsis; }
+      .nav-menu { min-width: 80px; max-width: 45%; overflow-x: auto; scrollbar-width: none; }
+      .nav-menu::-webkit-scrollbar { display: none; }
+      .nav-item { flex-shrink: 0; }
+    }
+    @media (max-width: 600px) {
+      .reward-filter-grid { grid-template-columns: minmax(0, 1fr); }
+    }
 
     /* ── 批量弹窗 ── */
     .modal-mask {
@@ -744,8 +755,8 @@
       color: var(--text-sub);
     }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
   <!-- 顶栏 -->
   <header class="topbar">
     <div class="brand">
@@ -776,7 +787,7 @@
   </div>
 
   <!-- 主体 -->
-  <main class="page">
+  <main id="main-content" class="page" tabindex="-1">
     <!-- 筛选区 -->
     <section class="filter-card">
       <div class="filter-head">
@@ -823,7 +834,7 @@
           <div class="date-range-group">
             <input id="rewardOperateDateStart" class="f-input" type="date" />
             <span class="date-range-sep">至</span>
-            <input id="rewardOperateDateEnd" class="f-input" type="date" />
+            <input id="rewardOperateDateEnd" class="f-input" type="date"  aria-label="操作时间"/>
           </div>
         </div>
         <div class="filter-actions">
@@ -841,7 +852,7 @@
           <div class="summary-title">咸亨产品奖励管理</div>
         </div>
         <div class="toolbar-actions">
-          <button class="btn btn-default" type="button" id="importRewardBtn">批量导入</button>
+          <button class="btn btn-default" type="button" id="importRewardBtn">导入批改</button>
           <button class="btn btn-default" type="button" id="batchDeleteRewardBtn">批量删除</button>
           <div class="export-dropdown" id="exportDropdown">
             <button class="btn btn-default" type="button" id="exportRewardBtn">导出 ▾</button>
@@ -878,18 +889,22 @@
         <table>
           <thead>
             <tr>
-              <th style="width: 38px;"><input type="checkbox" id="selectAllRows" /></th>
+              <th style="width: 38px;"><input type="checkbox" id="selectAllRows"  aria-label="全选当前列表"/></th>
               <th>物料编码</th>
               <th>物料名称</th>
-              <th>物料货主编码</th>
-              <th>物料货主名称</th>
+              <th>货主编码</th>
+              <th>货主名称</th>
               <th>品牌名称</th>
+              <th>型号</th>
+              <th>标准调拨价（元/含税）</th>
+              <th>销售限价（元/含税）</th>
               <th>奖励类型</th>
-              <th>奖励金额</th>
-              <th>奖励比例</th>
-              <th>项目奖励标题</th>
+              <th>奖励标准*金额</th>
+              <th>奖励标准*比例(%)</th>
+              <th>奖励标准*项目制</th>
               <th>奖励有效期</th>
               <th>配置状态</th>
+              <th>操作原因</th>
               <th>操作时间</th>
               <th>操作人</th>
               <th>操作</th>
@@ -899,11 +914,11 @@
         </table>
         <!-- 空态容器 -->
         <div class="empty-state" id="emptyState" hidden>
-          <div class="empty-icon">📭</div>
+          <div class="empty-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-document"></use></svg></div>
           <div class="empty-title" id="emptyTitle">暂无奖励配置数据</div>
-          <div class="empty-desc" id="emptyDesc">可点击右上角"批量导入"开始维护。</div>
+          <div class="empty-desc" id="emptyDesc">可点击右上角"导入批改"开始维护。</div>
           <div>
-            <button class="btn btn-default" type="button" id="emptyImportBtn">批量导入</button>
+            <button class="btn btn-default" type="button" id="emptyImportBtn">导入批改</button>
           </div>
         </div>
       </div>
@@ -918,7 +933,7 @@
           <button class="page-btn" type="button" data-page="3">3</button>
           <button class="page-btn" type="button" data-page="next">›</button>
           <div class="page-jump">
-            <select id="pageSizeSelect">
+            <select id="pageSizeSelect" aria-label="每页显示条数">
               <option selected>25</option>
               <option>50</option>
               <option>100</option>
@@ -927,7 +942,7 @@
           </div>
           <div class="page-jump">
             <span>跳至</span>
-            <input id="pageJumpInput" value="1" />
+            <input id="pageJumpInput" value="1"  aria-label="跳转页码"/>
             <span>页</span>
           </div>
         </div>
@@ -939,7 +954,7 @@
   <div class="modal-mask" id="modalImport" data-modal>
     <div class="bulk-modal">
       <div class="bulk-modal-header">
-        批量导入
+        导入批改
         <span class="modal-close" data-modal-close>×</span>
       </div>
       <div class="bulk-modal-body">
@@ -961,7 +976,7 @@
             <tr>
               <td>
                 <div><strong>批量新增修改模版</strong></div>
-                <div class="muted" style="font-size:12px;line-height:1.6;">字段：物料编码 /物料名称/ 奖励类型 / 奖励金额 / 奖励比例 / 有效期开始时间 / 有效期结束时间 / 说明文案；支持新增或修改奖励配置。</div>
+                <div class="muted" style="font-size:12px;line-height:1.6;">按导入模板下载，共 12 列，包含价格、有效期起止日期及操作原因。</div>
               </td>
               <td><span class="bulk-link" data-tpl="批量新增修改模版">下载</span></td>
               <td>
@@ -1002,7 +1017,7 @@
           已选 <strong id="deleteSelectedCount" style="color:#cf1322;">0</strong> 条奖励配置准备执行<strong>逻辑删除</strong>。
         </div>
         <div style="background:#fff1f0;border:1px solid #ffa39e;color:#820014;padding:10px 12px;border-radius:4px;line-height:1.7;font-size:12px;margin-bottom:12px;">
-          <div style="font-weight:600;margin-bottom:4px;">⚠ 删除审核通过后立即生效，影响范围：</div>
+          <div style="font-weight:600;margin-bottom:4px;">注意：删除审核通过后立即生效，影响范围：</div>
           • 商城前台<strong>立即隐藏</strong>对应奖励 Banner；<br/>
           • BI 不再将其计入"当前生效"汇总；<br/>
           • <strong>历史记录会完整保留</strong>；<br/>
@@ -1010,7 +1025,7 @@
         </div>
         <div style="margin-bottom:12px;">
           <label style="display:block;font-size:12px;color:#595959;margin-bottom:4px;">删除原因</label>
-          <textarea id="deleteReason" rows="3" maxlength="200" placeholder="例如：政策调整、奖励周期结束、配置错误等" style="width:100%;border:1px solid #d9d9d9;border-radius:4px;padding:6px 8px;font-size:12px;resize:vertical;"></textarea>
+          <textarea id="deleteReason" rows="3" maxlength="200" placeholder="例如：政策调整、奖励周期结束、配置错误等" style="width:100%;border:1px solid #d9d9d9;border-radius:4px;padding:6px 8px;font-size:12px;resize:vertical;" aria-label="删除原因"></textarea>
         </div>
         <div style="margin-bottom:16px;font-size:12px;">
           <label><input type="checkbox" id="deleteConfirmCheck" /> 我已了解上述影响，确认执行删除</label>
@@ -1058,30 +1073,30 @@
 
   <!-- 我的导出任务已迁移至「任务中心」全局页面 -->
 
-  <input type="file" id="hiddenFileInput" hidden />
+  <input type="file" id="hiddenFileInput" hidden  aria-label="导入奖励配置文件"/>
 
   <div class="message-wrap" id="messageWrap"></div>
   <div class="json-tooltip" id="jsonTooltip"></div>
 
   <div class="demo-tips-stack">
-    <div class="demo-tips" id="rewardListTip">
+    <div class="demo-tips collapsed" id="rewardListTip">
       <div class="demo-tips-head" onclick="toggleDemoTip('rewardListTip')">
-        <span class="t">💡 MPM v4.7.0 界面说明</span>
-        <span class="demo-tips-toggle">收起 ▾</span>
+        <span class="t"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> MPM v4.7.0 界面说明</span>
+        <span class="demo-tips-toggle">展开 ▸</span>
       </div>
       <div class="demo-tips-body">
         <b>界面操作：</b><br/>
         1. 筛选区支持按物料编码/名称、奖励类型、配置状态、奖励有效期、操作人、操作时间查询。<br/>
-        2. 顶部 <b>「批量导入」</b> 支持批量新增修改、删除两类 Excel 模板下载、选择文件和执行。<br/>
+        2. 顶部 <b>「导入批改」</b> 支持批量新增修改、删除两类 Excel 模板下载、选择文件和执行。<br/>
         3. <b>「批量删除」</b> 需先勾选列表记录，并填写/确认删除影响后提交。<br/>
-        4. <b>「导出」</b> 支持按当前筛选条件导出；未选择筛选条件时导出全部数据，导出文件可用于批量新增修改回传。<br/>
+        4. <b>「导出」</b> 支持按当前筛选条件导出；未选择筛选条件时导出全部数据。批量修改请下载“批量新增修改模版”。<br/>
         5. 列表 <b>「变更记录」</b> 可查看对应物料奖励配置的操作记录。<br/>
         <b>模板字段：</b><br/>
-        1. 批量新增修改模版：物料编码、奖励类型、奖励金额/比例、有效期开始/结束、项目奖励标题、奖励说明文案。<br/>
+        1. 批量新增修改模版：12 列，包含价格、有效期起止日期、奖励说明文案及操作原因；奖励规则导出为另一套 16 列结构。<br/>
         2. 批量删除模版：物料编码。<br/>
         <b>注意事项：</b><br/>
         1. 奖励类型枚举：1=项目奖励，2=定额奖励，3=比例奖励。<br/>
-        2. 项目奖励标题仅项目奖励必填，最多 50 字；奖励说明文案最多 500 字，支持 http/https 链接。<br/>
+        2. 奖励标准*项目制仅项目奖励填写；奖励有效期按“开始日期 至 结束日期”展示。<br/>
         3. 执行后进入两级审核，全部通过后才会入库并同步影响商城前台展示。
       </div>
     </div>
@@ -1129,7 +1144,7 @@
         status: '已生效', statusTag: 'tag-green', voidFlag: 'N',
         mallSync: '成功', mallSyncTag: 'tag-green',
         biSync: '成功', biSyncTag: 'tag-green',
-        updated: '2026-05-11 10:20', updater: '张敏', isError: false
+        updated: '2026-05-11 10:20', updater: '张敏', operationReason: '新增-物料奖励', isError: false
       },
       {
         id: 'RWD-202605110002',
@@ -1143,7 +1158,7 @@
         status: '已生效', statusTag: 'tag-green', voidFlag: 'N',
         mallSync: '失败', mallSyncTag: 'tag-red',
         biSync: '成功', biSyncTag: 'tag-green',
-        updated: '2026-05-11 11:05', updater: '李航', isError: true
+        updated: '2026-05-11 11:05', updater: '李航', operationReason: '调整-标准调拨价', isError: true
       },
       {
         id: 'RWD-202605100003',
@@ -1157,7 +1172,7 @@
         status: '已生效', statusTag: 'tag-green', voidFlag: 'N',
         mallSync: '成功', mallSyncTag: 'tag-green',
         biSync: '成功', biSyncTag: 'tag-green',
-        updated: '2026-05-10 16:42', updater: '王芳', isError: false
+        updated: '2026-05-10 16:42', updater: '王芳', operationReason: '调整-销售限价', isError: false
       },
       {
         id: 'RWD-202605110004',
@@ -1172,7 +1187,7 @@
         status: '未生效', statusTag: 'tag-grey', voidFlag: 'N',
         mallSync: '待同步', mallSyncTag: 'tag-grey',
         biSync: '待同步', biSyncTag: 'tag-grey',
-        updated: '2026-05-11 09:02', updater: '陈晨', isError: false
+        updated: '2026-05-11 09:02', updater: '陈晨', operationReason: '新增-物料奖励', isError: false
       },
       {
         id: 'RWD-202604010005',
@@ -1186,7 +1201,7 @@
         status: '已生效', statusTag: 'tag-green', voidFlag: 'N',
         mallSync: '成功', mallSyncTag: 'tag-green',
         biSync: '失败', biSyncTag: 'tag-red',
-        updated: '2026-05-09 15:18', updater: '赵宇', isError: true
+        updated: '2026-05-09 15:18', updater: '赵宇', operationReason: '调整-奖励标准', isError: true
       },
       {
         id: 'RWD-202603010006',
@@ -1200,7 +1215,7 @@
         status: '已失效', statusTag: 'tag-grey', voidFlag: 'N',
         mallSync: '成功', mallSyncTag: 'tag-green',
         biSync: '成功', biSyncTag: 'tag-green',
-        updated: '2026-05-01 10:00', updater: '管理员', isError: false
+        updated: '2026-05-01 10:00', updater: '管理员', operationReason: '调整-奖励标准', isError: false
       },
       // ↓↓↓ 新增 4 行覆盖：1 未生效 + 1 已失效 + 2 已删除 ↓↓↓
       {
@@ -1215,7 +1230,7 @@
         status: '未生效', statusTag: 'tag-grey', voidFlag: 'N',
         mallSync: '待同步', mallSyncTag: 'tag-grey',
         biSync: '待同步', biSyncTag: 'tag-grey',
-        updated: '2026-05-12 09:42', updater: '李航', isError: false
+        updated: '2026-05-12 09:42', updater: '李航', operationReason: '新增-物料奖励', isError: false
       },
       {
         id: 'RWD-202601010008',
@@ -1229,7 +1244,7 @@
         status: '已失效', statusTag: 'tag-grey', voidFlag: 'N',
         mallSync: '成功', mallSyncTag: 'tag-green',
         biSync: '成功', biSyncTag: 'tag-green',
-        updated: '2026-03-01 09:00', updater: '管理员', isError: false
+        updated: '2026-03-01 09:00', updater: '管理员', operationReason: '调整-奖励标准', isError: false
       },
       {
         id: 'RWD-202603010009',
@@ -1243,7 +1258,7 @@
         status: '已删除', statusTag: 'tag-red', voidFlag: 'Y',
         mallSync: '已撤回', mallSyncTag: 'tag-grey',
         biSync: '已撤回', biSyncTag: 'tag-grey',
-        updated: '2026-05-16 14:38', updater: '王雪', isError: false
+        updated: '2026-05-16 14:38', updater: '王雪', operationReason: '删除-物料奖励', isError: false
       },
       {
         id: 'RWD-202602010010',
@@ -1258,9 +1273,25 @@
         status: '已删除', statusTag: 'tag-red', voidFlag: 'Y',
         mallSync: '已撤回', mallSyncTag: 'tag-grey',
         biSync: '已撤回', biSyncTag: 'tag-grey',
-        updated: '2026-05-15 16:05', updater: '陈骋', isError: false
+        updated: '2026-05-15 16:05', updater: '陈骋', operationReason: '删除-物料奖励', isError: false
       }
     ];
+
+    const materialDetails = {
+      'SKU-10001': ['PVC-U 20mm', 18.50, 26.00],
+      'SKU-10002': ['PZ30-12', 168.00, 238.00],
+      'SKU-10003': ['BV 2.5mm²', 2.80, 4.20],
+      'SKU-10004': ['EX-LD-36W', 395.00, 528.00],
+      'SKU-10005': ['380V-5.5KW', 1250.00, 1680.00],
+      'SKU-10006': ['XL', 12.00, 19.00],
+      'SKU-10007': ['YJ-ZFZD-E3W', 86.00, 128.00],
+      'SKU-10008': ['200×100', 29.50, 42.00],
+      'SKU-10009': ['200×100', 46.00, 68.00],
+      'SKU-10010': ['86 型', 8.50, 15.00]
+    };
+    rewardMock.forEach(row => {
+      [row.model, row.transferPrice, row.salesLimitPrice] = materialDetails[row.code] || ['', '', ''];
+    });
 
     /* ------ 状态 ------ */
     const state = {
@@ -1391,7 +1422,7 @@
         document.getElementById('emptyTitle').textContent = hasQuery ? '没有符合条件的奖励配置' : '暂无奖励配置数据';
         document.getElementById('emptyDesc').textContent = hasQuery
           ? '试试调整筛选条件或清空关键词。'
-          : '可点击右上角"批量导入"开始维护。';
+          : '可点击右上角"导入批改"开始维护。';
         return;
       }
       emptyState.hidden = true;
@@ -1406,12 +1437,16 @@
           <td>${row.ownerCode || '<span class="muted">-</span>'}</td>
           <td>${row.ownerName || '<span class="muted">-</span>'}</td>
           <td>${row.brandName || '<span class="muted">-</span>'}</td>
+          <td>${escapeHtml(row.model || '-')}</td>
+          <td class="price">${row.transferPrice === '' ? '<span class="muted">-</span>' : `¥${Number(row.transferPrice).toFixed(2)}`}</td>
+          <td class="price">${row.salesLimitPrice === '' ? '<span class="muted">-</span>' : `¥${Number(row.salesLimitPrice).toFixed(2)}`}</td>
           <td>${tagHtml(row.type, row.typeTag)}</td>
           <td class="price">${row.amountNum === '' || row.amountNum == null ? '<span class="muted">-</span>' : `¥${Number(row.amountNum).toFixed(2)}`}</td>
           <td class="price">${row.ratioNum === '' || row.ratioNum == null ? '<span class="muted">-</span>' : `${Number(row.ratioNum).toFixed(2)}%`}</td>
           <td>${row.rewardTitle ? row.rewardTitle : '<span class="muted">-</span>'}</td>
           <td>${row.period}</td>
           <td>${tagHtml(row.status, row.statusTag)}</td>
+          <td>${row.operationReason ? escapeHtml(row.operationReason) : '<span class="muted">-</span>'}</td>
           <td>${row.updated}</td>
           <td>${row.updater || '<span class="muted">-</span>'}</td>
           <td><button class="btn-link" type="button" data-action="change-log" data-code="${row.code}">变更记录</button></td>
@@ -1528,16 +1563,12 @@
     const exportMenu = document.getElementById('exportDropdownMenu');
 
     const REWARD_RULE_EXPORT_HEADERS = [
-      '物料编码', '物料名称', '物料货主编码', '物料货主名称', '品牌名称',
-      '奖励有效期开始时间',
-      '奖励类型',
-      '奖励金额', '奖励比例(%)',
-      '奖励有效期结束时间',
-      '项目奖励标题',
-      '奖励说明文案',
-      '配置状态', '操作人', '操作时间'
+      '物料编码', '物料名称', '货主编码', '货主名称', '品牌名称',
+      '型号', '标准调拨价（元/含税）', '销售限价（元/含税）',
+      '奖励类型', '奖励标准*金额', '奖励标准*比例(%)', '奖励标准*项目制',
+      '奖励有效期', '配置状态', '最近更新人', '最近更新时间'
     ];
-    const REWARD_RULE_EXPORT_WIDTHS = [14, 22, 14, 28, 18, 22, 14, 12, 12, 22, 28, 32, 12, 12, 20];
+    const REWARD_RULE_EXPORT_WIDTHS = [14, 22, 14, 28, 18, 20, 24, 24, 14, 20, 22, 28, 28, 12, 16, 20];
     const OPERATION_LOG_EXPORT_HEADERS = ['物料编码', '物料名称', '货主', '变更类型', '变更前', '变更后', '变更人', '变更时间'];
     const OPERATION_LOG_EXPORT_WIDTHS = [14, 22, 28, 12, 42, 42, 18, 20];
 
@@ -1548,13 +1579,14 @@
         r.ownerCode || '',
         r.ownerName || '',
         r.brandName || '',
-        r.startDate,
+        r.model || '',
+        r.transferPrice === '' ? '' : r.transferPrice,
+        r.salesLimitPrice === '' ? '' : r.salesLimitPrice,
         r.type,
         r.amountNum === '' ? '' : r.amountNum,
-        r.ratioNum === '' ? '' : r.ratioNum,
-        r.endDate,
+        r.ratioNum === '' || r.ratioNum == null ? '' : `${r.ratioNum}%`,
         r.rewardTitle || '',
-        r.description || '',
+        `${r.startDate} 至 ${r.endDate}`,
         r.status,
         r.updater,
         r.updated
@@ -1576,41 +1608,6 @@
       });
       ws['!freeze'] = { xSplit: 0, ySplit: 1 };
       XLSX.utils.book_append_sheet(wb, ws, '奖励规则');
-
-      // 第 2 个 Sheet：导出说明
-      const readme = [
-        ['导出说明', '', '', ''],
-        ['模式', '', '', mode === 'all' ? '导出全部' : '按当前筛选条件导出'],
-        ['导出条数', '', '', String(rows.length)],
-        ['生成时间', '', '', new Date().toLocaleString('zh-CN')],
-        [],
-        ['列结构', '', '', ''],
-        ['字段', '类型', '是否回传识别', '说明'],
-        ['物料编码', 'String(32)', 'Y', '业务键-定位用，回传到批量新增修改模版时不可修改'],
-        ['物料名称', 'String(200)', 'N', '辅助阅读；回传时系统忽略此列'],
-        ['物料货主编码', 'String(32)', 'N', '系统按物料编码联查带出；回传时被忽略'],
-        ['物料货主名称', 'String(200)', 'N', '系统按物料编码联查带出；回传时被忽略'],
-        ['品牌名称', 'String(200)', 'N', '系统按物料编码联查带出，含中/英；回传时被忽略'],
-        ['奖励有效期开始时间', 'Date(yyyy-MM-dd)', 'Y', '业务键-定位用，回传到批量新增修改模版时不可修改'],
-        ['奖励类型', 'Enum', 'Y', '项目奖励 / 定额奖励 / 比例奖励'],
-        ['奖励金额', 'Decimal(18,2)', '条件', '仅定额奖励填写'],
-        ['奖励比例(%)', 'Decimal(8,4)', '条件', '仅比例奖励填写'],
-        ['奖励有效期结束时间', 'Date(yyyy-MM-dd)', 'N', '回传批量新增修改模版时留空 = 不改'],
-        ['项目奖励标题', 'String(50)', '条件', '仅"项目奖励"必填且 1~50 字；不限文本类型；商城前台紧跟「项目奖励」标签展示'],
-        ['奖励说明文案', 'String(500)', 'N', '最大 500 字；支持 http/https 链接地址，商城前台自动渲染为可点击超链接'],
-        ['配置状态', 'Enum', 'N', '系统计算列；回传时被忽略'],
-        ['操作人', 'String', 'N', '系统列；回传时被忽略'],
-        ['操作时间', 'DateTime', 'N', '系统列；回传时被忽略'],
-        [],
-        ['回传说明', '', '', ''],
-        ['1', '', '', '此导出文件可直接补/改可改字段后，通过【批量导入 → 批量新增修改模版】回传'],
-        ['2', '', '', '物料编码用于定位记录'],
-        ['3', '', '', '奖励类型必填，回传时按模板枚举要求填写'],
-        ['4', '', '', '如需将其中部分行执行删除：复制物料编码到批量删除模版再回传'],
-      ];
-      const readmeWs = XLSX.utils.aoa_to_sheet(readme);
-      readmeWs['!cols'] = [{ wch: 22 }, { wch: 18 }, { wch: 14 }, { wch: 60 }];
-      XLSX.utils.book_append_sheet(wb, readmeWs, '导出说明');
 
       return wb;
     }
@@ -1662,10 +1659,6 @@
         return;
       }
       const rows = getExportRows(mode);
-      if (!rows.length) {
-        showMessage('当前查询结果为空，无数据可导出', 'warning');
-        return;
-      }
       const wb = buildRewardRuleWorkbook(rows, mode);
       const today = new Date().toISOString().slice(0, 10);
       const fileName = `咸亨奖励规则-${filenameHint || (mode === 'all' ? '导出全部' : '按当前筛选条件导出')}_${today}.xlsx`;
@@ -1747,39 +1740,47 @@
     const hiddenFile = document.getElementById('hiddenFileInput');
     let activePickTarget = null;
 
-    /* ------ Excel 模板定义（与 PRD V1.8 4.3 字段清单完全对齐：已删除项目编码列、奖励说明文案 200→500；V1.10：必填标记与示例值同步更新） ------ */
-    const REWARD_TYPE_HEADER = '奖励类型\n（1.项目奖励；2定额奖励；3比例奖励）';
-    const REWARD_TYPE_HEADER_REQ = '*奖励类型\n（1.项目奖励；2定额奖励；3比例奖励）';
+    /* ------ Excel 模板定义 ------ */
     const TEMPLATE_DEFS = {
       '批量新增修改模版': {
         sheet: '批量新增修改',
-        headers: ['*物料编码', '物料名称', REWARD_TYPE_HEADER_REQ, '奖励金额', '奖励比例(%)', '*奖励有效期开始时间', '*奖励有效期结束时间', '项目奖励标题（≤50字，仅项目奖励必填）', '奖励说明文案（≤500字，支持 http/https 链接）'],
-        examples: [
-          ['SKU-10001', 'PVC 管材', 1, '', '', '2026-06-01', '2026-12-31', '2026 年度装修工程项目奖励', '参与年度项目即享，方案详情：https://example.com/promo/PRJ-2026-001'],
-          ['SKU-10002', '配电箱', 2, 100.00, '', '2026-06-01', '2026-12-31', '', '满 X 件即享'],
-          ['SKU-10003', 'LED 灯具', 3, '', 5.0000, '2026-06-01', '2026-12-31', '', '按调拨价 5% 返利']
+        headers: [
+          '*物料编码', '物料名称', '*标准调拨价（元/含税）', '*销售限价（元/含税）',
+          '*奖励类型（1.项目奖励；2定额奖励；3比例奖励）', '*奖励标准*金额', '*奖励标准*比例(%)',
+          '*奖励有效期开始时间', '*奖励有效期结束时间',
+          '*奖励标准*项目制（<50字，仅项目奖励必填）',
+          '奖励说明文案（<500字，支持http/https 链接）',
+          '*操作原因（类型：新增-物料奖励\n调整-标准调拨价\n调整-销售限价\n调整-奖励标准\n删除-物料奖励）'
         ],
-        widths: [14, 18, 26, 12, 12, 22, 22, 28, 36],
+        examples: [
+          ['B1506000148', 'PVC 管材', 1020, 100, 1, '', '', '2026-07-07', '2026-07-07', '2026 年度装修工程项目奖励', '参与年度项目申享，方案详情：https://example.com', '新增-物料奖励'],
+          ['SKU-10002', '配电箱', 168, 238, 2, 120, '', '2026-06-01', '2026-09-30', '', '满 X 件即享', '调整-奖励标准'],
+          ['SKU-10003', '电线电缆 2.5mm²', 2.8, 4.2, 3, '', 3.5, '2026-05-10', '2026-08-31', '', '', '调整-奖励标准']
+        ],
+        widths: [16, 24, 24, 24, 40, 22, 24, 25, 25, 46, 48, 48],
         readme: [
           ['字段', '类型', '必填', '说明'],
-          ['物料编码', 'String(32)', 'Y', '必须存在于 MPM 物料主数据；导入后系统自动联查物料货主编码、物料货主名称、品牌名称三字段'],
-          ['物料名称', 'String(200)', 'N', '仅参考，导入时按物料编码自动带出，不参与写入'],
-          ['奖励类型', 'Enum(1/2/3)', 'Y', '枚举值：1=项目奖励；2=定额奖励；3=比例奖励'],
-          ['奖励金额', 'Decimal(18,2)', '条件', '仅"定额奖励"必填且必须 > 0；最多 2 位小数'],
-          ['奖励比例(%)', 'Decimal(8,4)', '条件', '仅"比例奖励"必填，> 0 且 ≤ 100；最多 4 位小数'],
-          ['奖励有效期开始时间', 'Date(yyyy-MM-dd)', 'Y', '与同物料已有有效记录不得在时间区间上冲突'],
-          ['奖励有效期结束时间', 'Date(yyyy-MM-dd)', 'Y', '不得早于开始时间'],
-          ['项目奖励标题', 'String(50)', '条件', '仅"项目奖励"必填且 1~50 字；不限文本类型（中英文/数字/符号/emoji 均可）；定额/比例奖励填写会被系统忽略并清空；商城前台紧跟「项目奖励」标签展示'],
-          ['奖励说明文案', 'String(500)', 'N', '最大 500 字；支持 http/https 链接地址，商城前台自动渲染为可点击超链接（target="_blank"）；项目奖励建议填写'],
+          ['*物料编码', 'String(32)', 'Y', '保留前导零；须存在于 MPM。新增校验一物料一条未删除奖励；修改用编码+开始日期定位，业务键不可改'],
+          ['物料名称', 'String(200)', 'N', '仅供核对；系统按物料编码读取实际名称，不以此列更新物料名称；超长处理待确认'],
+          ['*标准调拨价（元/含税）', 'Decimal', 'Y/待确认', '合法含税数值，不得为负；精度、是否允许 0、删除行是否必填及价格写入规则待评审'],
+          ['*销售限价（元/含税）', 'Decimal', 'Y/待确认', '合法含税数值，不得为负；精度、是否允许 0、与标准调拨价的大小关系及删除行必填规则待评审'],
+          ['*奖励类型（1.项目奖励；2定额奖励；3比例奖励）', 'Enum(1/2/3)', 'Y', '只填写数字 1/2/3：1=项目奖励；2=定额奖励；3=比例奖励；跨类型修改按目标类型重新校验'],
+          ['*奖励标准*金额', 'Decimal(18,2)', '条件', '仅定额奖励必填，必须 >0、最多 2 位小数；项目/比例奖励禁填'],
+          ['*奖励标准*比例(%)', 'Decimal(8,4)', '条件', '仅比例奖励必填，0<比例<=100、最多 4 位小数；填数字 3 表示 3%，不带 %；项目/定额奖励禁填'],
+          ['*奖励有效期开始时间', 'Date(yyyy-MM-dd)', 'Y', '真实日期；新增不得早于提交当天，且不得晚于结束日期；修改时与物料编码共同定位原记录'],
+          ['*奖励有效期结束时间', 'Date(yyyy-MM-dd)', 'Y/待确认', '真实日期且不得早于开始日期；截图标必填，原修改规则允许留空不改，待确认'],
+          ['*奖励标准*项目制（<50字，仅项目奖励必填）', 'String(50)', '条件', '项目奖励必填非空标题；其他类型不写入标题；截图 <50 字与原最多 50 字冲突，边界待确认'],
+          ['奖励说明文案（<500字，支持http/https 链接）', 'String(500)', 'N', '可含 http/https 链接；截图 <500 字与原最多 500 字冲突，边界待确认'],
+          ['*操作原因（类型：新增-物料奖励\n调整-标准调拨价\n调整-销售限价\n调整-奖励标准\n删除-物料奖励）', 'Enum(5项)', 'Y', '只填写表头列出的一个原因，须与实际动作匹配；多字段调整和删除行处理待确认'],
           [],
-          ['注意事项', '', '', ''],
-          ['1', '', '', '同一文件内可混合多种奖励类型（1/2/3 任意组合），按行独立校验'],
-          ['2', '', '', '业务键 = 物料编码 + 奖励有效期开始时间，新增时若业务键已存在将报错'],
-          ['3', '', '', '一个物料系统中有且仅有一条未删除奖励配置（一个类型 + 一段有效期）；如需调整请走"批量删除 + 批量新增修改"'],
-          ['4', '', '', 'V1.8 变更：已移除项目编码列，项目奖励的项目归属请在"奖励说明文案"中自由描述并可附详情链接'],
-          ['5', '', '', 'V1.10 变更：奖励类型 / 开始时间 / 结束时间均为必填，表头加 * 前缀；奖励类型填写枚举数字 1/2/3'],
-          ['6', '', '', 'V2.5 变更：新增「项目奖励标题」列（≤50字，仅项目奖励必填）；单批上限由 1000 行调整为 50000 行'],
-          ['7', '', '', 'V2.6 变更：新增模板与修改模板合并为「批量新增修改模版」'],
+          ['文件级校验', '', '', ''],
+          ['格式', '.xlsx', 'Y', '首行 A~L 共 12 列须与模板逐字、逐序一致；16 列奖励规则导出不能直接回传；空文件或无数据行拒绝'],
+          ['行数', '最多 50000', 'Y', '新增/修改单批最多 50000 条有效数据行；超出整文件拒绝；不同奖励类型可逐行校验'],
+          ['错误反馈', '逐行', 'Y', '任务中心按 Excel 行号展示字段、失败原因，失败明细保留原始行；表头/文件格式错误整文件拒绝'],
+          ['奖励组合', '按类型', 'Y', '项目奖励：F/G 空、J 必填；定额奖励：F 必填、G 空；比例奖励：F 空、G 必填'],
+          ['操作原因', '按动作', 'Y/待确认', '新增对应新增；调整原因对应实际变更。删除原因虽列于枚举，当前另有批量删除模板，是否可在本模板执行待确认'],
+          ['审核', 'H0', 'Y/待确认', '奖励配置沿用 H0 两级审核后入库；价格变更是否复用同一审核任务和跨模块回滚待确认'],
+          ['原型边界', '', '', '本文件演示字段结构及填写说明，原型未接入真实后台导入校验或价格写入'],
         ]
       },
       '批量删除模版': {
@@ -1819,7 +1820,7 @@
       const dataAoA = [def.headers, ...def.examples];
       const ws = XLSX.utils.aoa_to_sheet(dataAoA);
       ws['!cols'] = def.widths.map(w => ({ wch: w }));
-      // 启用表头自动换行（奖励类型表头自带 \n）
+      // 启用长表头换行。
       Object.keys(ws).forEach(addr => {
         if (addr.startsWith('!')) return;
         const cell = ws[addr];
@@ -1834,7 +1835,7 @@
 
       // Sheet 2: 字段说明
       const readmeWs = XLSX.utils.aoa_to_sheet(def.readme);
-      readmeWs['!cols'] = [{ wch: 22 }, { wch: 18 }, { wch: 8 }, { wch: 60 }];
+      readmeWs['!cols'] = [{ wch: 52 }, { wch: 22 }, { wch: 14 }, { wch: 100 }];
       XLSX.utils.book_append_sheet(wb, readmeWs, '字段说明');
 
       const fileName = `咸亨奖励-${name}_${new Date().toISOString().slice(0, 10)}.xlsx`;
@@ -2005,6 +2006,6 @@
     syncStatusTab(allowed.includes(initTab) ? initTab : '全部', true);
   </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+<script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 

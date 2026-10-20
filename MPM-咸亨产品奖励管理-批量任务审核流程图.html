@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>批量任务审核流程图 · 咸亨产品奖励管理</title>
+  <title>咸亨产品奖励管理-批量任务审核流程图 - MPM物料主数据系统</title>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <style>
     :root {
@@ -163,8 +163,8 @@
     .demo-toolbar button:hover { border-color: var(--primary); color: var(--primary); }
     .demo-toolbar button.active:hover { color: #fff; }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div><main id="main-content" tabindex="-1">
   <!-- 返回工作台 -->
   <div class="back-bar">
     <span class="tag">原型预览</span>
@@ -292,13 +292,13 @@ flowchart TD
           </tr>
         </thead>
         <tbody>
-          <tr><td><strong>批量新增</strong>（Excel 导入 / 列表批量）</td><td><span class="tag tag-orange">✅ 两级审核</span></td><td>全部明细整体审核，任意行驳回 → 全单失败</td></tr>
-          <tr><td><strong>批量修改</strong>（Excel 导入）</td><td><span class="tag tag-orange">✅ 两级审核</span></td><td>同上</td></tr>
-          <tr><td><strong>批量删除</strong>（Excel 导入 / 列表多选）</td><td><span class="tag tag-orange">✅ 两级审核</span></td><td>同上</td></tr>
-          <tr><td>列表筛选 / 查询</td><td><span class="tag tag-green">❌ 不需要</span></td><td>不修改数据</td></tr>
-          <tr><td>导出当前查询 / 导出全部 / 我的导出任务下载</td><td><span class="tag tag-green">❌ 不需要</span></td><td>不修改数据</td></tr>
-          <tr><td>操作历史查询 / 历史导出</td><td><span class="tag tag-green">❌ 不需要</span></td><td>不修改数据</td></tr>
-          <tr><td>行内"重试同步"</td><td><span class="tag tag-green">❌ 不需要</span></td><td>只重发推送消息，不改业务数据</td></tr>
+          <tr><td><strong>批量新增</strong>（Excel 导入 / 列表批量）</td><td><span class="tag tag-orange">两级审核</span></td><td>全部明细整体审核，任意行驳回 → 全单失败</td></tr>
+          <tr><td><strong>批量修改</strong>（Excel 导入）</td><td><span class="tag tag-orange">两级审核</span></td><td>同上</td></tr>
+          <tr><td><strong>批量删除</strong>（Excel 导入 / 列表多选）</td><td><span class="tag tag-orange">两级审核</span></td><td>同上</td></tr>
+          <tr><td>列表筛选 / 查询</td><td><span class="tag tag-green">不需要</span></td><td>不修改数据</td></tr>
+          <tr><td>导出当前查询 / 导出全部 / 我的导出任务下载</td><td><span class="tag tag-green">不需要</span></td><td>不修改数据</td></tr>
+          <tr><td>操作历史查询 / 历史导出</td><td><span class="tag tag-green">不需要</span></td><td>不修改数据</td></tr>
+          <tr><td>行内"重试同步"</td><td><span class="tag tag-green">不需要</span></td><td>只重发推送消息，不改业务数据</td></tr>
         </tbody>
       </table>
     </div>
@@ -332,23 +332,23 @@ flowchart TD
       <div class="card-title">钉钉通知模板（H0 平台统一发出）</div>
       <div class="notify-list">
         <div class="notify-card">
-          <div class="notify-head">📋 任务发起 → 通知第一审核人</div>
+          <div class="notify-head"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-task"></use></svg> 任务发起 → 通知第一审核人</div>
           <div class="notify-body">您有一条《MPM 批量奖励任务》待审，发起人：<code>{applicantName}</code>，明细数：<code>{count}</code>，请于 3 个工作日内处理</div>
         </div>
         <div class="notify-card">
-          <div class="notify-head">✅ 第二审核通过 → 通知发起人</div>
+          <div class="notify-head"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-check"></use></svg> 第二审核通过 → 通知发起人</div>
           <div class="notify-body">您发起的《批量任务 <code>{bizTaskId}</code>》已通过 <code>汪李琼</code> 审核，任务已进入 MPM 执行阶段</div>
         </div>
         <div class="notify-card">
-          <div class="notify-head">➡️ 第一节点通过 → 通知第二审核人</div>
+          <div class="notify-head">第一节点通过 → 通知第二审核人</div>
           <div class="notify-body">您有一条《MPM 批量奖励任务》待审，发起人：<code>{applicantName}</code>，明细数：<code>{count}</code>，请于 3 个工作日内处理</div>
         </div>
         <div class="notify-card">
-          <div class="notify-head">❌ 任意节点驳回 → 通知发起人</div>
+          <div class="notify-head">驳回：任意节点驳回 → 通知发起人</div>
           <div class="notify-body">您发起的《批量任务 <code>{bizTaskId}</code>》被 <code>{approverName}</code> 驳回，原因：<code>{decisionComment}</code>，请修改后重新发起</div>
         </div>
         <div class="notify-card">
-          <div class="notify-head">⚠️ 审核通过但 MPM 执行失败</div>
+          <div class="notify-head">异常：审核通过但 MPM 执行失败</div>
           <div class="notify-body">您发起的《批量任务 <code>{bizTaskId}</code>》审核已通过但 MPM 入库失败，请联系运维</div>
         </div>
       </div>
@@ -389,7 +389,7 @@ flowchart TD
         </tbody>
       </table>
       <div style="font-size:12px; color: var(--text-sub); margin-top: 10px;">
-        💡 完整接口字段定义见 PRD V1.9 §5.5 章节。
+        <svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> 完整接口字段定义见 PRD V1.9 §5.5 章节。
       </div>
     </div>
 
@@ -454,5 +454,5 @@ flowchart TD
     });
   </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+</main><script src="assets/js/prototype-common.js" defer></script></body>
 </html>

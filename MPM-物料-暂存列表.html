@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>暂存列表 - 咸亨国际主数据管理平台</title>
+  <title>物料-暂存列表 - MPM物料主数据系统</title>
   <style>
     :root {
       --primary: #1677ff;
@@ -30,7 +30,7 @@
       font-size: 14px;
       background: var(--bg-layout);
       color: var(--text-body);
-      min-width: 1360px;
+      min-width: 0;
     }
     a { color: inherit; text-decoration: none; }
     button, input, select { font: inherit; }
@@ -228,8 +228,8 @@
       .filter-grid { grid-template-columns: repeat(2, minmax(240px, 1fr)) auto; }
     }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
   <header class="topbar">
     <div class="brand">
       <div class="brand-logo">咸</div>
@@ -265,7 +265,7 @@
     <div class="tabs-clear" id="clearTabs">清除</div>
   </div>
 
-  <main class="page">
+  <main id="main-content" class="page" tabindex="-1">
     <section class="filter-card">
       <form id="filterForm" class="filter-grid">
         <div class="filter-item">
@@ -315,7 +315,7 @@
         <table>
           <thead>
             <tr>
-              <th class="col-check"><input type="checkbox" id="checkAll" /></th>
+              <th class="col-check"><input type="checkbox" id="checkAll"  aria-label="全选当前列表"/></th>
               <th>名称</th>
               <th>类目</th>
               <th>货主</th>
@@ -350,7 +350,7 @@
           <button class="page-btn" type="button" data-page="next">›</button>
           <span class="pagination-left" style="margin-left:8px;">共 277 条</span>
           <div class="page-jump">
-            <select id="pageSizeSelect">
+            <select id="pageSizeSelect" aria-label="每页显示条数">
               <option selected>25</option>
               <option>50</option>
               <option>100</option>
@@ -359,7 +359,7 @@
           </div>
           <div class="page-jump">
             <span>跳至</span>
-            <input id="pageJumpInput" value="1" />
+            <input id="pageJumpInput" value="1"  aria-label="跳转页码"/>
             <span>页</span>
           </div>
         </div>
@@ -502,6 +502,6 @@
     renderTable();
   </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+<script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 

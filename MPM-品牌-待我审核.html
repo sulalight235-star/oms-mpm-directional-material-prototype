@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>品牌管理 - 待我审核</title>
+  <title>品牌-待我审核 - MPM物料主数据系统</title>
   <style>
     :root {
       --primary: #1d5cff;
@@ -20,7 +20,7 @@
 
     * { box-sizing: border-box; }
 
-    html, body { width: 100%; min-width: 1180px; height: 100%; }
+    html, body { width: 100%; min-width: 0; height: 100%; }
 
     body {
       margin: 0;
@@ -663,8 +663,8 @@
       .filter-item { grid-template-columns: auto 250px; min-width: 350px; }
     }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
   <header class="topbar">
     <div class="brand">
       <div class="brand-logo">咸</div>
@@ -692,7 +692,7 @@
     <div class="tabs-clear" onclick="location.href='MPM-工作台-首页.html'">清除</div>
   </div>
 
-  <main class="page-shell">
+  <main id="main-content" class="page-shell" tabindex="-1">
     <section class="filter-bar" aria-label="筛选条件">
       <div class="filter-title"><span class="search-icon" aria-hidden="true"></span>筛选:</div>
 
@@ -1121,5 +1121,5 @@
     renderTable();
   </script>
   <script src="mpm-topnav-links.js"></script>
-</body>
+<script src="assets/js/prototype-common.js" defer></script></body>
 </html>

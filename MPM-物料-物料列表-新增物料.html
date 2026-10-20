@@ -1,8 +1,8 @@
 ﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<title>新增物料｜智能新增物料</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>物料-物料列表-新增物料 - MPM物料主数据系统</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -1712,8 +1712,8 @@
     .floating-dots{right:12px;bottom:18px;}
   }
 </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div><main id="main-content" tabindex="-1">
 
 <header class="topbar">
   <div class="brand">
@@ -1802,7 +1802,7 @@
               </span>
             </div>
             <div class="smart-card-body">
-              <textarea id="smartMaterialText" class="smart-textarea" style="min-height:220px;" placeholder="请输入物料名称、品牌、型号、规格、用途等信息。支持多个物料数据新增，一行一个物料，例如：&#10;3M 防尘口罩 9501+ KN95 白色 头戴式&#10;公牛插座 GN-B3440 8位 3米 白色"></textarea>
+              <textarea id="smartMaterialText" class="smart-textarea" style="min-height:220px;" placeholder="请输入物料名称、品牌、型号、规格、用途等信息。支持多个物料数据新增，一行一个物料，例如：&#10;3M 防尘口罩 9501+ KN95 白色 头戴式&#10;公牛插座 GN-B3440 8位 3米 白色" aria-label="物料智能描述"></textarea>
               <div class="smart-note">点击提交后，系统提示提交成功，并从右向左滑动进入第二步识别结果。若传统字段已有值，不允许静默覆盖。</div>
             </div>
           </div>
@@ -1841,13 +1841,13 @@
                   </thead>
                   <tbody>
                     <tr data-parse-row="1">
-                      <td><input class="parse-edit-input" value="防尘口罩"></td>
-                      <td><input class="parse-edit-input" list="brandLibraryOptions" value="3M" placeholder="输入关键词搜索品牌库"></td>
-                      <td><input class="parse-edit-input" list="categoryLibraryOptions" value="呼吸防护用品" placeholder="输入关键词搜索类目库"></td>
-                      <td><input class="parse-edit-input" value="9501+"></td>
-                      <td><input class="parse-edit-input" value="KN95 / 白色 / 头戴式 / 无呼吸阀"></td>
-                      <td><input class="parse-edit-input" value="12.80"></td>
-                      <td><textarea class="parse-edit-area">3M 防尘口罩 KN95 / 白色 / 头戴式 / 无呼吸阀 9501+</textarea></td>
+                      <td><input class="parse-edit-input" value="防尘口罩" aria-label="名称（第1行）"></td>
+                      <td><input class="parse-edit-input" list="brandLibraryOptions" value="3M" placeholder="输入关键词搜索品牌库" aria-label="推荐品牌（第1行）"></td>
+                      <td><input class="parse-edit-input" list="categoryLibraryOptions" value="呼吸防护用品" placeholder="输入关键词搜索类目库" aria-label="推荐类目（第1行）"></td>
+                      <td><input class="parse-edit-input" value="9501+" aria-label="型号（第1行）"></td>
+                      <td><input class="parse-edit-input" value="KN95 / 白色 / 头戴式 / 无呼吸阀" aria-label="规格（第1行）"></td>
+                      <td><input class="parse-edit-input" value="12.80" aria-label="市场价（第1行）"></td>
+                      <td><textarea class="parse-edit-area" aria-label="描述（第1行）">3M 防尘口罩 KN95 / 白色 / 头戴式 / 无呼吸阀 9501+</textarea></td>
                       <td>
                         <span class="recommend-code-cell">
                           <span class="recommend-code">B0401025928</span>
@@ -1863,13 +1863,13 @@
                       </td>
                     </tr>
                     <tr data-parse-row="2">
-                      <td><input class="parse-edit-input" value="插座"></td>
-                      <td><input class="parse-edit-input" list="brandLibraryOptions" value="公牛" placeholder="输入关键词搜索品牌库"></td>
-                      <td><input class="parse-edit-input" list="categoryLibraryOptions" value="插座/排插" placeholder="输入关键词搜索类目库"></td>
-                      <td><input class="parse-edit-input" value="GN-B3440"></td>
-                      <td><input class="parse-edit-input" value="8位 / 3米 / 白色 / 总控开关"></td>
-                      <td><input class="parse-edit-input" value="68.00"></td>
-                      <td><textarea class="parse-edit-area">公牛 插座 8位 / 3米 / 白色 / 总控开关 GN-B3440</textarea></td>
+                      <td><input class="parse-edit-input" value="插座" aria-label="名称（第2行）"></td>
+                      <td><input class="parse-edit-input" list="brandLibraryOptions" value="公牛" placeholder="输入关键词搜索品牌库" aria-label="推荐品牌（第2行）"></td>
+                      <td><input class="parse-edit-input" list="categoryLibraryOptions" value="插座/排插" placeholder="输入关键词搜索类目库" aria-label="推荐类目（第2行）"></td>
+                      <td><input class="parse-edit-input" value="GN-B3440" aria-label="型号（第2行）"></td>
+                      <td><input class="parse-edit-input" value="8位 / 3米 / 白色 / 总控开关" aria-label="规格（第2行）"></td>
+                      <td><input class="parse-edit-input" value="68.00" aria-label="市场价（第2行）"></td>
+                      <td><textarea class="parse-edit-area" aria-label="描述（第2行）">公牛 插座 8位 / 3米 / 白色 / 总控开关 GN-B3440</textarea></td>
                       <td>
                         <span class="recommend-code-cell">
                           <span class="recommend-code">B0803012048</span>
@@ -2116,8 +2116,8 @@
         </div>
         <div class="card-body">
           <div class="row">
-            <div class="field"><span class="label req">货主</span><div class="control"><input class="input" value="咸亨国际科技股份有限公司" readonly></div></div>
-            <div class="field"><span class="label">是否维保</span><div class="control"><input type="checkbox"></div></div>
+            <div class="field"><span class="label req">货主</span><div class="control"><input class="input" value="咸亨国际科技股份有限公司" readonly aria-label="货主"></div></div>
+            <div class="field"><span class="label">是否维保</span><div class="control"><input type="checkbox" aria-label="是否维保"></div></div>
             <div class="field three-q field-detail-hidden" style="flex: 0 0 50%;">
               <span class="label req">物料标签</span>
               <div class="control radio-group">
@@ -2128,63 +2128,63 @@
             </div>
           </div>
           <div class="row row-detail-hidden">
-            <div class="field"><span class="label">数据类型</span><div class="control"><input class="input dim" value="-" readonly></div></div>
-            <div class="field"><span class="label">标品物料</span><div class="control"><input class="input dim" value="-" readonly></div></div>
+            <div class="field"><span class="label">数据类型</span><div class="control"><input class="input dim" value="-" readonly aria-label="标品物料"></div></div>
+            <div class="field"><span class="label">标品物料</span><div class="control"><input class="input dim" value="-" readonly aria-label="标品物料"></div></div>
           </div>
           <div class="row">
-            <div class="field"><span class="label req">编码</span><div class="control"><input class="input" value="B2002079386" readonly></div></div>
-            <div class="field"><span class="label req">品牌</span><div class="control"><input class="input" value="钢炬/GANGJU"></div></div>
-            <div class="field"><span class="label req">名称</span><div class="control"><input class="input" value="PVC管"></div></div>
-            <div class="field"><span class="label req">型号</span><div class="control"><input class="input" value="DN110*4m"></div></div>
+            <div class="field"><span class="label req">编码</span><div class="control"><input class="input" value="B2002079386" readonly aria-label="编码"></div></div>
+            <div class="field"><span class="label req">品牌</span><div class="control"><input class="input" value="钢炬/GANGJU" aria-label="品牌"></div></div>
+            <div class="field"><span class="label req">名称</span><div class="control"><input class="input" value="PVC管" aria-label="名称"></div></div>
+            <div class="field"><span class="label req">型号</span><div class="control"><input class="input" value="DN110*4m" aria-label="型号"></div></div>
           </div>
           <div class="row">
-            <div class="field"><span class="label req">基本单位</span><div class="control"><input class="input" value="米"></div></div>
+            <div class="field"><span class="label req">基本单位</span><div class="control"><input class="input" value="米" aria-label="基本单位"></div></div>
             <div class="field cat-rec">
               <span class="label req">类别</span>
               <div class="control">
-                <input class="input" value="PVC管道">
+                <input class="input" value="PVC管道" aria-label="类别">
                 <span class="ai-trigger" onclick="document.getElementById('aiModal').classList.add('show')">重新获取 AI</span>
               </div>
             </div>
-            <div class="field field-detail-hidden"><span class="label req">订单执行员</span><div class="control"><input class="input" value="郭佳蕾-订单履约三组-周..."><span class="link-btn" style="font-size:11px;">取消</span></div></div>
-            <div class="field field-detail-hidden"><span class="label req">采购部门</span><div class="control"><input class="input" value="电商管理部"></div></div>
+            <div class="field field-detail-hidden"><span class="label req">订单执行员</span><div class="control"><input class="input" value="郭佳蕾-订单履约三组-周..." aria-label="订单执行员"><span class="link-btn" style="font-size:11px;">取消</span></div></div>
+            <div class="field field-detail-hidden"><span class="label req">采购部门</span><div class="control"><input class="input" value="电商管理部" aria-label="采购部门"></div></div>
           </div>
           <div class="row row-detail-hidden">
-            <div class="field"><span class="label req">项目报价员</span><div class="control"><input class="input" value="郭佳蕾-18767169579"></div></div>
-            <div class="field"><span class="label">产品经理</span><div class="control"><select class="select"><option>请选择</option></select></div></div>
-            <div class="field"><span class="label req">加价系数(%)</span><div class="control"><input class="input" value="2"><span class="link-btn" style="font-size:11px;">取消</span></div></div>
-            <div class="field"><span class="label req">起订量</span><div class="control"><input class="input" value="1"></div></div>
+            <div class="field"><span class="label req">项目报价员</span><div class="control"><input class="input" value="郭佳蕾-18767169579" aria-label="项目报价员"></div></div>
+            <div class="field"><span class="label">产品经理</span><div class="control"><select class="select" aria-label="产品经理"><option>请选择</option></select></div></div>
+            <div class="field"><span class="label req">加价系数(%)</span><div class="control"><input class="input" value="2" aria-label="加价系数(%)"><span class="link-btn" style="font-size:11px;">取消</span></div></div>
+            <div class="field"><span class="label req">起订量</span><div class="control"><input class="input" value="1" aria-label="起订量"></div></div>
           </div>
           <div class="row row-detail-hidden">
-            <div class="field"><span class="label">是否倍数下单</span><div class="control"><input type="checkbox"></div></div>
-            <div class="field"><span class="label req">毛重</span><div class="control ctrl-suffix"><input class="input with-suffix" value="1"><span class="input-suffix">kg</span></div></div>
-            <div class="field"><span class="label">别名</span><div class="control"><input class="input" placeholder=""></div></div>
-            <div class="field"><span class="label req">物料税率</span><div class="control"><input class="input" value="13%增值税"></div></div>
+            <div class="field"><span class="label">是否倍数下单</span><div class="control"><input type="checkbox" aria-label="是否倍数下单"></div></div>
+            <div class="field"><span class="label req">毛重</span><div class="control ctrl-suffix"><input class="input with-suffix" value="1" aria-label="毛重"><span class="input-suffix">kg</span></div></div>
+            <div class="field"><span class="label">别名</span><div class="control"><input class="input" placeholder="" aria-label="别名"></div></div>
+            <div class="field"><span class="label req">物料税率</span><div class="control"><input class="input" value="13%增值税" aria-label="物料税率"></div></div>
           </div>
           <div class="row">
-            <div class="field"><span class="label req">市场价</span><div class="control ctrl-suffix"><input class="input with-suffix" value="21.00"><span class="input-suffix">元</span></div></div>
+            <div class="field"><span class="label req">市场价</span><div class="control ctrl-suffix"><input class="input with-suffix" value="21.00" aria-label="市场价"><span class="input-suffix">元</span></div></div>
             <div class="field">
               <span class="label req">商城价</span>
               <div class="control ctrl-suffix">
-                <input class="input with-suffix" value="21.00"><span class="input-suffix">元</span>
+                <input class="input with-suffix" value="21.00" aria-label="商城价"><span class="input-suffix">元</span>
               </div>
             </div>
             <div class="field field-detail-hidden" style="padding-left:0">
               <span class="label" style="width:auto"></span>
               <div class="control"><span class="link-btn" style="font-size:11px;">查询</span> <label style="font-size:11px;"><input type="checkbox" checked> 自动计算</label></div>
             </div>
-            <div class="field field-detail-hidden"><span class="label"><span class="change-badge">本次修改<span class="change-tip"><b>字段改名</b><br/><s>结算价</s> → <b>固定结算价</b><br/>来源：PRD V1.4（2026-05-11）</span></span>固定结算价</span><div class="control ctrl-suffix"><input class="input with-suffix dim" value="待询价" readonly><span class="input-suffix">元</span></div></div>
+            <div class="field field-detail-hidden"><span class="label"><span class="change-badge">本次修改<span class="change-tip"><b>字段改名</b><br/><s>结算价</s> → <b>固定结算价</b><br/>来源：PRD V1.4（2026-05-11）</span></span>固定结算价</span><div class="control ctrl-suffix"><input class="input with-suffix dim" value="待询价" readonly aria-label="固定结算价"><span class="input-suffix">元</span></div></div>
           </div>
           <div class="row">
-            <div class="field field-detail-hidden"><span class="label">项目调拨参考价</span><div class="control ctrl-suffix"><input class="input with-suffix dim" value="待询价" readonly><span class="input-suffix">元</span></div></div>
-            <div class="field field-detail-hidden"><span class="label">参考供货价</span><div class="control ctrl-suffix"><input class="input with-suffix dim" value="待询价" readonly><span class="input-suffix">元</span></div></div>
-            <div class="field"><span class="label">规格</span><div class="control"><input class="input"></div></div>
-            <div class="field field-detail-hidden"><span class="label">对外最高成交价</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">元</span></div></div>
+            <div class="field field-detail-hidden"><span class="label">项目调拨参考价</span><div class="control ctrl-suffix"><input class="input with-suffix dim" value="待询价" readonly aria-label="参考供货价"><span class="input-suffix">元</span></div></div>
+            <div class="field field-detail-hidden"><span class="label">参考供货价</span><div class="control ctrl-suffix"><input class="input with-suffix dim" value="待询价" readonly aria-label="参考供货价"><span class="input-suffix">元</span></div></div>
+            <div class="field"><span class="label">规格</span><div class="control"><input class="input" aria-label="规格"></div></div>
+            <div class="field field-detail-hidden"><span class="label">对外最高成交价</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入" aria-label="对外最高成交价"><span class="input-suffix">元</span></div></div>
           </div>
           <div class="row row-detail-hidden">
-            <div class="field"><span class="label"><span class="change-badge">本次修改<span class="change-tip"><b>字段改名</b><br/><s>对内最新成本价</s> → <b>对内最新成本价（组织间开票价）</b><br/>来源：SAP 接口每月结账之后凌晨批次同步<br/>变更依据：PRD V1.5（2026-05-13）</span></span>对内最新成本价（组织间开票价）</span><div class="control ctrl-suffix"><input class="input with-suffix dim" placeholder="待 SAP 月同步" readonly><span class="input-suffix">元</span></div></div>
-            <div class="field"><span class="label">品牌限价最低价</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">元</span></div></div>
-            <div class="field"><span class="label">品牌限价最高价</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">元</span></div></div>
+            <div class="field"><span class="label"><span class="change-badge">本次修改<span class="change-tip"><b>字段改名</b><br/><s>对内最新成本价</s> → <b>对内最新成本价（组织间开票价）</b><br/>来源：SAP 接口每月结账之后凌晨批次同步<br/>变更依据：PRD V1.5（2026-05-13）</span></span>对内最新成本价（组织间开票价）</span><div class="control ctrl-suffix"><input class="input with-suffix dim" placeholder="待 SAP 月同步" readonly aria-label="对外最高成交价"><span class="input-suffix">元</span></div></div>
+            <div class="field"><span class="label">品牌限价最低价</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入" aria-label="品牌限价最高价"><span class="input-suffix">元</span></div></div>
+            <div class="field"><span class="label">品牌限价最高价</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入" aria-label="品牌限价最高价"><span class="input-suffix">元</span></div></div>
           </div>
           <div class="row">
             <div class="field">
@@ -2196,8 +2196,8 @@
             </div>
           </div>
           <div class="row">
-            <div class="field half"><span class="label">描述</span><div class="control"><textarea class="input" style="height:50px; padding:6px 8px;">4米/根</textarea></div></div>
-            <div class="field half"><span class="label">内部备注</span><div class="control"><textarea class="input" style="height:50px; padding:6px 8px;" placeholder="定向函编码：DX202604240001"></textarea></div></div>
+            <div class="field half"><span class="label">描述</span><div class="control"><textarea class="input" style="height:50px; padding:6px 8px;" aria-label="描述">4米/根</textarea></div></div>
+            <div class="field half"><span class="label">内部备注</span><div class="control"><textarea class="input" style="height:50px; padding:6px 8px;" placeholder="定向函编码：DX202604240001" aria-label="内部备注"></textarea></div></div>
           </div>
           <div class="row">
             <div class="field half">
@@ -2223,44 +2223,44 @@
         <div class="card-header">二、次要信息</div>
         <div class="card-body">
           <div class="row">
-            <div class="field"><span class="label">条形码</span><div class="control"><input class="input" placeholder="请输入"></div></div>
-            <div class="field"><span class="label">助记码</span><div class="control"><input class="input" value="20260427电建-四川钢炬"></div></div>
-            <div class="field"><span class="label">毛重</span><div class="control ctrl-suffix"><input class="input with-suffix" value="1"><span class="input-suffix">kg</span></div></div>
-            <div class="field"><span class="label">净重</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">kg</span></div></div>
+            <div class="field"><span class="label">条形码</span><div class="control"><input class="input" placeholder="请输入" aria-label="条形码"></div></div>
+            <div class="field"><span class="label">助记码</span><div class="control"><input class="input" value="20260427电建-四川钢炬" aria-label="助记码"></div></div>
+            <div class="field"><span class="label">毛重</span><div class="control ctrl-suffix"><input class="input with-suffix" value="1" aria-label="毛重"><span class="input-suffix">kg</span></div></div>
+            <div class="field"><span class="label">净重</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入" aria-label="净重"><span class="input-suffix">kg</span></div></div>
           </div>
           <div class="row">
-            <div class="field"><span class="label">长</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">mm</span></div></div>
-            <div class="field"><span class="label">宽</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">mm</span></div></div>
-            <div class="field"><span class="label">高</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">mm</span></div></div>
-            <div class="field"><span class="label">体积</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">mm³</span></div></div>
+            <div class="field"><span class="label">长</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入" aria-label="宽"><span class="input-suffix">mm</span></div></div>
+            <div class="field"><span class="label">宽</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入" aria-label="高"><span class="input-suffix">mm</span></div></div>
+            <div class="field"><span class="label">高</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入" aria-label="体积"><span class="input-suffix">mm</span></div></div>
+            <div class="field"><span class="label">体积</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入" aria-label="体积"><span class="input-suffix">mm³</span></div></div>
           </div>
           <div class="row row-detail-hidden">
-            <div class="field"><span class="label">旧料码</span><div class="control"><input class="input" placeholder="请输入"></div></div>
-            <div class="field"><span class="label req">供应商</span><div class="control"><input class="input" value="四川钢炬商贸有限公司"></div></div>
+            <div class="field"><span class="label">旧料码</span><div class="control"><input class="input" placeholder="请输入" aria-label="旧料码"></div></div>
+            <div class="field"><span class="label req">供应商</span><div class="control"><input class="input" value="四川钢炬商贸有限公司" aria-label="供应商"></div></div>
             <div class="field three-q" style="flex: 0 0 50%">
               <span class="label">发货日</span>
               <div class="control ctrl-suffix">
-                <input class="input with-suffix" placeholder="请输入"><span class="input-suffix">天</span>
+                <input class="input with-suffix" placeholder="请输入" aria-label="发货日"><span class="input-suffix">天</span>
                 <label style="margin-left:8px; font-size:11px; white-space:nowrap;"><input type="checkbox" checked> 详询客服</label>
               </div>
             </div>
           </div>
           <div class="row row-detail-hidden">
-            <div class="field"><span class="label req">税收分类名称</span><div class="control"><input class="input" value="其他塑料制品"></div></div>
+            <div class="field"><span class="label req">税收分类名称</span><div class="control"><input class="input" value="其他塑料制品" aria-label="税收分类名称"></div></div>
             <div class="field">
               <span class="label req">税收分类编码</span>
               <div class="control" style="display:flex">
-                <input class="input" value="1070601990000000000" style="border-radius: 3px 0 0 3px">
+                <input class="input" value="1070601990000000000" style="border-radius: 3px 0 0 3px" aria-label="税收分类编码">
                 <span class="smart-fill">智能赋码</span>
               </div>
             </div>
-            <div class="field"><span class="label req">简称</span><div class="control"><input class="input" value="塑料制品"></div></div>
-            <div class="field"><span class="label req">税率</span><div class="control"><input class="input" value="0.13"></div></div>
+            <div class="field"><span class="label req">简称</span><div class="control"><input class="input" value="塑料制品" aria-label="简称"></div></div>
+            <div class="field"><span class="label req">税率</span><div class="control"><input class="input" value="0.13" aria-label="税率"></div></div>
           </div>
           <div class="row row-detail-hidden">
-            <div class="field"><span class="label">报关关税税率</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">%</span></div></div>
-            <div class="field"><span class="label">厂家订货号</span><div class="control"><input class="input" placeholder="请输入"></div></div>
-            <div class="field"><span class="label">产品线</span><div class="control"><select class="select"><option>请选择</option></select></div></div>
+            <div class="field"><span class="label">报关关税税率</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入" aria-label="报关关税税率"><span class="input-suffix">%</span></div></div>
+            <div class="field"><span class="label">厂家订货号</span><div class="control"><input class="input" placeholder="请输入" aria-label="厂家订货号"></div></div>
+            <div class="field"><span class="label">产品线</span><div class="control"><select class="select" aria-label="产品线"><option>请选择</option></select></div></div>
             <div class="field">
               <span class="label">是否开票</span>
               <div class="control radio-group">
@@ -2297,22 +2297,22 @@
               </thead>
               <tbody>
                 <tr>
-                  <td><input class="input supplier-name" value="四川钢炬商贸有限公司"></td>
+                  <td><input class="input supplier-name" value="四川钢炬商贸有限公司" aria-label="供应商名称（第1行）"></td>
                   <td>
                     <div class="control ctrl-suffix">
-                      <input class="input with-suffix" value="18.60"><span class="input-suffix">元</span>
+                      <input class="input with-suffix" value="18.60" aria-label="供货价（第1行）"><span class="input-suffix">元</span>
                     </div>
                   </td>
                   <td>
                     <div class="supply-fee">
-                      <select class="select">
+                      <select class="select" aria-label="附加费（类型/金额）（第1行）">
                         <option>物流费</option>
                         <option>检测费</option>
                         <option>包装费</option>
                         <option>安装费</option>
                       </select>
                       <div class="control ctrl-suffix">
-                        <input class="input with-suffix" value="0.00"><span class="input-suffix">元</span>
+                        <input class="input with-suffix" value="0.00" aria-label="附加费（类型/金额）（第1行）"><span class="input-suffix">元</span>
                       </div>
                     </div>
                   </td>
@@ -2322,9 +2322,9 @@
                       <label><input type="radio" name="nego1"> 否</label>
                     </div>
                   </td>
-                  <td><input class="input" value="全国"></td>
+                  <td><input class="input" value="全国" aria-label="供应范围（第1行）"></td>
                   <td>
-                    <select class="select">
+                    <select class="select" aria-label="发货仓库（第1行）">
                       <option>成都仓</option>
                       <option>杭州仓</option>
                       <option>供应商直发</option>
@@ -2332,11 +2332,11 @@
                   </td>
                   <td>
                     <div class="control ctrl-suffix">
-                      <input class="input with-suffix" value="120"><span class="input-suffix">件</span>
+                      <input class="input with-suffix" value="120" aria-label="计划库存（第1行）"><span class="input-suffix">件</span>
                     </div>
                   </td>
                   <td>
-                    <select class="select">
+                    <select class="select" aria-label="状态（第1行）">
                       <option>启用</option>
                       <option>停用</option>
                     </select>
@@ -2366,9 +2366,9 @@
                 <span class="tag tag-warn">非代理品牌</span>
               </div>
             </div>
-            <div class="field"><span class="label">行业</span><div class="control"><select class="select"><option>请选择</option></select></div></div>
-            <div class="field"><span class="label">厂控物料</span><div class="control"><select class="select"><option>请选择</option><option>是</option><option>否</option></select></div></div>
-            <div class="field"><span class="label">动销</span><div class="control"><select class="select"><option>请选择</option><option>超高动销</option><option>高动销</option><option>低动销</option><option>无动销</option></select></div></div>
+            <div class="field"><span class="label">行业</span><div class="control"><select class="select" aria-label="厂控物料"><option>请选择</option></select></div></div>
+            <div class="field"><span class="label">厂控物料</span><div class="control"><select class="select" aria-label="动销"><option>请选择</option><option>是</option><option>否</option></select></div></div>
+            <div class="field"><span class="label">动销</span><div class="control"><select class="select" aria-label="动销"><option>请选择</option><option>超高动销</option><option>高动销</option><option>低动销</option><option>无动销</option></select></div></div>
             <div class="field field-detail-hidden"><span class="label">推荐</span><div class="control"><select class="select" multiple aria-label="推荐多选"><option>核心主推</option><option>主推</option><option>常规</option><option>零星</option></select></div></div>
           </div>
           <div class="row">
@@ -2423,10 +2423,10 @@
                 <label><input type="radio" name="exp" checked> 否</label>
               </div>
             </div>
-            <div class="field"><span class="label">有效期</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入"><span class="input-suffix">天</span></div></div>
+            <div class="field"><span class="label">有效期</span><div class="control ctrl-suffix"><input class="input with-suffix" placeholder="请输入" aria-label="有效期"><span class="input-suffix">天</span></div></div>
           </div>
           <div class="row row-detail-hidden">
-            <div class="field"><span class="label req">是否物料清洗</span><div class="control"><select class="select"><option>否</option><option>是</option></select></div></div>
+            <div class="field"><span class="label req">是否物料清洗</span><div class="control"><select class="select" aria-label="是否物料清洗"><option>否</option><option>是</option></select></div></div>
           </div>
         </div>
       </div>
@@ -2484,8 +2484,8 @@
             </div>
           </div>
           <div class="row">
-            <div class="field"><span class="label" style="color:#1677ff;">外径</span><div class="control"><input class="input" placeholder="请输入"></div></div>
-            <div class="field"><span class="label" style="color:#1677ff;">壁厚</span><div class="control"><input class="input" placeholder="请输入"></div></div>
+            <div class="field"><span class="label" style="color:#1677ff;">外径</span><div class="control"><input class="input" placeholder="请输入" aria-label="壁厚"></div></div>
+            <div class="field"><span class="label" style="color:#1677ff;">壁厚</span><div class="control"><input class="input" placeholder="请输入" aria-label="壁厚"></div></div>
           </div>
         </div>
       </div>
@@ -2587,8 +2587,8 @@
             </div>
           </div>
           <div class="row">
-            <div class="field"><span class="label">最短剩余货架寿命</span><div class="control"><input class="input" placeholder="请输入"></div></div>
-            <div class="field"><span class="label">总货架寿命(天)</span><div class="control"><input class="input" placeholder="请输入"></div></div>
+            <div class="field"><span class="label">最短剩余货架寿命</span><div class="control"><input class="input" placeholder="请输入" aria-label="总货架寿命(天)"></div></div>
+            <div class="field"><span class="label">总货架寿命(天)</span><div class="control"><input class="input" placeholder="请输入" aria-label="总货架寿命(天)"></div></div>
             <div class="field">
               <span class="label">是否启用安全库存</span>
               <div class="control radio-group">
@@ -2598,8 +2598,8 @@
             </div>
           </div>
           <div class="row">
-            <div class="field"><span class="label">最大库存(天)</span><div class="control"><input class="input" placeholder="请输入"></div></div>
-            <div class="field"><span class="label">最小库存(天)</span><div class="control"><input class="input" placeholder="请输入"></div></div>
+            <div class="field"><span class="label">最大库存(天)</span><div class="control"><input class="input" placeholder="请输入" aria-label="最小库存(天)"></div></div>
+            <div class="field"><span class="label">最小库存(天)</span><div class="control"><input class="input" placeholder="请输入" aria-label="最小库存(天)"></div></div>
             <div class="field">
               <span class="label">是否质检</span>
               <div class="control radio-group">
@@ -2639,7 +2639,7 @@
   <div class="recommend-drawer" onclick="event.stopPropagation()">
     <div class="recommend-drawer-header">
       <span id="drawerTitle">推荐咸亨物料编码</span>
-      <button type="button" class="drawer-close" onclick="closeRecommendDrawer()">×</button>
+      <button type="button" class="drawer-close" onclick="closeRecommendDrawer()" aria-label="关闭推荐类目抽屉">×</button>
     </div>
     <div class="recommend-drawer-body">
       <div id="drawerReadonlyCard" class="drawer-readonly-card">
@@ -2697,25 +2697,25 @@
         <div class="supplier-field-list">
           <div class="supplier-field">
             <span class="k">供应商名称</span>
-            <span class="v"><input id="supplierNameInput" class="input" value="杭州安防用品有限公司"></span>
+            <span class="v"><input id="supplierNameInput" class="input" value="杭州安防用品有限公司" aria-label="供应商名称"></span>
           </div>
           <div class="supplier-field">
             <span class="k">供应价</span>
             <span class="v">
-              <input id="supplierPriceInput" class="input with-suffix" value="10.80"><span class="input-suffix">元</span>
+              <input id="supplierPriceInput" class="input with-suffix" value="10.80" aria-label="供应价"><span class="input-suffix">元</span>
             </span>
           </div>
           <div class="supplier-field">
             <span class="k">附加费（类型/金额）</span>
             <span class="v">
-              <select id="supplierFeeTypeInput" class="select">
+              <select id="supplierFeeTypeInput" class="select" aria-label="附加费（类型/金额）">
                 <option>无</option>
                 <option>运费</option>
                 <option>检测费</option>
                 <option>包装费</option>
                 <option>安装费</option>
               </select>
-              <input id="supplierFeeAmountInput" class="input with-suffix" value="0.00"><span class="input-suffix">元</span>
+              <input id="supplierFeeAmountInput" class="input with-suffix" value="0.00" aria-label="附加费（类型/金额）"><span class="input-suffix">元</span>
             </span>
           </div>
           <div class="supplier-field">
@@ -2727,12 +2727,12 @@
           </div>
           <div class="supplier-field">
             <span class="k">供应范围</span>
-            <span class="v"><input id="supplierScopeInput" class="input" value="全国"></span>
+            <span class="v"><input id="supplierScopeInput" class="input" value="全国" aria-label="供应范围"></span>
           </div>
           <div class="supplier-field">
             <span class="k">发货仓库</span>
             <span class="v">
-              <select id="supplierWarehouseInput" class="select">
+              <select id="supplierWarehouseInput" class="select" aria-label="发货仓库">
                 <option>供应商直发</option>
                 <option>杭州仓</option>
                 <option>成都仓</option>
@@ -2742,12 +2742,12 @@
           </div>
           <div class="supplier-field">
             <span class="k">计划库存</span>
-            <span class="v"><input id="supplierStockInput" class="input" value="200"></span>
+            <span class="v"><input id="supplierStockInput" class="input" value="200" aria-label="计划库存"></span>
           </div>
           <div class="supplier-field">
             <span class="k">状态</span>
             <span class="v">
-              <select id="supplierStatusInput" class="select">
+              <select id="supplierStatusInput" class="select" aria-label="状态">
                 <option>启用</option>
                 <option>停用</option>
                 <option>待询价</option>
@@ -2780,27 +2780,27 @@
       <div class="material-edit-grid">
         <div class="field">
           <div class="flabel">名称</div>
-          <input class="input" id="editMaterialName">
+          <input class="input" id="editMaterialName" aria-label="名称">
         </div>
         <div class="field">
           <div class="flabel">推荐品牌</div>
-          <input class="input" id="editMaterialBrand">
+          <input class="input" id="editMaterialBrand" aria-label="推荐品牌">
         </div>
         <div class="field">
           <div class="flabel">推荐类目</div>
-          <input class="input" id="editMaterialCategory">
+          <input class="input" id="editMaterialCategory" aria-label="推荐类目">
         </div>
         <div class="field">
           <div class="flabel">型号</div>
-          <input class="input" id="editMaterialModel">
+          <input class="input" id="editMaterialModel" aria-label="型号">
         </div>
         <div class="field">
           <div class="flabel">推荐咸亨编码</div>
-          <input class="input" id="editMaterialCode">
+          <input class="input" id="editMaterialCode" aria-label="推荐咸亨编码">
         </div>
         <div class="field">
           <div class="flabel">供应商</div>
-          <input class="input" id="editMaterialSupplier">
+          <input class="input" id="editMaterialSupplier" aria-label="供应商">
         </div>
         <div class="field col2">
           <div class="flabel">当前问题类型</div>
@@ -2808,7 +2808,7 @@
         </div>
         <div class="field col2">
           <div class="flabel">问题处理说明</div>
-          <textarea class="input" id="editMaterialRemark" style="height:70px;padding:8px;" placeholder="补充处理说明，保存后可重新预审"></textarea>
+          <textarea class="input" id="editMaterialRemark" style="height:70px;padding:8px;" placeholder="补充处理说明，保存后可重新预审" aria-label="问题处理说明"></textarea>
         </div>
       </div>
     </div>
@@ -2842,7 +2842,7 @@
 <div class="modal-mask" id="aiModal">
   <div class="modal">
     <div class="modal-header">
-      🤖 AI 类目重新匹配结果
+      <svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-ai"></use></svg> AI 类目重新匹配结果
       <span class="x" onclick="document.getElementById('aiModal').classList.remove('show')">×</span>
     </div>
     <div class="modal-body">
@@ -3659,6 +3659,6 @@
 </script>
 
 <script src="mpm-topnav-links.js"></script>
-</body>
+</main><script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 

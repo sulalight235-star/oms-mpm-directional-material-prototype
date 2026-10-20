@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>资质配置-编辑 - 咸亨国际主数据管理平台</title>
+  <title>类目属性-类目列表-资质配置-编辑 - MPM物料主数据系统</title>
   <style>
     :root {
       --primary: #1677ff;
@@ -38,7 +38,7 @@
       font-size: 14px;
       background: var(--bg-layout);
       color: var(--text-body);
-      min-width: 1280px;
+      min-width: 0;
     }
     a { color: inherit; text-decoration: none; }
     button, input, select { font: inherit; }
@@ -209,20 +209,20 @@
     .op-pagi-size { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 13px; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div><main id="main-content" tabindex="-1">
 
 <!-- 顶栏 -->
 <div class="topbar">
   <div class="brand">
     <div class="brand-logo">咸</div>
     <div class="brand-name" style="cursor:pointer;" onclick="location.href='MPM-工作台-首页.html'">咸亨国际主数据管理平台</div>
-    <button class="switch-btn" onclick="window.location.href='index.html'">🔥 切换系统</button>
+    <button class="switch-btn" onclick="window.location.href='index.html'"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-settings"></use></svg> 切换系统</button>
   </div>
   <div class="nav-menu">
-    <div class="nav-item">💬 消息通知</div>
+    <div class="nav-item"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-bell"></use></svg> 消息通知</div>
     <div class="nav-divider"></div>
-    <div class="nav-item">📋 价格审核</div>
+    <div class="nav-item"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-task"></use></svg> 价格审核</div>
     <div class="nav-divider"></div>
     <div class="nav-item">版本更新</div>
     <div class="nav-divider"></div>
@@ -244,7 +244,7 @@
 <!-- 标签页栏 -->
 <div class="tabs-bar">
   <div class="tabs-list">
-    <div class="tab" onclick="goToTab('cat-list')" title="点击返回类目列表">📊 类目列表 <span class="close" onclick="event.stopPropagation()">×</span></div>
+    <div class="tab" onclick="goToTab('cat-list')" title="点击返回类目列表"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-grid"></use></svg> 类目列表 <span class="close" onclick="event.stopPropagation()">×</span></div>
     <div class="tab active" onclick="goToTab('current')">资质配置-编辑 <span class="close" onclick="event.stopPropagation();goToTab('cat-list')">×</span></div>
   </div>
   <div class="tabs-clean">清除</div>
@@ -285,7 +285,7 @@
       <div class="form-row">
         <label class="form-label form-label-required">货主</label>
         <div class="form-content">
-          <select class="select">
+          <select class="select" aria-label="货主配置1货主">
             <option>万聚国际（杭州）供应链有限公司</option>
           </select>
         </div>
@@ -333,7 +333,7 @@
       <div class="form-row">
         <label class="form-label form-label-required">货主</label>
         <div class="form-content">
-          <select class="select">
+          <select class="select" aria-label="货主配置2货主">
             <option>咸亨国际电子商务有限公司</option>
           </select>
         </div>
@@ -376,8 +376,8 @@
               <!-- 条件项 1 -->
               <div class="expr-condition">
                 <span class="expr-condition-tree">├</span>
-                <select class="expr-select"><option>属性：防护等级</option></select>
-                <select class="expr-select" style="min-width:70px;"><option>IN</option></select>
+                <select class="expr-select" aria-label="属性组1属性"><option>属性：防护等级</option></select>
+                <select class="expr-select" style="min-width:70px;" aria-label="属性组1运算符"><option>IN</option></select>
                 <div class="expr-value-tags">
                   <span class="expr-value-tag">A <span class="x">×</span></span>
                   <span class="expr-value-tag">B <span class="x">×</span></span>
@@ -400,8 +400,8 @@
 
               <div class="expr-condition">
                 <span class="expr-condition-tree">├</span>
-                <select class="expr-select"><option>属性：防滑系数</option></select>
-                <select class="expr-select" style="min-width:60px;"><option>=</option></select>
+                <select class="expr-select" aria-label="属性组2防滑系数属性"><option>属性：防滑系数</option></select>
+                <select class="expr-select" style="min-width:60px;" aria-label="属性组2防滑系数运算符"><option>=</option></select>
                 <div class="expr-value-tags">
                   <span class="expr-value-tag">5 <span class="x">×</span></span>
                 </div>
@@ -410,10 +410,10 @@
 
               <div class="expr-condition">
                 <span class="expr-condition-tree">└</span>
-                <select class="expr-select"><option>属性：防水等级</option></select>
-                <select class="expr-select" style="min-width:60px;"><option>=</option></select>
+                <select class="expr-select" aria-label="属性组2防水等级属性"><option>属性：防水等级</option></select>
+                <select class="expr-select" style="min-width:60px;" aria-label="属性组2防水等级运算符"><option>=</option></select>
                 <div class="expr-value-tags">
-                  <span class="expr-value-tag" data-tip="该枚举值在属性主数据中已被禁用，请重新选择后才能保存">IP67 ⚠ <span class="x">×</span></span>
+                  <span class="expr-value-tag" data-tip="该枚举值在属性主数据中已被禁用，请重新选择后才能保存">IP67（已失效） <span class="x">×</span></span>
                 </div>
                 <span class="expr-condition-remove">✕</span>
               </div>
@@ -421,7 +421,7 @@
 
             <div style="color: var(--text-sub); font-size: 12px; padding: 4px 4px 0; line-height: 1.6;">
                当前表达式预览：<code style="background:#f0f0f0; padding:2px 6px; border-radius:3px; color:#d4380d;">属性组1（AND）：防护等级 IN [A, B]；属性组2（OR）：防滑系数 = 5 OR 防水等级 = IP67</code><br/>
-               ⚠ <span style="color: var(--error);">检测到 1 个已失效枚举值（防水等级 = IP67），保存前需手动清理</span>
+               注意：<span style="color: var(--error);">检测到 1 个已失效枚举值（防水等级 = IP67），保存前需手动清理</span>
             </div>
 
           </div>
@@ -463,7 +463,7 @@
 
   <!-- 底部提示 -->
   <div class="alert alert-warning">
-    <span class="alert-icon">⚠</span>
+    <span class="alert-icon" aria-hidden="true">!</span>
     <div>
       <strong>检测到本页存在 1 项校验问题</strong>，请修复后再保存：
       <span style="color: var(--error); margin-left: 4px;">货主 #2 的属性条件中含有已失效枚举值（防水等级 = IP67）</span>
@@ -475,15 +475,15 @@
 <!-- 演示提示气泡 -->
 <div class="demo-tips">
   <div class="demo-tips-section">
-    <b>💡 演示操作：</b><br/>
+    <b><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> 演示操作：</b><br/>
     1. 货主块 #1 演示<span class="ti">「未启用属性设置」</span>：直接配必传资质 + 开关<br/>
     2. 货主块 #2 演示<span class="ti">「启用属性设置 + 并列属性组」</span>：属性组 1 为 AND，属性组 2 为 OR<br/>
-    3. 留意属性组 #2 内红色 <b>"IP67 ⚠"</b> 失效枚举值提示<br/>
+    3. 留意属性组 #2 内红色 <b>"IP67（已失效）"</b> 失效枚举值提示<br/>
     4. 点 <b>「+ 新增货主」</b> 看下拉过滤已选货主<br/>
     5. 点顶部 <b>"保存"</b> 触发校验汇总
   </div>
   <div class="demo-tips-section">
-    <b>🆕 本期新增内容：</b><br/>
+    <b>本期新增内容：</b><br/>
     • 四级类目行操作新增<span class="ti">「资质配置」</span>按钮入口<br/>
     • 按货主独立配置规则，业务键 (类目+货主) 唯一<br/>
     • <span class="ti">「是否启用属性设置」</span>开关<br/>
@@ -849,7 +849,7 @@
     if (!header) {
       header = document.createElement('div');
       header.className = prefix + '-header';
-      header.innerHTML = '<span class="' + prefix + '-title">💡 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
+      header.innerHTML = '<span class="' + prefix + '-title"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
       tip.insertBefore(header, body);
     }
 
@@ -881,6 +881,6 @@
 })();
 </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+</main><script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 

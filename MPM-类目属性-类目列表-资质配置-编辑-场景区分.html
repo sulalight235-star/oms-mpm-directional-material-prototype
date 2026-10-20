@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>资质配置-编辑-场景区分 - 咸亨国际主数据管理平台</title>
+  <title>类目属性-类目列表-资质配置-编辑-场景区分 - MPM物料主数据系统</title>
   <style>
     :root {
       --primary: #1677ff;
@@ -38,7 +38,7 @@
       font-size: 14px;
       background: var(--bg-layout);
       color: var(--text-body);
-      min-width: 1280px;
+      min-width: 0;
     }
     a { color: inherit; text-decoration: none; }
     button, input, select { font: inherit; }
@@ -246,20 +246,20 @@
     .confirm-modal-footer { padding: 14px 20px 18px; display: flex; justify-content: flex-end; gap: 8px; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div><main id="main-content" tabindex="-1">
 
 <!-- 顶栏 -->
 <div class="topbar">
   <div class="brand">
     <div class="brand-logo">咸</div>
     <div class="brand-name" style="cursor:pointer;" onclick="location.href='MPM-工作台-首页.html'">咸亨国际主数据管理平台</div>
-    <button class="switch-btn" onclick="window.location.href='index.html'">🔥 切换系统</button>
+    <button class="switch-btn" onclick="window.location.href='index.html'"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-settings"></use></svg> 切换系统</button>
   </div>
   <div class="nav-menu">
-    <div class="nav-item">💬 消息通知</div>
+    <div class="nav-item"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-bell"></use></svg> 消息通知</div>
     <div class="nav-divider"></div>
-    <div class="nav-item">📋 价格审核</div>
+    <div class="nav-item"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-task"></use></svg> 价格审核</div>
     <div class="nav-divider"></div>
     <div class="nav-item">版本更新</div>
     <div class="nav-divider"></div>
@@ -281,7 +281,7 @@
 <!-- 标签页栏 -->
 <div class="tabs-bar">
   <div class="tabs-list">
-    <div class="tab" onclick="goToTab('cat-list')" title="点击返回类目列表">📊 类目列表 <span class="close" onclick="event.stopPropagation()">×</span></div>
+    <div class="tab" onclick="goToTab('cat-list')" title="点击返回类目列表"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-grid"></use></svg> 类目列表 <span class="close" onclick="event.stopPropagation()">×</span></div>
     <div class="tab active" onclick="goToTab('current')">资质配置-编辑-场景区分 <span class="close" onclick="event.stopPropagation();goToTab('cat-list')">×</span></div>
   </div>
   <div class="tabs-clean">清除</div>
@@ -328,7 +328,7 @@
       <div class="form-row">
         <label class="form-label form-label-required">货主</label>
         <div class="form-content">
-          <select class="select">
+          <select class="select" aria-label="货主配置1货主">
             <option>万聚国际（杭州）供应链有限公司</option>
           </select>
         </div>
@@ -420,7 +420,7 @@
       <div class="form-row">
         <label class="form-label form-label-required">货主</label>
         <div class="form-content">
-          <select class="select">
+          <select class="select" aria-label="货主配置2货主">
             <option>咸亨国际电子商务有限公司</option>
           </select>
         </div>
@@ -508,7 +508,7 @@
 
   <!-- 底部提示 -->
   <div class="alert alert-warning">
-    <span class="alert-icon">⚠</span>
+    <span class="alert-icon" aria-hidden="true">!</span>
     <div>
       <strong>检测到本页存在 1 项校验问题</strong>，请修复后再保存：
       <span style="color: var(--error); margin-left: 4px;">每个货主至少勾选一个适用场景；已选场景下至少勾选一个审核来源；至少选择 1 项必传资质类型</span>
@@ -520,7 +520,7 @@
 <!-- 演示提示气泡 -->
 <div class="demo-tips">
   <div class="demo-tips-section">
-    <b>💡 演示操作：</b><br/>
+    <b><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> 演示操作：</b><br/>
     1. 货主块 #1 演示<span class="ti">「新增物料场景」</span>：仅新增来源入口参与校验<br/>
     2. 货主块 #2 演示<span class="ti">「新增 + 修改物料场景」</span>：两类来源入口均参与校验<br/>
     3. 每个来源入口均可独立勾选，勾选表示支持校验，未勾选表示不支持校验<br/>
@@ -528,7 +528,7 @@
     5. 点每个货主块右上角 <b>"保存"</b> 按货主维度保存当前配置
   </div>
   <div class="demo-tips-section">
-    <b>🆕 本期新增内容：</b><br/>
+    <b>本期新增内容：</b><br/>
     • 四级类目行操作新增<span class="ti">「资质配置」</span>按钮入口<br/>
     • 按货主 + 适用场景独立配置规则，业务键 (类目+货主+适用场景) 唯一<br/>
     • <span class="ti">「适用场景」</span>支持新增物料/修改物料多选<br/>
@@ -542,7 +542,7 @@
 <div class="confirm-modal-mask" id="deleteOwnerConfirmMask" onclick="closeDeleteOwnerConfirm(event)">
   <div class="confirm-modal" onclick="event.stopPropagation()">
     <div class="confirm-modal-header">
-      <span style="color: var(--warning);">⚠</span>
+      <span style="color: var(--warning);">注意：</span>
       <span>删除货主配置</span>
     </div>
     <div class="confirm-modal-body">
@@ -971,7 +971,7 @@
     if (!header) {
       header = document.createElement('div');
       header.className = prefix + '-header';
-      header.innerHTML = '<span class="' + prefix + '-title">💡 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
+      header.innerHTML = '<span class="' + prefix + '-title"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
       tip.insertBefore(header, body);
     }
 
@@ -1003,7 +1003,7 @@
 })();
 </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+</main><script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 
 

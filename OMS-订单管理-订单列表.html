@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>咸亨国际订单管理平台 - OMS履约平台</title>
+  <title>订单列表 - OMS</title>
   <style>
     :root{--primary:#3291b9;--primary-dark:#247da4;--top:#3b97be;--page:#eef0f6;--line:#e4e7ec;--text:#30343b;--muted:#818894;--white:#fff;--danger:#ff4d5a}
     *{box-sizing:border-box}
     [hidden]{display:none!important}
-    html,body{margin:0;min-width:1280px;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;color:var(--text);background:var(--page);font-size:13px}
+    html,body{margin:0;min-width:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;color:var(--text);background:var(--page);font-size:13px}
     button,input,select{font:inherit}
     button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid rgba(50,145,185,.25);outline-offset:1px}
     .topbar{height:42px;display:flex;align-items:stretch;justify-content:space-between;background:var(--top);color:#fff;box-shadow:0 2px 7px rgba(22,64,90,.2)}
@@ -31,30 +31,45 @@
     .toast{position:fixed;left:50%;top:64px;z-index:500;transform:translate(-50%,-8px);opacity:0;padding:9px 18px;border-radius:3px;background:rgba(30,40,52,.9);color:#fff;pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
     .modal-mask{position:fixed;inset:0;z-index:600;display:grid;place-items:center;background:rgba(20,29,42,.42)}.modal{width:680px;max-height:80vh;overflow:auto;border-radius:4px;background:#fff;box-shadow:0 18px 48px rgba(18,31,52,.25)}.modal-head{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid #e8ebef}.modal-head h2{margin:0;font-size:17px}.modal-close{width:34px;height:34px;border:0;background:transparent;color:#777;font-size:25px;cursor:pointer}.modal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;padding:14px 18px 22px}.detail{display:grid;grid-template-columns:110px 1fr;min-height:42px;align-items:center;border-bottom:1px solid #f0f1f3}.detail label{text-align:right;padding-right:12px;color:#7b828c}.detail span{color:#30343b}.modal-foot{display:flex;justify-content:flex-end;padding:12px 18px;border-top:1px solid #e8ebef}
     @media(max-width:1500px){.filter-form{grid-template-columns:100px 1fr 100px 1fr 90px 1fr 90px 1fr}.primary-nav button{min-width:92px;padding:0 10px}.user-zone{gap:12px}.order-table{font-size:12px}}
+    @media(max-width:1024px){
+      .topbar,.contextbar{height:auto;min-height:48px;flex-wrap:wrap}.primary-nav,.quick-links{max-width:100%;overflow-x:auto}.user-zone{overflow-x:auto}
+      .contextbar{padding:10px 14px;gap:10px}.filter-form{grid-template-columns:90px minmax(160px,1fr) 90px minmax(160px,1fr)}.page{padding:0 12px 14px}
+      .list-toolbar{height:auto;min-height:52px;grid-template-columns:1fr;gap:8px;padding:8px 0}.list-title{grid-row:1}.toolbar-left,.toolbar-right{overflow-x:auto;padding:0 8px}.table-wrap{height:auto;max-height:calc(100vh - 330px)}
+    }
+    @media(max-width:768px){
+      .brand{width:100%;padding:10px 12px}.top-left,.top-right{max-width:100%;overflow-x:auto}.primary-nav button,.switch-system,.top-tool,.btn,.light-btn,.page-btn{min-height:44px}
+      .user-zone{display:none}.context-left{width:100%;flex-wrap:wrap}.quick-links{width:100%;padding-bottom:4px}.filter-form{grid-template-columns:1fr;padding:12px}.filter-form label{text-align:left}.filter-actions{grid-column:1}
+      .filter-head{height:auto;min-height:52px;gap:8px;flex-wrap:wrap}.scheme{margin-left:0}.list-area{margin-top:10px}.table-wrap{max-height:none;overflow:auto}.order-table{min-width:1120px}
+      .pager{height:auto;min-height:52px;align-items:flex-start;gap:10px;flex-wrap:wrap}.pages{max-width:100%;overflow-x:auto}.modal{width:calc(100vw - 24px)}.modal-grid{grid-template-columns:1fr}
+    }
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
   </style>
+  <link rel="stylesheet" href="assets/css/prototype-tokens.css">
+  <link rel="stylesheet" href="assets/css/prototype-components.css">
 </head>
 <body>
+<a class="prototype-skip-link" href="#main-content">跳转到主内容</a>
   <header class="topbar">
     <div class="top-left"><div class="brand">咸亨国际订单管理平台</div><nav class="primary-nav" aria-label="OMS业务导航"><button class="active">订单管理</button><button onclick="showToast('进入合同管理（原型）')">合同管理</button><button onclick="showToast('进入履约平台（原型）')">履约平台</button><button onclick="showToast('进入借出单管理（原型）')">借出单管理</button></nav></div>
-    <div class="top-right"><button class="switch-system" onclick="location.href='index.html'">切换系统</button><div class="user-zone"><span class="user-chip">系统开发部 - 王云龙</span><span class="top-tool">待办</span><span class="top-tool">通知</span><span class="top-tool">帮助</span><span class="top-tool" onclick="showToast('退出登录（原型）')">退出</span></div></div>
+    <div class="top-right"><button class="switch-system" onclick="location.href='index.html'">切换系统</button><div class="user-zone"><span class="user-chip">系统开发部 - 王云龙</span><span class="top-tool">待办</span><span class="top-tool">通知</span><span class="top-tool">帮助</span><span role="button" tabindex="0" class="top-tool" onclick="showToast('退出登录（原型）')">退出</span></div></div>
   </header>
   <section class="contextbar">
-    <div class="context-left"><span class="context-label">所属项目</span><select class="project-select" id="projectSelect" onchange="searchOrders()"><option value="国家官网">国家官网</option><option value="国家石油天然气管网集团">国家石油天然气管网集团</option><option value="全部项目">全部项目</option></select><button class="refresh-btn" title="刷新" aria-label="刷新订单" onclick="resetFilters()">↻</button><a class="help-link" href="javascript:void(0)" onclick="showToast('打开履约平台项目使用说明')">如何增加使用履约平台的项目？</a></div>
-    <div class="quick-links"><button onclick="location.href='MPM-工作台-首页.html?account=wang&amp;view=project-material-pool'">项目物料池</button><button onclick="showToast('进入售后管理')">售后管理(0)</button><button onclick="showToast('进入发票中心')">发票中心（2）</button><button onclick="showToast('进入旧版履约平台')">履约平台（旧）</button><button onclick="showToast('进入供应商管理')">供应商管理</button><button onclick="showToast('进入报备单')">报备单</button><button onclick="showToast('进入履约信息字段管理')">履约信息字段管理</button></div>
+    <div class="context-left"><span class="context-label" id="projectSelectLabel">所属项目</span><select aria-labelledby="projectSelectLabel" class="project-select" id="projectSelect" onchange="searchOrders()"><option value="国家官网">国家官网</option><option value="国家石油天然气管网集团">国家石油天然气管网集团</option><option value="全部项目">全部项目</option></select><button class="refresh-btn" title="刷新" aria-label="刷新订单" onclick="resetFilters()"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-refresh"></use></svg></button><a class="help-link" href="javascript:void(0)" onclick="showToast('打开履约平台项目使用说明')">如何增加使用履约平台的项目？</a></div>
+    <div class="quick-links"><button onclick="location.href='MPM-工作台-首页.html?account=wang&amp;view=project-material-pool'">项目商品池</button><button onclick="showToast('进入售后管理')">售后管理(0)</button><button onclick="showToast('进入发票中心')">发票中心（2）</button><button onclick="showToast('进入旧版履约平台')">履约平台（旧）</button><button onclick="showToast('进入供应商管理')">供应商管理</button><button onclick="showToast('进入报备单')">报备单</button><button onclick="showToast('进入履约信息字段管理')">履约信息字段管理</button></div>
   </section>
-  <main class="page">
+  <main id="main-content" class="page">
     <section class="filter-panel">
       <div class="filter-head"><div class="filter-title">订单信息 <span class="scheme">搜索方案：<span class="scheme-chip">缺省</span></span></div><div class="filter-head-actions"><button class="light-btn" onclick="showToast('管理搜索方案')">管理方案</button><button class="light-btn" onclick="showToast('添加搜索方案')">添加方案</button></div></div>
-      <form class="filter-form" onsubmit="searchOrders(event)"><label for="customerOrder">客户订单号</label><input class="control" id="customerOrder" placeholder="请输入"><label for="xhOrder">咸亨订单号</label><input class="control" id="xhOrder" placeholder="请输入"><label for="projectCode">项目编码</label><input class="control" id="projectCode" placeholder="请输入"><label for="statusFilter">订单状态</label><select class="control" id="statusFilter"><option value="">请选择</option><option>预占</option><option>已取消</option></select><div class="filter-actions"><button class="btn" type="submit">⌕ 查询</button><button class="btn secondary" type="button" onclick="resetFilters()">↻ 重置</button></div></form>
+      <form class="filter-form" onsubmit="searchOrders(event)"><label for="customerOrder">客户订单号</label><input class="control" id="customerOrder" placeholder="请输入"><label for="xhOrder">咸亨订单号</label><input class="control" id="xhOrder" placeholder="请输入"><label for="projectCode">项目编码</label><input class="control" id="projectCode" placeholder="请输入"><label for="statusFilter">订单状态</label><select class="control" id="statusFilter"><option value="">请选择</option><option>预占</option><option>已取消</option></select><div class="filter-actions"><button class="btn" type="submit"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-search"></use></svg> 查询</button><button class="btn secondary" type="button" onclick="resetFilters()"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-refresh"></use></svg> 重置</button></div></form>
     </section>
     <section class="list-area">
-      <div class="list-toolbar"><div class="toolbar-left"><button class="btn" onclick="batchAction('通知业务员')">通知业务员</button><button class="btn" onclick="batchAction('重新执行')">重新执行</button><button class="btn danger" onclick="batchAction('终止任务')">终止任务</button></div><div class="list-title">☷ 订单列表</div><div class="toolbar-right"><button class="btn" onclick="batchAction('标记')">标记 ▾</button><button class="btn" onclick="batchAction('完结订单')">完结订单</button><button class="btn" onclick="batchAction('转单')">转单</button><button class="btn" onclick="batchAction('拉取订单')">拉取订单</button><button class="btn" onclick="batchAction('批量派单')">批量派单</button><button class="btn" onclick="showToast('打开订单导入')">导入订单 ▾</button><button class="btn" onclick="showToast('订单导出任务已创建')">订单导出</button></div></div>
+      <div class="list-toolbar"><div class="toolbar-left"><button class="btn" onclick="batchAction('通知业务员')">通知业务员</button><button class="btn" onclick="batchAction('重新执行')">重新执行</button><button class="btn danger" onclick="batchAction('终止任务')">终止任务</button></div><div class="list-title"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-document"></use></svg> 订单列表</div><div class="toolbar-right"><button class="btn" onclick="batchAction('标记')">标记 ▾</button><button class="btn" onclick="batchAction('完结订单')">完结订单</button><button class="btn" onclick="batchAction('转单')">转单</button><button class="btn" onclick="batchAction('拉取订单')">拉取订单</button><button class="btn" onclick="batchAction('批量派单')">批量派单</button><button class="btn" onclick="showToast('打开订单导入')">导入订单 ▾</button><button class="btn" onclick="showToast('订单导出任务已创建')">订单导出</button></div></div>
       <div class="table-wrap"><table class="order-table"><thead><tr><th class="check"><input id="selectAll" type="checkbox" aria-label="全选" onchange="toggleAll(this.checked)"></th><th class="order">客户订单号</th><th class="order">咸亨订单号</th><th class="company">开票方</th><th class="small">开票状态</th><th class="small">回款状态</th><th class="money">平台总价</th><th class="money">应收金额</th><th class="money">未订货金额</th><th class="company">售达方</th><th class="small">收货人</th><th class="address">省市区</th><th class="small">转单公司</th><th class="small">状态</th><th class="small">自动履约</th><th class="small">派单状态</th><th class="sales">订单所属销售</th><th class="sales">订单所属销售助理</th><th class="action">操作</th></tr></thead><tbody id="orderBody"></tbody></table></div>
-      <footer class="pager"><div class="selected-info"><span>已选：<b id="selectedCount">0</b>条数据</span><strong>平台总价<span id="selectedAmount">0</span></strong></div><div class="pages"><span>共 57244 条</span><button class="page-btn">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">4</button><button class="page-btn">5</button><span>…</span><button class="page-btn">1909</button><button class="page-btn">›</button><select class="page-size"><option>30 条/页</option><option>50 条/页</option></select><span>跳至</span><input class="jump" type="number" min="1"><span>页</span></div></footer>
+      <footer class="pager"><div class="selected-info"><span>已选：<b id="selectedCount">0</b>条数据</span><strong>平台总价<span id="selectedAmount">0</span></strong></div><div class="pages"><span>共 57244 条</span><button class="page-btn">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">4</button><button class="page-btn">5</button><span>…</span><button class="page-btn">1909</button><button class="page-btn">›</button><select aria-label="每页条数" class="page-size"><option>30 条/页</option><option>50 条/页</option></select><span>跳至</span><input aria-label="跳转页码" class="jump" type="number" min="1"><span>页</span></div></footer>
     </section>
   </main>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <div class="modal-mask" id="detailModal" hidden onclick="closeDetailByMask(event)"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="modal-head"><h2 id="detailTitle">订单详情</h2><button class="modal-close" aria-label="关闭" onclick="closeDetail()">×</button></div><div class="modal-grid" id="detailGrid"></div><div class="modal-foot"><button class="btn secondary" onclick="closeDetail()">关闭</button></div></section></div>
+  <div role="button" tabindex="0" class="modal-mask" id="detailModal" hidden onclick="closeDetailByMask(event)"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="modal-head"><h2 id="detailTitle">订单详情</h2><button class="modal-close" aria-label="关闭" onclick="closeDetail()">×</button></div><div class="modal-grid" id="detailGrid"></div><div class="modal-foot"><button class="btn secondary" onclick="closeDetail()">关闭</button></div></section></div>
   <script>
     const orders=[
       ['EP70146600','OMS20260902001','国家管网集团广东省管网有限公司','未开票','未回款',52.2,52.2,52.2,'国家管网集团','欧靖怡','广东省广州市黄埔区','-','预占','-','未派单','王云龙','范昕瑶'],
@@ -87,5 +102,6 @@
     document.addEventListener('keydown',event=>{if(event.key==='Escape')closeDetail()});
     render();
   </script>
+<script src="assets/js/prototype-common.js"></script>
 </body>
 </html>

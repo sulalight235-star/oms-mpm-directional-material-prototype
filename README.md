@@ -17,6 +17,8 @@
 
 打开根目录的 `index.html`，即可通过统一门户进入各业务原型。
 
+GitHub 在线原型入口：[原型预览门户](https://sulalight235-star.github.io/oms-mpm-directional-material-prototype/)。
+
 GitLab Pages 发布成功后：
 
 - 根地址是统一原型门户；

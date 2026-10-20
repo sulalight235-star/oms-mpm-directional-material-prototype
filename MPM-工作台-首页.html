@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>咸亨国际主数据管理平台 - 物料工作台</title>
+  <title>物料工作台 - MPM物料主数据管理系统</title>
+  <link rel="stylesheet" href="assets/css/prototype-tokens.css" />
+  <link rel="stylesheet" href="assets/css/prototype-components.css" />
   <style>
     :root {
       --blue: #2f80ed;
@@ -146,6 +148,7 @@
     .account-switch-trigger:hover,
     .account-switch-trigger[aria-expanded="true"] { color: #fff; background: rgba(255,255,255,0.08); }
     .account-switch-trigger:focus-visible { outline: 2px solid rgba(255,255,255,.72); outline-offset: -3px; }
+    .current-account-role { color: rgba(255,255,255,.58); font-size: 11px; }
     .account-switch-arrow { color: rgba(255,255,255,.6); transition: transform .18s ease; }
     .account-switch-trigger[aria-expanded="true"] .account-switch-arrow { transform: rotate(180deg); }
     .account-switch-menu {
@@ -499,7 +502,8 @@
       vertical-align: middle;
       box-shadow: 0 3px 8px rgba(255,77,79,.2);
     }
-    body[data-workbench-account="wang"] .demo-tips-stack { display: none; }
+    body[data-workbench-account="wang"] .demo-tips-stack,
+    body[data-workbench-account="wang-sales"] .demo-tips-stack { display: none; }
     #wangModuleGrid { gap: 22px; }
     #wangModuleGrid .column { gap: 18px; }
     #wangModuleGrid .module-row,
@@ -510,6 +514,21 @@
     #wangModuleGrid .tab-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     #wangModuleGrid .module-links { align-items: center; row-gap: 8px; padding: 14px 28px 14px 54px; }
     #wangModuleGrid .link { min-height: 24px; display: flex; align-items: center; }
+
+    body[data-workbench-account="wang-sales"] .nav-menu > .nav-item,
+    body[data-workbench-account="wang-sales"] .nav-menu > .nav-divider,
+    body[data-workbench-account="wang-sales"] .tabs-clear,
+    body[data-workbench-account="wang-sales"] #workbenchResultCard { display: none; }
+    body[data-workbench-account="wang-sales"] .workspace { min-width: 0; min-height: calc(100vh - 84px); padding: 24px; }
+    #salesModuleGrid { width: min(920px, 100%); grid-template-columns: 1fr; gap: 0; margin: 0 auto; }
+    #salesModuleGrid .column { gap: 0; }
+    #salesModuleGrid .module-row,
+    #salesModuleGrid .module-row.short { min-height: 112px; grid-template-columns: 150px minmax(0, 1fr); border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 14px rgba(15,23,42,.05); }
+    #salesModuleGrid .module-tab { width: auto; min-width: 0; gap: 7px; font-size: 16px; }
+    #salesModuleGrid .tab-icon { width: 28px; height: 28px; font-size: 0; filter: none; }
+    #salesModuleGrid .tab-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    #salesModuleGrid .module-links { min-width: 0; display: flex; align-items: center; justify-content: flex-start; padding: 24px 32px; }
+    #salesModuleGrid .link { min-height: 44px; display: inline-flex; align-items: center; margin: 0; padding: 0; font-size: 16px; }
 
     .link-with-badge {
       display: flex;
@@ -2402,9 +2421,38 @@
       .module-grid { gap: 24px; }
       .column { gap: 24px; }
     }
+    @media (max-width: 1024px) {
+      .topbar { height: auto; min-height: 48px; flex-wrap: wrap; gap: 8px; }
+      .nav-menu { width: 100%; height: 44px; overflow-x: auto; }
+      .tabs-bar { top: 0; }
+      .workspace { min-width: 0; padding: 18px 16px; }
+      .result-card { height: auto; padding-bottom: 12px; }
+      .year-info, .poem { position: static; margin: 10px 16px 0; }
+      .result-stats { width: 100%; height: auto; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; padding: 12px 16px 0; }
+      .stat { min-height: 60px; border-right: 0; }
+      .module-grid { grid-template-columns: 1fr; }
+      .module-links, #wangModuleGrid .module-links { padding-left: 28px; grid-template-columns: repeat(3,minmax(0,1fr)); }
+    }
+    @media (max-width: 768px) {
+      .current-account-role { display: none; }
+      .module-row, .module-row.tall, .module-row.short { grid-template-columns: 76px minmax(0,1fr); min-height: 0; }
+      .module-links, #wangModuleGrid .module-links { grid-template-columns: repeat(2,minmax(0,1fr)); padding: 16px; }
+      .link { min-height: 44px; font-size: 15px; }
+      #salesModuleGrid .module-row, #salesModuleGrid .module-row.short { grid-template-columns: 110px minmax(0,1fr); }
+      #salesModuleGrid .module-tab { width: auto; min-width: 0; }
+    }
+    @media (max-width: 375px) {
+      .brand-name { display: none; }
+      .result-stats { grid-template-columns: 1fr; }
+      .module-row, .module-row.tall, .module-row.short, #salesModuleGrid .module-row, #salesModuleGrid .module-row.short { grid-template-columns: 1fr; }
+      .module-tab { min-height: 72px; }
+      .module-links, #wangModuleGrid .module-links { grid-template-columns: 1fr; padding: 12px 16px; }
+    }
   </style>
 </head>
 <body>
+  <a class="prototype-skip-link" href="#workbenchPage">跳转到主要内容</a>
+  <div class="prototype-sr-only" id="prototypeAnnouncements" role="status" aria-live="polite" aria-atomic="true"></div>
   <header class="topbar">
     <div class="brand">
       <div class="brand-logo">咸</div>
@@ -2422,11 +2470,12 @@
       <div class="nav-divider"></div>
       <div class="account-switcher" id="accountSwitcher">
         <button class="account-switch-trigger" id="accountSwitchTrigger" type="button" aria-haspopup="menu" aria-expanded="false" onclick="toggleWorkbenchAccountMenu(event)">
-          <span class="user-avatar" id="currentAccountAvatar">管</span><span id="currentAccountName">管理员</span><span class="account-switch-arrow">▾</span>
+          <span class="user-avatar" id="currentAccountAvatar">管</span><span id="currentAccountName">管理员</span><span class="current-account-role" id="currentAccountRole">系统管理账户</span><span class="account-switch-arrow">▾</span>
         </button>
         <div class="account-switch-menu" id="accountSwitchMenu" role="menu" hidden>
           <button class="account-switch-option active" type="button" role="menuitem" data-account="admin" onclick="switchWorkbenchAccount('admin')"><span class="account-option-avatar">管</span><span class="account-option-copy"><span class="account-option-name">管理员</span><span class="account-option-role">系统管理账户</span></span></button>
           <button class="account-switch-option" type="button" role="menuitem" data-account="wang" onclick="switchWorkbenchAccount('wang')"><span class="account-option-avatar">王</span><span class="account-option-copy"><span class="account-option-name">王云龙</span><span class="account-option-role">采购员角色</span></span></button>
+          <button class="account-switch-option" type="button" role="menuitem" data-account="wang-sales" onclick="switchWorkbenchAccount('wang-sales')"><span class="account-option-avatar">王</span><span class="account-option-copy"><span class="account-option-name">王云龙</span><span class="account-option-role">销售员角色</span></span></button>
         </div>
       </div>
     </nav>
@@ -2441,10 +2490,10 @@
     <div class="tabs-clear" id="clearTabs">清除</div>
   </div>
 
-  <main class="workspace" id="workbenchPage">
-    <section class="result-card">
-      <div class="result-title">工作成果 <span class="refresh-icon">⟳</span></div>
-      <div class="year-info">🕘 <span id="workbenchYearInfo">2026年 剩余 220 天</span></div>
+  <main class="workspace" id="workbenchPage" data-page-view="workbench">
+    <section class="result-card" id="workbenchResultCard">
+      <div class="result-title">工作成果 <span class="refresh-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-refresh"></use></svg></span></div>
+      <div class="year-info"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-clock"></use></svg> <span id="workbenchYearInfo">2026年 剩余 220 天</span></div>
       <div class="poem">▱ <span id="workbenchPoem">小桃灼灼柳鬖鬖，春色满江南。</span></div>
       <div class="result-stats">
         <div class="stat">
@@ -2482,7 +2531,7 @@
       <div class="column">
         <div class="module-row tall">
           <div class="module-tab tab-material">
-            <div class="tab-icon">📦</div>
+            <div class="tab-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-package"></use></svg></div>
             <div>物料</div>
           </div>
           <div class="module-links cols-4">
@@ -2504,7 +2553,7 @@
 
         <div class="module-row">
           <div class="module-tab tab-category">
-            <div class="tab-icon">▦</div>
+            <div class="tab-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-grid"></use></svg></div>
             <div>类目属性</div>
           </div>
           <div class="module-links cols-3">
@@ -2516,7 +2565,7 @@
 
         <div class="module-row">
           <div class="module-tab tab-relation">
-            <div class="tab-icon">⌬</div>
+            <div class="tab-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-flow"></use></svg></div>
             <div>关系设置</div>
           </div>
           <div class="module-links cols-4">
@@ -2529,7 +2578,7 @@
 
         <div class="module-row tall reward-row" id="rewardModule">
           <div class="module-tab tab-reward">
-            <div class="tab-icon">🎁</div>
+            <div class="tab-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-gift"></use></svg></div>
             <div>咸亨产品<br />奖励管理</div>
           </div>
           <div class="module-links cols-3">
@@ -2539,7 +2588,7 @@
 
         <div class="module-row tall">
           <div class="module-tab tab-mall">
-            <div class="tab-icon">⌬</div>
+            <div class="tab-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-cart"></use></svg></div>
             <div>汇聚商城</div>
           </div>
           <div class="module-links cols-3">
@@ -2564,7 +2613,7 @@
 
         <div class="module-row short">
           <div class="module-tab tab-init">
-            <div class="tab-icon">☝</div>
+            <div class="tab-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-upload"></use></svg></div>
             <div>初始数据</div>
           </div>
           <div class="module-links cols-3">
@@ -2576,7 +2625,7 @@
       <div class="column">
         <div class="module-row">
           <div class="module-tab tab-brand">
-            <div class="tab-icon">🏷</div>
+            <div class="tab-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-tag"></use></svg></div>
             <div>品牌</div>
           </div>
           <div class="module-links cols-4">
@@ -2589,7 +2638,7 @@
 
         <div class="module-row">
           <div class="module-tab tab-system">
-            <div class="tab-icon">⚙</div>
+            <div class="tab-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-settings"></use></svg></div>
             <div>系统管理</div>
           </div>
           <div class="module-links cols-6">
@@ -2610,7 +2659,7 @@
 
         <div class="module-row">
           <div class="module-tab tab-supplier">
-            <div class="tab-icon">🏪</div>
+            <div class="tab-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-home"></use></svg></div>
             <div>供应商</div>
           </div>
           <div class="module-links cols-3">
@@ -2622,24 +2671,25 @@
 
         <div class="module-row tall">
           <div class="module-tab tab-dock">
-            <div class="tab-icon">📦</div>
+            <div class="tab-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-link"></use></svg></div>
             <div>物料对接</div>
           </div>
           <div class="module-links cols-5 dock-links">
             <a class="link" href="MPM-物料对接-对接物料列表管理.html">对接物料列表管理</a>
             <a class="link" href="#" onclick="openProjectManagement(event)">项目管理</a>
             <a class="link" href="MPM-物料对接-待推送物料列表.html">待推送物料列表</a>
+            <a class="link" href="MPM-物料对接-外链同步日志.html">外链同步日志</a>
             <a class="link" href="javascript:void(0)">违禁词列表管理</a>
             <a class="link" href="javascript:void(0)">对接物料筛选工具</a>
             <a class="link center-link" href="MPM-物料对接-客户商品清单.html">客户推送管理</a>
-            <a class="link center-link" href="MPM-物料对接-项目价格监控中心.html">项目价格监控中心</a>
-            <a class="link link-with-badge" href="#" onclick="openProjectMaterialList(event)"><span>项目物料池</span><span class="new-feature-badge">新增</span></a>
+            <a class="link center-link link-with-badge" href="MPM-物料对接-项目价格监控中心.html"><span>项目价格监控中心</span><span class="new-feature-badge">优化</span></a>
+            <a class="link link-with-badge" href="MPM-物料对接-项目商品池-销售员工作台.html"><span>项目商品池</span><span class="new-feature-badge">新增</span></a>
           </div>
         </div>
 
         <div class="module-row short">
           <div class="module-tab tab-price">
-            <div class="tab-icon">🏷</div>
+            <div class="tab-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-tag"></use></svg></div>
             <div>价格设置</div>
           </div>
           <div class="module-links cols-3">
@@ -2796,7 +2846,7 @@
         <div class="module-row short">
           <div class="module-tab tab-dock"><div class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 12h8M13 9l3 3-3 3"/><rect x="3" y="5" width="5" height="14" rx="1"/><rect x="16" y="5" width="5" height="14" rx="1"/></svg></div><div>物料对接</div></div>
           <div class="module-links cols-3">
-            <a class="link" href="#" onclick="openProjectMaterialList(event)">项目物料池</a>
+            <a class="link" href="MPM-物料对接-项目商品池-销售员工作台.html">项目商品池</a>
           </div>
         </div>
       </div>
@@ -2811,9 +2861,23 @@
         </div>
       </div>
     </section>
+
+    <section class="module-grid" id="salesModuleGrid" hidden aria-label="王云龙销售员角色工作台">
+      <div class="column">
+        <div class="module-row short">
+          <div class="module-tab tab-dock">
+            <div class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 12h8M13 9l3 3-3 3"/><rect x="3" y="5" width="5" height="14" rx="1"/><rect x="16" y="5" width="5" height="14" rx="1"/></svg></div>
+            <div>物料对接</div>
+          </div>
+          <div class="module-links">
+            <a class="link" href="#" onclick="openProjectMaterialList(event)">项目商品池</a>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <main class="project-material-page" id="projectMaterialPage" aria-label="项目物料池">
+  <main class="project-material-page" id="projectMaterialPage" aria-label="项目商品池">
     <form class="project-material-filter" id="projectMaterialFilter" onsubmit="searchProjectMaterials(event)">
       <div class="pm-filter-main-row">
         <div class="pm-filter-heading"><span class="pm-filter-icon" aria-hidden="true"></span><span>筛选:</span></div>
@@ -2884,7 +2948,7 @@
       <button class="pm-status-tab" id="pmStatusOther" type="button" role="tab" aria-selected="false" onclick="setProjectMaterialStatusTab('other')">其他状态</button>
     </div>
 
-    <div class="pm-table-wrap view-hidden" id="pmTableWrap" tabindex="0" role="region" aria-label="项目物料池，可横向滚动查看全部字段">
+    <div class="pm-table-wrap view-hidden" id="pmTableWrap" tabindex="0" role="region" aria-label="项目商品池，可横向滚动查看全部字段">
       <table class="pm-table">
         <thead>
           <tr>
@@ -3083,7 +3147,7 @@
         <div class="audit-field-box">
           <div class="audit-search">
             <span>⌕</span>
-            <input type="text" placeholder="搜索字段名称或值">
+            <input type="text" placeholder="搜索字段名称或值" aria-label="搜索字段名称或值">
           </div>
           <div class="field-transfer">
             <div class="field-column">
@@ -3196,7 +3260,7 @@
       </div>
       <div style="padding:0 10px 12px;">
         <div class="person-search-row">
-          <input class="person-search-input" id="personSearchInput" type="text" placeholder="请输入名称" autocomplete="off">
+          <input class="person-search-input" id="personSearchInput" type="text" placeholder="请输入名称" aria-label="人员名称" autocomplete="off">
           <button class="person-search-btn" type="button" aria-label="查询人员" onclick="searchPersons()">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           </button>
@@ -3313,7 +3377,7 @@
   <div class="demo-tips-stack">
     <div class="demo-tips" id="tip-v480">
       <div class="demo-tips-head" onclick="toggleTip('tip-v480')">
-        <span class="t">💡 MPM v4.8.0 操作提示</span>
+        <span class="t"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> MPM v4.8.0 操作提示</span>
         <span class="demo-tips-toggle">收起 ▾</span>
       </div>
       <div class="demo-tips-body">
@@ -3349,7 +3413,7 @@
     </div>
     <div class="demo-tips" id="tip-v470">
       <div class="demo-tips-head" onclick="toggleTip('tip-v470')">
-        <span class="t">💡 MPM v4.7.0 操作提示</span>
+        <span class="t"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> MPM v4.7.0 操作提示</span>
         <span class="demo-tips-toggle">收起 ▾</span>
       </div>
       <div class="demo-tips-body">
@@ -3388,8 +3452,9 @@
 
     let currentWorkbenchAccount = "admin";
     const workbenchAccountProfiles = {
-      admin: { name: "管理员", avatar: "管", owned: 0, added: 0, removed: 0, remaining: 0, days: 220, poem: "小桃灼灼柳鬖鬖，春色满江南。" },
-      wang: { name: "王云龙", avatar: "王", owned: 75, added: 74, removed: 0, remaining: 0, days: 120, poem: "西风酒旗市，细雨菊花天。" }
+      admin: { name: "管理员", role: "系统管理账户", avatar: "管", owned: 0, added: 0, removed: 0, remaining: 0, days: 220, poem: "小桃灼灼柳鬖鬖，春色满江南。" },
+      wang: { name: "王云龙", role: "采购员角色", avatar: "王", owned: 75, added: 74, removed: 0, remaining: 0, days: 120, poem: "西风酒旗市，细雨菊花天。" },
+      "wang-sales": { name: "王云龙", role: "销售员角色", avatar: "王", owned: 0, added: 0, removed: 0, remaining: 0, days: 120, poem: "西风酒旗市，细雨菊花天。" }
     };
 
     const moduleLineIcons = {
@@ -3456,15 +3521,21 @@
       currentWorkbenchAccount = workbenchAccountProfiles[account] ? account : "admin";
       const profile = workbenchAccountProfiles[currentWorkbenchAccount];
       const isWang = currentWorkbenchAccount === "wang";
+      const isSales = currentWorkbenchAccount === "wang-sales";
+      const isRestrictedAccount = isWang || isSales;
       const workbenchPage = document.getElementById("workbenchPage");
       const wangModuleGrid = document.getElementById("wangModuleGrid");
+      const salesModuleGrid = document.getElementById("salesModuleGrid");
       if (wangModuleGrid.parentElement !== workbenchPage) workbenchPage.appendChild(wangModuleGrid);
+      if (salesModuleGrid.parentElement !== workbenchPage) workbenchPage.appendChild(salesModuleGrid);
       document.body.dataset.workbenchAccount = currentWorkbenchAccount;
       document.getElementById("currentAccountName").textContent = profile.name;
+      document.getElementById("currentAccountRole").textContent = profile.role;
       document.getElementById("currentAccountAvatar").textContent = profile.avatar;
-      document.getElementById("adminModuleGrid").hidden = isWang;
+      document.getElementById("adminModuleGrid").hidden = isRestrictedAccount;
       wangModuleGrid.hidden = !isWang;
-      document.querySelectorAll("[data-admin-only]").forEach(element => { element.hidden = isWang; });
+      salesModuleGrid.hidden = !isSales;
+      document.querySelectorAll("[data-admin-only]").forEach(element => { element.hidden = isRestrictedAccount; });
       document.querySelectorAll(".account-switch-option").forEach(option => option.classList.toggle("active", option.dataset.account === currentWorkbenchAccount));
       document.getElementById("ownedMaterialCount").textContent = profile.owned;
       document.getElementById("addedMaterialCount").textContent = profile.added;
@@ -3476,7 +3547,7 @@
       try { sessionStorage.setItem("mpm-workbench-account", currentWorkbenchAccount); } catch (error) {}
       if (announce) {
         showWorkbenchAfterAccountSwitch();
-        showToast(`已切换至${profile.name}账户`);
+        showToast(`已切换至${profile.name}（${profile.role}）`);
       }
     }
 
@@ -4167,7 +4238,7 @@
       document.getElementById("accountCreateTab").classList.add("is-hidden");
       document.getElementById("accountCreateTab").classList.remove("active");
       document.getElementById("primaryPageTab").classList.add("active");
-      document.getElementById("primaryTabTitle").textContent = "项目物料池";
+      document.getElementById("primaryTabTitle").textContent = "项目商品池";
       document.body.classList.remove("settings-open", "account-open", "project-management-open", "role-field-open");
       document.body.classList.add("project-material-open");
       document.getElementById("projectMaterialFilter").classList.remove("expanded");
@@ -5572,7 +5643,7 @@
     if (!header) {
       header = document.createElement('div');
       header.className = prefix + '-header';
-      header.innerHTML = '<span class="' + prefix + '-title">💡 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
+      header.innerHTML = '<span class="' + prefix + '-title"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
       tip.insertBefore(header, body);
     }
 
@@ -5607,6 +5678,7 @@
 })();
 </script>
 <script src="mpm-topnav-links.js"></script>
+<script src="assets/js/prototype-common.js"></script>
 </body>
 </html>
 

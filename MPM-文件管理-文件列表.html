@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>文件管理 - 咸亨国际主数据管理平台</title>
-  <script src="../../node_modules/xlsx/dist/xlsx.full.min.js"></script>
+  <title>文件管理-文件列表 - MPM物料主数据系统</title>
+  <script src="assets/vendor/xlsx.full.min.js"></script>
   <style>
     :root {
       --primary: #1677ff;
@@ -39,7 +39,7 @@
       font-size: 14px;
       background: var(--bg-layout);
       color: var(--text-body);
-      min-width: 1280px;
+      min-width: 0;
     }
     a { color: inherit; text-decoration: none; }
     button, input, select { font: inherit; }
@@ -351,8 +351,8 @@
     .demo-tips-close { position: absolute; top: 6px; right: 8px; color: #fff; cursor: pointer; font-size: 14px; opacity: .6; }
     .demo-tips-close:hover { opacity: 1; }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
   <!-- 顶栏 -->
   <header class="topbar">
     <div class="brand">
@@ -385,14 +385,14 @@
   </div>
 
   <!-- 主体 -->
-  <main class="page">
+  <main id="main-content" class="page" tabindex="-1">
     <!-- 筛选区 -->
     <section class="filter-card">
       <form id="filterForm" onsubmit="event.preventDefault();">
         <div class="filter-row with-actions">
           <div class="filter-item">
             <span class="lbl">文件类型</span>
-            <select class="f-select" id="filterType">
+            <select class="f-select" id="filterType" aria-label="文件类型">
               <option value="">全部</option>
               <option value="CCC_TEST_REPORT">国家强制性产品认证试验报告</option>
               <option value="QUALITY_INSPECTION">产品质量检验检测报告</option>
@@ -403,11 +403,11 @@
           </div>
           <div class="filter-item">
             <span class="lbl">文件名称</span>
-            <input class="f-input" placeholder="请输入文件名称" id="filterName" />
+            <input class="f-input" placeholder="请输入文件名称" id="filterName"  aria-label="文件名称"/>
           </div>
           <div class="filter-item">
             <span class="lbl">文件URL</span>
-            <input class="f-input" placeholder="请输入完整或部分 URL" id="filterUrl" />
+            <input class="f-input" placeholder="请输入完整或部分 URL" id="filterUrl"  aria-label="文件URL"/>
           </div>
           <div class="filter-actions">
             <button class="icon-btn" type="button" title="高级筛选">✎</button>
@@ -419,15 +419,15 @@
         <div class="filter-row">
           <div class="filter-item">
             <span class="lbl">操作人员</span>
-            <input class="f-input" placeholder="请输入姓名/工号" id="filterCreator" />
+            <input class="f-input" placeholder="请输入姓名/工号" id="filterCreator"  aria-label="操作人员"/>
           </div>
           <div class="filter-item">
             <span class="lbl">操作时间</span>
             <div class="f-daterange">
-              <input type="text" placeholder="起始" id="filterStart" />
+              <input type="text" placeholder="起始" id="filterStart"  aria-label="开始时间"/>
               <span class="arrow">→</span>
-              <input type="text" placeholder="结束" id="filterEnd" />
-              <span style="font-size:14px;">📅</span>
+              <input type="text" placeholder="结束" id="filterEnd"  aria-label="结束时间"/>
+              <span style="font-size:14px;"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-clock"></use></svg></span>
             </div>
           </div>
           <div class="filter-item"></div>
@@ -444,8 +444,8 @@
         </div>
         <div class="sub-toolbar-right">
           <button class="btn btn-primary" type="button" onclick="openModal('modalBatchAdd')">+ 批量新增文件</button>
-          <button class="btn btn-default" type="button" onclick="onBatchExport()">⬇ 批量导出文件</button>
-          <button class="btn-link" type="button" onclick="onRefresh()">🔄 刷新</button>
+          <button class="btn btn-default" type="button" onclick="onBatchExport()"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-download"></use></svg> 批量导出文件</button>
+          <button class="btn-link" type="button" onclick="onRefresh()"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-refresh"></use></svg> 刷新</button>
         </div>
       </div>
 
@@ -453,7 +453,7 @@
         <table>
           <thead>
             <tr>
-              <th class="row-check"><input type="checkbox" id="checkAll" onchange="toggleAll(this)" /></th>
+              <th class="row-check"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"  aria-label="全选当前列表"/></th>
               <th>文件名称</th>
               <th>文件类型</th>
               <th>文件 URL 地址</th>
@@ -477,12 +477,12 @@
           <button class="page-btn" type="button">2</button>
           <button class="page-btn" type="button">3</button>
           <button class="page-btn" type="button">›</button>
-          <select class="page-size-select">
+          <select class="page-size-select" aria-label="每页显示条数">
             <option>20 条/页</option>
             <option>50 条/页</option>
             <option>100 条/页</option>
           </select>
-          <span class="page-jump">前往 <input type="text" value="1" /> 页</span>
+          <span class="page-jump">前往 <input type="text" value="1" aria-label="跳转页码" /> 页</span>
         </div>
       </div>
     </section>
@@ -493,7 +493,7 @@
     <div class="modal-card">
       <div class="modal-head">
         <div class="modal-head-title">批量新增文件</div>
-        <button class="modal-close" onclick="closeModal('modalBatchAdd')">×</button>
+        <button class="modal-close" type="button" onclick="closeModal('modalBatchAdd')" aria-label="关闭批量新增弹窗">×</button>
       </div>
       <div class="modal-body">
         <div class="form-row">
@@ -503,7 +503,7 @@
           </div>
         </div>
         <div class="upload-dragger" onclick="onMockUpload()">
-          <div class="upload-icon">📤</div>
+          <div class="upload-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-upload"></use></svg></div>
           <div class="upload-text">点击或拖拽 zip 压缩包到此处</div>
           <div class="upload-hint">
             注意：上传附件压缩包（ZIP/RAR ≤500MB，单文件≤10MB，jpg/jpeg/png/svg/heic/avif/pdf）<br/>
@@ -525,14 +525,14 @@
   <div class="demo-tips" id="demoTips">
     <span class="demo-tips-close" onclick="document.getElementById('demoTips').style.display='none'">×</span>
     <div class="demo-tips-section">
-      <b>💡 演示操作：</b><br/>
+      <b><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> 演示操作：</b><br/>
       1. 入口：<b>工作台 → 物料 → 文件管理</b><br/>
       2. 筛选：<span class="ti">文件类型 / 文件名称 / 文件URL / 操作人员 / 操作时间(起止)</span><br/>
       3. 列表：点击「文件 URL」蓝色链接 → 浏览器新标签打开文件<br/>
       4. 操作：<b>批量新增文件 / 批量导出文件</b>
     </div>
     <div class="demo-tips-section">
-      <b>🆕 本期相关：</b><br/>
+      <b>本期相关：</b><br/>
       • 文件管理仅展示 MPM OSS 域名下的资质/附件文件<br/>
       • 批量导出输出 Excel 4 列：物料编码 / 文件类型 / 文件名称 / 文件 URL 地址<br/>
       • 批量新增走 §3.2.2-A「批量文件上传工具」(zip + 附件管理文档)
@@ -544,7 +544,7 @@
     function goPage(path) { window.location.href = path; }
     function showMessage(text, type = 'info') {
       const wrap = document.getElementById('messageWrap');
-      const icons = { info: '💬', success: '✅', warning: '⚠️', error: '❌' };
+      const icons = { info: '提示', success: '成功', warning: '警告', error: '错误' };
       const el = document.createElement('div');
       el.className = 'message-item ' + (type !== 'info' ? type : '');
       el.innerHTML = `<span>${icons[type]}</span><span>${text}</span>`;
@@ -742,7 +742,7 @@
     if (!header) {
       header = document.createElement('div');
       header.className = prefix + '-header';
-      header.innerHTML = '<span class="' + prefix + '-title">💡 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
+      header.innerHTML = '<span class="' + prefix + '-title"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
       tip.insertBefore(header, body);
     }
 
@@ -774,6 +774,6 @@
 })();
 </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+<script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 

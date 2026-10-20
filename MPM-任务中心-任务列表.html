@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>任务中心 - 咸亨国际主数据管理平台</title>
+  <title>任务中心-任务列表 - MPM物料主数据系统</title>
   <style>
     :root {
       --primary: #1677ff;
@@ -38,7 +38,7 @@
       font-size: 14px;
       background: var(--bg-layout);
       color: var(--text-body);
-      min-width: 1280px;
+      min-width: 0;
     }
     a { color: inherit; text-decoration: none; }
     button, input, select { font: inherit; }
@@ -645,8 +645,8 @@
     }
 
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
   <!-- 顶栏（与列表页一致） -->
   <header class="topbar">
     <div class="brand">
@@ -679,13 +679,13 @@
   </div>
 
   <!-- 主体 -->
-  <main class="page">
+  <main id="main-content" class="page" tabindex="-1">
     <!-- 筛选区 -->
     <section class="filter-card">
       <form class="filter-row" onsubmit="event.preventDefault();">
         <div class="filter-item">
           <span class="lbl">类型</span>
-          <select id="filterType" class="f-select">
+          <select id="filterType" class="f-select" aria-label="任务类型">
             <option value="">请选择</option>
             <option>平台物料 - 导入推送 (光大电商)</option>
             <option>平台物料 - 导入推送 (电能e购)</option>
@@ -693,6 +693,7 @@
             <option>平台物料 - 导入更新价格 (华电)</option>
             <option>平台物料 - 回调价格导入 (华电)</option>
             <option>导入批改 - 修改商城价</option>
+            <option>导入批改外链价</option>
             <option>导入批改 - 商城隐藏</option>
             <option>批量上传资质图片</option>
             <option>IQS每日同步-项目调拨结算价格/库存地址</option>
@@ -706,7 +707,7 @@
         </div>
         <div class="filter-item">
           <span class="lbl">状态</span>
-          <select id="filterStatus" class="f-select">
+          <select id="filterStatus" class="f-select" aria-label="任务状态">
             <option value="">请选择</option>
             <option>成功</option>
             <option>失败</option>
@@ -718,23 +719,23 @@
         <div class="filter-item">
           <span class="lbl">时间范围</span>
           <div class="f-daterange">
-            <input type="text" placeholder="请选择" id="filterStart" />
+            <input type="text" placeholder="请选择" id="filterStart"  aria-label="开始时间"/>
             <span class="arrow">→</span>
-            <input type="text" placeholder="请选择" id="filterEnd" />
+            <input type="text" placeholder="请选择" id="filterEnd"  aria-label="结束时间"/>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
           </div>
         </div>
         <div class="filter-item">
           <span class="lbl">文件名</span>
-          <input class="f-input" placeholder="请输入" id="filterFileName" />
+          <input class="f-input" placeholder="请输入" id="filterFileName"  aria-label="文件名"/>
         </div>
         <div class="filter-item">
           <span class="lbl">创建人</span>
-          <input class="f-input" placeholder="请输入姓名" id="filterCreator" autocomplete="off" />
+          <input class="f-input" placeholder="请输入姓名" id="filterCreator" autocomplete="off"  aria-label="创建人"/>
         </div>
         <div class="filter-item">
           <span class="lbl">执行方式</span>
-          <select id="filterExecuteMode" class="f-select">
+          <select id="filterExecuteMode" class="f-select" aria-label="执行方式">
             <option value="">请选择</option>
             <option value="FC">云上FC执行</option>
             <option value="MQ">本地MQ队列执行</option>
@@ -886,6 +887,7 @@
     </div>
   </aside>
 
+  <dialog id="materialPriceTaskDetail" style="margin:auto;width:min(1100px,calc(100vw - 32px));max-height:calc(100dvh - 48px);border:1px solid #ddd;border-radius:6px;padding:20px" aria-labelledby="materialPriceTaskTitle"><h2 id="materialPriceTaskTitle">导入批改外链价</h2><p>任务号：<strong id="materialPriceTaskCode"></strong></p><p>原型演示：任务已创建，逐行结果当前为待处理，未实际写入物料主数据。</p><div style="overflow:auto;max-height:55vh"><table style="width:100%;min-width:750px"><thead><tr><th>物料编码</th><th>物料名称</th><th>外链地址</th><th>市场价</th><th>返回结果</th></tr></thead><tbody id="materialPriceTaskRows"></tbody></table></div><div style="text-align:right;margin-top:16px"><button class="btn" type="button" onclick="document.getElementById('materialPriceTaskDetail').close()">关闭</button></div></dialog>
   <script>
     function goPage(path) { window.location.href = path; }
 
@@ -980,6 +982,8 @@
       return `<td${title ? ` title="${escapeHtml(title)}"` : ''}>${content}</td>`;
     }
 
+    function loadMaterialPriceTasks(){try{const stored=JSON.parse(localStorage.getItem('mpm-material-link-price-tasks')||'[]');if(!Array.isArray(stored))return;stored.forEach(task=>{const existing=taskMock.findIndex(item=>item.code===task.code);const item={status:task.status,type:'导入批改外链价',code:task.code,start:task.start,used:'0.0 秒',remain:'暂无法估算',progress:`0/${task.rows.length}`,done:'',executeMode:'MQ',creator:task.creator,importFile:'',exportFile:'',materialPriceRows:task.rows};if(existing<0)taskMock.unshift(item);else taskMock[existing]=item;});}catch(error){showMessage('读取外链价格更新任务失败：'+error.message,'error');}}
+    function openMaterialPriceTask(code){const task=taskMock.find(task=>task.code===code);if(!task||!task.materialPriceRows)return;const dialog=document.getElementById('materialPriceTaskDetail');document.getElementById('materialPriceTaskCode').textContent=task.code;document.getElementById('materialPriceTaskRows').innerHTML=task.materialPriceRows.map(row=>`<tr><td>${escapeHtml(row.code)}</td><td>${escapeHtml(row.name)}</td><td style="overflow-wrap:anywhere;white-space:normal">${escapeHtml(row.link)}</td><td>${Number(row.price).toFixed(2)}</td><td>${escapeHtml(row.result||'待处理')}</td></tr>`).join('');dialog.showModal();}
     function renderRows(rows) {
       if (!rows.length) {
         tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:48px 0;color:var(--text-sub);">没有符合条件的任务</td></tr>';
@@ -988,7 +992,7 @@
       tbody.innerHTML = rows.map(t => `
         <tr>
           ${cell(statusTagHtml(t.status), t.status)}
-          ${cell(`<a class="td-link" href="javascript:void(0)">${escapeHtml(t.type)}</a>`, t.type)}
+          ${cell(t.materialPriceRows?`<button class="btn-link" type="button" data-material-price-task="${escapeHtml(t.code)}">${escapeHtml(t.type)}</button>`:`<a class="td-link" href="javascript:void(0)">${escapeHtml(t.type)}</a>`, t.type)}
           ${cell(`<span class="muted">${escapeHtml(t.code)}</span>`, t.code)}
           ${cell(escapeHtml(t.start), t.start)}
           ${cell(escapeHtml(t.used), t.used)}
@@ -1002,6 +1006,7 @@
         </tr>
       `).join('');
       bindFileLinks();
+      document.querySelectorAll('[data-material-price-task]').forEach(button=>button.addEventListener('click',()=>openMaterialPriceTask(button.dataset.materialPriceTask)));
       requestAnimationFrame(() => expandedColumns.forEach(applyExpandedWidth));
     }
 
@@ -1112,6 +1117,8 @@
       showMessage('已重置筛选条件', 'info');
     });
     document.getElementById('refreshBtn').addEventListener('click', () => {
+      loadMaterialPriceTasks();
+      currentRows = [...taskMock];
       renderRows(currentRows);
       showMessage('已刷新任务列表', 'success');
     });
@@ -1279,10 +1286,14 @@
     });
 
     setupExpandableColumns();
+    loadMaterialPriceTasks();
+    currentRows = [...taskMock];
     renderRows(currentRows);
     updatePagination(false);
+    const materialPriceTaskCode=new URLSearchParams(location.search).get('materialPriceTask');
+    if(materialPriceTaskCode){document.getElementById('filterType').value='导入批改外链价';currentRows=taskMock.filter(task=>task.code===materialPriceTaskCode);renderRows(currentRows);updatePagination(true);openMaterialPriceTask(materialPriceTaskCode);}
   </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+<script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>待我审核 - 咸亨国际主数据管理平台</title>
+  <title>物料-待我审核 - MPM物料主数据系统</title>
   <style>
     :root {
       --primary:      #1677ff;
@@ -194,8 +194,8 @@
     .msg-item{background:var(--bg-container);border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,0.12),0 3px 6px rgba(0,0,0,0.08);padding:9px 12px;font-size:14px;color:var(--text-body);display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(-8px);transition:.25s;white-space:nowrap;}
     .msg-item.show{opacity:1;transform:translateY(0);}
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
 
 <!-- 顶部导航 -->
 <header class="topbar">
@@ -228,44 +228,44 @@
   <div class="tabs-clear" onclick="showMsg('已清除标签页')">清除</div>
 </div>
 
-<main class="page">
+<main id="main-content" class="page" tabindex="-1">
   <!-- 筛选栏 -->
   <div class="filter-card">
     <div class="filter-grid" id="filterGrid">
-      <div class="filter-item"><label>货主</label><select class="f-select" id="filterOwner"><option value="">请选择</option><option>万聚国际（杭州）</option><option>威亨国际科技</option><option>浙江威亨创新产</option></select></div>
-      <div class="filter-item"><label>使用组织</label><select class="f-select"><option value="">请选择</option><option>商品部门</option><option>产业部门</option></select></div>
-      <div class="filter-item"><label>毛重</label><input class="f-input" placeholder="请输入" /></div>
+      <div class="filter-item"><label>货主</label><select class="f-select" id="filterOwner" aria-label="货主"><option value="">请选择</option><option>万聚国际（杭州）</option><option>威亨国际科技</option><option>浙江威亨创新产</option></select></div>
+      <div class="filter-item"><label>使用组织</label><select class="f-select" aria-label="使用组织"><option value="">请选择</option><option>商品部门</option><option>产业部门</option></select></div>
+      <div class="filter-item"><label>毛重</label><input class="f-input" placeholder="请输入"  aria-label="毛重"/></div>
 
-      <div class="filter-item"><label>型号</label><input class="f-input" id="filterModel" placeholder="请输入" /></div>
-      <div class="filter-item"><label>规格</label><input class="f-input" id="filterSpec" placeholder="请输入" /></div>
-      <div class="filter-item"><label>单位编码</label><select class="f-select"><option value="">请选择</option><option>个</option><option>米</option><option>套</option></select></div>
+      <div class="filter-item"><label>型号</label><input class="f-input" id="filterModel" placeholder="请输入"  aria-label="型号"/></div>
+      <div class="filter-item"><label>规格</label><input class="f-input" id="filterSpec" placeholder="请输入"  aria-label="规格"/></div>
+      <div class="filter-item"><label>单位编码</label><select class="f-select" aria-label="单位编码"><option value="">请选择</option><option>个</option><option>米</option><option>套</option></select></div>
 
-      <div class="filter-item"><label>订单执行员</label><select class="f-select"><option value="">请选择</option><option>胡乾礼</option><option>郭佳薰</option><option>卢嘉非</option></select></div>
-      <div class="filter-item"><label>部门</label><select class="f-select"><option value="">请选择</option><option>通用工具采购</option><option>电商管理部</option></select></div>
-      <div class="filter-item"><label>物料等级</label><select class="f-select" id="filterLevel"><option value="">请选择</option><option>零星</option><option>常规</option></select></div>
+      <div class="filter-item"><label>订单执行员</label><select class="f-select" aria-label="部门"><option value="">请选择</option><option>胡乾礼</option><option>郭佳薰</option><option>卢嘉非</option></select></div>
+      <div class="filter-item"><label>部门</label><select class="f-select" aria-label="部门"><option value="">请选择</option><option>通用工具采购</option><option>电商管理部</option></select></div>
+      <div class="filter-item"><label>物料等级</label><select class="f-select" id="filterLevel" aria-label="物料等级"><option value="">请选择</option><option>零星</option><option>常规</option></select></div>
 
-      <div class="filter-item"><label>图片关系</label><select class="f-select"><option value="">请选择</option><option>正常物料</option><option>无图物料</option></select></div>
-      <div class="filter-item"><label>申请人</label><input class="f-input" id="filterApplicant" placeholder="请输入" /></div>
-      <div class="filter-item"><label>内部备注</label><input class="f-input" id="filterRemark" placeholder="请输入" /></div>
+      <div class="filter-item"><label>图片关系</label><select class="f-select" aria-label="图片关系"><option value="">请选择</option><option>正常物料</option><option>无图物料</option></select></div>
+      <div class="filter-item"><label>申请人</label><input class="f-input" id="filterApplicant" placeholder="请输入"  aria-label="申请人"/></div>
+      <div class="filter-item"><label>内部备注</label><input class="f-input" id="filterRemark" placeholder="请输入"  aria-label="内部备注"/></div>
 
-      <div class="filter-item"><label>驳回理由</label><input class="f-input" placeholder="请输入" /></div>
+      <div class="filter-item"><label>驳回理由</label><input class="f-input" placeholder="请输入"  aria-label="驳回理由"/></div>
       <div class="filter-item"><label>提交申请时间</label><input class="f-input" type="date" aria-label="提交申请时间" /></div>
-      <div class="filter-item"><label>描述</label><input class="f-input" id="filterDesc" placeholder="请输入" /></div>
+      <div class="filter-item"><label>描述</label><input class="f-input" id="filterDesc" placeholder="请输入"  aria-label="描述"/></div>
 
-      <div class="filter-item"><label>项目</label><select class="f-select"><option value="">请选择</option><option>202604东方电气</option></select></div>
-      <div class="filter-item"><label>类目</label><select class="f-select"><option value="">请选择</option><option>线槽类</option><option>紧固件</option><option>其它量具</option></select></div>
-      <div class="filter-item"><label>物料类型</label><select class="f-select"><option value="">请选择</option><option>正常物料</option><option>无图物料</option></select></div>
+      <div class="filter-item"><label>项目</label><select class="f-select" aria-label="类目"><option value="">请选择</option><option>202604东方电气</option></select></div>
+      <div class="filter-item"><label>类目</label><select class="f-select" aria-label="物料类型"><option value="">请选择</option><option>线槽类</option><option>紧固件</option><option>其它量具</option></select></div>
+      <div class="filter-item"><label>物料类型</label><select class="f-select" aria-label="物料类型"><option value="">请选择</option><option>正常物料</option><option>无图物料</option></select></div>
 
-      <div class="filter-item"><label>物料标签</label><select class="f-select"><option value="">请选择</option><option>自营物料</option><option>定向物料</option><option>电商服务商</option></select></div>
-      <div class="filter-item"><label>审批员</label><select class="f-select"><option value="">请选择</option><option>沈冰佳</option><option>夏宝</option><option>杨晨</option></select></div>
-      <div class="filter-item"><label>物料编码</label><input class="f-input" id="filterMaterialCode" placeholder="多个物料编码英文逗号间隔" /></div>
+      <div class="filter-item"><label>物料标签</label><select class="f-select" aria-label="审批员"><option value="">请选择</option><option>自营物料</option><option>定向物料</option><option>电商服务商</option></select></div>
+      <div class="filter-item"><label>审批员</label><select class="f-select" aria-label="审批员"><option value="">请选择</option><option>沈冰佳</option><option>夏宝</option><option>杨晨</option></select></div>
+      <div class="filter-item"><label>物料编码</label><input class="f-input" id="filterMaterialCode" placeholder="多个物料编码英文逗号间隔"  aria-label="物料编码"/></div>
 
-      <div class="filter-item"><label>物料名称</label><input class="f-input" id="filterMaterialName" placeholder="多个物料名称英文逗号间隔" /></div>
-      <div class="filter-item"><label>品牌</label><select class="f-select"><option value="">请选择</option><option>三丰/MITUTOYO</option><option>博世/BOSCH</option><option>佐佑众工/ZUOYOU</option></select></div>
-      <div class="filter-item"><label>流程id</label><input class="f-input" id="filterFlowId" placeholder="请输入流程id" /></div>
+      <div class="filter-item"><label>物料名称</label><input class="f-input" id="filterMaterialName" placeholder="多个物料名称英文逗号间隔"  aria-label="物料名称"/></div>
+      <div class="filter-item"><label>品牌</label><select class="f-select" aria-label="品牌"><option value="">请选择</option><option>三丰/MITUTOYO</option><option>博世/BOSCH</option><option>佐佑众工/ZUOYOU</option></select></div>
+      <div class="filter-item"><label>流程id</label><input class="f-input" id="filterFlowId" placeholder="请输入流程id"  aria-label="流程id"/></div>
 
-      <div class="filter-item"><label>AI审核建议</label><select class="f-select"><option value="">请选择</option><option>建议通过</option><option>建议驳回</option><option>人工审核</option></select></div>
-      <div class="filter-item"><label>助记码</label><input class="f-input" placeholder="多个助记码英文逗号间隔" /></div>
+      <div class="filter-item"><label>AI审核建议</label><select class="f-select" aria-label="AI审核建议"><option value="">请选择</option><option>建议通过</option><option>建议驳回</option><option>人工审核</option></select></div>
+      <div class="filter-item"><label>助记码</label><input class="f-input" placeholder="多个助记码英文逗号间隔"  aria-label="助记码"/></div>
     </div>
     <div class="filter-actions">
       <button class="btn btn-primary" onclick="applyFilters()">查询</button>
@@ -304,7 +304,7 @@
     <table>
       <thead>
         <tr>
-          <th><input type="checkbox" id="checkAll" /></th>
+          <th><input type="checkbox" id="checkAll"  aria-label="全选当前列表"/></th>
           <th>货主</th><th>咸亨物料编码</th><th>流程id</th><th>名称</th><th>四级类目</th>
           <th>型号</th><th>规格</th><th>描述</th><th>单位</th><th>品牌</th><th>物料等级</th>
           <th>等级</th><th>订单执行员</th><th>采购部门</th><th>内部备注</th>
@@ -327,10 +327,10 @@
       <span style="color:var(--text-sub)">…</span>
       <button class="page-btn" data-page="52">52</button>
       <button class="page-btn">›</button>
-      <select class="f-select" style="width:90px;flex:none;">
+      <select class="f-select" style="width:90px;flex:none;" aria-label="每页显示条数">
         <option>25 条/页</option><option>50 条/页</option><option>100 条/页</option>
       </select>
-      <div class="page-jump">跳至<input type="number" min="1" value="1" />页
+      <div class="page-jump">跳至<input type="number" min="1" value="1" aria-label="跳转页码" />页
         <button class="btn btn-default btn-sm" onclick="showMsg('已跳转')">跳转</button>
       </div>
     </div>
@@ -347,15 +347,15 @@
     <div class="modal-body">
       <div class="form-row">
         <div class="form-label">外部编码</div>
-        <input class="form-control" id="modalCode" disabled />
+        <input class="form-control" id="modalCode" disabled  aria-label="外部编码"/>
       </div>
       <div class="form-row">
         <div class="form-label">物料名称</div>
-        <input class="form-control" id="modalName" disabled />
+        <input class="form-control" id="modalName" disabled  aria-label="物料名称"/>
       </div>
       <div class="form-row">
         <div class="form-label">审核意见<span class="req">*</span></div>
-        <textarea class="form-control" id="modalRemark" placeholder="请输入审核说明（必填）..."></textarea>
+        <textarea class="form-control" id="modalRemark" placeholder="请输入审核说明（必填）..." aria-label="审核意见"></textarea>
       </div>
     </div>
     <div class="modal-footer">
@@ -402,8 +402,8 @@
       <div class="unified-reject-bar">
         <label><input type="checkbox" id="unifiedCheck" onchange="toggleUnified(this)" /> 统一驳回理由</label>
         <div class="unified-input-wrap">
-          <input class="unified-input" id="unifiedInput" disabled placeholder="请输入" />
-          <span style="position:absolute;right:10px;color:var(--text-sub);font-size:13px;pointer-events:none;">🔍</span>
+          <input class="unified-input" id="unifiedInput" disabled placeholder="请输入"  aria-label="统一驳回理由"/>
+          <span style="position:absolute;right:10px;color:var(--text-sub);font-size:13px;pointer-events:none;"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-search"></use></svg></span>
         </div>
       </div>
     </div>
@@ -725,7 +725,7 @@ function _openBatchRejectModal(rows){
       <td>
         <div class="reject-reason-wrap">
           <input class="reject-reason-input" data-row="${i}" placeholder="请输入驳回理由" />
-          <span class="search-icon">🔍</span>
+          <span class="search-icon"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-search"></use></svg></span>
         </div>
       </td>
     </tr>`).join('');
@@ -773,7 +773,7 @@ function go(url){ window.location.href = url; }
 
 function showMsg(text, type='info'){
   const wrap = document.getElementById('msgWrap');
-  const icons = {info:'💬',ok:'✅',warn:'⚠️',err:'❌'};
+  const icons = {info:'提示',ok:'成功',warn:'警告',err:'错误'};
   const el = document.createElement('div');
   el.className = 'msg-item';
   el.innerHTML = `<span>${icons[type]||icons.info}</span>${text}`;
@@ -786,6 +786,6 @@ renderTable();
 syncRejectVisibility();
 </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+<script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 

@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>咸亨国际主数据管理平台 - 配置数据管理</title>
-  <script src="../../node_modules/xlsx/dist/xlsx.full.min.js"></script>
+  <title>关系设置-数据配置表 - MPM物料主数据系统</title>
+  <script src="assets/vendor/xlsx.full.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      min-width: 1280px;
+      min-width: 0;
       min-height: 100vh;
       background: #f5f7fb;
       color: #111827;
@@ -417,12 +417,12 @@
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div><main id="main-content" tabindex="-1">
   <header class="topbar">
     <div class="brand">
       <div class="brand-title" onclick="location.href='MPM-工作台-首页.html'">咸亨国际主数据管理平台</div>
-      <div class="switch" onclick="window.location.href='index.html'">🔥 切换系统</div>
+      <div class="switch" onclick="window.location.href='index.html'"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-settings"></use></svg> 切换系统</div>
     </div>
     <div class="top-actions">
       <span>版本更新</span>
@@ -446,20 +446,20 @@
       <div class="field">
         <label>编码</label>
         <div class="input-wrap">
-          <input placeholder="请输入" />
+          <input placeholder="请输入"  aria-label="编码"/>
           <span class="clear-x">×</span>
         </div>
       </div>
       <div class="field">
         <label>名称</label>
         <div class="input-wrap">
-          <input placeholder="请输入" />
+          <input placeholder="请输入"  aria-label="名称"/>
           <span class="clear-x">×</span>
         </div>
       </div>
     </div>
     <div class="query-actions">
-      <button class="icon-btn" type="button">✎</button>
+      <button class="icon-btn" type="button" aria-label="编辑筛选条件">✎</button>
       <button class="btn primary" type="button">查询</button>
       <button class="btn" type="button">重置</button>
       <button class="icon-btn" type="button">⌄</button>
@@ -547,7 +547,7 @@
     <div class="modal">
       <div class="modal-head">
         <span>批量修改</span>
-        <button class="modal-close" id="closeImport" type="button">×</button>
+        <button class="modal-close" id="closeImport" type="button" aria-label="关闭导入弹窗">×</button>
       </div>
       <table class="import-table">
         <thead>
@@ -601,7 +601,7 @@
   <div class="demo-tips-stack">
     <div class="demo-tips" id="configHistoryTip">
       <div class="demo-tips-head" onclick="toggleTip('configHistoryTip')">
-        <span class="t">💡 MPM v4.7.0 界面说明</span>
+        <span class="t"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> MPM v4.7.0 界面说明</span>
         <span class="demo-tips-toggle">收起 ▾</span>
       </div>
       <div class="demo-tips-body">
@@ -852,6 +852,6 @@
     });
   </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+</main><script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 

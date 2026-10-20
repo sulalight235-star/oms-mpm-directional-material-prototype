@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>我发起的 - 咸亨国际主数据管理平台</title>
+  <title>物料-我发起的 - MPM物料主数据系统</title>
   <style>
     :root {
       --primary:      #1677ff;
@@ -178,8 +178,8 @@
     .msg-item{background:var(--bg-container);border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,0.12),0 3px 6px rgba(0,0,0,0.08);padding:9px 12px;font-size:14px;color:var(--text-body);display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(-8px);transition:.25s;white-space:nowrap;}
     .msg-item.show{opacity:1;transform:translateY(0);}
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
 
 <!-- 顶部导航 -->
 <header class="topbar">
@@ -213,13 +213,13 @@
   <div class="tabs-clear" onclick="showMsg('已清除标签页')">清除</div>
 </div>
 
-<main class="page">
+<main id="main-content" class="page" tabindex="-1">
   <!-- 筛选栏 -->
   <div class="filter-card">
     <span class="filter-label">筛选</span>
     <div class="filter-group">
       <label>货主</label>
-      <select class="f-select">
+      <select class="f-select" aria-label="货主">
         <option value="">请选择</option>
         <option>万聚国际（杭州）</option>
         <option>威亨国际科技</option>
@@ -228,15 +228,15 @@
     </div>
     <div class="filter-group">
       <label>型号</label>
-      <input class="f-input" placeholder="请输入" />
+      <input class="f-input" placeholder="请输入"  aria-label="型号"/>
     </div>
     <div class="filter-group">
       <label>规格</label>
-      <input class="f-input" placeholder="请输入" />
+      <input class="f-input" placeholder="请输入"  aria-label="规格"/>
     </div>
     <div class="filter-group">
       <label>物料等级</label>
-      <select class="f-select">
+      <select class="f-select" aria-label="物料等级">
         <option value="">请选择</option>
         <option>零星</option>
         <option>常规</option>
@@ -279,7 +279,7 @@
     <table>
       <thead>
         <tr>
-          <th><input type="checkbox" id="checkAll" /></th>
+          <th><input type="checkbox" id="checkAll"  aria-label="全选当前列表"/></th>
           <th>货主</th><th>编码</th><th>名称</th><th>四级类目</th>
           <th>型号</th><th>规格</th><th>单位</th><th>市场价</th>
           <th>商城价</th><th>项目参考调拨价</th><th>品牌</th><th>等级</th>
@@ -297,10 +297,10 @@
       <button class="page-btn" data-page="2">2</button>
       <button class="page-btn" data-page="3">3</button>
       <button class="page-btn">›</button>
-      <select class="f-select" style="width:90px;flex:none;">
+      <select class="f-select" style="width:90px;flex:none;" aria-label="每页显示条数">
         <option>25 条/页</option><option>50 条/页</option><option>100 条/页</option>
       </select>
-      <div class="page-jump">跳至<input type="number" min="1" value="1" />页
+      <div class="page-jump">跳至<input type="number" min="1" value="1" aria-label="跳转页码" />页
         <button class="btn btn-default btn-sm" onclick="showMsg('已跳转')">跳转</button>
       </div>
     </div>
@@ -315,7 +315,7 @@
       <span class="modal-close" onclick="closeRevoke()">×</span>
     </div>
     <div class="modal-body">
-      <span class="modal-warn-icon">⚠️</span>
+      <span class="modal-warn-icon" aria-hidden="true">!</span>
       <div class="modal-warn-text" id="revokeText"></div>
     </div>
     <div class="modal-footer">
@@ -619,7 +619,7 @@ document.addEventListener('keydown', event => {
 
 function showMsg(text, type='info'){
   const wrap = document.getElementById('msgWrap');
-  const icons = {info:'💬',ok:'✅',warn:'⚠️',err:'❌'};
+  const icons = {info:'提示',ok:'成功',warn:'警告',err:'错误'};
   const el = document.createElement('div');
   el.className = 'msg-item';
   el.innerHTML = `<span>${icons[type]||icons.info}</span>${text}`;
@@ -631,6 +631,6 @@ function showMsg(text, type='info'){
 renderTable();
 </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+<script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 

@@ -24,7 +24,9 @@ export output_abs
 
 # 仅复制网页发布所需的文件类型，避免把 .git、本地日志或浏览器配置带入产物。
 find . -type f \
-  \( -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.md' \) \
+  \( -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.md' -o -name '*.json' \
+     -o -name '*.svg' -o -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \
+     -o -name '*.webp' -o -name '*.gif' -o -name '*.ico' -o -name '*.LICENSE' \) \
   -not -path './.git/*' \
   -not -path './public/*' \
   -not -path './_edge_cdp_profile/*' \

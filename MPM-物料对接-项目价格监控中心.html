@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>项目价格监管中心 - MPM</title>
+  <title>物料对接-项目价格监控中心 - MPM物料主数据系统</title>
   <link rel="stylesheet" href="mpm-dock-common.css">
   <style>
     :root {
@@ -23,7 +23,7 @@
       --text-3: #909399;
     }
     * { box-sizing: border-box; }
-    html, body { min-width: 1180px; min-height: 100%; color: var(--text); background: var(--page-bg); }
+    html, body { min-width: 0; min-height: 100%; color: var(--text); background: var(--page-bg); }
     body { overflow: hidden; }
     button, input, select, textarea { font: inherit; }
     button, a, select { touch-action: manipulation; }
@@ -31,32 +31,46 @@
       outline: 3px solid rgba(52,120,229,.22); outline-offset: 1px;
     }
 
-    .top { height: 34px; padding: 0 10px; background: #2867d8; color: #fff; box-shadow: none; }
-    .top-brand { gap: 9px; }
-    .brand-logo { width: 24px; height: 24px; border-radius: 4px; background: rgba(255,255,255,.16); }
-    .brand-name { font-size: 16px; font-weight: 700; }
-    .switch-btn { height: 25px; padding: 0 8px; border: 0; color: #fff; line-height: 25px; }
-    .switch-btn::before { content: ""; width: 7px; height: 7px; display: inline-block; margin-right: 6px; border-radius: 50%; background: #ffb55e; vertical-align: 1px; }
-    .top .right { font-size: 13px; }
-    .top .right span { padding: 0 10px; color: rgba(255,255,255,.96); }
-    .badge-dot { top: 5px; right: 3px; border-color: #2867d8; }
-    .user-avatar { display: none !important; }
+    [hidden] { display: none !important; }
+    .top { position: relative; z-index: 120; }
+    .brand-name { cursor: pointer; }
+    .nav-menu { height: 100%; display: flex; align-items: center; }
+    .nav-item { height: 100%; display: flex; align-items: center; gap: 5px; position: relative; padding: 0 13px; color: rgba(255,255,255,.75); font-size: 13px; white-space: nowrap; cursor: pointer; transition: color .2s,background .2s; }
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,.08); }
+    .nav-divider { width: 1px; height: 16px; margin: 0 3px; background: rgba(255,255,255,.15); }
+    .account-switcher { position: relative; height: 100%; }
+    .account-switch-trigger { height: 100%; display: flex; align-items: center; gap: 6px; padding: 0 10px; border: 0; background: transparent; color: rgba(255,255,255,.82); font: inherit; font-size: 13px; cursor: pointer; }
+    .account-switch-trigger:hover,
+    .account-switch-trigger[aria-expanded="true"] { color: #fff; background: rgba(255,255,255,.08); }
+    .account-switch-trigger:focus-visible { outline: 2px solid rgba(255,255,255,.72); outline-offset: -3px; }
+    .current-account-role { color: rgba(255,255,255,.58); font-size: 11px; }
+    .account-switch-arrow { color: rgba(255,255,255,.6); transition: transform .18s ease; }
+    .account-switch-trigger[aria-expanded="true"] .account-switch-arrow { transform: rotate(180deg); }
+    .account-switch-menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 300; width: 188px; padding: 6px; border: 1px solid #e5e9ef; border-radius: 4px; background: #fff; box-shadow: 0 10px 26px rgba(20,35,60,.18); }
+    .account-switch-option { width: 100%; min-height: 40px; display: flex; align-items: center; gap: 10px; padding: 6px 9px; border: 0; border-radius: 3px; background: transparent; color: #303846; font: inherit; text-align: left; cursor: pointer; }
+    .account-switch-option:hover { background: #f3f7ff; color: #1677ff; }
+    .account-switch-option.active { background: #eaf3ff; color: #1677ff; }
+    .account-option-avatar { width: 26px; height: 26px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 50%; background: #1677ff; color: #fff; font-size: 11px; font-weight: 700; }
+    .account-option-copy { display: grid; gap: 1px; }
+    .account-option-name { font-weight: 600; }
+    .account-option-role { color: #9299a5; font-size: 11px; }
 
-    .tabs { height: 34px; padding: 0; background: #4c8cec; border-bottom: 1px solid #c5d5ed; }
-    .tab { height: 34px; padding: 0 14px; background: #fff; color: #333; }
-    .tab.active { color: #303133; }
-    .tab.active::after { display: none; }
-    .clear { height: 34px; background: #4c8cec; color: #fff; border-left-color: rgba(255,255,255,.2); }
+    .tabs { height: 36px; padding: 0 8px 0 0; background: #fff; border-bottom: 1px solid #f0f0f0; }
+    .tab { height: 36px; padding: 0 14px; color: rgba(0,0,0,.45); font-size: 12px; }
+    .tab.active { color: #1677ff; background: #e6f4ff; }
+    .tab.active::after { display: block; }
+    .clear { height: 36px; padding: 0 12px; background: #fff; color: rgba(0,0,0,.45); border-left-color: #f0f0f0; font-size: 12px; }
+    .clear:hover { color: #1677ff; }
     .operation-bar { height: 36px; display: flex; align-items: center; padding: 0 18px; color: #3374d5; font-weight: 600; background: #f5f7fb; border-bottom: 1px solid #edf0f5; }
 
-    .app-shell { height: calc(100dvh - 104px); min-height: 620px; display: grid; grid-template-columns: 196px minmax(0,1fr); background: #fff; }
+    .app-shell { height: calc(100dvh - 120px); min-height: 620px; display: grid; grid-template-columns: 196px minmax(0,1fr); background: #fff; }
     .side-nav { border-right: 1px solid #dfe4ec; background: #fff; }
     .side-item { width: 100%; min-height: 52px; display: flex; align-items: center; padding: 0 24px; border: 0; border-right: 3px solid transparent; background: transparent; color: #303133; text-align: left; cursor: pointer; transition: color .18s,background .18s,border-color .18s; }
     .side-item:hover { color: var(--primary); background: #f6f9ff; }
     .side-item.active { border-right-color: var(--primary); background: var(--primary-soft); color: var(--primary); font-weight: 600; }
 
     .workspace { min-width: 0; padding: 24px 26px 30px; overflow: hidden; background: #fff; }
-    .work-card { height: 100%; min-height: 560px; padding: 22px 26px; overflow: auto; border: 1px solid #e3e7ed; border-radius: 20px; background: #fff; box-shadow: 0 1px 4px rgba(32,52,84,.05); scrollbar-gutter: stable; }
+    .work-card { height: 100%; min-height: 560px; padding: 22px 26px; overflow: hidden; border: 1px solid #e3e7ed; border-radius: 20px; background: #fff; box-shadow: 0 1px 4px rgba(32,52,84,.05); }
     .module { display: none; min-width: 860px; }
     .module.active { display: block; }
     .module-head { min-height: 34px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
@@ -103,6 +117,41 @@
     .tag.success { border-color: #d1edc4; background: var(--success-soft); color: var(--success); }
     .tag.up { border-color: #d1edc4; background: var(--success-soft); color: var(--success); }
     .tag.down { border-color: #fbc4c4; background: var(--danger-soft); color: var(--danger); }
+    .tag.info { border-color: #b3d8ff; background: #ecf5ff; color: #3374d5; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .project-tag { display: inline-flex; align-items: center; min-height: 22px; padding: 0 7px; border: 1px solid #b3d8ff; border-radius: 2px; background: #ecf5ff; color: #3374d5; font-size: 12px; white-space: nowrap; }
+    .notice-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; padding: 9px 12px; border: 1px solid #b3d8ff; background: #ecf5ff; color: #3374d5; font-size: 13px; }
+    .notice-bar::before { content: "i"; display: grid; place-items: center; width: 16px; height: 16px; border: 1px solid currentColor; border-radius: 50%; font-size: 11px; font-weight: 700; }
+    .dedup-stats { display: grid; grid-template-columns: repeat(4,minmax(150px,1fr)); gap: 12px; margin-bottom: 14px; }
+    .dedup-stats--sticky { position: sticky; top: 0; z-index: 6; padding: 8px 0; background: #fff; }
+    .dedup-stat { padding: 12px 14px; border: 1px solid #edf0f4; background: #fafcff; }
+    .dedup-stat span { display: block; color: var(--text-2); font-size: 13px; }
+    .dedup-stat strong { display: block; margin-top: 5px; color: var(--text); font-size: 22px; line-height: 1.2; }
+    .dedup-stat.highlight { border-color: #b3d8ff; background: #ecf5ff; }
+    .dedup-stat.highlight strong { color: var(--primary); }
+    .ai-filter .field { min-width: 210px; }
+    .ai-filter .date-range { width: 270px; }
+    .audit-sites { display: flex; flex-wrap: wrap; gap: 4px; }
+    #mappingModule .table-wrap, #aiAuditModule .table-wrap { max-height: calc(100dvh - 360px); overflow: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+    #mappingModule .data-table thead th, #aiAuditModule .data-table thead th { position: sticky; top: 0; z-index: 2; background: #fafafa; box-shadow: 0 1px 0 #edf0f4; }
+    #mappingModule .table-wrap { isolation: isolate; }
+    #mappingModule { min-width: 0; }
+    #mappingModule .data-table :is(th,td):nth-last-child(-n+3) { position: sticky; z-index: 3; background: #fff; }
+    #mappingModule .data-table :is(th,td):last-child { right: 0; }
+    #mappingModule .data-table :is(th,td):nth-last-child(2) { right: 115px; }
+    #mappingModule .data-table :is(th,td):nth-last-child(3) { right: 235px; box-shadow: -5px 0 7px -5px rgba(0,0,0,.22); }
+    #mappingModule .data-table thead th:nth-last-child(-n+3) { z-index: 4; background: #fafafa; }
+    #mappingModule .data-table tbody tr:hover td:nth-last-child(-n+3) { background: #f7faff; }
+    @media(max-width:768px){
+      #mappingModule .data-table th:last-child { width: 90px!important; }
+      #mappingModule .data-table th:nth-last-child(2) { width: 100px!important; }
+      #mappingModule .data-table th:nth-last-child(3) { width: 80px!important; }
+      #mappingModule .data-table :is(th,td):nth-last-child(2) { right: 90px; }
+      #mappingModule .data-table :is(th,td):nth-last-child(3) { right: 190px; }
+    }
+    .dialog.wide { width: min(1120px,calc(100vw - 48px)); }
+    .mapping-count { margin: 12px 0 6px; color: var(--text-2); font-size: 13px; }
+    .mapping-link-full { margin: 0 0 14px; padding: 10px 12px; border: 1px solid #e8ebf0; background: #fafcff; color: var(--text-2); font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace; line-height: 1.6; overflow-wrap: anywhere; word-break: break-all; }
     .formula { display: inline-flex; align-items: center; gap: 6px; color: #4c83df; }
     .status-progress { display: inline-flex; align-items: center; gap: 7px; }
     .progress-line { width: 34px; height: 5px; border-radius: 3px; background: var(--success); }
@@ -140,83 +189,195 @@
     .toast.show { opacity: 1; transform: translate(-50%,0); }
     @keyframes dialog-in { from { opacity: 0; transform: translateY(-8px) scale(.99); } to { opacity: 1; transform: none; } }
     @media (max-width: 1280px) { .workspace { padding: 18px; } .work-card { padding: 18px; } .field { min-width: 220px; } .control { width: 165px; } }
+    @media (max-width: 1024px) {
+      .top { height: auto; min-height: 48px; flex-wrap: wrap; gap: 8px; }
+      .nav-menu { width: 100%; height: 44px; overflow-x: auto; }
+      .account-switch-menu { position: fixed; top: 88px; right: 16px; }
+      .app-shell { height: calc(100dvh - 154px); }
+    }
+    @media (max-width: 768px) { .current-account-role { display: none; } }
+    @media (max-width: 375px) { .brand-name { display: none; } }
+    .warning-list { min-height: 0; flex: 1; overflow: auto; overscroll-behavior: contain; }
+    .warning-card { margin-bottom: 12px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+    .warning-card-head { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; padding: 14px 16px; background: #fafbfc; }
+    .warning-card-head label { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+    .warning-card-fields { display: grid; grid-template-columns: 1.4fr 1.2fr 1fr 1.6fr 1.2fr; gap: 16px; padding: 16px; }
+    .warning-card-fields span, .warning-card-foot span { overflow-wrap: anywhere; }
+    .warning-card-foot { display: flex; gap: 24px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--line); }
+    .warning-card-foot .warning-message { color: #c0392b; }
+    #checkRecordsDialog .data-table { min-width: 900px; }
+    .check-record-pagination { justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .check-record-pagination .head-actions { flex-wrap: wrap; }
+    #checkRecordsDialog .dialog-body { min-height: 0; }
+    #warningModule { min-width: 0; }
+    #poolModule { min-width: 0; }
+    #poolModule.active { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+    #poolModule > :not(.pool-table-wrap) { flex-shrink: 0; }
+    .pool-export-bar { margin: 4px 0 18px; }
+    #mappingModule .module-head, #mappingModule .module-head .head-actions { flex-wrap: wrap; }
+    #materialUpdateConfirm{border:0;padding:0;margin:auto}
+    #materialUpdateConfirm:not([open]){display:none}
+    #materialUpdateConfirm::backdrop{background:rgba(0,0,0,.48)}
+    #materialUpdateDialog .dialog-body { min-height: 0; }
+    #materialUpdateDialog .dialog-foot { flex-shrink: 0; }
+    .project-export-dropdown { position:relative; margin-top:8px; }
+    .project-export-input { display:flex; align-items:center; border:1px solid var(--line); border-radius:6px; background:white; }
+    .project-export-input:focus-within { border-color:var(--primary); box-shadow:0 0 0 2px rgba(22,119,255,.16); }
+    .project-export-input .control { border:0; flex:1; min-width:0; width:100%; box-shadow:none; }
+    .project-export-input button { min-width:44px; min-height:44px; }
+    .project-export-list { position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:10; display:grid; grid-template-columns:minmax(0,1fr); gap:4px; max-height:220px; overflow:auto; padding:6px; background:white; border:1px solid var(--line); border-radius:6px; box-shadow:0 6px 18px rgba(0,0,0,.14); overscroll-behavior:contain; }
+    .project-export-list[hidden] { display:none; }
+    #projectPriceExportDialog .dialog-body { min-height:360px; }
+    .project-export-option { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px; border: 1px solid var(--line); overflow-wrap: anywhere; }
+    .project-export-selected { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    #projectPriceExportDialog .dialog-body { min-height: min(360px,55dvh); }
+    #projectPriceExportDialog .dialog-foot { flex-shrink: 0; }
+    @media(max-width:768px){.project-export-list{grid-template-columns:minmax(0,1fr);}#projectPriceExportDialog .field{min-width:0;width:100%;}#projectPriceExportSearch{min-width:0;flex:1;}}
+    @media(max-width:768px){#materialUpdateDialog .field{width:100%;min-width:0;}#materialUpdateDialog .control{min-width:0;flex:1;}}
+    .pool-table-wrap { flex: 1; min-height: 0; overscroll-behavior: contain; }
+    .pool-table-wrap thead th { position: sticky; top: 0; z-index: 1; }
+    .pool-code-field { min-width: 320px; }
+    .pool-code-field .control { width: 240px; }
+    #poolDetailDialog .dialog { width: min(1600px,calc(100vw - 32px)); }
+    #poolDetailTitle { overflow-wrap: anywhere; }
+    #poolDetailDialog td.pool-url { white-space: normal; overflow-wrap: anywhere; }
+    @media (max-width: 768px) {
+      #poolModule .field { width: 100%; min-width: 0; }
+      #poolModule .control { min-width: 0; flex: 1; }
+      #poolModule .filter-box { max-height: 160px; overflow: auto; }
+      #poolModule .pagination { gap: 6px; }
+    }
+    #warningModule.active { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+    #warningModule > :not(.warning-list) { flex-shrink: 0; }
+    #checkRecordsDialog .dialog { max-width: calc(100vw - 32px); }
+    @media (max-width: 1024px) { .warning-card-fields { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+    @media (max-width: 768px) {
+      .app-shell { grid-template-columns: minmax(0,1fr); min-height: 0; }
+      .side-nav { display: flex; overflow-x: auto; }
+      .side-item { width: auto; flex: 0 0 auto; min-height: 44px; padding: 0 12px; }
+      .workspace { min-height: 0; padding: 8px; }
+      .work-card { min-height: 0; padding: 12px; border-radius: 6px; }
+      .app-shell { grid-template-rows: 44px minmax(0,1fr); }
+      #warningModule .module-head { flex-wrap: wrap; }
+      #warningModule .table-actions { flex-wrap: wrap; }
+      #warningModule .table-actions .head-actions { flex-wrap: wrap; }
+      #warningModule .field, #warningModule .control, #warningModule .date-range { min-width: 0; width: 100%; }
+      #warningModule .filter-box { max-height: 180px; overflow: auto; flex-shrink: 0; }
+      .warning-card-head { gap: 12px; }
+      .warning-card-fields { grid-template-columns: minmax(0,1fr); }
+    }
     @media (prefers-reduced-motion: reduce) { *,*::before,*::after { transition-duration: .01ms!important; animation-duration: .01ms!important; animation-iteration-count: 1!important; } }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
   <header class="top">
-    <div class="top-brand"><div class="brand-logo">咸</div><span class="brand-name">咸亨国际主数据管理平台</span><button class="switch-btn" type="button" onclick="location.href='index.html'">切换系统</button></div>
-    <div class="right"><span>消息通知<i class="badge-dot"></i></span><span>价格审核<i class="badge-dot"></i></span><span class="divider"></span><span>版本更新</span><span>推送ERP</span><span>管理模块</span><span onclick="location.href='MPM-任务中心-任务列表.html'">任务中心<i class="badge-dot"></i></span><span>清洗任务<i class="badge-dot"></i></span><span>管理员 ▾</span></div>
+    <div class="top-brand">
+      <div class="brand-logo">咸</div>
+      <span class="brand-name" onclick="location.href='MPM-工作台-首页.html'">咸亨国际主数据管理平台</span>
+      <button class="switch-btn" type="button" onclick="location.href='index.html'">切换系统</button>
+    </div>
+    <nav class="nav-menu" aria-label="顶部功能导航">
+      <div class="nav-item" data-name="消息通知">消息通知<span class="badge-dot"></span></div>
+      <div class="nav-item" data-name="价格审核">价格审核<span class="badge-dot"></span></div>
+      <div class="nav-divider" aria-hidden="true"></div>
+      <div class="nav-item" data-name="版本更新">版本更新</div>
+      <div class="nav-item" data-name="推送ERP" data-admin-only>推送ERP</div>
+      <div class="nav-item" data-name="管理模块" data-admin-only>管理模块</div>
+      <div class="nav-item" data-name="任务中心">任务中心</div>
+      <div class="nav-divider" aria-hidden="true"></div>
+      <div class="account-switcher" id="accountSwitcher">
+        <button class="account-switch-trigger" id="accountSwitchTrigger" type="button" aria-haspopup="menu" aria-expanded="false" onclick="toggleWorkbenchAccountMenu(event)">
+          <span class="user-avatar" id="currentAccountAvatar">管</span><span id="currentAccountName">管理员</span><span class="current-account-role" id="currentAccountRole">系统管理账户</span><span class="account-switch-arrow">▾</span>
+        </button>
+        <div class="account-switch-menu" id="accountSwitchMenu" role="menu" hidden>
+          <button class="account-switch-option" type="button" role="menuitem" data-account="project-operator" onclick="switchWorkbenchAccount('project-operator')"><span class="account-option-avatar">王</span><span class="account-option-copy"><span class="account-option-name">王云龙</span><span class="account-option-role">项目运营专员</span></span></button>
+          <button class="account-switch-option" type="button" role="menuitem" data-account="project-manager" onclick="switchWorkbenchAccount('project-manager')"><span class="account-option-avatar">项</span><span class="account-option-copy"><span class="account-option-name">项目经理</span><span class="account-option-role">项目经理</span></span></button>
+          <button class="account-switch-option" type="button" role="menuitem" data-account="project-specialist" onclick="switchWorkbenchAccount('project-specialist')"><span class="account-option-avatar">项</span><span class="account-option-copy"><span class="account-option-name">项目商品专员</span><span class="account-option-role">项目商品专员</span></span></button>
+          <button class="account-switch-option active" type="button" role="menuitem" data-account="admin" onclick="switchWorkbenchAccount('admin')"><span class="account-option-avatar">管</span><span class="account-option-copy"><span class="account-option-name">管理员</span><span class="account-option-role">系统管理账户</span></span></button>
+          <button class="account-switch-option" type="button" role="menuitem" data-account="wang" onclick="switchWorkbenchAccount('wang')"><span class="account-option-avatar">王</span><span class="account-option-copy"><span class="account-option-name">王云龙</span><span class="account-option-role">采购员角色</span></span></button>
+          <button class="account-switch-option" type="button" role="menuitem" data-account="wang-sales" onclick="switchWorkbenchAccount('wang-sales')"><span class="account-option-avatar">王</span><span class="account-option-copy"><span class="account-option-name">王云龙</span><span class="account-option-role">销售员角色</span></span></button>
+        </div>
+      </div>
+    </nav>
   </header>
   <div class="tabs"><div class="tab active">项目价格监管中心 <span class="x">×</span></div><div class="clear">清除</div></div>
   <div class="operation-bar">操作：</div>
 
-  <main class="app-shell">
+  <main id="main-content" class="app-shell" tabindex="-1">
     <aside class="side-nav" aria-label="项目价格监管中心功能导航">
       <button class="side-item active" type="button" data-module="warning">预警中心</button>
       <button class="side-item" type="button" data-module="pool">价格数据池</button>
       <button class="side-item" type="button" data-module="rules">规则库</button>
       <button class="side-item" type="button" data-module="customers">客户管理</button>
-      <button class="side-item" type="button" data-module="audit">AI外链匹配与稽查</button>
+      <button class="side-item" type="button" data-module="aiAudit">AI外链匹配与稽查</button>
+      <button class="side-item" type="button" data-module="mapping">外链映射数据表</button>
     </aside>
 
     <section class="workspace">
       <div class="work-card">
         <section class="module active" id="warningModule" data-title="预警中心">
           <div class="module-head"><h1 class="module-title plain">预警中心</h1></div>
+          <div class="notice-bar">系统每日自动执行一次价格检查。新一轮检查不再触发时，自动关闭同一“项目 + 物料 + 规则”下全部历史待处理预警，不撤回既有通知。</div>
           <form class="filter-box demo-form"><div class="filter-row">
             <div class="field"><label for="warningProject">所属项目</label><select class="control" id="warningProject"><option value="">请选择</option><option>国网一级</option><option>中核电商</option><option>中国电建</option></select></div>
-            <div class="field"><label for="warningType">规则类型</label><select class="control" id="warningType"><option value="">请选择</option><option>固定价比较检查</option><option>项目外链价比较检查</option><option>外部链接价比较检查</option></select></div>
-            <div class="field"><label for="warningStatus">处理状态</label><select class="control" id="warningStatus"><option value="">请选择</option><option>未读</option><option>已读</option><option>已处理</option></select></div>
+            <div class="field"><label for="warningType">规则类型</label><select class="control" id="warningType"><option value="">请选择</option><option>咸亨官网价比较检查</option><option>外部链接价比较检查</option><option>项目外链价比较检查</option><option>固定价比较检查</option><option>结算价比较检查</option><option>项目调拨参考价比较检查</option></select></div>
+            <div class="field"><label for="warningStatus">处理状态</label><select class="control" id="warningStatus"><option value="">请选择</option><option>待处理</option><option>人工已处理</option><option>系统自动处理</option></select></div>
             <div class="field"><label>预警日期</label><div class="date-range"><input type="text" placeholder="开始日期" aria-label="预警开始日期"><span>→</span><input type="text" placeholder="结束日期" aria-label="预警结束日期"></div></div>
             <button class="btn primary" type="submit">查询</button>
           </div></form>
-          <div class="table-actions"><label class="check-label"><input id="warningAll" type="checkbox">全选</label><div><button class="btn primary" type="button" onclick="showToast('所选预警已标记为已读')">标记已读</button> <button class="btn primary" type="button" onclick="showToast('预警导出任务已创建')">批量导出</button></div></div>
-          <div class="empty-state"><div><svg viewBox="0 0 64 64" fill="none"><path d="M17 25h30l5 10v16H12V35l5-10Z"/><path d="M12 36h13l3 5h8l3-5h13"/><path d="M23 25l3-8h12l3 8"/></svg><div>暂无数据</div></div></div>
+          <div class="table-actions"><label class="check-label"><input id="warningAll" type="checkbox" onchange="document.querySelectorAll('#warningList input').forEach(input=>input.checked=this.checked)">全选</label><div class="head-actions"><button class="btn" type="button" onclick="runManualCheck(this)">手动检查刷新</button><button class="btn" type="button" onclick="openCheckRecords()">执行记录</button><button class="btn primary" type="button" onclick="exportWarnings()">批量导出</button></div></div>
+          <div class="table-wrap warning-list" id="warningList" aria-label="预警列表"></div>
           <div class="pagination"><button class="page-btn" disabled>‹</button><button class="page-btn active">1</button><button class="page-btn" disabled>›</button></div>
         </section>
 
         <section class="module" id="poolModule" data-title="价格数据池">
           <div class="module-head"><h1 class="module-title plain">价格数据池</h1></div>
-          <div style="margin-bottom:14px"><button class="btn primary" type="button" onclick="showToast('价格数据导出任务已创建')">批量导出</button></div>
-          <form class="filter-box demo-form"><div class="filter-row">
-            <div class="field"><label for="poolProject">所属项目</label><select class="control" id="poolProject"><option value="">请选择</option><option>国网一级</option><option>中核电商</option><option>中国电建</option></select></div>
-            <div class="field" style="min-width:360px"><label for="goodsCode">商品编码</label><input class="control" style="width:260px" id="goodsCode" placeholder="请输入;多个编码英文逗号间隔"></div>
+          <div class="pool-export-bar"><button class="btn primary" type="button" onclick="exportPool(this)">批量导出</button></div>
+          <form class="filter-box" id="poolFilterForm"><div class="filter-row">
+            <div class="field"><label for="poolProject">所属项目</label><select class="control" id="poolProject"><option>管网新系统</option><option>国网一级</option><option>中核电商</option><option>中国电建</option></select></div>
+            <div class="field pool-code-field"><label for="goodsCode">商品编码</label><input class="control" id="goodsCode" placeholder="请输入，多个编码英文逗号间隔"></div>
             <button class="btn primary" type="submit">查询</button>
           </div></form>
-          <div class="table-wrap"><table class="data-table"><thead><tr><th style="width:100px">操作</th><th>商品编码</th><th>品牌</th><th>名称</th><th>型号</th><th>描述</th></tr></thead></table></div>
-          <div class="empty-state"><div><svg viewBox="0 0 64 64" fill="none"><path d="M17 25h30l5 10v16H12V35l5-10Z"/><path d="M12 36h13l3 5h8l3-5h13"/><path d="M23 25l3-8h12l3 8"/></svg><div>暂无数据</div></div></div>
+          <div class="table-wrap pool-table-wrap"><table class="data-table" style="min-width:1050px"><thead><tr><th style="width:110px">操作</th><th style="width:150px">商品编码</th><th style="width:200px">品牌</th><th style="width:270px">名称</th><th style="width:110px">型号</th><th>描述</th></tr></thead><tbody id="poolBody"></tbody></table></div>
+          <div class="pagination check-record-pagination"><span id="poolPageInfo" aria-live="polite"></span><div class="head-actions"><button class="btn" id="poolPrev" type="button" onclick="changePoolPage(-1)">上一页</button><button class="btn" id="poolNext" type="button" onclick="changePoolPage(1)">下一页</button><select class="control" aria-label="价格数据池每页条数" style="width:110px" onchange="poolState.size=Number(this.value);poolState.page=1;renderPool()"><option value="10">10 条/页</option><option value="50">50 条/页</option><option value="100">100 条/页</option></select></div></div>
         </section>
 
         <section class="module" id="rulesModule" data-title="规则库">
           <div class="module-head"><h1 class="module-title">规则库</h1><button class="btn primary" type="button" onclick="openRuleDialog()">＋ 新增规则</button></div>
           <form class="filter-box demo-form"><div class="filter-row">
             <div class="field"><label for="ruleKeyword">规则名称</label><input class="control" id="ruleKeyword" placeholder="请选择"></div>
-            <div class="field"><label for="ruleType">规则类型</label><select class="control" id="ruleType"><option value="">请选择</option><option>固定价比较检查</option><option>项目外链价比较检查</option><option>咸亨官网价比较检查</option></select></div>
+            <div class="field"><label for="ruleType">规则类型</label><select class="control" id="ruleType"><option value="">请选择</option><option>咸亨官网价比较检查</option><option>外部链接价比较检查</option><option>项目外链价比较检查</option><option>固定价比较检查</option><option>结算价比较检查</option><option>项目调拨参考价比较检查</option></select></div>
             <button class="btn primary" type="submit">查询</button><button class="btn" type="reset">↻ 重置</button>
           </div></form>
-          <div class="table-wrap"><table class="data-table"><thead><tr><th style="width:190px">规则名称</th><th style="width:180px">规则类型</th><th style="width:300px">计算公式 / 逻辑</th><th style="width:170px">浮动阈值 (上下)</th><th style="width:115px">创建时间</th><th style="width:100px">操作</th></tr></thead><tbody id="ruleBody"></tbody></table></div>
+          <div class="table-wrap"><table class="data-table"><thead><tr><th style="width:190px">规则名称</th><th style="width:180px">规则类型</th><th style="width:240px">比较逻辑</th><th style="width:150px">折扣率变量</th><th style="width:130px">预警阈值</th><th style="width:115px">创建时间</th><th style="width:100px">操作</th></tr></thead><tbody id="ruleBody"></tbody></table></div>
           <div class="pagination"><button class="page-btn" disabled>‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">›</button></div>
         </section>
 
         <section class="module" id="customersModule" data-title="客户管理">
           <div class="module-head"><h1 class="module-title plain">客户管理</h1></div>
-          <form class="filter-box demo-form"><div class="filter-row"><div class="field"><label for="customerName">项目名称</label><input class="control" id="customerName" placeholder="请输入"></div><button class="btn primary" type="submit">查询</button></div></form>
-          <div class="table-wrap"><table class="data-table"><thead><tr><th style="width:170px">项目名称</th><th>操作</th></tr></thead><tbody id="customerBody"></tbody></table></div>
-          <div class="pagination"><button class="page-btn" disabled>‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">4</button><button class="page-btn">5</button><span>…</span><button class="page-btn">26</button><button class="page-btn">›</button><select class="control" aria-label="每页条数" style="width:100px"><option>10 条/页</option><option>20 条/页</option></select></div>
+          <form class="filter-box demo-form" id="customerFilterForm"><div class="filter-row"><div class="field"><label for="customerName">项目名称</label><input class="control" id="customerName" placeholder="请输入"></div><button class="btn primary" type="submit">查询</button></div></form>
+          <div class="table-wrap"><table class="data-table"><thead><tr><th style="width:360px">项目名称</th><th>操作</th></tr></thead><tbody id="customerBody"></tbody></table></div>
+          <div class="pagination"><button class="page-btn" disabled aria-label="上一页">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">4</button><button class="page-btn">5</button><span>…</span><button class="page-btn">17</button><button class="page-btn" aria-label="下一页">›</button><select class="control" aria-label="每页条数" style="width:106px"><option>10 条/页</option></select></div>
         </section>
 
-        <section class="module" id="auditModule" data-title="AI外链匹配与稽查">
-          <div class="module-head"><h1 class="module-title plain">AI外链匹配与稽查</h1><div class="head-actions"><button class="btn primary" type="button" onclick="openTaskDialog('单品稽查')">单品稽查</button><button class="btn primary" type="button" onclick="openTaskDialog('创建匹配任务')">创建匹配任务</button><button class="btn" type="button" onclick="showToast('已进入外链稽查任务管理视图')">外链稽查任务管理</button></div></div>
-          <form class="filter-box demo-form"><div class="filter-row">
-            <div class="field"><label for="taskName">任务名称</label><input class="control" id="taskName" placeholder="请输入任务名称"></div>
-            <div class="field"><label for="operator">操作人</label><input class="control" id="operator" placeholder="请输入操作人"></div>
-            <div class="field"><label for="taskStatus">状态</label><select class="control" id="taskStatus"><option value="">请选择</option><option>进行中</option><option>已完成</option><option>失败</option></select></div>
-            <div class="field"><label>开始时间</label><div class="date-range"><input type="text" placeholder="开始日期" aria-label="任务开始日期"><span>→</span><input type="text" placeholder="结束日期" aria-label="任务结束日期"></div></div>
-            <button class="btn primary" type="submit">查询</button><button class="btn" type="reset">↻ 重置</button>
-          </div></form>
-          <div class="table-wrap"><table class="data-table" style="min-width:1160px"><thead><tr><th style="width:295px">任务名称</th><th style="width:85px">状态</th><th style="width:110px">进度</th><th style="width:145px">开始时间</th><th style="width:145px">结束时间</th><th style="width:90px">操作人</th><th style="width:90px">任务来源</th><th style="width:100px">稽查网站</th><th style="width:210px">操作</th></tr></thead><tbody id="taskBody"></tbody></table></div>
-          <div class="pagination"><button class="page-btn" disabled>‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">›</button></div>
+        <section class="module" id="aiAuditModule" data-title="AI外链匹配与稽查">
+          <div class="module-head"><h1 class="module-title plain">AI外链匹配与稽查</h1><div class="head-actions"><button class="btn primary" type="button" onclick="openTaskDialog('单品稽查')">单品稽查</button><button class="btn primary" type="button" onclick="openTaskDialog('创建匹配任务')">创建匹配任务</button><button class="btn" type="button" onclick="showToast('已进入外链稽查任务管理')">外链稽查任务管理</button></div></div>
+          <form class="filter-box demo-form ai-filter" id="aiTaskForm"><div class="filter-row"><div class="field"><label for="taskName">任务名称</label><input class="control" id="taskName" placeholder="请输入任务名称"></div><div class="field"><label for="taskOperator">操作人</label><input class="control" id="taskOperator" placeholder="请输入操作人"></div><div class="field"><label for="taskStatus">状态</label><select class="control" id="taskStatus"><option value="">请选择</option><option>已完成</option><option>处理中</option><option>失败</option></select></div><div class="field"><label>开始时间</label><div class="date-range"><input type="text" placeholder="开始日期" aria-label="任务开始日期"><span>→</span><input type="text" placeholder="结束日期" aria-label="任务结束日期"></div></div><button class="btn primary" type="submit">查询</button><button class="btn" type="reset">↻ 重置</button></div></form>
+          <div class="table-wrap"><table class="data-table" style="min-width:1290px"><thead><tr><th style="width:300px">任务名称</th><th style="width:105px">状态</th><th style="width:170px">进度</th><th style="width:155px">开始时间</th><th style="width:155px">结束时间</th><th style="width:110px">操作人</th><th style="width:105px">任务来源</th><th style="width:130px">稽查网站</th><th>操作</th></tr></thead><tbody id="taskBody"></tbody></table></div>
+          <div class="pagination"><button class="page-btn" disabled aria-label="上一页">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn" aria-label="下一页">›</button><select class="control" aria-label="任务每页条数" style="width:106px"><option>10 条/页</option></select></div>
+        </section>
+
+        <section class="module" id="mappingModule" data-title="外链映射数据表">
+          <div class="module-head"><h1 class="module-title plain">外链映射数据表</h1><div class="head-actions"><button class="btn primary" id="updateMaterialLinkPrice" type="button" hidden onclick="openMaterialPriceUpdate()">外链价格同步主数据</button><button class="btn" type="button" onclick="exportMappingDetails(this)">导出外链映射明细</button><button class="btn primary" type="button" onclick="openProjectPriceExport()">按项目导出最新外链价</button></div></div>
+          <form class="filter-box demo-form"><div class="filter-row"><div class="field"><label for="mappingUrl">外链地址</label><input class="control" id="mappingUrl" placeholder="请输入外链地址"></div><button class="btn primary" type="submit">查询</button><button class="btn" type="reset">重置</button></div></form>
+          <section class="dedup-stats" aria-label="外链地址去重统计">
+            <div class="dedup-stat"><span>外链数量</span><strong>1,280</strong></div>
+            <div class="dedup-stat"><span>去重后唯一外链</span><strong>1,148</strong></div>
+            <div class="dedup-stat highlight"><span>减少拾贝请求</span><strong>132 次</strong></div>
+            <div class="dedup-stat highlight"><span>预计请求减少比例</span><strong>10.31%</strong></div>
+          </section>
+          <div class="table-wrap"><table class="data-table" style="min-width:1900px"><thead><tr><th>外链地址</th><th style="width:200px">商品名称（标题）</th><th style="width:100px">平台名称</th><th style="width:100px">店铺类型</th><th style="width:100px">商品状态</th><th style="width:105px">外链销售单位</th><th style="width:105px">外链单位数量</th><th style="width:105px">咸亨销售单位</th><th style="width:105px">咸亨单位数量</th><th style="width:120px">最新外链价格</th><th style="width:90px">销量</th><th style="width:110px">关联项目 / 物料</th><th style="width:100px">同步状态</th><th style="width:120px">同步记录</th><th style="width:115px">操作</th></tr></thead><tbody><tr><td title="https://detail.tmall.com/item.htm?id=1000128">detail.tmall.com/item...</td><td>工业防护手套 丁腈涂层耐磨款</td><td>天猫</td><td>旗舰店</td><td>在售中</td><td>盒</td><td>12</td><td>双</td><td>1</td><td>¥16.50</td><td>8400</td><td>2 项目 / 3 物料</td><td><span class="tag success">成功</span></td><td><button class="btn link" type="button" onclick="openSyncRecordDialog('tmall')">查看记录</button></td><td class="actions-cell"><button class="btn link" type="button" onclick="openMappingDialog('https://detail.tmall.com/item.htm?id=1000128')">关联明细</button></td></tr><tr><td title="https://item.jd.com/1000376.html">item.jd.com/100...</td><td>高粘度透明封箱胶带</td><td>京东</td><td>自营</td><td>已下架</td><td>箱</td><td>6</td><td>卷</td><td>1</td><td>—</td><td>—</td><td>1 项目 / 1 物料</td><td><span class="tag down">失败</span></td><td><button class="btn link" type="button" onclick="openSyncRecordDialog('jd')">查看记录</button></td><td class="actions-cell"><button class="btn link" type="button" onclick="openMappingDialog('https://item.jd.com/1000376.html')">关联明细</button></td></tr></tbody></table></div>
+          <div class="pagination"><button class="page-btn" disabled>‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">›</button></div>
         </section>
       </div>
     </section>
@@ -227,72 +388,252 @@
       <div class="dialog-head"><div class="dialog-title" id="ruleDialogTitle">新增规则</div><button class="close-btn" type="button" aria-label="关闭" onclick="closeDialog('ruleDialog')">×</button></div>
       <form id="ruleForm"><div class="dialog-body"><div class="form-grid">
         <div class="form-item required"><label for="newRuleName">规则名称</label><input class="control" id="newRuleName" required placeholder="请输入"></div>
-        <div class="form-item required"><label for="newRuleType">规则类型</label><select class="control" id="newRuleType" required><option value="">请选择</option><option>固定价比较检查</option><option>项目外链价比较检查</option><option>外部链接价比较检查</option><option>咸亨官网价比较检查</option><option>调拨价比较检查</option></select></div>
-        <div class="formula-card"><div class="formula-head"><span>公式配置（基准价格）</span><button class="btn link danger" type="button" onclick="clearFormula()">清空公式</button></div><div class="formula-editor" id="formulaEditor">请点击下方变量或运算符生成公式（禁止手动输入）</div><div style="margin-top:12px;font-weight:600">可用变量清单</div><div class="variable-list"><button class="btn" type="button" onclick="addFormula('[项目协议价]')">项目协议价</button><button class="btn" type="button" onclick="addFormula('[固定清单价]')">固定清单价</button><button class="btn" type="button" onclick="addFormula('[项目外链价]')">项目外链价</button><button class="btn" type="button" onclick="addFormula('[平台外链价]')">平台外链价</button><button class="btn" type="button" onclick="addFormula('[咸亨官网价]')">咸亨官网价</button></div><div style="margin-top:12px;font-weight:600">逻辑运算符</div><div class="variable-list"><button class="btn" type="button" onclick="addFormula(' > ')">&gt;</button><button class="btn" type="button" onclick="addFormula(' < ')">&lt;</button><button class="btn" type="button" onclick="addFormula(' >= ')">&gt;=</button><button class="btn" type="button" onclick="addFormula(' <= ')">&lt;=</button><button class="btn" type="button" onclick="addFormula(' + ')">+</button><button class="btn" type="button" onclick="addFormula(' - ')">−</button></div></div>
-        <div class="switch-line"><strong>浮动阈值设置</strong><span>开启 <button class="switch" id="floatSwitch" type="button" role="switch" aria-checked="false" onclick="toggleFloat()"></button></span></div>
+        <div class="form-item required"><label for="newRuleType">规则类型</label><select class="control" id="newRuleType" required><option value="">请选择</option><option>咸亨官网价比较检查</option><option>外部链接价比较检查</option><option>项目外链价比较检查</option><option>固定价比较检查</option><option>结算价比较检查</option><option>项目调拨参考价比较检查</option></select></div>
+        <div class="formula-card"><div class="formula-head"><span>公式配置（基准价格）</span><button class="btn link danger" type="button" onclick="clearFormula()">清空公式</button></div><div class="formula-editor" id="formulaEditor">请点击下方变量或运算符生成公式（禁止手动输入）</div><div style="margin-top:12px;font-weight:600">可用变量清单</div><div class="variable-list" id="formulaVariableList"></div><div style="margin-top:12px;font-weight:600">逻辑运算符</div><div class="variable-list"><button class="btn" type="button" onclick="addFormula(' > ')">&gt;</button><button class="btn" type="button" onclick="addFormula(' < ')">&lt;</button><button class="btn" type="button" onclick="addFormula(' >= ')">&gt;=</button><button class="btn" type="button" onclick="addFormula(' <= ')">&lt;=</button><button class="btn" type="button" onclick="addFormula(' + ')">+</button><button class="btn" type="button" onclick="addFormula(' - ')">−</button></div></div>
+        <div class="switch-line"><strong>浮动阈值设置</strong><span>开启 <button class="switch" id="floatSwitch" type="button" role="switch" aria-label="开启浮动阈值" aria-checked="false" onclick="toggleFloat()"></button></span></div>
         <div class="form-item"><label for="upValue">↑ 上浮阈值(%)</label><input class="control" id="upValue" type="number" min="0" placeholder="如: 10%" disabled></div><div class="form-item"><label for="downValue">↓ 下浮阈值(%)</label><input class="control" id="downValue" type="number" min="0" placeholder="如: 10%" disabled></div>
       </div></div><div class="dialog-foot"><button class="btn" type="button" onclick="closeDialog('ruleDialog')">取消</button><button class="btn primary" type="submit">确定</button></div></form>
     </section>
   </div>
 
   <div class="modal-mask" id="actionDialog" onclick="closeOnBackdrop(event,'actionDialog')"><section class="dialog small" role="dialog" aria-modal="true" aria-labelledby="actionTitle"><div class="dialog-head"><div class="dialog-title" id="actionTitle">项目配置</div><button class="close-btn" type="button" aria-label="关闭" onclick="closeDialog('actionDialog')">×</button></div><div class="dialog-body" id="actionBody"></div><div class="dialog-foot"><button class="btn" type="button" onclick="closeDialog('actionDialog')">取消</button><button class="btn primary" type="button" onclick="saveAction()">确定</button></div></section></div>
+  <div class="modal-mask" id="mappingDialog" onclick="closeOnBackdrop(event,'mappingDialog')"><section class="dialog wide" role="dialog" aria-modal="true" aria-labelledby="mappingDialogTitle"><div class="dialog-head"><div class="dialog-title" id="mappingDialogTitle">外链关联明细</div><button class="close-btn" type="button" aria-label="关闭" onclick="closeDialog('mappingDialog')">×</button></div><div class="dialog-body"><p class="mapping-link-full" id="mappingDialogLink">https://detail.tmall.com/item.htm?id=1000128</p><form class="filter-box" id="mappingDetailForm"><div class="filter-row"><div class="field"><label for="detailCode">物料编码</label><input class="control" id="detailCode" placeholder="请输入物料编码"></div><div class="field"><label for="detailName">物料名称</label><input class="control" id="detailName" placeholder="请输入物料名称"></div><div class="field"><label for="detailProject">项目</label><input class="control" id="detailProject" placeholder="请输入项目名称"></div><button class="btn primary" type="submit">查询</button><button class="btn" type="reset">重置</button></div></form><div class="mapping-count" id="mappingDetailCount">共 3 条关联物料</div><div class="table-wrap"><table class="data-table" style="min-width:1430px"><thead><tr><th style="width:120px">物料编码</th><th style="width:150px">物料名称</th><th style="width:170px">规格型号</th><th style="width:90px">计量单位</th><th style="min-width:220px">项目</th><th style="width:140px">外链销售单位数量</th><th style="width:140px">咸亨销售单位数量</th><th style="width:130px">最新外链价格</th><th style="width:130px">咸亨外链价格</th></tr></thead><tbody id="mappingDetailBody"><tr data-code="M000128" data-name="工业防护手套" data-project="华东政采项目 区域集采项目"><td>M000128</td><td>工业防护手套</td><td>9号，丁腈涂层</td><td>双</td><td><div class="project-tags"><span class="project-tag">华东政采项目</span><span class="project-tag">区域集采项目</span></div></td></tr><tr data-code="M000781" data-name="防割手套" data-project="中核采购项目"><td>M000781</td><td>防割手套</td><td>L码，HPPE材质</td><td>双</td><td><div class="project-tags"><span class="project-tag">中核采购项目</span></div></td></tr><tr data-code="M000982" data-name="劳保手套" data-project="华东政采项目"><td>M000982</td><td>劳保手套</td><td>均码，耐磨款</td><td>双</td><td><div class="project-tags"><span class="project-tag">华东政采项目</span></div></td></tr></tbody></table></div></div><div class="dialog-foot"><button class="btn primary" type="button" onclick="closeDialog('mappingDialog')">关闭</button></div></section></div>
+  <div class="modal-mask" id="syncRecordDialog" onclick="closeOnBackdrop(event,'syncRecordDialog')"><section class="dialog wide" role="dialog" aria-modal="true" aria-labelledby="syncRecordTitle">
+    <div class="dialog-head"><div class="dialog-title" id="syncRecordTitle">同步记录</div><button class="close-btn" type="button" aria-label="关闭" onclick="closeDialog('syncRecordDialog')">×</button></div>
+    <div class="dialog-body"><p class="mapping-link-full" style="margin:0 0 14px"><a id="syncRecordLink" href="#" target="_blank" rel="noopener noreferrer"></a></p><div class="table-wrap"><table class="data-table" style="min-width:1000px"><thead><tr><th style="width:170px">操作时间</th><th style="width:100px">操作人</th><th style="width:190px">操作类型</th><th style="width:115px">同步结果</th><th style="width:100px">最新外链价</th><th>失败原因</th></tr></thead><tbody id="syncRecordBody"></tbody></table></div>
+    <div class="pagination check-record-pagination"><span id="syncRecordPageInfo" aria-live="polite"></span><div class="head-actions"><label for="syncRecordPageSize">每页条数</label><select class="control" id="syncRecordPageSize" style="width:100px" onchange="changeSyncRecordSize(this.value)"><option value="10">10 条</option><option value="50">50 条</option><option value="100">100 条</option></select><button class="btn" id="syncRecordPrev" type="button" onclick="changeSyncRecordPage(-1)">上一页</button><button class="btn" id="syncRecordNext" type="button" onclick="changeSyncRecordPage(1)">下一页</button></div></div></div>
+    <div class="dialog-foot"><button class="btn primary" type="button" onclick="closeDialog('syncRecordDialog')">关闭</button></div></section></div>
+  <div class="modal-mask" id="checkRecordsDialog" onclick="closeOnBackdrop(event,'checkRecordsDialog')"><section class="dialog wide" role="dialog" aria-modal="true" aria-labelledby="checkRecordsTitle">
+    <div class="dialog-head"><div class="dialog-title" id="checkRecordsTitle">执行记录</div><button class="close-btn" type="button" aria-label="关闭" onclick="closeDialog('checkRecordsDialog')">×</button></div>
+    <div class="dialog-body"><div class="table-wrap"><table class="data-table"><thead><tr><th style="width:120px">操作人</th><th style="width:150px">操作类型</th><th style="width:190px">开始时间</th><th style="width:190px">结束时间</th><th>核销预警数</th><th style="width:110px">执行状态</th><th style="min-width:220px">失败原因</th></tr></thead><tbody id="checkRecordsBody"></tbody></table></div>
+    <div class="pagination check-record-pagination"><span id="checkRecordsPageInfo" aria-live="polite"></span><div class="head-actions"><label for="checkRecordsPageSize">每页条数</label><select class="control" id="checkRecordsPageSize" onchange="changeCheckRecordSize(this.value)" style="width:100px"><option value="10">10 条</option><option value="50">50 条</option><option value="100">100 条</option></select><button class="btn" id="checkRecordsPrev" type="button" onclick="changeCheckRecordPage(-1)">上一页</button><button class="btn" id="checkRecordsNext" type="button" onclick="changeCheckRecordPage(1)">下一页</button></div></div>
+    </div><div class="dialog-foot"><button class="btn primary" type="button" onclick="closeDialog('checkRecordsDialog')">关闭</button></div></section></div>
+  <div class="modal-mask" id="poolDetailDialog" onclick="closeOnBackdrop(event,'poolDetailDialog')"><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="poolDetailTitle"><div class="dialog-head"><div class="dialog-title" id="poolDetailTitle">商品价格详情</div><button class="close-btn" type="button" aria-label="关闭" onclick="closeDialog('poolDetailDialog')">×</button></div><div class="dialog-body"><div class="table-wrap"><table class="data-table" style="min-width:1260px"><thead><tr><th style="width:120px">价格类型</th><th style="width:100px">链接价格</th><th style="width:100px">平台类型</th><th style="width:100px">店铺类型</th><th>链接</th><th style="width:175px">修改时间</th><th style="width:175px">创建时间</th></tr></thead><tbody id="poolDetailBody"></tbody></table></div></div></section></div>
+  <div class="modal-mask" id="materialUpdateDialog" onclick="if(!materialUpdateState.submitting)closeOnBackdrop(event,'materialUpdateDialog')"><section class="dialog wide" role="dialog" aria-modal="true" aria-labelledby="materialUpdateTitle"><div class="dialog-head"><div class="dialog-title" id="materialUpdateTitle">选择需要同步的物料</div><button class="close-btn" type="button" aria-label="关闭" onclick="closeMaterialUpdate()">×</button></div><div class="dialog-body"><form class="filter-box" id="materialUpdateFilter"><div class="filter-row"><div class="field"><label for="materialUpdateCode">物料编码</label><textarea class="control" id="materialUpdateCode" rows="2" placeholder="多个物料编码用英文逗号分隔，去重后最多1000个"></textarea></div><div class="field"><label for="materialUpdateName">物料名称</label><input class="control" id="materialUpdateName" placeholder="请输入物料名称"></div><button class="btn primary" type="submit">查询</button><button class="btn" type="reset">重置</button></div></form><p id="materialUpdateCount" aria-live="polite"></p><div class="table-wrap"><table class="data-table" style="min-width:850px"><thead><tr><th style="width:45px"><input id="materialUpdateAll" type="checkbox" aria-label="全选当前页可同步物料" onchange="selectMaterialUpdatePage(this.checked)"></th><th style="width:130px">物料编码</th><th style="width:160px">物料名称</th><th>外链地址</th><th style="width:150px">最新外链价格</th></tr></thead><tbody id="materialUpdateBody"></tbody></table></div><div class="pagination check-record-pagination"><span id="materialUpdatePageInfo"></span><div class="head-actions"><label for="materialUpdateSize">每页条数</label><select class="control" id="materialUpdateSize" style="min-width:90px;width:auto" onchange="materialUpdateState.size=Number(this.value);materialUpdateState.page=1;renderMaterialUpdate()"><option value="20">20 条</option><option value="50">50 条</option><option value="100">100 条</option><option value="200">200 条</option><option value="500">500 条</option></select><button class="btn" id="materialUpdatePrev" type="button" onclick="materialUpdateState.page--;renderMaterialUpdate()">上一页</button><button class="btn" id="materialUpdateNext" type="button" onclick="materialUpdateState.page++;renderMaterialUpdate()">下一页</button></div></div><p id="materialUpdateError" role="alert" style="color:var(--danger)"></p></div><div class="dialog-foot"><button class="btn" id="materialUpdateCancel" type="button" onclick="closeMaterialUpdate()">取消</button><button class="btn primary" id="materialUpdateReview" type="button" onclick="reviewMaterialUpdate()">确认同步</button></div></section></div>
+  <dialog id="materialUpdateConfirm" class="dialog small" aria-labelledby="materialUpdateConfirmTitle" aria-describedby="materialUpdateConfirmText"><div class="dialog-head"><h2 class="dialog-title" id="materialUpdateConfirmTitle">确认同步</h2><button class="close-btn" type="button" aria-label="关闭确认同步" onclick="cancelMaterialUpdateConfirm()">×</button></div><div class="dialog-body"><p id="materialUpdateConfirmText"></p><p id="materialUpdateConfirmError" role="alert" style="color:var(--danger)"></p></div><div class="dialog-foot"><button class="btn" type="button" onclick="cancelMaterialUpdateConfirm()">取消</button><button class="btn primary" id="materialUpdateSubmit" type="button" onclick="submitMaterialUpdate()">确认同步</button></div></dialog>
+  <div class="modal-mask" id="projectPriceExportDialog" onclick="if(!projectPriceExportState.busy)closeOnBackdrop(event,'projectPriceExportDialog')"><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="projectPriceExportTitle"><div class="dialog-head"><div class="dialog-title" id="projectPriceExportTitle">选择导出项目</div><button class="close-btn" type="button" aria-label="关闭" onclick="closeProjectPriceExport()">×</button></div><div class="dialog-body"><p>请选择 1～10 个项目</p><div class="field" style="display:block"><label for="projectPriceExportSearch">所属项目</label><div id="projectPriceExportDropdown" class="project-export-dropdown"><div class="project-export-input"><input class="control" id="projectPriceExportSearch" placeholder="请选择或输入项目名称查询" aria-expanded="false" aria-controls="projectPriceExportList" autocomplete="off" onfocus="setProjectExportDropdown(true)" oninput="setProjectExportDropdown(true);renderProjectPriceExport()"><button class="btn link" type="button" aria-label="展开或收起项目列表" onclick="setProjectExportDropdown(document.getElementById('projectPriceExportList').hidden)"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-search"></use></svg></button></div><div id="projectPriceExportList" class="project-export-list" aria-label="项目列表" hidden></div></div></div><p id="projectPriceExportCount" aria-live="polite"></p><div id="projectPriceExportSelected" class="project-export-selected" aria-label="已选项目"></div><p id="projectPriceExportError" role="alert" style="color:var(--danger)"></p></div><div class="dialog-foot"><button class="btn" type="button" onclick="closeProjectPriceExport()">取消</button><button class="btn primary" id="projectPriceExportConfirm" type="button" onclick="confirmProjectPriceExport()">确认导出</button></div></section></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="mpm-topnav-links.js"></script>
+  <script src="assets/vendor/exceljs.min.js"></script>
   <script>
+    const poolGoods=[
+      ['B1506000019','Walch/龙博','wym测试批量1774513540226','3.6kg','askdljaslkdjlaskjdlkas'],
+      ['B0301005346','00011/00011','wymgw00001','21421dsa','【不含检测费】这是描述11123213'],
+      ['B0301005403','品牌测试1234/PINPAI1212','wymgw30001','21421dsa',''],
+      ['B1506000116','Walch/龙博','wym测试批量1774513773035','3.6kg','askdljaslkdjlaskjdlkas'],
+      ['B1506000114','Walch/龙博','wym测试批量1774513769235','3.6kg','askdljaslkdjlaskjdlkas'],
+      ['B1506000115','Walch/龙博','wym测试批量1774513771275','3.6kg','askdljaslkdjlaskjdlkas'],
+      ['B1506000117','Walch/龙博','wym测试批量1774513774790','3.6kg','askdljaslkdjlaskjdlkas'],
+      ['A1506000013','00017/00017','活力28洗衣液3','3.6kg','1111'],
+      ['B0301005404','品牌测试1234/PINPAI1212','wymgw30002','21421dsa',''],
+      ['B0301005362','品牌测试1234/PINPAI1212','wymgw10011K','21421dsaK','KKKKKK'],
+      ['F0101000306','测试0727-20241/0727-20241','测试','测试',''],
+      ['A1509000380','西昊/SIHOO','电脑椅','21',''],
+      ['A1509000379','西昊/SIHOO','电脑椅','20','']
+    ].map(([code,brand,name,model,description],index)=>({code,brand,name,model,description,project:index<11?'管网新系统':index===11?'国网一级':'中核电商',prices:index===0?[
+      {type:'咸亨官网价',price:11,platform:'',shop:'',url:'https://www.xhgjmall.com/Product/B1506000019',modified:'2026-03-26 16:29:52',created:'2026-03-26 16:29:50'},
+      {type:'外部链接价',price:16,platform:'京东',shop:'自营',url:'https://item.jd.com/10134480361981.html',modified:'',created:'2026-03-26 16:29:50'},
+      {type:'外部链接价',price:8,platform:'震坤行',shop:'自营',url:'https://www.zkh.com/112382109.html',modified:'',created:'2026-03-26 16:29:50'},
+      {type:'调拨价',price:-1,platform:'',shop:'',url:'',modified:'1970-01-01 08:00:00',created:'2026-03-26 16:29:50'}
+    ]:[{type:'咸亨官网价',price:index===10?222:index>10?9999:11+index,platform:'',shop:'',url:`https://www.xhgjmall.com/Product/${code}`,modified:'2026-09-16 09:38:37',created:'2026-09-15 16:15:23'},{type:'调拨价',price:-1,platform:'',shop:'',url:'',modified:'1970-01-01 08:00:00',created:'2026-09-15 16:15:23'}]}));
+    const poolState={page:1,size:10,project:'管网新系统',codes:[]};
+    function filteredPoolGoods(){return poolGoods.filter(item=>(!poolState.project||item.project===poolState.project)&&(!poolState.codes.length||poolState.codes.includes(item.code)));}
+    function renderPool(){const items=filteredPoolGoods(),pages=Math.max(1,Math.ceil(items.length/poolState.size));poolState.page=Math.max(1,Math.min(poolState.page,pages));const rows=items.slice((poolState.page-1)*poolState.size,poolState.page*poolState.size);document.getElementById('poolBody').innerHTML=rows.map(item=>`<tr><td><button class="btn link" type="button" onclick="openPoolDetail('${item.code}')">查看详情</button></td>${['code','brand','name','model','description'].map(key=>`<td title="${esc(item[key])}">${esc(item[key])}</td>`).join('')}</tr>`).join('')||'<tr><td colspan="6"><div class="empty-state">暂无价格数据</div></td></tr>';document.getElementById('poolPageInfo').textContent=`共 ${items.length} 条，第 ${poolState.page} / ${pages} 页`;document.getElementById('poolPrev').disabled=poolState.page===1;document.getElementById('poolNext').disabled=poolState.page===pages;}
+    function changePoolPage(step){poolState.page+=step;renderPool();}
+    function openPoolDetail(code){const item=poolGoods.find(item=>item.code===code);if(!item)return;document.getElementById('poolDetailTitle').textContent=`${item.code}：${item.brand}–${item.name}–${item.model}`;document.getElementById('poolDetailBody').innerHTML=item.prices.map(price=>`<tr><td>${esc(price.type)}</td><td>${price.price}</td><td>${esc(price.platform)}</td><td>${esc(price.shop)}</td><td class="pool-url">${price.url?`<a href="${esc(price.url)}" target="_blank" rel="noopener noreferrer">${esc(price.url)}</a>`:''}</td><td>${esc(price.modified)}</td><td>${esc(price.created)}</td></tr>`).join('');openDialog('poolDetailDialog');}
+    async function exportPool(button){const items=filteredPoolGoods();if(!items.length){showToast('暂无可导出的价格数据');return;}if(button.disabled)return;button.disabled=true;try{const workbook=new ExcelJS.Workbook();const sheet=workbook.addWorksheet('价格数据池');sheet.addRow(['商品编码','品牌名称','商品名称','型号','价格类型','链接价格','平台类型','店铺类型','链接','修改时间','创建时间']);items.forEach(item=>item.prices.forEach(price=>{const row=sheet.addRow([item.code,item.brand,item.name,item.model,price.type,price.price,price.platform,price.shop,price.url,price.modified,price.created]);row.getCell(6).numFmt=price.type==='调拨价'?'0.000':'0.00';}));sheet.columns.forEach((column,index)=>column.width=[19,34,36,16,18,16,16,16,65,23,23][index]);sheet.eachRow((row,rowNumber)=>{row.height=24;row.eachCell({includeEmpty:true},cell=>{cell.font={name:'宋体',size:11,bold:rowNumber===1};cell.alignment={vertical:'middle',horizontal:rowNumber===1?'center':undefined};cell.border={top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'}};if(rowNumber===1)cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFFFFF00'}};});});sheet.views=[{state:'frozen',ySplit:1}];const buffer=await workbook.xlsx.writeBuffer();const url=URL.createObjectURL(new Blob([buffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));const link=document.createElement('a');link.href=url;link.download='价格数据池.xlsx';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);showToast(`已导出 ${items.length} 个商品的价格明细`);}catch(error){showToast('导出失败，请重试');}finally{button.disabled=false;}}
+    document.getElementById('poolFilterForm').addEventListener('submit',event=>{event.preventDefault();poolState.project=document.getElementById('poolProject').value;poolState.codes=document.getElementById('goodsCode').value.split(',').map(code=>code.trim()).filter(Boolean);poolState.page=1;renderPool();});
+    document.getElementById('poolDetailDialog').addEventListener('keydown',event=>{if(event.key!=='Tab')return;const controls=[...event.currentTarget.querySelectorAll('button,a')];const first=controls[0],last=controls[controls.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}});
+    // 原型演示数据；系统自动检查由正式环境每日任务执行。
+    const checkRecords=Array.from({length:23},(_,index)=>{const day=String(23-index).padStart(2,'0');const status=index%7===1||index%7===4?'失败':'成功';return {operator:index%3===0?'张三':'系统',operationType:index%3===0?'人工手动检查':'系统定时检查',plannedTime:`2026-09-${day} 02:00:00`,startTime:`2026-09-${day} 02:00:03`,endTime:`2026-09-${day} 02:01:26`,closedCount:status==='失败'?0:index%5,status,failureReason:status==='失败'?'部分物料价格数据缺失，未完成检查':'—'};});
+    const checkRecordState={page:1,size:10};
+    function checkRecordTime(date){return date.toLocaleString('sv-SE',{timeZone:'Asia/Shanghai'});}
+    const warningItems=[{code:'A0301015068',project:'国网一级',type:'咸亨官网价比较检查',status:'待处理',brand:'小飞人/ACTSAFE',name:'苹果手机',model:'型号A010',description:'235432回复更好的11',supplier:'咸亨国际科技股份有限公司',message:'2000 < [项目协议价] 15000',time:'2026-07-10 08:41:33'},{code:'A0301015068',project:'国网一级',type:'咸亨官网价比较检查',status:'系统自动处理',brand:'小飞人/ACTSAFE',name:'苹果手机',model:'型号A010',description:'235432回复更好的11',supplier:'咸亨国际科技股份有限公司',message:'2000 < [项目协议价] 15000',time:'2026-07-09 08:41:33'}];
+    function renderWarnings(){const project=document.getElementById('warningProject').value,type=document.getElementById('warningType').value,status=document.getElementById('warningStatus').value;const dates=[...document.querySelectorAll('#warningModule .date-range input')].map(input=>input.value.trim());document.getElementById('warningAll').checked=false;document.getElementById('warningList').innerHTML=warningItems.map((item,index)=>({item,index})).filter(({item})=>(!project||item.project===project)&&(!type||item.type===type)&&(!status||item.status===status)&&(!dates[0]||item.time.slice(0,10)>=dates[0])&&(!dates[1]||item.time.slice(0,10)<=dates[1])).map(({item,index})=>`<article class="warning-card"><div class="warning-card-head"><label><input type="checkbox" value="${index}" aria-label="选择物料 ${esc(item.code)} 的预警">物料编码：${esc(item.code)}</label><strong>规则类型：${esc(item.type)}</strong><span>预警状态：<span class="tag ${item.status==='待处理'?'down':''}">${esc(item.status)}</span></span></div><div class="warning-card-fields"><span>商品品牌：${esc(item.brand)}</span><span>商品名称：${esc(item.name)}</span><span>商品型号：${esc(item.model)}</span><span>商品描述：${esc(item.description)}</span><span>所属供应商：${esc(item.supplier)}</span></div><div class="warning-card-foot"><span class="warning-message">预警信息：${esc(item.message)}</span><span>预警时间：${esc(item.time)}</span></div></article>`).join('')||'<div class="empty-state">暂无匹配的预警</div>';}
+    function exportWarnings(){const selected=[...document.querySelectorAll('#warningList input:checked')];if(!selected.length){showToast('请选择需要导出的预警');return;}const fields=['code','type','status','brand','name','model','description','supplier','message','time'];const rows=[['物料编码','规则类型','预警状态','商品品牌','商品名称','商品型号','商品描述','所属供应商','预警信息','预警时间'],...selected.map(input=>fields.map(field=>warningItems[Number(input.value)][field]))];const csv=rows.map(row=>row.map(value=>'"'+String(value).replace(/"/g,'""')+'"').join(',')).join('\r\n');const url=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));const link=document.createElement('a');link.href=url;link.download='预警记录.csv';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);showToast(`已导出 ${selected.length} 条预警`);}
+    function renderCheckRecords(){
+      const records=[...checkRecords].sort((a,b)=>b.plannedTime.localeCompare(a.plannedTime));
+      const pages=Math.max(1,Math.ceil(records.length/checkRecordState.size));
+      checkRecordState.page=Math.max(1,Math.min(checkRecordState.page,pages));
+      const rows=records.slice((checkRecordState.page-1)*checkRecordState.size,checkRecordState.page*checkRecordState.size);
+      document.getElementById('checkRecordsBody').innerHTML=rows.length?rows.map(record=>`<tr><td>${esc(record.operator)}</td><td>${esc(record.operationType)}</td><td>${esc(record.startTime)}</td><td>${esc(record.endTime)}</td><td>${record.closedCount}</td><td><span class="tag ${record.status==='失败'?'down':'success'}">${esc(record.status)}</span></td><td class="wrap">${esc(record.failureReason||'—')}</td></tr>`).join(''):'<tr><td colspan="7"><div class="empty-state">暂无执行记录</div></td></tr>';
+      document.getElementById('checkRecordsPageInfo').textContent=`共 ${records.length} 条，第 ${checkRecordState.page} / ${pages} 页`;
+      document.getElementById('checkRecordsPrev').disabled=checkRecordState.page===1;
+      document.getElementById('checkRecordsNext').disabled=checkRecordState.page===pages;
+      document.getElementById('checkRecordsPageSize').value=String(checkRecordState.size);
+    }
+    function changeCheckRecordPage(step){checkRecordState.page+=step;renderCheckRecords();}
+    function changeCheckRecordSize(value){checkRecordState.size=Number(value);checkRecordState.page=1;renderCheckRecords();}
+    function openCheckRecords(){checkRecordState.page=1;checkRecordState.size=10;renderCheckRecords();openDialog('checkRecordsDialog');}
+    document.getElementById('checkRecordsDialog').addEventListener('keydown',event=>{if(event.key!=='Tab')return;const controls=[...event.currentTarget.querySelectorAll('button:not(:disabled),select')];const first=controls[0],last=controls[controls.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}});
+    function runManualCheck(button){if(button.disabled)return;const startTime=checkRecordTime(new Date());const record={operator:'张三',operationType:'人工手动检查',plannedTime:startTime,startTime,endTime:'检查中…',closedCount:'—',status:'执行中',failureReason:'—'};button.disabled=true;button.textContent='检查中…';checkRecords.unshift(record);if(document.getElementById('checkRecordsDialog').classList.contains('show'))renderCheckRecords();showToast('操作发起成功。');setTimeout(()=>{record.endTime=checkRecordTime(new Date());record.closedCount=0;record.status='成功';if(document.getElementById('checkRecordsDialog').classList.contains('show'))renderCheckRecords();button.disabled=false;button.textContent='手动检查刷新';},800);}
     const rules = [
-      {name:'固定价',system:true,type:'固定价比较检查',formula:'[项目协议价] > [固定清单价]',threshold:'逻辑判断模式',date:'2026-01-19'},
-      {name:'项目外链',system:true,type:'项目外链价比较检查',formula:'[项目外链价] < [项目协议价]',threshold:'逻辑判断模式',date:'2025-12-05'},
-      {name:'外链',system:true,type:'外部链接价比较检查',formula:'[平台外链价] < [项目协议价]',threshold:'逻辑判断模式',date:'2025-12-05'},
-      {name:'官网价',system:true,type:'咸亨官网价比较检查',formula:'[咸亨官网价] < [项目协议价]',threshold:'逻辑判断模式',date:'2025-12-05'},
-      {name:'华电--咸亨官网比较检查1',type:'咸亨官网价比较检查',formula:'[咸亨官网价]',threshold:'<span class="tag up">↑1%</span> <span class="tag down">↓1%</span>',date:'2026-02-05'},
-      {name:'测试',type:'外部链接价比较检查',formula:'[平台外链价]+[平台外链价]<=[项目协议价]',threshold:'逻辑判断模式',date:'2026-02-05'},
-      {name:'华电-调拨价',type:'调拨价比较检查',formula:'[调拨价]-[项目协议价]>[项目协议价]',threshold:'逻辑判断模式',date:'2026-02-04'},
-      {name:'华电-固定价比较',type:'固定价比较检查',formula:'[固定清单价]*[固定清单价]>=[项目协议价]',threshold:'逻辑判断模式',date:'2026-02-04'},
-      {name:'华电-项目外链价比较检查',type:'项目外链价比较检查',formula:'[项目协议价]+[项目协议价]>[项目外链价]',threshold:'逻辑判断模式',date:'2026-02-04'},
-      {name:'华电-外部链接价比较检查',type:'外部链接价比较检查',formula:'([项目协议价]+[项目协议价])>[平台外链价]',threshold:'逻辑判断模式',date:'2026-02-04'}
+      {name:'结算价与商城价比较',system:true,type:'结算价比较检查',formula:'[实际取值价格] 与 [商城价] 比较',discount:'类目折扣率 85.00%',threshold:'< 85.00%',date:'2026-09-29'},
+      {name:'项目调拨参考价比较规则',system:false,type:'项目调拨参考价比较检查',formula:'[项目调拨参考价] > [项目协议价]',discount:'—',threshold:'< 90.00%',date:'2026-09-29'}
     ];
-    const customers = ['国网一级','中核电商','昆明地铁','中国电建','乔司一号通','省管电力','中国科业','乐筑','第三监狱','中国交建'];
+    const customers = ['政采云','武汉市政府采购','河北政府采购商城','陕西地电','中核电商','新点商城','蜀山政采2.0','福建一卡通','国网三产二级内蒙古','昆明地铁'];
+    const projectLinkSyncStore = new Map(customers.map((name,index)=>[name,index===0]));
     const tasks = [
-      ['20260409152516超级管理员1775719516240','2026-04-09 15:25:16','2026-04-09 15:25:30'],
-      ['20260409143931超级管理员1775716771776','2026-04-09 14:39:31','2026-04-09 14:39:44'],
-      ['20260409135036超级管理员1775713836697','2026-04-09 13:50:36','2026-04-09 13:50:45'],
-      ['20260409115036超级管理员1775706636144','2026-04-09 11:50:36','2026-04-09 11:50:46'],
-      ['20260409110326超级管理员1775703806738','2026-04-09 11:03:26','2026-04-09 11:03:39'],
-      ['20260409084930超级管理员1775695770407','2026-04-09 08:49:32','2026-04-09 08:49:40']
+      {name:'20260929083116价格监督任务',status:'已完成',success:128,total:128,start:'2026-09-29 08:31:16',end:'2026-09-29 08:33:02',operator:'价格监督任务',source:'自动创建',sites:['拾贝（10倍）']},
+      {name:'20260928093042张晓东1778123456789',status:'已完成',success:56,total:56,start:'2026-09-28 09:30:42',end:'2026-09-28 09:31:24',operator:'张晓东',source:'手动创建',sites:['拾贝（10倍）','天猫']},
+      {name:'20260927160018李明1778035218670',status:'已完成',success:36,total:36,start:'2026-09-27 16:00:18',end:'2026-09-27 16:00:57',operator:'李明',source:'手动创建',sites:['拾贝（10倍）','京东']},
+      {name:'20260926142533价格监督任务',status:'已完成',success:92,total:92,start:'2026-09-26 14:25:33',end:'2026-09-26 14:26:44',operator:'价格监督任务',source:'自动创建',sites:['拾贝（10倍）']},
+      {name:'20260925101526张晓东1777860926234',status:'已完成',success:18,total:18,start:'2026-09-25 10:15:26',end:'2026-09-25 10:15:49',operator:'张晓东',source:'手动创建',sites:['拾贝（10倍）','天猫']},
+      {name:'20260924172109价格监督任务',status:'已完成',success:74,total:74,start:'2026-09-24 17:21:09',end:'2026-09-24 17:22:01',operator:'价格监督任务',source:'自动创建',sites:['拾贝（10倍）']}
     ];
-    let toastTimer, lastFocus, formulaParts = [];
+    let toastTimer, lastFocus, formulaParts = [], activeProjectConfig = '', taskDialogMode = '';
     function esc(value){ return String(value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char])); }
     const profileIcon='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>';
     const lockIcon='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
     const editIcon='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 4.5-1 10-10-3.5-3.5-10 10L4 20Z"/><path d="m13.5 6.5 3.5 3.5"/></svg>';
     const deleteIcon='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7M10 11v5m4-5v5"/></svg>';
-    function renderRules(){ document.getElementById('ruleBody').innerHTML=rules.map((r,index)=>`<tr><td>${esc(r.name)}${r.system?'<span class="tag system">系统</span>':''}</td><td><span class="tag">${esc(r.type)}</span></td><td><span class="formula">${profileIcon}<span>${esc(r.formula)}</span></span></td><td>${r.threshold}</td><td>${r.date}</td><td class="actions-cell">${r.system?lockIcon:`<button class="btn link icon-btn" aria-label="编辑${esc(r.name)}" onclick="editRule(${index})">${editIcon}</button><button class="btn link danger icon-btn" aria-label="删除${esc(r.name)}" onclick="deleteRule(${index})">${deleteIcon}</button>`}</td></tr>`).join(''); }
-    function renderCustomers(){ document.getElementById('customerBody').innerHTML=customers.map(name=>`<tr><td>${esc(name)}</td><td class="actions-cell">${['规则配置','外链导入','外链折扣导入','临时调拨价导入','钉钉通知配置'].map(action=>`<button class="btn link" type="button" onclick="openCustomerAction('${esc(name)}','${action}')">${action}</button>`).join('')}</td></tr>`).join(''); }
-    function renderTasks(){ document.getElementById('taskBody').innerHTML=tasks.map(task=>`<tr><td><button class="btn link" type="button" onclick="showToast('正在查看任务 ${task[0]}')">${task[0]}</button></td><td><span class="tag success">已完成</span></td><td class="wrap"><span class="status-progress"><span class="progress-line"></span><b style="color:var(--success)">●</b></span><br>成功 1 / 总数 1</td><td class="wrap">${task[1].replace(' ','<br>')}</td><td class="wrap">${task[2].replace(' ','<br>')}</td><td>超级管理员</td><td class="wrap">手动<br>创建</td><td class="wrap"><span class="tag">京东</span> <span class="tag">国询</span> <span class="tag">天猫</span></td><td class="actions-cell"><button class="btn link" onclick="showToast('已打开稽查结果')">查看结果</button><button class="btn link" onclick="showToast('同步任务已提交')">↻ 同步结果</button><button class="btn link" onclick="showToast('下载任务已创建')">⇩ 下载稽查结果</button></td></tr>`).join(''); }
+    function renderRules(){ document.getElementById('ruleBody').innerHTML=rules.map((r,index)=>`<tr><td>${esc(r.name)}${r.system?'<span class="tag system">系统</span>':''}</td><td><span class="tag">${esc(r.type)}</span></td><td>${esc(r.formula)}</td><td>${esc(r.discount||'—')}</td><td>${r.threshold}</td><td>${r.date}</td><td class="actions-cell">${r.system?'—':`<button class="btn link" type="button" onclick="editRule(${index})">编辑</button><button class="btn link danger" type="button" onclick="deleteRule(${index})">删除</button>`}</td></tr>`).join(''); }
+    function renderCustomers(){ const keyword=document.getElementById('customerName')?.value.trim()||''; const visibleCustomers=customers.filter(name=>!keyword||name.includes(keyword)); document.getElementById('customerBody').innerHTML=visibleCustomers.length?visibleCustomers.map(name=>`<tr><td>${esc(name)}</td><td class="actions-cell"><button class="btn link" type="button" onclick="openCustomerAction('${esc(name)}','规则配置')">规则配置</button><button class="btn link" type="button" onclick="openCustomerAction('${esc(name)}','外链导入')">外链导入</button><button class="btn link" type="button" onclick="openCustomerAction('${esc(name)}','临时调拨价导入')">临时调拨价导入</button><button class="btn link" type="button" onclick="openCustomerAction('${esc(name)}','钉钉通知配置')">钉钉通知配置</button><button class="btn link" type="button" onclick="openCustomerAction('${esc(name)}','项目配置')">项目配置</button></td></tr>`).join(''):'<tr><td colspan="2"><div class="empty-state" style="height:180px">暂无匹配项目</div></td></tr>'; }
+    function renderTasks(){ const body=document.getElementById('taskBody'); if(!body)return; const name=document.getElementById('taskName')?.value.trim()||''; const operator=document.getElementById('taskOperator')?.value.trim()||''; const status=document.getElementById('taskStatus')?.value||''; const visibleTasks=tasks.filter(task=>(!name||task.name.includes(name))&&(!operator||task.operator.includes(operator))&&(!status||task.status===status)); body.innerHTML=visibleTasks.length?visibleTasks.map(task=>`<tr><td><button class="btn link" type="button" onclick="showToast('正在查看任务 ${esc(task.name)}')">${esc(task.name)}</button></td><td><span class="tag ${task.status==='已完成'?'success':task.status==='失败'?'down':'info'}">${esc(task.status)}</span></td><td class="wrap"><span class="status-progress"><span class="progress-line"></span><b style="color:var(--success)">●</b></span><br>成功 ${task.success} / 总数 ${task.total}</td><td class="wrap">${task.start.replace(' ','<br>')}</td><td class="wrap">${task.end.replace(' ','<br>')}</td><td>${esc(task.operator)}</td><td>${esc(task.source)}</td><td><div class="audit-sites">${task.sites.map(site=>`<span class="tag">${esc(site)}</span>`).join('')}</div></td><td class="actions-cell"><button class="btn link" type="button" onclick="showToast('已打开稽查结果')">查看结果</button><button class="btn link" type="button" onclick="showToast('同步结果任务已提交')">同步结果</button><button class="btn link" type="button" onclick="showToast('稽查结果下载任务已创建')">下载稽查结果</button></td></tr>`).join(''):'<tr><td colspan="9"><div class="empty-state" style="height:180px">暂无匹配任务</div></td></tr>'; }
 
     function switchModule(key){ document.querySelectorAll('.side-item').forEach(button=>button.classList.toggle('active',button.dataset.module===key)); document.querySelectorAll('.module').forEach(module=>module.classList.toggle('active',module.id===key+'Module')); }
     document.querySelectorAll('.side-item').forEach(button=>button.addEventListener('click',()=>switchModule(button.dataset.module)));
-    document.querySelectorAll('.demo-form').forEach(form=>{ form.addEventListener('submit',event=>{event.preventDefault();showToast('查询完成');}); form.addEventListener('reset',()=>setTimeout(()=>showToast('筛选条件已重置'),0)); });
+    document.querySelector('#warningModule form').addEventListener('submit',()=>renderWarnings());
+    renderWarnings();
+    document.querySelectorAll('.demo-form').forEach(form=>{ form.addEventListener('submit',event=>{event.preventDefault();if(form.id==='customerFilterForm')renderCustomers();if(form.id==='aiTaskForm')renderTasks();showToast('查询完成');}); form.addEventListener('reset',()=>setTimeout(()=>{if(form.id==='aiTaskForm')renderTasks();showToast('筛选条件已重置');},0)); });
 
     function openDialog(id){ lastFocus=document.activeElement; document.getElementById(id).classList.add('show'); document.body.style.overflow='hidden'; requestAnimationFrame(()=>document.querySelector(`#${id} button,#${id} input,#${id} select`).focus()); }
     function closeDialog(id){ document.getElementById(id).classList.remove('show'); document.body.style.overflow='hidden'; if(lastFocus)lastFocus.focus(); }
     function closeOnBackdrop(event,id){ if(event.target===event.currentTarget)closeDialog(id); }
-    function openRuleDialog(){ document.getElementById('ruleForm').reset(); document.getElementById('ruleDialogTitle').textContent='新增规则'; formulaParts=[]; syncFormula(); document.getElementById('floatSwitch').classList.remove('on'); document.getElementById('floatSwitch').setAttribute('aria-checked','false'); document.getElementById('upValue').disabled=true; document.getElementById('downValue').disabled=true; openDialog('ruleDialog'); }
+    const defaultFormulaVariables=['项目协议价','固定清单价','项目外链价','平台外链价','咸亨官网价'];
+    const projectPriceFormulaVariables=['项目协议价','项目调拨参考价','平台折扣率','项目类目折扣率'];
+    const requiredDiscountByType={'咸亨官网价比较检查':'类目折扣率','外部链接价比较检查':'外链折扣率','项目外链价比较检查':'外链折扣率'};
+    function renderFormulaVariables(){ const type=document.getElementById('newRuleType').value; const requiredDiscount=requiredDiscountByType[type]; const usesProjectPriceVariables=['结算价比较检查','项目调拨参考价比较检查'].includes(type); const variables=usesProjectPriceVariables?projectPriceFormulaVariables:requiredDiscount?[...defaultFormulaVariables,requiredDiscount]:defaultFormulaVariables; document.getElementById('formulaVariableList').innerHTML=variables.map(variable=>`<button class="btn" type="button" onclick="addFormula('[${esc(variable)}]')">${esc(variable)}</button>`).join(''); }
+    function openRuleDialog(){ document.getElementById('ruleForm').reset(); document.getElementById('ruleDialogTitle').textContent='新增规则'; formulaParts=[]; syncFormula(); renderFormulaVariables(); document.getElementById('floatSwitch').classList.remove('on'); document.getElementById('floatSwitch').setAttribute('aria-checked','false'); document.getElementById('upValue').disabled=true; document.getElementById('downValue').disabled=true; openDialog('ruleDialog'); }
     function addFormula(part){ formulaParts.push(part); syncFormula(); }
     function clearFormula(){ formulaParts=[]; syncFormula(); }
     function syncFormula(){ const editor=document.getElementById('formulaEditor'); editor.textContent=formulaParts.length?formulaParts.join(''):'请点击下方变量或运算符生成公式（禁止手动输入）'; editor.style.color=formulaParts.length?'#4c83df':'#909399'; }
     function toggleFloat(){ const button=document.getElementById('floatSwitch'); const on=!button.classList.contains('on'); button.classList.toggle('on',on); button.setAttribute('aria-checked',String(on)); document.getElementById('upValue').disabled=!on; document.getElementById('downValue').disabled=!on; }
-    function editRule(index){ const rule=rules[index]; openRuleDialog(); document.getElementById('ruleDialogTitle').textContent='编辑规则'; document.getElementById('newRuleName').value=rule.name; document.getElementById('newRuleType').value=rule.type; formulaParts=[rule.formula]; syncFormula(); }
+    function editRule(index){ const rule=rules[index]; openRuleDialog(); document.getElementById('ruleDialogTitle').textContent='编辑规则'; document.getElementById('newRuleName').value=rule.name; document.getElementById('newRuleType').value=rule.type; renderFormulaVariables(); formulaParts=[rule.formula]; syncFormula(); }
     function deleteRule(index){ const removed=rules.splice(index,1)[0]; renderRules(); showToast(`规则「${removed.name}」已删除`); }
-    document.getElementById('ruleForm').addEventListener('submit',event=>{ event.preventDefault(); const name=document.getElementById('newRuleName').value.trim(); const type=document.getElementById('newRuleType').value; if(!name||!type)return; rules.push({name,type,formula:formulaParts.join('')||'[项目协议价] > [固定清单价]',threshold:'逻辑判断模式',date:'2026-09-18'}); renderRules(); closeDialog('ruleDialog'); showToast('规则已保存'); });
+    document.getElementById('newRuleType').addEventListener('change',()=>{ formulaParts=[]; syncFormula(); renderFormulaVariables(); });
+    document.getElementById('ruleForm').addEventListener('submit',event=>{ event.preventDefault(); const name=document.getElementById('newRuleName').value.trim(); const type=document.getElementById('newRuleType').value; if(!name||!type){showToast('请填写规则名称并选择规则类型');return;} if(!formulaParts.length){showToast('请配置规则公式');return;} const requiredDiscount=requiredDiscountByType[type]; const formula=formulaParts.join(''); if(requiredDiscount&&!formula.includes(`[${requiredDiscount}]`)){showToast('当前规则公式不完整，请检查');return;} const selectedDiscounts=['类目折扣率','外链折扣率','平台折扣率','项目类目折扣率'].filter(variable=>formula.includes(`[${variable}]`)); rules.push({name,type,formula,discount:selectedDiscounts.join('、')||'—',threshold:'< 85.00%',date:'2026-09-29'}); renderRules(); closeDialog('ruleDialog'); showToast('规则已保存'); });
 
-    function openCustomerAction(project,action){ document.getElementById('actionTitle').textContent=action; document.getElementById('actionBody').innerHTML=`<div class="form-item"><label>项目名称</label><input class="control" style="width:100%" value="${project}" readonly></div><div class="form-item" style="margin-top:16px"><label>${action==='规则配置'?'选择规则':'选择文件'}</label>${action==='规则配置'?'<select class="control" style="width:100%"><option>固定价比较检查</option><option>项目外链价比较检查</option><option>咸亨官网价比较检查</option></select>':'<input class="control" style="width:100%;padding-top:5px" type="file">'}</div>`; openDialog('actionDialog'); }
-    function openTaskDialog(title){ document.getElementById('actionTitle').textContent=title; document.getElementById('actionBody').innerHTML=`<div class="form-item required"><label>任务名称</label><input class="control" style="width:100%" placeholder="请输入任务名称"></div><div class="form-item" style="margin-top:16px"><label>稽查网站</label><div class="variable-list"><label class="check-label"><input type="checkbox" checked>京东</label><label class="check-label"><input type="checkbox" checked>国询</label><label class="check-label"><input type="checkbox" checked>天猫</label></div></div>`; openDialog('actionDialog'); }
-    function saveAction(){ closeDialog('actionDialog'); showToast('配置已保存'); }
+    function openCustomerAction(project,action){ document.getElementById('actionTitle').textContent=action; taskDialogMode=''; activeProjectConfig=action==='项目配置'?project:''; const enabled=Boolean(projectLinkSyncStore.get(project)); if(action==='项目配置'){document.getElementById('actionBody').innerHTML=`<div class="form-item"><label>项目名称</label><input class="control" style="width:100%" value="${project}" readonly></div><div class="form-item" style="margin-top:18px"><label id="projectLinkSyncLabel"><span style="color:var(--danger);margin-right:4px" aria-hidden="true">*</span>项目外链是否同步主数据</label><div class="variable-list" role="radiogroup" aria-labelledby="projectLinkSyncLabel" aria-required="true" style="margin-top:8px"><label class="check-label"><input type="radio" name="projectLinkSync" required value="yes" ${enabled?'checked':''}> 是</label><label class="check-label"><input type="radio" name="projectLinkSync" required value="no" ${enabled?'':'checked'}> 否</label></div></div>`;}else if(action==='钉钉通知配置'){document.getElementById('actionBody').innerHTML=`<div class="form-item"><label>项目名称</label><input class="control" style="width:100%" value="${project}" readonly></div><div class="form-item" style="margin-top:16px"><label>通知人</label><input class="control" style="width:100%" placeholder="请输入钉钉通知人"></div>`;}else{document.getElementById('actionBody').innerHTML=`<div class="form-item"><label>项目名称</label><input class="control" style="width:100%" value="${project}" readonly></div><div class="form-item" style="margin-top:16px"><label>${action==='规则配置'?'选择规则':'选择文件'}</label>${action==='规则配置'?'<select class="control" style="width:100%"><option>咸亨官网价比较检查</option><option>外部链接价比较检查</option><option>项目外链价比较检查</option><option>固定价比较检查</option><option>结算价比较检查</option><option>项目调拨参考价比较检查</option></select>':'<input class="control" style="width:100%;padding-top:5px" type="file">'}</div>`;} openDialog('actionDialog'); }
+    function openTaskDialog(title){ activeProjectConfig=''; taskDialogMode=title; document.getElementById('actionTitle').textContent=title; const single=title==='单品稽查'; document.getElementById('actionBody').innerHTML=`<div class="form-item required"><label>${single?'物料编码':'任务名称'}</label><input class="control" id="auditTaskName" style="width:100%" placeholder="请输入${single?'物料编码':'任务名称'}"></div>${single?'<div class="form-item" style="margin-top:16px"><label>外链地址</label><input class="control" style="width:100%" placeholder="请输入外链地址"></div>':''}<div class="form-item" style="margin-top:16px"><label>稽查网站</label><div class="variable-list"><label class="check-label"><input type="checkbox" checked>拾贝（10倍）</label><label class="check-label"><input type="checkbox">京东</label><label class="check-label"><input type="checkbox">天猫</label></div></div>`; openDialog('actionDialog'); }
+    function saveAction(){ if(activeProjectConfig){const selected=document.querySelector('input[name="projectLinkSync"]:checked');if(!selected){showToast('请选择项目外链是否同步主数据');document.querySelector('input[name="projectLinkSync"]').focus();return;}const enabled=selected.value==='yes';projectLinkSyncStore.set(activeProjectConfig,enabled);showToast(`项目「${activeProjectConfig}」配置已保存`);activeProjectConfig='';closeDialog('actionDialog');return;} if(taskDialogMode){const name=document.getElementById('auditTaskName').value.trim();if(!name){showToast(taskDialogMode==='单品稽查'?'请输入物料编码':'请输入任务名称');return;}const now=new Date();const pad=value=>String(value).padStart(2,'0');const time=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;tasks.unshift({name:taskDialogMode==='单品稽查'?`单品稽查-${name}`:name,status:'处理中',success:0,total:1,start:time,end:'—',operator:'当前用户',source:'手动创建',sites:['拾贝（10倍）']});taskDialogMode='';renderTasks();closeDialog('actionDialog');showToast('稽查任务已创建');return;} closeDialog('actionDialog'); showToast('配置已保存'); }
     function showToast(message){ const toast=document.getElementById('toast'); toast.textContent=message; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>toast.classList.remove('show'),2600); }
+    function refreshLinks(button){ if(button&&button.disabled)return; const text=button&&button.textContent; if(button){button.disabled=true;button.textContent='检索中…';} setTimeout(()=>{if(button){button.disabled=false;button.textContent=text;}showToast('刷新完成：已按外链地址去重，完成价格检查；1 条历史待处理预警已自动处理');},800); }
+    const mappingDetailState={page:1,size:10};
+    const mappingListState={page:1,size:20};
+    function paginateMappingList(){ const rows=[...document.querySelectorAll('#mappingModule .data-table tbody tr')]; const pageCount=Math.max(1,Math.ceil(rows.length/mappingListState.size)); mappingListState.page=Math.min(mappingListState.page,pageCount); rows.forEach(row=>row.hidden=true); rows.slice((mappingListState.page-1)*mappingListState.size,mappingListState.page*mappingListState.size).forEach(row=>row.hidden=false); document.getElementById('mappingListPageInfo').textContent=`第 ${mappingListState.page} / ${pageCount} 页，共 ${rows.length} 条`; document.getElementById('mappingListPrev').disabled=mappingListState.page===1; document.getElementById('mappingListNext').disabled=mappingListState.page===pageCount; }
+    function changeMappingListPage(step){ mappingListState.page+=step; paginateMappingList(); }
+    function paginateMappingDetails(){ const code=document.getElementById('detailCode').value.trim(); const name=document.getElementById('detailName').value.trim(); const project=document.getElementById('detailProject').value.trim(); const rows=[...document.querySelectorAll('#mappingDetailBody tr')]; const matches=rows.filter(row=>(!code||row.dataset.code.includes(code))&&(!name||row.dataset.name.includes(name))&&(!project||row.dataset.project.includes(project))); const pageCount=Math.max(1,Math.ceil(matches.length/mappingDetailState.size)); mappingDetailState.page=Math.min(mappingDetailState.page,pageCount); rows.forEach(row=>row.hidden=true); matches.slice((mappingDetailState.page-1)*mappingDetailState.size,mappingDetailState.page*mappingDetailState.size).forEach(row=>row.hidden=false); document.getElementById('mappingDetailCount').textContent=`共 ${matches.length} 条关联物料`; document.getElementById('mappingPageInfo').textContent=`第 ${mappingDetailState.page} / ${pageCount} 页`; document.getElementById('mappingPrev').disabled=mappingDetailState.page===1; document.getElementById('mappingNext').disabled=mappingDetailState.page===pageCount; }
+    function changeMappingPage(step){ mappingDetailState.page+=step; paginateMappingDetails(); }
+    function openMappingDialog(link){ document.getElementById('mappingDialogLink').textContent=link||'https://detail.tmall.com/item.htm?id=1000128'; const source=[...document.querySelectorAll('#mappingModule .data-table tbody tr')].find(row=>row.cells[1].title===document.getElementById('mappingDialogLink').textContent);const latestPrice=[...(monthlyReturnHistory.get(link)||[])].filter(record=>record[3]==='成功'&&Number(String(record[4]).replace(/[¥,]/g,''))>0).sort((a,b)=>b[0].localeCompare(a[0]))[0]?.[4]||'—';document.querySelectorAll('#mappingDetailBody tr').forEach(row=>{while(row.cells.length<9)row.insertCell();row.cells[5].textContent=source?source.cells[7].textContent:'—';row.cells[6].textContent=source?source.cells[9].textContent:'—';row.cells[7].textContent=latestPrice;row.cells[8].textContent=source?source.dataset.convertedPrice:'—';});document.getElementById('mappingDetailForm').reset(); mappingDetailState.page=1; paginateMappingDetails(); openDialog('mappingDialog'); }
+    const monthlyReturnHistory=new Map();
+    function latestMonthlyReturn(link){return [...(monthlyReturnHistory.get(link)||[])].sort((a,b)=>b[0].localeCompare(a[0]))[0];}
+    function renderMonthlyReturnStatus(cell,link){const latest=latestMonthlyReturn(link);cell.innerHTML=latest?`<span class="tag ${latest[3]==='成功'?'success':'down'}">${latest[3]}</span>`:'';}
+    const syncRecordState={link:'',page:1,size:10};
+    function renderSyncRecords(){const records=[...(monthlyReturnHistory.get(syncRecordState.link)||[])].sort((a,b)=>b[0].localeCompare(a[0]));const pages=Math.max(1,Math.ceil(records.length/syncRecordState.size));syncRecordState.page=Math.max(1,Math.min(syncRecordState.page,pages));const rows=records.slice((syncRecordState.page-1)*syncRecordState.size,syncRecordState.page*syncRecordState.size);document.getElementById('syncRecordBody').innerHTML=rows.length?rows.map(row=>`<tr><td>${esc(row[0])}</td><td>root</td><td>拾贝外链数据回传</td><td><span class="tag ${row[3]==='成功'?'success':'down'}">${row[3]==='成功'?'同步成功':'同步失败'}</span></td><td>${esc(row[4])}</td><td class="wrap">${esc(row[5])}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty-state">暂无同步记录</div></td></tr>';document.getElementById('syncRecordPageInfo').textContent=`共 ${records.length} 条，第 ${syncRecordState.page} / ${pages} 页`;document.getElementById('syncRecordPrev').disabled=syncRecordState.page===1;document.getElementById('syncRecordNext').disabled=syncRecordState.page===pages;document.getElementById('syncRecordPageSize').value=String(syncRecordState.size);}
+    function changeSyncRecordPage(step){syncRecordState.page+=step;renderSyncRecords();}
+    function changeSyncRecordSize(value){syncRecordState.size=Number(value);syncRecordState.page=1;renderSyncRecords();}
+    function openSyncRecordDialog(link){syncRecordState.link=link==='tmall'?'https://detail.tmall.com/item.htm?id=1000128':link==='jd'?'https://item.jd.com/1000376.html':link;syncRecordState.page=1;syncRecordState.size=10;const anchor=document.getElementById('syncRecordLink');anchor.textContent=syncRecordState.link;anchor.href=syncRecordState.link;renderSyncRecords();openDialog('syncRecordDialog');}
+    document.getElementById('syncRecordDialog').addEventListener('keydown',event=>{if(event.key!=='Tab')return;const controls=[...event.currentTarget.querySelectorAll('button:not(:disabled),a[href],select')];const first=controls[0],last=controls[controls.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}});
+    function filterMappingDetails(){ const code=document.getElementById('detailCode').value.trim(); const name=document.getElementById('detailName').value.trim(); const project=document.getElementById('detailProject').value.trim(); let total=0; document.querySelectorAll('#mappingDetailBody tr').forEach(row=>{const shown=(!code||row.dataset.code.includes(code))&&(!name||row.dataset.name.includes(name))&&(!project||row.dataset.project.includes(project));row.hidden=!shown;if(shown)total++;}); document.getElementById('mappingDetailCount').textContent=`共 ${total} 条关联物料`; }
+    document.getElementById('mappingDetailForm').addEventListener('submit',event=>{event.preventDefault();mappingDetailState.page=1;paginateMappingDetails();showToast('关联明细已筛选');});
+    document.getElementById('mappingDetailForm').addEventListener('reset',()=>setTimeout(()=>{mappingDetailState.page=1;paginateMappingDetails();},0));
     document.addEventListener('keydown',event=>{ if(event.key==='Escape'){ const open=[...document.querySelectorAll('.modal-mask.show')].pop(); if(open)closeDialog(open.id); } });
-    renderRules(); renderCustomers(); renderTasks();
+    {const body=document.getElementById('mappingDetailBody'); for(let index=1;index<=20;index++){const code=`M${String(2000+index).padStart(6,'0')}`;const project=index%3===0?'中核采购项目':'华东政采项目';body.insertAdjacentHTML('beforeend',`<tr data-code="${code}" data-name="劳保手套${index}" data-project="${project}"><td>${code}</td><td>劳保手套${index}</td><td>${index%2?'均码，耐磨款':'L码，丁腈涂层'}</td><td>双</td><td><div class="project-tags"><span class="project-tag">${project}</span></div></td></tr>`);} const tableWrap=document.querySelector('#mappingDialog .table-wrap');tableWrap.insertAdjacentHTML('afterend','<div class="pagination" style="justify-content:space-between"><span id="mappingPageInfo">第 1 / 1 页</span><div><button class="page-btn" id="mappingPrev" type="button" aria-label="上一页" onclick="changeMappingPage(-1)">‹</button><button class="page-btn" id="mappingNext" type="button" aria-label="下一页" onclick="changeMappingPage(1)">›</button><select class="control" id="mappingPageSize" aria-label="每页条数" style="width:110px;margin-left:8px"><option value="10">10 条/页</option><option value="50">50 条/页</option><option value="100">100 条/页</option></select></div></div>');document.getElementById('mappingPageSize').addEventListener('change',event=>{mappingDetailState.size=Number(event.target.value);mappingDetailState.page=1;paginateMappingDetails();});paginateMappingDetails();}
+    {const mappingModule=document.getElementById('mappingModule');const dedupStats=mappingModule.querySelector('.dedup-stats');dedupStats.classList.add('dedup-stats--sticky');mappingModule.insertBefore(dedupStats,mappingModule.querySelector('.filter-box'));const mappingBody=mappingModule.querySelector('.data-table tbody');const templates=[...mappingBody.rows];for(let index=1;index<=60;index++){const row=templates[index%2].cloneNode(true);const fullLink=index%2?`https://detail.tmall.com/item.htm?id=${1000128+index}`:`https://item.jd.com/${1000376+index}.html`;row.cells[0].textContent=index%2?`detail.tmall.com/item-${index}...`:`item.jd.com/item-${index}...`;row.cells[0].title=fullLink;mappingBody.appendChild(row);}mappingModule.querySelector('.pagination').remove();mappingModule.querySelector('.table-wrap').insertAdjacentHTML('afterend','<div class="pagination" style="justify-content:space-between"><span id="mappingListPageInfo">第 1 / 1 页</span><div><button class="page-btn" id="mappingListPrev" type="button" aria-label="上一页" onclick="changeMappingListPage(-1)">‹</button><button class="page-btn" id="mappingListNext" type="button" aria-label="下一页" onclick="changeMappingListPage(1)">›</button><select class="control" id="mappingListPageSize" aria-label="外链映射数据表每页条数" style="width:110px;margin-left:8px"><option value="20">20 条/页</option><option value="50">50 条/页</option><option value="100">100 条/页</option><option value="200">200 条/页</option><option value="500">500 条/页</option></select></div></div>');document.getElementById('mappingListPageSize').addEventListener('change',event=>{mappingListState.size=Number(event.target.value);mappingListState.page=1;paginateMappingList();});paginateMappingList();}
+    {const mappingRows=[...document.querySelectorAll('#mappingModule .data-table tbody tr')];mappingRows.forEach((row,index)=>{const isTmall=index%2===0;row.cells[1].textContent=isTmall?`工业防护手套 丁腈涂层耐磨款 ${index+1}`:`高粘度透明封箱胶带 ${index+1}`;row.cells[2].textContent=isTmall?'天猫':'京东';row.cells[3].textContent=isTmall?'旗舰店':'自营';row.cells[4].textContent=isTmall?'在售中':'已下架';row.cells[5].textContent=isTmall?'盒':'箱';row.cells[6].textContent=isTmall?'12':'6';row.cells[7].textContent=isTmall?'双':'卷';row.cells[8].textContent='1';row.cells[9].textContent=isTmall?'¥16.50':'—';row.dataset.convertedPrice=isTmall?'¥15.80':'¥9.60';row.cells[10].textContent=isTmall?String(8400+index*31):'—';row.cells[11].textContent=`${index%4+1} 项目 / ${index%6+1} 物料`;const link=row.cells[0].title;const history=index%3===2?[]:index%3===0?[['2026-08-29 08:31','root','拾贝外链数据回传','失败','—','拾贝接口请求超时'],['2026-09-29 08:31','root','拾贝外链数据回传','成功',isTmall?'¥16.50':'¥9.10','—']]:[['2026-08-29 08:31','root','拾贝外链数据回传','成功','¥9.10','—'],['2026-09-29 08:31','root','拾贝外链数据回传','失败','—','拾贝接口请求超时']];if(history.length){for(let month=1;month<=12;month++){const date=new Date(Date.UTC(2026,7-month,28,8,31));history.push([date.toISOString().slice(0,16).replace('T',' '),'root','拾贝外链数据回传',month%4===0?'失败':'成功',month%4===0?'—':isTmall?'¥16.20':'¥9.10',month%4===0?'拾贝接口请求超时':'—']);}}monthlyReturnHistory.set(link,history);renderMonthlyReturnStatus(row.cells[12],link);row.cells[13].innerHTML='<button class="btn link" type="button">查看记录</button>';row.cells[13].querySelector('button').addEventListener('click',()=>openSyncRecordDialog(link));const actionCell=row.cells[14];if(actionCell){actionCell.innerHTML=`<button class="btn link" type="button">关联明细</button>`;actionCell.querySelector('button').addEventListener('click',()=>openMappingDialog(link));}});}
+    {const table=document.querySelector('#mappingModule .data-table'),heading=document.createElement('th');heading.textContent='外链编码';heading.style.width='130px';table.tHead.rows[0].prepend(heading);const codes=new Map();[...table.tBodies[0].rows].forEach(row=>{const link=row.cells[0].title;if(!codes.has(link))codes.set(link,String(1001021+codes.size));const cell=row.insertCell(0);cell.textContent=codes.get(link);row.dataset.externalLinkCode=cell.textContent;});table.style.minWidth='2030px';}
+// 为项目导出提供可复核的原型示例关联，关联明细与导出共用这些项目标签。
+    {const projects=[...new Set([...customers,...poolGoods.map(item=>item.project),'中国电建'])];
+      document.querySelectorAll('#mappingDetailBody tr').forEach((row,index)=>{
+        const tags=row.querySelector('.project-tags'),associated=new Set([...tags.querySelectorAll('.project-tag')].map(tag=>tag.textContent));
+        [projects[index%projects.length],projects[(index+1)%projects.length]].forEach(project=>{if(!associated.has(project)){const tag=document.createElement('span');tag.className='project-tag';tag.textContent=project;tags.appendChild(tag);associated.add(project);}});
+        row.dataset.project=[...associated].join(' ');
+      });
+      document.querySelectorAll('#mappingModule .data-table tbody tr').forEach(row=>{row.dataset.shopName=row.cells[3].textContent==='天猫'?'咸亨劳保用品旗舰店（示例）':'京东工业用品自营店（示例）';});
+    }
+
+    const projectPriceExportState={selected:new Set(),busy:false};
+const mappingExportHeaders=['项目名称','物料编码','物料名称','规格型号','计量单位','完整外链地址','外链商品标题','店铺名称','店铺类型','平台类型','链接状态','外链销售单位数量','咸亨销售单位数量','最新外链价','咸亨外链价格','销量','评价','同步状态','价格更新时间','失败原因'];
+    const projectExportHeaders=['项目名称','物料编码','物料名称','规格型号','计量单位','完整外链地址','平台类型','店铺名称','店铺类型','最新外链价','咸亨外链价格','价格更新时间'];
+    function mappingExportData(projects){
+      const result=[],seen=new Set(),keyword=projects? '':document.getElementById('mappingUrl').value.trim();
+      const materials=[...document.querySelectorAll('#mappingDetailBody tr')];
+      const number=value=>{const text=String(value).replace(/[¥,]/g,'').trim();return text&&text!=='—'&&Number.isFinite(Number(text))?Number(text):'';};
+      document.querySelectorAll('#mappingModule .data-table tbody tr').forEach(row=>{
+        const cells=[...row.cells].slice(1),link=cells[0].title;if(keyword&&!link.includes(keyword))return;
+        const history=[...(monthlyReturnHistory.get(link)||[])].sort((a,b)=>b[0].localeCompare(a[0])),latest=history[0],success=history.find(record=>record[3]==='成功');
+        materials.forEach(material=>{
+          const associated=[...material.querySelectorAll('.project-tag')].map(tag=>tag.textContent.trim()),included=projects?associated.filter(name=>projects.includes(name)):associated;
+          if(projects&&!included.length)return;
+          const key=material.dataset.code+'|'+link;if(seen.has(key))return;seen.add(key);
+          const data={'项目名称':included.join('、'),'物料编码':material.dataset.code,'物料名称':material.dataset.name,'规格型号':material.cells[2].textContent,'计量单位':material.cells[3].textContent,'完整外链地址':link,'外链商品标题':cells[1].textContent,'店铺名称':row.dataset.shopName||'','店铺类型':cells[3].textContent,'平台类型':cells[2].textContent,'链接状态':cells[4].textContent,'外链销售单位数量':number(cells[6].textContent),'咸亨销售单位数量':number(cells[8].textContent),'最新外链价':success?number(success[4]):number(cells[9].textContent),'咸亨外链价格':number(row.dataset.convertedPrice),'销量':number(cells[10].textContent),'评价':'','同步状态':latest?(latest[3]==='成功'?'同步成功':'同步失败'):'','价格更新时间':success?success[0]:'','失败原因':latest&&latest[3]==='失败'?latest[5]:''};result.push(data);
+        });
+      });return result;
+    }
+    async function downloadMappingWorkbook(title,headers,records){
+      const stamp=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).format(new Date()).replace(/\D/g,'');
+      const chunks=Math.max(1,Math.ceil(records.length/100000));
+      for(let part=0;part<chunks;part++){
+        const workbook=new ExcelJS.Workbook(),sheet=workbook.addWorksheet(title);
+        sheet.addRow(headers);records.slice(part*100000,(part+1)*100000).forEach(record=>sheet.addRow(headers.map(header=>record[header]??'')));
+        sheet.getRow(1).height=28;sheet.getRow(1).eachCell(cell=>{cell.font={name:'微软雅黑',bold:true};cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFFFFF00'}};cell.alignment={vertical:'middle',horizontal:'center'};});
+        sheet.columns.forEach((column,index)=>{column.width=headers[index]==='完整外链地址'?65:headers[index].includes('时间')?24:22;});
+        sheet.views=[{state:'frozen',ySplit:1}];sheet.autoFilter={from:{row:1,column:1},to:{row:1,column:headers.length}};
+        const buffer=await workbook.xlsx.writeBuffer(),url=URL.createObjectURL(new Blob([buffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
+        const anchor=document.createElement('a');anchor.href=url;anchor.download=title+'_'+stamp+(chunks>1?'_'+(part+1):'')+'.xlsx';document.body.appendChild(anchor);anchor.click();anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+      }
+    }
+    async function exportMappingDetails(button){if(button.disabled)return;button.disabled=true;try{await downloadMappingWorkbook('外链映射明细',mappingExportHeaders,mappingExportData());showToast('外链映射明细下载已发起');}catch(error){showToast('导出失败：'+(error.message||'请重试'));}finally{button.disabled=false;}}
+    function exportProjectNames(){return [...new Set([...customers,...poolGoods.map(item=>item.project),'中国电建',...[...document.querySelectorAll('#mappingDetailBody .project-tag')].map(tag=>tag.textContent.trim())])];}
+    function openProjectPriceExport(){projectPriceExportState.selected.clear();setProjectExportDropdown(false);document.getElementById('projectPriceExportSearch').value='';document.getElementById('projectPriceExportError').textContent='';renderProjectPriceExport();openDialog('projectPriceExportDialog');}
+    function setProjectExportDropdown(open){document.getElementById('projectPriceExportList').hidden=!open;document.getElementById('projectPriceExportSearch').setAttribute('aria-expanded',String(open));}
+    document.addEventListener('click',event=>{if(!event.target.closest('#projectPriceExportDropdown'))setProjectExportDropdown(false);});
+    document.getElementById('projectPriceExportDropdown').addEventListener('keydown',event=>{if(event.key==='Escape'&&!document.getElementById('projectPriceExportList').hidden){event.preventDefault();event.stopPropagation();setProjectExportDropdown(false);document.getElementById('projectPriceExportSearch').focus();setProjectExportDropdown(false);}else if(event.key==='ArrowDown'&&event.target.id==='projectPriceExportSearch'){event.preventDefault();setProjectExportDropdown(true);document.querySelector('#projectPriceExportList input:not(:disabled)')?.focus();}});
+    function closeProjectPriceExport(){if(!projectPriceExportState.busy)closeDialog('projectPriceExportDialog');}
+    function renderProjectPriceExport(){const selected=projectPriceExportState.selected,keyword=document.getElementById('projectPriceExportSearch').value.trim();document.getElementById('projectPriceExportCount').textContent=`已选择 ${selected.size} / 10 个项目`;document.getElementById('projectPriceExportSelected').innerHTML=[...selected].map(project=>`<button class="btn" type="button" data-remove-project="${esc(project)}" aria-label="移除项目 ${esc(project)}">${esc(project)} ×</button>`).join('');const projects=exportProjectNames().filter(project=>!keyword||project.includes(keyword));document.getElementById('projectPriceExportList').innerHTML=projects.length?projects.map(project=>`<label class="project-export-option"><input type="checkbox" value="${esc(project)}" ${selected.has(project)?'checked':''} ${selected.size>=10&&!selected.has(project)?'disabled':''}><span>${esc(project)}</span></label>`).join(''):'<p>暂无匹配项目</p>';}
+    document.getElementById('projectPriceExportList').addEventListener('change',event=>{if(projectPriceExportState.busy)return;const selected=projectPriceExportState.selected,name=event.target.value;if(event.target.checked){if(selected.size>=10){event.target.checked=false;showToast('最多选择 10 个项目');return;}selected.add(name);}else selected.delete(name);document.getElementById('projectPriceExportError').textContent='';renderProjectPriceExport();});
+    document.getElementById('projectPriceExportSelected').addEventListener('click',event=>{const button=event.target.closest('[data-remove-project]');if(!button||projectPriceExportState.busy)return;projectPriceExportState.selected.delete(button.dataset.removeProject);renderProjectPriceExport();});
+    async function confirmProjectPriceExport(){if(projectPriceExportState.busy)return;const projects=[...projectPriceExportState.selected];if(projects.length<1||projects.length>10){document.getElementById('projectPriceExportError').textContent='请选择 1～10 个项目';showToast('请选择 1～10 个项目');return;}projectPriceExportState.busy=true;const dialog=document.getElementById('projectPriceExportDialog'),button=document.getElementById('projectPriceExportConfirm');dialog.querySelector('.dialog-body').inert=true;dialog.querySelectorAll('button').forEach(control=>control.disabled=true);button.textContent='导出中…';document.getElementById('projectPriceExportError').textContent='';try{await downloadMappingWorkbook('项目最新外链价',projectExportHeaders,mappingExportData(projects));closeDialog('projectPriceExportDialog');showToast('项目最新外链价下载已发起');}catch(error){document.getElementById('projectPriceExportError').textContent='导出失败：'+(error.message||'请重试');}finally{projectPriceExportState.busy=false;dialog.querySelector('.dialog-body').inert=false;dialog.querySelectorAll('button').forEach(control=>control.disabled=false);button.textContent='确认导出';}}
+    document.getElementById('projectPriceExportDialog').addEventListener('keydown',event=>{if(event.key==='Escape'&&projectPriceExportState.busy){event.preventDefault();event.stopPropagation();return;}if(event.key!=='Tab')return;const controls=[...event.currentTarget.querySelectorAll('button:not(:disabled),input:not(:disabled)')].filter(control=>control.getClientRects().length&&!control.closest('[inert]'));const first=controls[0],last=controls[controls.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}});
+    const materialUpdateState={page:1,size:20,selected:new Map(),items:[],submitting:false,confirming:false};
+    function canUpdateMaterialPrice(){return ['项目运营专员','项目经理','项目商品专员'].includes(document.getElementById('currentAccountRole').textContent);}
+    function materialUpdateCandidates(){const items=new Map();document.querySelectorAll('#mappingModule .data-table tbody tr').forEach((row,index)=>{const link=row.cells[1].title;const valid=[...(monthlyReturnHistory.get(link)||[])].filter(record=>record[3]==='成功'&&Number(String(record[4]).replace(/[¥,]/g,''))>0).sort((a,b)=>b[0].localeCompare(a[0]))[0];[['M000128','工业防护手套'],['M000982','劳保手套']].forEach(([code,name])=>{const key=code+'|'+link;items.set(key,{key,code,name,link,price:valid?Number(String(valid[4]).replace(/[¥,]/g,'')):Number((16.5+index*0.1).toFixed(2))});});});return [...items.values()];}
+    function openMaterialPriceUpdate(){if(!canUpdateMaterialPrice())return;materialUpdateState.page=1;materialUpdateState.size=20;materialUpdateState.selected.clear();materialUpdateState.items=materialUpdateCandidates();document.getElementById('materialUpdateFilter').reset();document.getElementById('materialUpdateSize').value='20';document.getElementById('materialUpdateCode').setCustomValidity('');document.getElementById('materialUpdateError').textContent='';cancelMaterialUpdateConfirm();renderMaterialUpdate();openDialog('materialUpdateDialog');}
+    function materialUpdateCodes(){return [...new Set(document.getElementById('materialUpdateCode').value.split(',').map(code=>code.trim()).filter(Boolean))];}
+    function visibleMaterialUpdate(){const codes=new Set(materialUpdateCodes()),name=document.getElementById('materialUpdateName').value.trim();return materialUpdateState.items.filter(item=>(!codes.size||codes.has(item.code))&&(!name||item.name.includes(name)));}
+    function materialUpdatePage(){const items=visibleMaterialUpdate();return items.slice((materialUpdateState.page-1)*materialUpdateState.size,materialUpdateState.page*materialUpdateState.size);}
+    function renderMaterialUpdate(){const items=visibleMaterialUpdate(),pages=Math.max(1,Math.ceil(items.length/materialUpdateState.size));materialUpdateState.page=Math.max(1,Math.min(materialUpdateState.page,pages));const rows=materialUpdatePage();document.getElementById('materialUpdateBody').innerHTML=rows.map(item=>`<tr><td><input type="checkbox" aria-label="选择 ${item.code} ${esc(item.link)}" data-material-key="${esc(item.key)}" ${materialUpdateState.selected.has(item.key)?'checked':''}></td><td>${esc(item.code)}</td><td>${esc(item.name)}</td><td class="wrap"><a href="${esc(item.link)}" target="_blank" rel="noopener noreferrer">${esc(item.link)}</a></td><td>¥${item.price.toFixed(2)}</td></tr>`).join('')||'<tr><td colspan="5"><div class="empty-state">暂无匹配物料</div></td></tr>';const eligible=rows.filter(item=>item.price!==null),all=document.getElementById('materialUpdateAll');all.checked=eligible.length>0&&eligible.every(item=>materialUpdateState.selected.has(item.key));all.indeterminate=eligible.some(item=>materialUpdateState.selected.has(item.key))&&!all.checked;all.disabled=!eligible.length;document.getElementById('materialUpdateCount').textContent=`已选择 ${materialUpdateState.selected.size} 条`;document.getElementById('materialUpdatePageInfo').textContent=`共 ${items.length} 条，第 ${materialUpdateState.page} / ${pages} 页`;document.getElementById('materialUpdatePrev').disabled=materialUpdateState.page===1;document.getElementById('materialUpdateNext').disabled=materialUpdateState.page===pages;}
+    function selectMaterialUpdatePage(checked){materialUpdatePage().filter(item=>item.price!==null).forEach(item=>{if(checked)materialUpdateState.selected.set(item.key,item);else materialUpdateState.selected.delete(item.key);});renderMaterialUpdate();}
+    document.getElementById('materialUpdateBody').addEventListener('change',event=>{const key=event.target.dataset.materialKey;if(!key)return;const item=materialUpdateState.items.find(item=>item.key===key);if(event.target.checked)materialUpdateState.selected.set(key,item);else materialUpdateState.selected.delete(key);renderMaterialUpdate();});
+    document.getElementById('materialUpdateCode').addEventListener('input',event=>{const input=event.target;input.value=input.value.replace(/\r\n|\r|\n/g,',');const message=materialUpdateCodes().length>1000?'最多支持输入1000个物料编码':'';input.setCustomValidity(message);document.getElementById('materialUpdateError').textContent=message;});
+    document.getElementById('materialUpdateFilter').addEventListener('submit',event=>{event.preventDefault();if(materialUpdateCodes().length>1000){document.getElementById('materialUpdateError').textContent='最多支持输入1000个物料编码';document.getElementById('materialUpdateCode').focus();return;}document.getElementById('materialUpdateError').textContent='';materialUpdateState.page=1;renderMaterialUpdate();});
+    document.getElementById('materialUpdateFilter').addEventListener('reset',()=>setTimeout(()=>{document.getElementById('materialUpdateCode').setCustomValidity('');document.getElementById('materialUpdateError').textContent='';materialUpdateState.page=1;renderMaterialUpdate();},0));
+    function reviewMaterialUpdate(){if(!canUpdateMaterialPrice()||materialUpdateState.submitting)return;if(!materialUpdateState.selected.size){showToast('请选择需要同步的物料');return;}materialUpdateState.confirming=true;document.getElementById('materialUpdateConfirmText').textContent=`确认将已选择的 ${materialUpdateState.selected.size} 条物料外链价格同步至物料主数据吗？`;document.getElementById('materialUpdateConfirmError').textContent='';document.getElementById('materialUpdateConfirm').showModal();}
+    function cancelMaterialUpdateConfirm(){if(materialUpdateState.submitting)return;materialUpdateState.confirming=false;const dialog=document.getElementById('materialUpdateConfirm');if(dialog.open){dialog.close();document.getElementById('materialUpdateReview').focus();}}
+    document.getElementById('materialUpdateConfirm').addEventListener('cancel',event=>{event.preventDefault();cancelMaterialUpdateConfirm();});
+    function closeMaterialUpdate(){if(!materialUpdateState.submitting)closeDialog('materialUpdateDialog');}
+    async function submitMaterialUpdate(){if(materialUpdateState.submitting||!materialUpdateState.confirming||!canUpdateMaterialPrice())return;const rows=[...materialUpdateState.selected.values()].map(item=>({...item,result:'待处理'}));if(!rows.length)return;materialUpdateState.submitting=true;const button=document.getElementById('materialUpdateSubmit');button.disabled=true;button.textContent='提交中…';document.querySelectorAll('#materialUpdateDialog button,#materialUpdateConfirm button').forEach(control=>control.disabled=true);try{await new Promise(resolve=>setTimeout(resolve,650));const code='WLJG'+Date.now()+Math.random().toString(36).slice(2,6).toUpperCase();const stored=JSON.parse(localStorage.getItem('mpm-material-link-price-tasks')||'[]');if(!Array.isArray(stored))throw new Error('任务记录格式异常');stored.unshift({code,type:'导入批改外链价',status:'待开始',creator:document.getElementById('currentAccountName').textContent,start:checkRecordTime(new Date()),rows});localStorage.setItem('mpm-material-link-price-tasks',JSON.stringify(stored));materialUpdateState.submitting=false;document.getElementById('materialUpdateConfirm').close();materialUpdateState.confirming=false;closeDialog('materialUpdateDialog');showToast('同步任务已创建');}catch(error){document.getElementById('materialUpdateConfirmError').textContent='同步任务创建失败：'+(error.message||'未知错误');document.getElementById('materialUpdateError').textContent='同步任务创建失败：'+(error.message||'未知错误');showToast('同步任务创建失败：'+(error.message||'未知错误'));}finally{materialUpdateState.submitting=false;document.querySelectorAll('#materialUpdateDialog button,#materialUpdateConfirm button').forEach(control=>control.disabled=false);button.textContent='确认同步';renderMaterialUpdate();}}
+    ['materialUpdateDialog'].forEach(id=>document.getElementById(id).addEventListener('keydown',event=>{if(event.key==='Escape'&&materialUpdateState.submitting){event.preventDefault();event.stopPropagation();return;}if(event.key!=='Tab')return;const controls=[...event.currentTarget.querySelectorAll('button:not(:disabled),input:not(:disabled),a[href],select')].filter(control=>control.getClientRects().length&&!control.closest('[inert]'));const first=controls[0],last=controls[controls.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}}));
+    const workbenchAccountProfiles = {
+      'project-operator': {name:'王云龙',role:'项目运营专员',avatar:'王'},
+      'project-manager': {name:'项目经理',role:'项目经理',avatar:'项'},
+      'project-specialist': {name:'项目商品专员',role:'项目商品专员',avatar:'项'},
+      admin: {name:'管理员',role:'系统管理账户',avatar:'管'},
+      wang: {name:'王云龙',role:'采购员角色',avatar:'王'},
+      'wang-sales': {name:'王云龙',role:'销售员角色',avatar:'王'}
+    };
+    function toggleWorkbenchAccountMenu(event){ event.stopPropagation(); const trigger=document.getElementById('accountSwitchTrigger'); const menu=document.getElementById('accountSwitchMenu'); const expanded=menu.hidden; menu.hidden=!expanded; trigger.setAttribute('aria-expanded',String(expanded)); }
+    function closeWorkbenchAccountMenu(){ const trigger=document.getElementById('accountSwitchTrigger'); const menu=document.getElementById('accountSwitchMenu'); if(!trigger||!menu)return; menu.hidden=true; trigger.setAttribute('aria-expanded','false'); }
+    function applyWorkbenchAccount(account,announce){ const current=workbenchAccountProfiles[account]?account:'admin'; const profile=workbenchAccountProfiles[current]; const restricted=current!=='admin'; document.body.dataset.workbenchAccount=current; document.getElementById('currentAccountName').textContent=profile.name; document.getElementById('currentAccountRole').textContent=profile.role; document.getElementById('currentAccountAvatar').textContent=profile.avatar; document.querySelectorAll('[data-admin-only]').forEach(element=>{element.hidden=restricted;}); document.querySelectorAll('.account-switch-option').forEach(option=>option.classList.toggle('active',option.dataset.account===current)); document.getElementById('updateMaterialLinkPrice').hidden=!canUpdateMaterialPrice(); closeWorkbenchAccountMenu(); try{sessionStorage.setItem('mpm-workbench-account',current);}catch(error){} if(announce)showToast(`已切换至${profile.name}（${profile.role}）`); }
+    function switchWorkbenchAccount(account){ applyWorkbenchAccount(account,true); }
+    document.addEventListener('click',event=>{if(!event.target.closest('#accountSwitcher'))closeWorkbenchAccountMenu();});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape')closeWorkbenchAccountMenu();});
+    let initialWorkbenchAccount='project-operator';
+    try{initialWorkbenchAccount=new URLSearchParams(location.search).get('account')||sessionStorage.getItem('mpm-workbench-account')||'project-operator';}catch(error){}
+    applyWorkbenchAccount(initialWorkbenchAccount,false);
+    renderRules(); renderCustomers(); renderTasks(); renderPool();
   </script>
-</body>
+<script src="assets/js/prototype-common.js" defer></script></body>
 </html>

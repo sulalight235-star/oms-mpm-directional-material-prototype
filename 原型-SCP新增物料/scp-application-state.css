@@ -1,0 +1,35 @@
+.application-field{width:120px;min-width:120px!important}
+.application-status-select{width:170px;min-width:170px!important}
+.application-refresh{border:0;background:transparent;padding:0;color:#1d39c4;cursor:pointer}
+.application-refresh:hover{text-decoration:underline}
+.application-status{display:inline;color:inherit;font:inherit;white-space:nowrap}
+.application-view-link{white-space:nowrap}
+.application-empty{text-align:center;color:#999!important;height:100px!important}
+.application-summary{max-width:1180px;margin-bottom:16px;padding:16px 20px;border:1px solid #d8e3fb;border-left:4px solid #3743d6;border-radius:4px;background:#f7f9ff}
+.application-summary h1{margin:0 0 13px;font-size:17px;color:#1f2329}
+.application-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 20px}
+.application-summary-item{min-width:0}.application-summary-item span{display:block;color:#777;font-size:12px;margin-bottom:5px}.application-summary-item strong{display:block;font-size:13px;font-weight:500;overflow-wrap:anywhere}
+.application-summary-item strong .application-status{display:inline;color:inherit;font:inherit;margin:0}
+.application-final-note{margin:12px 0 0;color:#555;font-size:12px}
+.application-readonly .hot,.application-readonly .up-box,.application-readonly .ext-add,.application-readonly .qa-table .op,.application-readonly .rm,.application-readonly .sec-upload-btn{display:none!important}
+.application-readonly input:disabled,.application-readonly select:disabled,.application-readonly textarea:disabled{background:#f7f8fa;color:#444;opacity:1}
+.application-terminal .scp-demo-tips,[data-scp-application-page="list"] .scp-demo-tips{display:none!important}
+.application-terminal .flow,.application-terminal .req,.application-terminal .fhint{display:none!important}
+.table-wrap{max-width:100%;overflow:auto}
+.table-wrap .table{min-width:1100px}
+@media(max-width:768px){.application-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.application-status-select{width:100%}.application-field{width:100%}.filter .filter-row .input{min-width:0!important}.application-summary{padding:14px}.application-terminal .grid3{grid-template-columns:1fr!important}.application-terminal .field.col2,.application-terminal .field.col3{grid-column:auto!important}}
+@media(max-width:480px){.application-summary-grid{grid-template-columns:1fr}.application-summary-item{display:flex;gap:10px;align-items:baseline}.application-summary-item span{flex:0 0 110px;margin:0}.application-summary-item strong{flex:1}}
+@media(max-width:768px){
+  [data-scp-application-page="list"] .table-wrap .table{display:block;min-width:0!important;width:100%}
+  [data-scp-application-page="list"] .table thead{display:none}
+  [data-scp-application-page="list"] .table tbody{display:block}
+  [data-scp-application-page="list"] .table tbody tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 12px;margin-bottom:8px;padding:12px;border:1px solid #e5e7eb;border-radius:4px;background:#fff}
+  [data-scp-application-page="list"] .table tbody tr[hidden]{display:none}
+  [data-scp-application-page="list"] .table tbody td{display:block;height:auto;padding:0;min-width:0;border:0;white-space:normal;overflow-wrap:anywhere}
+  [data-scp-application-page="list"] .table tbody td::before{content:attr(data-label);display:block;margin-bottom:4px;color:#777;font-size:11px}
+  [data-scp-application-page="list"] .table tbody td:nth-child(3),[data-scp-application-page="list"] .table tbody td:nth-child(4),[data-scp-application-page="list"] .table tbody td:nth-child(5),[data-scp-application-page="list"] .table tbody td:nth-child(6),[data-scp-application-page="list"] .table tbody td:nth-child(8),[data-scp-application-page="list"] .table tbody td:nth-child(10){display:none}
+  [data-scp-application-page="list"] .table tbody td:nth-child(7){grid-column:1 / 2}
+  [data-scp-application-page="list"] .table tbody td:nth-child(9){grid-column:2 / 3}
+  [data-scp-application-page="list"] .table tbody td:nth-child(11){grid-column:1 / -1;text-align:right}
+  [data-scp-application-page="list"] .table tbody .application-empty-row{display:block}
+}

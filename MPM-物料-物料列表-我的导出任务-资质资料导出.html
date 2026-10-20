@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>资质资料导出 / 我的导出任务 - 咸亨国际主数据管理平台</title>
+  <title>物料-物料列表-我的导出任务-资质资料导出 - MPM物料主数据系统</title>
   <style>
     :root {
       --primary: #1677ff;
@@ -38,7 +38,7 @@
       font-size: 14px;
       background: var(--bg-layout);
       color: var(--text-body);
-      min-width: 1280px;
+      min-width: 0;
     }
     a { color: inherit; text-decoration: none; }
     button, input, select { font: inherit; }
@@ -268,8 +268,8 @@
 
     .hidden { display: none !important; }
   </style>
-</head>
-<body>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
+<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div><main id="main-content" tabindex="-1">
 
 <!-- 顶栏 -->
 <div class="topbar">
@@ -360,7 +360,7 @@
     <table>
       <thead>
         <tr>
-          <th class="checkbox-cell"><input type="checkbox" id="selAll" onclick="toggleAll(this)" /></th>
+          <th class="checkbox-cell"><input type="checkbox" id="selAll" onclick="toggleAll(this)"  aria-label="全选当前列表"/></th>
           <th>物料编码</th>
           <th>物料名称</th>
           <th>类目</th>
@@ -371,16 +371,16 @@
         </tr>
       </thead>
       <tbody id="materialTbody">
-        <tr class="selected"><td class="checkbox-cell"><input type="checkbox" checked onchange="rowToggle(this)" /></td><td>M00012345</td><td>钳形电流表 QF-A5</td><td>钳形电流表</td><td>万聚国际（杭州）</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
-        <tr class="selected"><td class="checkbox-cell"><input type="checkbox" checked onchange="rowToggle(this)" /></td><td>M00012346</td><td>高低压钳形表 QF-B3</td><td>钳形电流表</td><td>咸亨国际电子商务</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
-        <tr class="selected"><td class="checkbox-cell"><input type="checkbox" checked onchange="rowToggle(this)" /></td><td>M00012347</td><td>数字万用表 DM-200</td><td>万用表</td><td>万聚国际（杭州）</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
-        <tr class="selected"><td class="checkbox-cell"><input type="checkbox" checked onchange="rowToggle(this)" /></td><td>M00012348</td><td>绝缘电阻测试仪 IR-1000</td><td>电气测量</td><td>咸亨国际电子商务</td><td><span class="tag tag-warning">部分缺失</span></td><td><span class="tag tag-warning">待审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
-        <tr><td class="checkbox-cell"><input type="checkbox" onchange="rowToggle(this)" /></td><td>M00012349</td><td>接地电阻测试仪 ER-500</td><td>电气测量</td><td>万聚国际（杭州）</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
-        <tr><td class="checkbox-cell"><input type="checkbox" onchange="rowToggle(this)" /></td><td>M00012350</td><td>红外测温仪 IT-380</td><td>温度测量</td><td>咸亨国际电子商务</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
-        <tr><td class="checkbox-cell"><input type="checkbox" onchange="rowToggle(this)" /></td><td>M00012351</td><td>示波器 OSC-100MHz</td><td>波形分析</td><td>万聚国际（杭州）</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
-        <tr><td class="checkbox-cell"><input type="checkbox" onchange="rowToggle(this)" /></td><td>M00012352</td><td>函数信号发生器 SG-30M</td><td>信号源</td><td>万聚国际（杭州）</td><td><span class="tag tag-error">无资质</span></td><td><span class="tag tag-error">已驳回</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
-        <tr><td class="checkbox-cell"><input type="checkbox" onchange="rowToggle(this)" /></td><td>M00012353</td><td>直流稳压电源 DPS-30V</td><td>电源设备</td><td>咸亨国际电子商务</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
-        <tr><td class="checkbox-cell"><input type="checkbox" onchange="rowToggle(this)" /></td><td>M00012354</td><td>LCR 数字电桥 LCR-8210</td><td>元件测试</td><td>万聚国际（杭州）</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
+        <tr class="selected"><td class="checkbox-cell"><input type="checkbox" checked onchange="rowToggle(this)"  aria-label="选择M00012346"/></td><td>M00012345</td><td>钳形电流表 QF-A5</td><td>钳形电流表</td><td>万聚国际（杭州）</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
+        <tr class="selected"><td class="checkbox-cell"><input type="checkbox" checked onchange="rowToggle(this)"  aria-label="选择M00012347"/></td><td>M00012346</td><td>高低压钳形表 QF-B3</td><td>钳形电流表</td><td>咸亨国际电子商务</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
+        <tr class="selected"><td class="checkbox-cell"><input type="checkbox" checked onchange="rowToggle(this)"  aria-label="选择M00012348"/></td><td>M00012347</td><td>数字万用表 DM-200</td><td>万用表</td><td>万聚国际（杭州）</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
+        <tr class="selected"><td class="checkbox-cell"><input type="checkbox" checked onchange="rowToggle(this)"  aria-label="选择M00012348"/></td><td>M00012348</td><td>绝缘电阻测试仪 IR-1000</td><td>电气测量</td><td>咸亨国际电子商务</td><td><span class="tag tag-warning">部分缺失</span></td><td><span class="tag tag-warning">待审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
+        <tr><td class="checkbox-cell"><input type="checkbox" onchange="rowToggle(this)"  aria-label="选择M00012350"/></td><td>M00012349</td><td>接地电阻测试仪 ER-500</td><td>电气测量</td><td>万聚国际（杭州）</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
+        <tr><td class="checkbox-cell"><input type="checkbox" onchange="rowToggle(this)"  aria-label="选择M00012351"/></td><td>M00012350</td><td>红外测温仪 IT-380</td><td>温度测量</td><td>咸亨国际电子商务</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
+        <tr><td class="checkbox-cell"><input type="checkbox" onchange="rowToggle(this)"  aria-label="选择M00012352"/></td><td>M00012351</td><td>示波器 OSC-100MHz</td><td>波形分析</td><td>万聚国际（杭州）</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
+        <tr><td class="checkbox-cell"><input type="checkbox" onchange="rowToggle(this)"  aria-label="选择M00012353"/></td><td>M00012352</td><td>函数信号发生器 SG-30M</td><td>信号源</td><td>万聚国际（杭州）</td><td><span class="tag tag-error">无资质</span></td><td><span class="tag tag-error">已驳回</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
+        <tr><td class="checkbox-cell"><input type="checkbox" onchange="rowToggle(this)"  aria-label="选择M00012354"/></td><td>M00012353</td><td>直流稳压电源 DPS-30V</td><td>电源设备</td><td>咸亨国际电子商务</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
+        <tr><td class="checkbox-cell"><input type="checkbox" onchange="rowToggle(this)"  aria-label="选择M00012354"/></td><td>M00012354</td><td>LCR 数字电桥 LCR-8210</td><td>元件测试</td><td>万聚国际（杭州）</td><td><span class="tag tag-success">已齐全</span></td><td><span class="tag tag-success">已审核</span></td><td><span class="btn-text">查看</span> <span class="btn-text">编辑</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -977,7 +977,7 @@
     if (!header) {
       header = document.createElement('div');
       header.className = prefix + '-header';
-      header.innerHTML = '<span class="' + prefix + '-title">💡 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
+      header.innerHTML = '<span class="' + prefix + '-title"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-lightbulb"></use></svg> 演示说明</span><span class="' + prefix + '-actions"><span class="' + prefix + '-toggle">收起 ▾</span><span class="' + prefix + '-close" title="关闭">×</span></span>';
       tip.insertBefore(header, body);
     }
 
@@ -1009,6 +1009,6 @@
 })();
 </script>
 <script src="mpm-topnav-links.js"></script>
-</body>
+</main><script src="assets/js/prototype-common.js" defer></script></body>
 </html>
 
