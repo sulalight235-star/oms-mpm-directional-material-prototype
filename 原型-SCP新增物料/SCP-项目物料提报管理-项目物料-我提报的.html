@@ -136,11 +136,9 @@
     .pool-card-status{max-width:100%;height:24px;display:inline-flex;align-items:center;overflow:hidden;padding:0 8px;border:1px solid #b7eb8f;border-radius:4px;background:#f6ffed;color:#389e0d;font-size:12px;line-height:22px;text-overflow:ellipsis;white-space:nowrap}
     .pool-card-status.off{border-color:#ffccc7;background:#fff2f0;color:#cf1322}
     .pool-card-flag{height:24px;display:inline-flex;align-items:center;padding:0 8px;border:1px solid #ff7875;border-radius:4px;background:#fff;color:#f5222d;font-size:12px;line-height:22px;white-space:nowrap}
-    .material-flag{position:relative;width:24px;height:24px;display:inline-grid;place-items:center;border-radius:50%;outline:0;color:transparent;font-size:12px;line-height:1;font-weight:600;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);transition:color .16s ease,background-color .16s ease,box-shadow .16s ease}
+    .material-flag{position:relative;width:24px;height:24px;display:inline-grid;place-items:center;border-radius:50%;outline:0;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
     .material-flag.factory{background:#f5222d}
     .material-flag.supply{background:#faad14}
-    .material-flag:hover,.material-flag:focus-visible{color:#fff}
-    .material-flag.supply:hover,.material-flag.supply:focus-visible{color:#6b4300}
     .material-flag:focus-visible{box-shadow:0 0 0 2px rgba(22,119,255,.28),inset 0 0 0 1px rgba(0,0,0,.05)}
     .pool-card-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;row-gap:10px;padding:14px;border-top:1px solid #f0f0f0}
     .pool-card-field{min-width:0;display:grid;grid-template-columns:64px minmax(0,1fr);align-items:center;gap:6px}
@@ -563,10 +561,10 @@ html,body{max-width:100%;overflow-x:hidden}
         const thumbIndex = (row.id - 1) % 6 + 1;
         const statusOff = row.status !== '已上架';
         const factoryFlagHtml = row.factoryControlled === '是'
-          ? '<span class="material-flag factory" tabindex="0" role="img" aria-label="厂控：是">控</span>'
+          ? '<span class="material-flag factory" tabindex="0" role="img" aria-label="厂控：是" title="厂控物料"></span>'
           : '';
         const supplyFlagHtml = row.actualSupply === '是'
-          ? '<span class="material-flag supply" tabindex="0" role="img" aria-label="实供：是">实</span>'
+          ? '<span class="material-flag supply" tabindex="0" role="img" aria-label="实供：是" title="实供物料"></span>'
           : '';
         return `<article class="pool-card" role="button" tabindex="0" aria-label="查看${escapeHtml(row.customerTitle)}物料详情" onclick="handlePoolCardClick(event,${row.id})" onkeydown="handlePoolCardKeydown(event,${row.id})">
           <div class="pool-card-main">
@@ -719,10 +717,10 @@ html,body{max-width:100%;overflow-x:hidden}
       const mainThumbsHtml = previewGroups.main.map((image,index) => `<button class="material-detail-main-thumb ${index === 0 ? 'active' : ''}" type="button" aria-label="切换为${escapeHtml(image.alt)}" aria-pressed="${index === 0 ? 'true' : 'false'}" onclick="selectMaterialMainImage(${index})"><img src="${image.src}" alt="" width="56" height="56" loading="lazy"></button>`).join('');
       const detailImagesHtml = previewGroups.detail.map((image,index) => `<button class="material-detail-long-image" type="button" aria-label="预览${escapeHtml(image.alt)}" onclick="openImagePreview('detail',${index})"><img src="${image.src}" alt="${escapeHtml(image.alt)}" width="760" height="560" loading="lazy"></button>`).join('');
       const factoryFlagHtml = row.factoryControlled === '是'
-        ? '<span class="material-flag factory" tabindex="0" role="img" aria-label="厂控：是">控</span>'
+        ? '<span class="material-flag factory" tabindex="0" role="img" aria-label="厂控：是" title="厂控物料"></span>'
         : '';
       const supplyFlagHtml = row.actualSupply === '是'
-        ? '<span class="material-flag supply" tabindex="0" role="img" aria-label="实供：是">实</span>'
+        ? '<span class="material-flag supply" tabindex="0" role="img" aria-label="实供：是" title="实供物料"></span>'
         : '';
       document.getElementById('materialDetailBody').innerHTML = `
         <section class="material-detail-overview" aria-label="物料核心信息">

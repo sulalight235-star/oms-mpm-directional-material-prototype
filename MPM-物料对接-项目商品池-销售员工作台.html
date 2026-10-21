@@ -758,7 +758,7 @@
 
     .project-material-page {
       display: none;
-      min-width: 1280px;
+      min-width: 0;
       height: calc(100vh - 84px);
       overflow: hidden;
       background: #f3f6fb;
@@ -931,6 +931,12 @@
     .pm-view-button:hover { color: #2463e8; background: #f5f8ff; }
     .pm-view-button.active { color: #fff; background: #2f67e8; }
     .pm-view-button:focus-visible { outline: 2px solid rgba(47,103,232,.28); outline-offset: -2px; }
+    .pm-status-tabs { height: 42px; display: flex; align-items: center; padding: 0 16px; margin: 0 10px; border: 1px solid #d8dde6; border-bottom: 0; background: #f5f7fa; flex: 0 0 auto; }
+    .pm-status-tab { position: relative; height: 34px; margin-left: -1px; padding: 0 18px; border: 1px solid #e5e7eb; border-top: 2px solid transparent; background: #f5f6f8; color: #263449; font: inherit; cursor: pointer; }
+    .pm-status-tab:first-child { margin-left: 0; }
+    .pm-status-tab:hover { z-index: 1; color: #3146d3; background: #fff; }
+    .pm-status-tab.active { z-index: 2; border-top-color: #3146d3; background: #fff; font-weight: 500; }
+    .pm-status-tab:focus-visible { z-index: 3; outline: 2px solid rgba(49,70,211,.3); outline-offset: 2px; }
 
     .pm-table-wrap {
       width: calc(100% - 20px);
@@ -947,8 +953,8 @@
     .pm-table-wrap.view-hidden { display: none; }
 
     .pm-table {
-      width: 2240px;
-      min-width: 2240px;
+      width: 3354px;
+      min-width: 3354px;
       border-collapse: separate;
       border-spacing: 0;
       table-layout: fixed;
@@ -997,6 +1003,9 @@
     .pm-table tbody td:nth-child(1), .pm-table tbody td:nth-child(2) { background: #fff; background-clip: padding-box; }
     .pm-table tbody tr:hover td:nth-child(1), .pm-table tbody tr:hover td:nth-child(2) { background: #f3f7ff; }
     .pm-table thead th:nth-child(1), .pm-table thead th:nth-child(2) { background: #f7f7f7; z-index: 3; }
+    .pm-table th:nth-child(n+18), .pm-table td:nth-child(n+18) { width: 150px; }
+    .pm-table th:nth-child(20), .pm-table td:nth-child(20) { width: 230px; }
+    .pm-table th:nth-child(23), .pm-table td:nth-child(23) { width: 160px; }
     .pm-table input[type="checkbox"] { width: 16px; height: 16px; accent-color: #2f67e8; cursor: pointer; }
     .pm-table a { color: #0052d9; text-decoration: none; cursor: pointer; }
     .pm-table .pm-ok { color: #52c41a; }
@@ -1017,8 +1026,8 @@
     .pm-card-main { position: relative; }
     .pm-card-check { position: absolute; top: 14px; left: 14px; z-index: 2; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 4px; background: rgba(255,255,255,.94); box-shadow: 0 1px 4px rgba(15,23,42,.12); }
     .pm-card-media { background: #fff; }
-    .pm-card-thumb { width: 100%; aspect-ratio: 1/1; display: grid; place-items: center; overflow: hidden; padding: 24px; background: #fff; }
-    .pm-card-thumb img { width: 100%; height: 100%; display: block; object-fit: contain; }
+    .pm-card-thumb { width: 100%; aspect-ratio: 4/3; display: grid; place-items: center; overflow: hidden; padding: 20px; background: #fff; }
+    .pm-card-thumb img { width: 84%; height: 84%; display: block; object-fit: contain; }
     .pm-card-title { min-height: 46px; display: -webkit-box; overflow: hidden; padding: 11px 14px 0; color: rgba(0,0,0,.88); font-size: 14px; line-height: 22px; font-weight: 600; text-decoration: none; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
     .pm-card-title:hover { color: #1677ff; }
     .pm-card-status-row { min-height: 42px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 7px 14px 12px; }
@@ -1026,6 +1035,9 @@
     .pm-card-status.off { border-color: #ffccc7; background: #fff2f0; color: #cf1322; }
     .pm-card-flag { height: 24px; display: inline-flex; align-items: center; padding: 0 8px; border: 1px solid #ff7875; border-radius: 4px; background: #fff; color: #f5222d; font-size: 12px; line-height: 22px; white-space: nowrap; }
     .pm-card-flag.off { border-color: #d9d9d9; color: #8c8c8c; }
+    .pm-material-flag { width: 24px; height: 24px; display: inline-grid; place-items: center; flex: 0 0 auto; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.05); }
+    .pm-material-flag.factory { background: #f5222d; }
+    .pm-material-flag.supply { background: #faad14; }
     .pm-card-meta { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 18px; row-gap: 10px; padding: 14px; border-top: 1px solid #f0f0f0; }
     .pm-card-field { min-width: 0; display: grid; grid-template-columns: 64px minmax(0,1fr); align-items: center; gap: 6px; }
     .pm-card-field.wide { grid-column: 1/-1; grid-template-columns: 64px minmax(0,1fr); }
@@ -1076,12 +1088,11 @@
     .pm-detail-section-title { height: 38px; display: flex; align-items: center; margin: 0; padding: 0 14px; border-bottom: 1px solid #edf0f3; color: #242d3b; font-size: 14px; font-weight: 700; }
     .pm-detail-section-title::before { width: 3px; height: 16px; margin-right: 8px; background: #1677ff; content: ""; }
     .pm-detail-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
-    .pm-detail-item { min-width: 0; min-height: 50px; display: grid; grid-template-columns: 136px minmax(0,1fr); align-items: center; gap: 8px; padding: 9px 14px; border-right: 1px solid #edf0f3; border-bottom: 1px solid #edf0f3; }
+    .pm-detail-item { min-width: 0; min-height: 50px; display: grid; grid-template-columns: 136px minmax(0,1fr); align-items: start; gap: 8px; padding: 9px 14px; border-right: 1px solid #edf0f3; border-bottom: 1px solid #edf0f3; }
     .pm-detail-item:nth-child(2n) { border-right: 0; }
     .pm-detail-item:nth-last-child(-n+2) { border-bottom: 0; }
-    .pm-detail-item.wide { grid-column: 1/-1; border-right: 0; }
-    .pm-detail-item.wide:last-child { border-bottom: 0; }
-    .pm-detail-item .pm-detail-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pm-detail-item .pm-detail-value { white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+    .pm-detail-status-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 24px; }
     .pm-detail-media { padding: 16px; }
     .pm-detail-image-scroll { max-height: 660px; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
     .pm-detail-image-grid { display: flex; flex-direction: column; gap: 16px; }
@@ -1130,6 +1141,21 @@
       padding: 0 14px;
       background: #f3f6fb;
       flex: 0 0 auto;
+    }
+    @media (max-width: 1100px) {
+      .pm-filter-main-row, .pm-toolbar, .pm-pager { flex-wrap: wrap; height: auto; min-height: 50px; }
+      .pm-filter-more-row { grid-template-columns: repeat(2,minmax(0,1fr)); padding-left: 0; }
+      .pm-card-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    }
+    @media (max-width: 620px) {
+      .pm-filter-main-row { gap: 10px; }
+      .pm-filter-field.project { flex: 1 1 100%; grid-template-columns: 76px minmax(0,1fr); }
+      .pm-filter-actions { margin-left: 0; }
+      .pm-filter-more-row, .pm-card-grid { grid-template-columns: minmax(0,1fr); }
+      .pm-toolbar { gap: 8px; }
+      .pm-status-tabs { overflow-x: auto; padding: 0 8px; }
+      .pm-status-tab { flex: 0 0 auto; padding: 0 12px; }
+      .pm-pager { justify-content: flex-start; padding: 8px 14px; }
     }
 
     .pm-page-button {
@@ -2747,7 +2773,7 @@
         <div class="pm-filter-heading"><span class="pm-filter-icon" aria-hidden="true"></span><span>筛选:</span></div>
         <div class="pm-filter-field project">
           <label for="pmProjectName"><span class="pm-required">*</span>项目名称</label>
-          <select class="pm-filter-control pm-filter-select" id="pmProjectName" name="projectName" onchange="searchProjectMaterials(event)">
+          <select class="pm-filter-control pm-filter-select" id="pmProjectName" name="projectName" onchange="changeProjectMaterialProject()">
             <option value="中国交建-工业品" selected>中国交建-工业品</option>
             <option value="国网商城项目">国网商城项目</option>
             <option value="政采云项目">政采云项目</option>
@@ -2791,12 +2817,6 @@
           <input class="pm-filter-control" id="pmProjectPrice" name="projectPrice" placeholder="请输入金额" inputmode="decimal">
         </div>
         <div class="pm-filter-field more-field">
-          <label for="pmPlatformStatus">平台状态（上下架）</label>
-          <select class="pm-filter-control pm-filter-select" id="pmPlatformStatus" name="platformStatus">
-            <option value="">请选择</option><option value="上架">上架</option><option value="下架">下架</option>
-          </select>
-        </div>
-        <div class="pm-filter-field more-field">
           <label for="pmSupplierName">供应商名称</label>
           <input class="pm-filter-control" id="pmSupplierName" name="supplierName" placeholder="请输入">
         </div>
@@ -2816,6 +2836,14 @@
           <label for="pmStandardProductCode">标准库编码/产品编码</label>
           <input class="pm-filter-control" id="pmStandardProductCode" name="standardProductCode" placeholder="请输入">
         </div>
+        <div class="pm-filter-field more-field">
+          <label for="pmManualRemark">备注（手动导入）</label>
+          <input class="pm-filter-control" id="pmManualRemark" name="manualRemark" placeholder="请输入备注">
+        </div>
+        <div class="pm-filter-field more-field">
+          <label for="pmAssetCode">物资编码</label>
+          <input class="pm-filter-control" id="pmAssetCode" name="assetCode" placeholder="请输入物资编码">
+        </div>
       </div>
     </form>
 
@@ -2830,12 +2858,18 @@
       </div>
     </div>
 
+    <div class="pm-status-tabs" role="tablist" aria-label="项目商品池状态">
+      <button class="pm-status-tab" id="pmStatusAll" type="button" role="tab" aria-selected="false" onclick="setProjectMaterialStatusTab('all')">全部</button>
+      <button class="pm-status-tab active" id="pmStatusOnline" type="button" role="tab" aria-selected="true" onclick="setProjectMaterialStatusTab('online')">已上架</button>
+      <button class="pm-status-tab" id="pmStatusOther" type="button" role="tab" aria-selected="false" onclick="setProjectMaterialStatusTab('other')">其他状态</button>
+    </div>
+
     <div class="pm-table-wrap" id="pmTableWrap" tabindex="0" role="region" aria-label="项目商品池，可横向滚动查看全部字段">
       <table class="pm-table">
         <thead>
           <tr>
             <th><input id="pmSelectAll" type="checkbox" aria-label="选择当前页全部物料" onchange="toggleAllProjectMaterials(this.checked)"></th>
-            <th>咸亨编码</th><th>客户编码（sku/spu）</th><th>商品标题</th><th>品牌名称</th><th>客户类目</th><th>单位名称</th><th>项目售价</th><th>平台状态</th><th>供应商名称</th><th>控价金额</th><th>厂控物料（是/否）</th><th>实供物料（是/否）</th><th>标准库编码/产品编码</th><th>最高可改价</th><th>最低价</th><th>销量</th>
+            <th>咸亨编码</th><th>客户编码（sku/spu）</th><th>咸亨标题</th><th>客户标题</th><th>品牌名称</th><th>客户类目</th><th>单位名称</th><th>项目售价</th><th>平台状态</th><th>供应商名称</th><th>控价金额</th><th>厂控物料（是/否）</th><th>实供物料（是/否）</th><th>备注（手动导入）</th><th>标准库编码/产品编码</th><th>最高可改价</th><th>最低价</th><th>销量</th><th>销售区域&amp;库存</th><th>是否倍数下单</th><th>起订量</th><th>物资编码</th>
           </tr>
         </thead>
         <tbody id="pmTableBody"></tbody>
@@ -3461,6 +3495,7 @@
           customerCode: index % 4 === 0 ? "KH" + suffix : "-",
           spuCode: index % 5 === 0 ? "SPU" + suffix : "-",
           name: seed[1],
+          customerTitle: index % 3 === 0 ? `${seed[1]} ${seed[2]}` : seed[1],
           spec: seed[2],
           brand: seed[3],
           unit: seed[4],
@@ -3473,12 +3508,17 @@
           factoryControlled: index % 4 === 0 ? "是" : "否",
           actualSupply: index % 5 === 0 ? "否" : "是",
           standardProductCode: `${index % 2 === 0 ? "STD" : "CP"}${String(projectIndex + 1)}${suffix}`,
+          manualRemark: index % 6 === 0 ? "项目协议商品" : "-",
+          salesRegionInventory: index % 4 === 0 ? "华东：现货 120" : "全国：现货 80",
+          multipleOrder: index % 3 === 0 ? "是" : "否",
+          minimumOrderQty: index % 3 === 0 ? "5" : "1",
+          assetCode: `WZ${String(projectIndex + 1)}${suffix}`,
           maxEditablePrice: (seed[6] * 1.12 + projectIndex).toFixed(2),
           minimumPrice: (seed[6] * .92).toFixed(2),
           salesVolume: String(36 + projectIndex * 18 + index * 7),
           transferPrice: index % 3 === 0 ? (seed[6] * .96).toFixed(2) : "-",
           periodPrice: index % 6 === 0 ? (seed[6] * .98).toFixed(2) : "-",
-          shelfStatus: index % 13 === 0 ? "下架" : "上架",
+          shelfStatus: index % 13 === 0 ? "已下架" : "已上架",
           modified: `2026-06-${String(1 + index % 20).padStart(2, "0")} ${String(9 + index % 9).padStart(2, "0")}:${String(index * 7 % 60).padStart(2, "0")}:14`,
           syncStatus: index % 17 === 0 ? "同步失败" : index % 11 === 0 ? "同步中" : "同步完成"
         });
@@ -3489,6 +3529,7 @@
     let pmPage = 1;
     let pmPageSize = 25;
     let pmViewMode = "list";
+    let pmStatusTab = "online";
     const pmSelectedIds = new Set();
 
     const projectSeedRows = [
@@ -4012,6 +4053,8 @@
       document.getElementById("projectMaterialFilter").classList.remove("expanded");
       document.getElementById("pmExpandFilter").setAttribute("aria-expanded", "false");
       document.getElementById("pmExpandFilter").setAttribute("title", "展开更多筛选条件");
+      pmStatusTab = "online";
+      updateProjectMaterialStatusTabs();
       pmPage = 1;
       filterProjectMaterialRows();
       window.scrollTo({ top: 0, behavior: "auto" });
@@ -4668,6 +4711,13 @@
       showToast(`已加载${projectSelect.value}项目物料`);
     }
 
+    function changeProjectMaterialProject() {
+      pmStatusTab = "online";
+      pmSelectedIds.clear();
+      updateProjectMaterialStatusTabs();
+      searchProjectMaterials();
+    }
+
     function filterProjectMaterialRows() {
       const project = document.getElementById("pmProjectName").value;
       const name = document.getElementById("pmProductTitle").value.trim().toLowerCase();
@@ -4678,27 +4728,47 @@
       const customerCategory = document.getElementById("pmCustomerCategory").value.trim().toLowerCase();
       const unitName = document.getElementById("pmUnitName").value.trim().toLowerCase();
       const projectPrice = document.getElementById("pmProjectPrice").value.trim();
-      const platformStatus = document.getElementById("pmPlatformStatus").value;
       const supplierName = document.getElementById("pmSupplierName").value.trim().toLowerCase();
       const factoryControlled = document.getElementById("pmFactoryControlled").value;
       const actualSupply = document.getElementById("pmActualSupply").value;
       const standardProductCode = document.getElementById("pmStandardProductCode").value.trim().toLowerCase();
+      const manualRemark = document.getElementById("pmManualRemark").value.trim().toLowerCase();
+      const assetCode = document.getElementById("pmAssetCode").value.trim().toLowerCase();
       pmFilteredRows = pmMaterialRows.filter(row =>
         row.project === project &&
-        (!name || row.name.toLowerCase().includes(name)) &&
+        (pmStatusTab === "all" || (pmStatusTab === "online" ? row.shelfStatus === "已上架" : row.shelfStatus === "已下架")) &&
+        (!name || row.name.toLowerCase().includes(name) || row.customerTitle.toLowerCase().includes(name)) &&
         (!codes.length || codes.some(code => row.code.toLowerCase().includes(code))) &&
         (!customerSkuSpu || row.customerCode.toLowerCase().includes(customerSkuSpu) || row.spuCode.toLowerCase().includes(customerSkuSpu)) &&
         (!brand || row.brand.toLowerCase().includes(brand)) &&
         (!customerCategory || row.customerCategory.toLowerCase().includes(customerCategory)) &&
         (!unitName || row.unit.toLowerCase().includes(unitName)) &&
         (!projectPrice || row.projectPrice === projectPrice) &&
-        (!platformStatus || row.shelfStatus === platformStatus) &&
         (!supplierName || row.supplierName.toLowerCase().includes(supplierName)) &&
         (!factoryControlled || row.factoryControlled === factoryControlled) &&
         (!actualSupply || row.actualSupply === actualSupply) &&
-        (!standardProductCode || row.standardProductCode.toLowerCase().includes(standardProductCode))
+        (!standardProductCode || row.standardProductCode.toLowerCase().includes(standardProductCode)) &&
+        (!manualRemark || row.manualRemark.toLowerCase().includes(manualRemark)) &&
+        (!assetCode || row.assetCode.toLowerCase().includes(assetCode))
       );
       renderProjectMaterials();
+    }
+
+    function updateProjectMaterialStatusTabs() {
+      [["all", "pmStatusAll"], ["online", "pmStatusOnline"], ["other", "pmStatusOther"]].forEach(([value, id]) => {
+        const button = document.getElementById(id);
+        const active = pmStatusTab === value;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-selected", String(active));
+      });
+    }
+
+    function setProjectMaterialStatusTab(tab) {
+      pmStatusTab = ["all", "online", "other"].includes(tab) ? tab : "online";
+      pmSelectedIds.clear();
+      pmPage = 1;
+      updateProjectMaterialStatusTabs();
+      filterProjectMaterialRows();
     }
 
     function resetProjectMaterialFilters() {
@@ -4710,11 +4780,12 @@
       document.getElementById("pmCustomerCategory").value = "";
       document.getElementById("pmUnitName").value = "";
       document.getElementById("pmProjectPrice").value = "";
-      document.getElementById("pmPlatformStatus").value = "";
       document.getElementById("pmSupplierName").value = "";
       document.getElementById("pmFactoryControlled").value = "";
       document.getElementById("pmActualSupply").value = "";
       document.getElementById("pmStandardProductCode").value = "";
+      document.getElementById("pmManualRemark").value = "";
+      document.getElementById("pmAssetCode").value = "";
       document.getElementById("pmProjectName").classList.remove("invalid");
       pmPage = 1;
       filterProjectMaterialRows();
@@ -4751,13 +4822,14 @@
       const cardEmpty = document.getElementById("pmCardEmpty");
       body.innerHTML = pageRows.map(row => {
         const customerSkuSpu = [row.customerCode, row.spuCode].filter(code => code && code !== "-").join(" / ") || "-";
-        const platformClass = row.shelfStatus === "上架" ? "pm-ok" : "account-status-disabled";
+        const platformClass = row.shelfStatus === "已上架" ? "pm-ok" : "account-status-disabled";
         return `
           <tr>
             <td><input type="checkbox" aria-label="选择物料${escapeAccountText(row.code)}" ${pmSelectedIds.has(row.id) ? "checked" : ""} onchange="toggleProjectMaterialSelection(${row.id},this.checked)"></td>
             <td><a href="#" onclick="openProjectMaterialDetail(${row.id});return false;">${escapeAccountText(row.code)}</a></td>
             <td title="${escapeAccountText(customerSkuSpu)}">${escapeAccountText(customerSkuSpu)}</td>
             <td title="${escapeAccountText(row.name)}">${escapeAccountText(row.name)}</td>
+            <td title="${escapeAccountText(row.customerTitle)}"><a href="#" onclick="openProjectMaterialDetail(${row.id});return false;">${escapeAccountText(row.customerTitle)}</a></td>
             <td title="${escapeAccountText(row.brand)}">${escapeAccountText(row.brand)}</td>
             <td title="${escapeAccountText(row.customerCategory)}">${escapeAccountText(row.customerCategory)}</td>
             <td>${escapeAccountText(row.unit)}</td>
@@ -4767,32 +4839,40 @@
             <td>${row.controlPrice}</td>
             <td>${escapeAccountText(row.factoryControlled)}</td>
             <td>${escapeAccountText(row.actualSupply)}</td>
+            <td title="${escapeAccountText(row.manualRemark)}">${escapeAccountText(row.manualRemark)}</td>
             <td title="${escapeAccountText(row.standardProductCode)}">${escapeAccountText(row.standardProductCode)}</td>
             <td>${row.maxEditablePrice}</td>
             <td>${row.minimumPrice}</td>
             <td>${escapeAccountText(row.salesVolume)}</td>
+            <td title="${escapeAccountText(row.salesRegionInventory)}">${escapeAccountText(row.salesRegionInventory)}</td>
+            <td>${escapeAccountText(row.multipleOrder)}</td>
+            <td>${escapeAccountText(row.minimumOrderQty)}</td>
+            <td title="${escapeAccountText(row.assetCode)}">${escapeAccountText(row.assetCode)}</td>
           </tr>`;
       }).join("");
       cardGrid.innerHTML = pageRows.map(row => {
         const customerSkuSpu = [row.customerCode, row.spuCode].filter(code => code && code !== "-").join(" / ") || "-";
-        const statusOff = row.shelfStatus !== "上架";
+        const statusOff = row.shelfStatus !== "已上架";
         const thumbIndex = (row.id - 1) % 6 + 1;
-        const cardTitle = row.name;
+        const cardTitle = row.customerTitle;
+        const factoryFlag = row.factoryControlled === "是" ? '<span class="pm-material-flag factory" role="img" aria-label="厂控：是" title="厂控物料"></span>' : "";
+        const supplyFlag = row.actualSupply === "是" ? '<span class="pm-material-flag supply" role="img" aria-label="实供：是" title="实供物料"></span>' : "";
         return `
-          <article class="pm-material-card" role="button" tabindex="0" aria-label="查看${escapeAccountText(row.name)}物料详情" onclick="handleProjectMaterialCardClick(event,${row.id})" onkeydown="handleProjectMaterialCardKeydown(event,${row.id})">
+          <article class="pm-material-card" role="button" tabindex="0" aria-label="查看${escapeAccountText(row.customerTitle)}物料详情" onclick="handleProjectMaterialCardClick(event,${row.id})" onkeydown="handleProjectMaterialCardKeydown(event,${row.id})">
             <div class="pm-card-main">
               <div class="pm-card-check"><input type="checkbox" aria-label="选择物料${escapeAccountText(row.code)}" ${pmSelectedIds.has(row.id) ? "checked" : ""} onchange="toggleProjectMaterialSelection(${row.id},this.checked)"></div>
               <div class="pm-card-media">
                 <div class="pm-card-thumb"><img src="assets/material-thumbs/material-${thumbIndex}.png" alt="${escapeAccountText(row.name)}商品图" width="280" height="238" loading="lazy"></div>
                 <a class="pm-card-title pm-card-ellipsis" href="#" onclick="openProjectMaterialDetail(${row.id});return false;" data-full-text="${escapeAccountText(cardTitle)}">${escapeAccountText(cardTitle)}</a>
                 <div class="pm-card-status-row">
-                  <span class="pm-card-status pm-card-ellipsis ${statusOff ? "off" : ""}" data-full-text="平台状态：${statusOff ? "下架" : "上架"}">平台状态：${statusOff ? "下架" : "上架"}</span>
-                  <span class="pm-card-flag">厂控</span>
-                  <span class="pm-card-flag">实供</span>
+                <span class="pm-card-status pm-card-ellipsis ${statusOff ? "off" : ""}" data-full-text="平台状态：${escapeAccountText(row.shelfStatus)}">平台状态：${escapeAccountText(row.shelfStatus)}</span>
+                  ${factoryFlag}
+                  ${supplyFlag}
                 </div>
               </div>
               <div class="pm-card-meta">
-                <div class="pm-card-field"><span class="pm-card-label">咸亨编码</span><span class="pm-card-value pm-card-ellipsis" data-full-text="${escapeAccountText(row.code)}">${escapeAccountText(row.code)}</span></div>
+                <div class="pm-card-field wide"><span class="pm-card-label">咸亨标题</span><span class="pm-card-value pm-card-ellipsis" data-full-text="${escapeAccountText(row.name)}">${escapeAccountText(row.name)}</span></div>
+                <div class="pm-card-field"><span class="pm-card-label">咸亨编码</span><a class="pm-card-value link pm-card-ellipsis" href="#" onclick="openProjectMaterialDetail(${row.id});return false;" data-full-text="${escapeAccountText(row.code)}">${escapeAccountText(row.code)}</a></div>
                 <div class="pm-card-field"><span class="pm-card-label">客户编码</span><span class="pm-card-value pm-card-ellipsis" data-full-text="${escapeAccountText(customerSkuSpu)}">${escapeAccountText(customerSkuSpu)}</span></div>
                 <div class="pm-card-field"><span class="pm-card-label">项目售价</span><span class="pm-card-value price pm-card-ellipsis" data-full-text="¥${row.projectPrice}">¥${row.projectPrice}</span></div>
                 <div class="pm-card-field"><span class="pm-card-label">品牌名称</span><span class="pm-card-value pm-card-ellipsis" data-full-text="${escapeAccountText(row.brand)}">${escapeAccountText(row.brand)}</span></div>
@@ -4854,7 +4934,9 @@
       if (!row) return;
       const customerSkuSpu = [row.customerCode, row.spuCode].filter(code => code && code !== "-").join(" / ") || "-";
       const thumbIndex = (row.id - 1) % 6 + 1;
-      const statusOff = row.shelfStatus !== "上架";
+      const statusOff = row.shelfStatus !== "已上架";
+      const factoryFlag = row.factoryControlled === "是" ? '<span class="pm-material-flag factory" role="img" aria-label="厂控：是" title="厂控物料"></span>' : "";
+      const supplyFlag = row.actualSupply === "是" ? '<span class="pm-material-flag supply" role="img" aria-label="实供：是" title="实供物料"></span>' : "";
       const money = value => value === "-" ? "-" : `¥${value}`;
       const mainImageCount = 3 + row.id % 3;
       const detailImageCount = 4 + row.id % 2;
@@ -4876,11 +4958,12 @@
             <div class="pm-detail-main-thumbs" id="pmDetailMainThumbs" aria-label="选择主图">${mainThumbsHtml}</div>
           </div>
           <div class="pm-detail-overview-list">
-            <div class="pm-detail-overview-row"><span class="pm-detail-label">商品标题</span><span class="pm-detail-value title">${escapeAccountText(row.name)}</span></div>
+            <div class="pm-detail-overview-row"><span class="pm-detail-label">咸亨标题</span><span class="pm-detail-value title">${escapeAccountText(row.name)}</span></div>
+            <div class="pm-detail-overview-row"><span class="pm-detail-label">客户标题</span><span class="pm-detail-value title">${escapeAccountText(row.customerTitle)}</span></div>
             <div class="pm-detail-overview-row"><span class="pm-detail-label">咸亨编码</span><span class="pm-detail-value">${escapeAccountText(row.code)}</span></div>
             <div class="pm-detail-overview-row"><span class="pm-detail-label">客户编码（sku/spu）</span><span class="pm-detail-value">${escapeAccountText(customerSkuSpu)}</span></div>
             <div class="pm-detail-overview-row"><span class="pm-detail-label">项目售价</span><span class="pm-detail-value price">¥${row.projectPrice}</span></div>
-            <div class="pm-detail-overview-row"><span class="pm-detail-label">平台状态</span><span><span class="pm-detail-status ${statusOff ? "off" : ""}">${escapeAccountText(row.shelfStatus)}</span></span></div>
+            <div class="pm-detail-overview-row"><span class="pm-detail-label">平台状态</span><span class="pm-detail-status-group"><span class="pm-detail-status ${statusOff ? "off" : ""}">${escapeAccountText(row.shelfStatus)}</span>${factoryFlag}${supplyFlag}</span></div>
           </div>
         </section>
         <section class="pm-detail-section" aria-labelledby="pmDetailBaseTitle">
@@ -4888,9 +4971,14 @@
           <div class="pm-detail-grid">
             <div class="pm-detail-item"><span class="pm-detail-label">品牌名称</span><span class="pm-detail-value" title="${escapeAccountText(row.brand)}">${escapeAccountText(row.brand)}</span></div>
             <div class="pm-detail-item"><span class="pm-detail-label">客户类目</span><span class="pm-detail-value" title="${escapeAccountText(row.customerCategory)}">${escapeAccountText(row.customerCategory)}</span></div>
-            <div class="pm-detail-item wide"><span class="pm-detail-label">单位名称</span><span class="pm-detail-value">${escapeAccountText(row.unit)}</span></div>
-            <div class="pm-detail-item wide"><span class="pm-detail-label">供应商名称</span><span class="pm-detail-value" title="${escapeAccountText(row.supplierName)}">${escapeAccountText(row.supplierName)}</span></div>
-            <div class="pm-detail-item wide"><span class="pm-detail-label">标准库编码/产品编码</span><span class="pm-detail-value" title="${escapeAccountText(row.standardProductCode)}">${escapeAccountText(row.standardProductCode)}</span></div>
+            <div class="pm-detail-item"><span class="pm-detail-label">单位名称</span><span class="pm-detail-value">${escapeAccountText(row.unit)}</span></div>
+            <div class="pm-detail-item"><span class="pm-detail-label">供应商名称</span><span class="pm-detail-value" title="${escapeAccountText(row.supplierName)}">${escapeAccountText(row.supplierName)}</span></div>
+            <div class="pm-detail-item"><span class="pm-detail-label">标准库编码/产品编码</span><span class="pm-detail-value" title="${escapeAccountText(row.standardProductCode)}">${escapeAccountText(row.standardProductCode)}</span></div>
+            <div class="pm-detail-item"><span class="pm-detail-label">备注（手动导入）</span><span class="pm-detail-value">${escapeAccountText(row.manualRemark)}</span></div>
+            <div class="pm-detail-item"><span class="pm-detail-label">销售区域&amp;库存</span><span class="pm-detail-value">${escapeAccountText(row.salesRegionInventory)}</span></div>
+            <div class="pm-detail-item"><span class="pm-detail-label">是否倍数下单</span><span class="pm-detail-value">${escapeAccountText(row.multipleOrder)}</span></div>
+            <div class="pm-detail-item"><span class="pm-detail-label">起订量</span><span class="pm-detail-value">${escapeAccountText(row.minimumOrderQty)}</span></div>
+            <div class="pm-detail-item"><span class="pm-detail-label">物资编码</span><span class="pm-detail-value">${escapeAccountText(row.assetCode)}</span></div>
           </div>
         </section>
         <section class="pm-detail-section" aria-labelledby="pmDetailPriceTitle">
@@ -4900,13 +4988,6 @@
             <div class="pm-detail-item"><span class="pm-detail-label">最高可改价</span><span class="pm-detail-value">¥${row.maxEditablePrice}</span></div>
             <div class="pm-detail-item"><span class="pm-detail-label">最低价</span><span class="pm-detail-value">¥${row.minimumPrice}</span></div>
             <div class="pm-detail-item"><span class="pm-detail-label">销量</span><span class="pm-detail-value">${escapeAccountText(row.salesVolume)}</span></div>
-          </div>
-        </section>
-        <section class="pm-detail-section" aria-labelledby="pmDetailPropertyTitle">
-          <h3 class="pm-detail-section-title" id="pmDetailPropertyTitle">业务属性</h3>
-          <div class="pm-detail-grid">
-            <div class="pm-detail-item"><span class="pm-detail-label">厂控物料（是/否）</span><span class="pm-detail-value">${escapeAccountText(row.factoryControlled)}</span></div>
-            <div class="pm-detail-item"><span class="pm-detail-label">实供物料（是/否）</span><span class="pm-detail-value">${escapeAccountText(row.actualSupply)}</span></div>
           </div>
         </section>
         <section class="pm-detail-section" aria-labelledby="pmDetailImagesTitle">
