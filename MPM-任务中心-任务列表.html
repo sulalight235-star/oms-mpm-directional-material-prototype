@@ -694,6 +694,9 @@
             <option>平台物料 - 回调价格导入 (华电)</option>
             <option>导入批改 - 修改商城价</option>
             <option>导入批改外链价</option>
+            <option>导入 - 外链折扣率</option>
+            <option>导出外链映射明细</option>
+            <option>按项目导出最新外链价</option>
             <option>导入批改 - 商城隐藏</option>
             <option>批量上传资质图片</option>
             <option>IQS每日同步-项目调拨结算价格/库存地址</option>
@@ -888,6 +891,9 @@
   </aside>
 
   <dialog id="materialPriceTaskDetail" style="margin:auto;width:min(1100px,calc(100vw - 32px));max-height:calc(100dvh - 48px);border:1px solid #ddd;border-radius:6px;padding:20px" aria-labelledby="materialPriceTaskTitle"><h2 id="materialPriceTaskTitle">导入批改外链价</h2><p>任务号：<strong id="materialPriceTaskCode"></strong></p><p>原型演示：任务已创建，逐行结果当前为待处理，未实际写入物料主数据。</p><div style="overflow:auto;max-height:55vh"><table style="width:100%;min-width:750px"><thead><tr><th>物料编码</th><th>物料名称</th><th>外链地址</th><th>市场价</th><th>返回结果</th></tr></thead><tbody id="materialPriceTaskRows"></tbody></table></div><div style="text-align:right;margin-top:16px"><button class="btn" type="button" onclick="document.getElementById('materialPriceTaskDetail').close()">关闭</button></div></dialog>
+  <dialog id="categoryDiscountTaskDetail" style="margin:auto;width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 48px);border:1px solid #ddd;border-radius:6px;padding:20px" aria-labelledby="categoryDiscountTaskTitle"><h2 id="categoryDiscountTaskTitle">批量导入外链折扣率</h2><p>任务号：<strong id="categoryDiscountTaskCode"></strong></p><p id="categoryDiscountTaskSummary" role="status"></p><div style="overflow:auto;max-height:55vh"><table style="width:100%;min-width:580px"><thead><tr><th>行号</th><th>分类编码</th><th>外链折扣率</th><th>执行结果</th></tr></thead><tbody id="categoryDiscountTaskRows"></tbody></table></div><div style="text-align:right;margin-top:16px"><button class="btn" type="button" onclick="document.getElementById('categoryDiscountTaskDetail').close()">关闭</button></div></dialog>
+  <dialog id="mappingExportTaskDetail" style="margin:auto;width:min(680px,calc(100vw - 32px));max-height:calc(100dvh - 48px);border:1px solid #ddd;border-radius:6px;padding:20px" aria-labelledby="mappingExportTaskTitle"><h2 id="mappingExportTaskTitle">外链导出任务</h2><p>任务号：<strong id="mappingExportTaskCode"></strong></p><p id="mappingExportTaskSummary" role="status"></p><div id="mappingExportTaskFiles"></div><div style="text-align:right;margin-top:16px"><button class="btn" type="button" onclick="document.getElementById('mappingExportTaskDetail').close()">关闭</button></div></dialog>
+  <script src="assets/vendor/exceljs.min.js"></script>
   <script>
     function goPage(path) { window.location.href = path; }
 
@@ -983,6 +989,18 @@
     }
 
     function loadMaterialPriceTasks(){try{const stored=JSON.parse(localStorage.getItem('mpm-material-link-price-tasks')||'[]');if(!Array.isArray(stored))return;stored.forEach(task=>{const existing=taskMock.findIndex(item=>item.code===task.code);const item={status:task.status,type:'导入批改外链价',code:task.code,start:task.start,used:'0.0 秒',remain:'暂无法估算',progress:`0/${task.rows.length}`,done:'',executeMode:'MQ',creator:task.creator,importFile:'',exportFile:'',materialPriceRows:task.rows};if(existing<0)taskMock.unshift(item);else taskMock[existing]=item;});}catch(error){showMessage('读取外链价格更新任务失败：'+error.message,'error');}}
+    const categoryDiscountTaskKey='mpm-category-discount-tasks',categoryDataKey='mpm-category-prototype-data';
+    function loadCategoryDiscountTasks(){try{const stored=JSON.parse(localStorage.getItem(categoryDiscountTaskKey)||'[]');if(!Array.isArray(stored))return;stored.forEach(task=>{const existing=taskMock.findIndex(item=>item.code===task.code),done=(task.results||[]).filter(row=>row.success).length,item={status:task.status,type:'导入 - 外链折扣率',code:task.code,start:task.start,used:task.used||'0.0 秒',remain:task.status==='成功'||task.status==='失败'?'0.0 秒':'暂无法估算',progress:`${done}/${task.rows.length}`,done:task.done||'',executeMode:'MQ',creator:'管理员',importFile:task.fileName,exportFile:'',categoryDiscountRows:task.results?.length?task.results:task.rows.map(row=>({...row,result:'待处理'})),clientCode:task.clientCode,clientName:task.projectName||task.clientName,projectCode:task.projectCode||task.clientCode};if(existing<0)taskMock.unshift(item);else taskMock[existing]=item})}catch(error){showMessage('读取外链折扣率任务失败：'+error.message,'error')}}
+    const mappingExportTaskKey='mpm-mapping-export-tasks';
+    function loadMappingExportTasks(){try{const stored=JSON.parse(localStorage.getItem(mappingExportTaskKey)||'[]');if(!Array.isArray(stored))return;stored.forEach(task=>{const index=taskMock.findIndex(item=>item.code===task.code),files=task.files||[],item={status:task.status,type:task.type,code:task.code,start:task.start,used:task.used||'0.0 秒',remain:['成功','失败','部分失败'].includes(task.status)?'0.0 秒':'暂无法估算',progress:`${task.status==='成功'?task.records.length:0}/${task.records.length}`,done:task.done||'',executeMode:'MQ',creator:task.creator,importFile:'',exportFile:files.length?files.map(file=>file.name).join('、'):'',mappingExport:true};if(index<0)taskMock.unshift(item);else taskMock[index]=item})}catch(error){showMessage('读取外链导出任务失败：'+error.message,'error')}}
+    function openMappingExportTask(code){const task=JSON.parse(localStorage.getItem(mappingExportTaskKey)||'[]').find(item=>item.code===code);if(!task)return;document.getElementById('mappingExportTaskTitle').textContent=task.type;document.getElementById('mappingExportTaskCode').textContent=code;document.getElementById('mappingExportTaskSummary').textContent=`${task.status} · ${task.records.length} 条数据 · ${(task.files||[]).length} 个文件${task.error?' · '+task.error:''}`;document.getElementById('mappingExportTaskFiles').innerHTML=(task.files||[]).map((file,index)=>`<p><button class="btn-link" type="button" data-mapping-download="${index}">${escapeHtml(file.name)}</button> · ${escapeHtml(file.status||'成功')}</p>`).join('')||'<p>任务处理中，文件尚未生成。</p>';const dialog=document.getElementById('mappingExportTaskDetail');if(!dialog.open)dialog.showModal()}
+    async function downloadMappingExportFile(code,index){const task=JSON.parse(localStorage.getItem(mappingExportTaskKey)||'[]').find(item=>item.code===code),file=task?.files?.[index];if(!file||file.status!=='成功')return;try{const workbook=new ExcelJS.Workbook(),sheet=workbook.addWorksheet(task.type.slice(0,31));sheet.addRow(task.headers);task.records.slice(index*100000,(index+1)*100000).forEach(record=>sheet.addRow(task.headers.map(header=>record[header]??'')));sheet.getRow(1).font={bold:true};sheet.columns.forEach((column,columnIndex)=>column.width=task.headers[columnIndex]==='完整外链地址'?65:22);const buffer=await workbook.xlsx.writeBuffer(),url=URL.createObjectURL(new Blob([buffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})),link=document.createElement('a');link.href=url;link.download=file.name;link.click();setTimeout(()=>URL.revokeObjectURL(url),60000);showMessage('导出文件已开始下载','success')}catch(error){showMessage('文件生成失败：'+error.message,'error')}}
+    document.getElementById('mappingExportTaskFiles').addEventListener('click',event=>{const button=event.target.closest('[data-mapping-download]');if(button)downloadMappingExportFile(document.getElementById('mappingExportTaskCode').textContent,Number(button.dataset.mappingDownload))});
+    function refreshMappingExportRows(){const code=new URLSearchParams(location.search).get('mappingExportTask');currentRows=code?taskMock.filter(item=>item.code===code):[...taskMock];renderRows(currentRows);updatePagination(Boolean(code)||isFiltered)}
+    function processMappingExportTasks(){const tasks=JSON.parse(localStorage.getItem(mappingExportTaskKey)||'[]');tasks.filter(task=>task.status==='待开始'||task.status==='处理中').forEach(task=>{task.status='处理中';localStorage.setItem(mappingExportTaskKey,JSON.stringify(tasks));loadMappingExportTasks();setTimeout(()=>{try{const count=Math.ceil(task.records.length/100000),stamp=new Date().toLocaleString('sv-SE',{timeZone:'Asia/Shanghai'}).replace(/\D/g,'');task.files=Array.from({length:count},(_,index)=>({name:`${task.type}_${stamp}${count>1?'_'+(index+1):''}.xlsx`,status:'成功'}));task.status='成功';task.done=new Date().toLocaleString('sv-SE',{timeZone:'Asia/Shanghai'});task.used='1.2 秒';localStorage.setItem(mappingExportTaskKey,JSON.stringify(tasks))}catch(error){task.status='失败';task.error=error.message;localStorage.setItem(mappingExportTaskKey,JSON.stringify(tasks))}loadMappingExportTasks();refreshMappingExportRows();if(document.getElementById('mappingExportTaskDetail').open)openMappingExportTask(task.code)},1200)})}
+    function openCategoryDiscountTask(code){const task=taskMock.find(item=>item.code===code);if(!task?.categoryDiscountRows)return;document.getElementById('categoryDiscountTaskCode').textContent=code;document.getElementById('categoryDiscountTaskSummary').textContent=`项目：${task.clientName}（编码 ${task.projectCode||task.clientCode}） · ${task.status} · 已成功 ${task.categoryDiscountRows.filter(row=>row.success).length}/${task.categoryDiscountRows.length} 行`;document.getElementById('categoryDiscountTaskRows').innerHTML=task.categoryDiscountRows.map(row=>`<tr><td>${escapeHtml(row.rowNumber)}</td><td>${escapeHtml(row.code||'—')}</td><td>${escapeHtml(row.discount||'—')}</td><td>${escapeHtml(row.result||'待处理')}</td></tr>`).join('');const dialog=document.getElementById('categoryDiscountTaskDetail');if(!dialog.open)dialog.showModal()}
+    function refreshCategoryDiscountRows(){const code=new URLSearchParams(location.search).get('categoryDiscountTask');currentRows=code?taskMock.filter(item=>item.code===code):document.getElementById('filterType').value?taskMock.filter(item=>item.type===document.getElementById('filterType').value):[...taskMock];renderRows(currentRows);updatePagination(Boolean(code)||isFiltered)}
+    function processCategoryDiscountTasks(){const tasks=JSON.parse(localStorage.getItem(categoryDiscountTaskKey)||'[]');tasks.filter(task=>task.status==='待开始'||task.status==='处理中').forEach(task=>{task.status='处理中';localStorage.setItem(categoryDiscountTaskKey,JSON.stringify(tasks));loadCategoryDiscountTasks();setTimeout(()=>{try{const data=JSON.parse(localStorage.getItem(categoryDataKey)||'{}'),projectCode=task.projectCode||task.clientCode,categories=data[projectCode]||[],seen=new Set();task.results=task.rows.map(row=>{const code=String(row.code||'').trim(),discount=String(row.discount||'').trim();let result='';if(!code)result='失败：分类编码不能为空';else if(seen.has(code))result='失败：文件中分类编码重复';else if(!/^(?:0(?:\.\d{1,2})?|1(?:\.0{1,2})?)$/.test(discount))result='失败：外链折扣率须为 0～1，最多两位小数';else{const category=categories.find(item=>item.code===code);result=category?(category.linkDiscount=Number(discount).toFixed(2),'成功'):'失败：分类编码不存在'}if(code)seen.add(code);return{...row,success:result==='成功',result}});data[projectCode]=categories;localStorage.setItem(categoryDataKey,JSON.stringify(data));task.status=task.results.every(row=>row.success)?'成功':'失败';task.done=new Date().toLocaleString('sv-SE').replace('T',' ');task.used='1.2 秒';localStorage.setItem(categoryDiscountTaskKey,JSON.stringify(tasks));loadCategoryDiscountTasks();refreshCategoryDiscountRows();if(document.getElementById('categoryDiscountTaskDetail').open)openCategoryDiscountTask(task.code)}catch(error){task.status='失败';task.results=task.rows.map(row=>({...row,success:false,result:`失败：${error.message}`}));localStorage.setItem(categoryDiscountTaskKey,JSON.stringify(tasks));loadCategoryDiscountTasks();refreshCategoryDiscountRows();if(document.getElementById('categoryDiscountTaskDetail').open)openCategoryDiscountTask(task.code)}},1200)})}
     function openMaterialPriceTask(code){const task=taskMock.find(task=>task.code===code);if(!task||!task.materialPriceRows)return;const dialog=document.getElementById('materialPriceTaskDetail');document.getElementById('materialPriceTaskCode').textContent=task.code;document.getElementById('materialPriceTaskRows').innerHTML=task.materialPriceRows.map(row=>`<tr><td>${escapeHtml(row.code)}</td><td>${escapeHtml(row.name)}</td><td style="overflow-wrap:anywhere;white-space:normal">${escapeHtml(row.link)}</td><td>${Number(row.price).toFixed(2)}</td><td>${escapeHtml(row.result||'待处理')}</td></tr>`).join('');dialog.showModal();}
     function renderRows(rows) {
       if (!rows.length) {
@@ -992,7 +1010,7 @@
       tbody.innerHTML = rows.map(t => `
         <tr>
           ${cell(statusTagHtml(t.status), t.status)}
-          ${cell(t.materialPriceRows?`<button class="btn-link" type="button" data-material-price-task="${escapeHtml(t.code)}">${escapeHtml(t.type)}</button>`:`<a class="td-link" href="javascript:void(0)">${escapeHtml(t.type)}</a>`, t.type)}
+          ${cell(t.materialPriceRows?`<button class="btn-link" type="button" data-material-price-task="${escapeHtml(t.code)}">${escapeHtml(t.type)}</button>`:t.categoryDiscountRows?`<button class="btn-link" type="button" data-category-discount-task="${escapeHtml(t.code)}">${escapeHtml(t.type)}</button>`:t.mappingExport?`<button class="btn-link" type="button" data-mapping-export-task="${escapeHtml(t.code)}">${escapeHtml(t.type)}</button>`:`<a class="td-link" href="javascript:void(0)">${escapeHtml(t.type)}</a>`, t.type)}
           ${cell(`<span class="muted">${escapeHtml(t.code)}</span>`, t.code)}
           ${cell(escapeHtml(t.start), t.start)}
           ${cell(escapeHtml(t.used), t.used)}
@@ -1007,6 +1025,8 @@
       `).join('');
       bindFileLinks();
       document.querySelectorAll('[data-material-price-task]').forEach(button=>button.addEventListener('click',()=>openMaterialPriceTask(button.dataset.materialPriceTask)));
+      document.querySelectorAll('[data-category-discount-task]').forEach(button=>button.addEventListener('click',()=>openCategoryDiscountTask(button.dataset.categoryDiscountTask)));
+      document.querySelectorAll('[data-mapping-export-task]').forEach(button=>button.addEventListener('click',()=>openMappingExportTask(button.dataset.mappingExportTask)));
       requestAnimationFrame(() => expandedColumns.forEach(applyExpandedWidth));
     }
 
@@ -1014,7 +1034,8 @@
       document.querySelectorAll('.file-link').forEach(link => {
         link.addEventListener('click', () => {
           const code = link.dataset.taskCode;
-          if (link.dataset.kind === 'export' && exportPreviewMap[code]) downloadCsv(code);
+          if (link.dataset.kind === 'export' && taskMock.find(task=>task.code===code)?.mappingExport) openMappingExportTask(code);
+          else if (link.dataset.kind === 'export' && exportPreviewMap[code]) downloadCsv(code);
           else showMessage('原型演示：已触发文件下载', 'success');
         });
       });
@@ -1118,6 +1139,7 @@
     });
     document.getElementById('refreshBtn').addEventListener('click', () => {
       loadMaterialPriceTasks();
+      loadCategoryDiscountTasks();
       currentRows = [...taskMock];
       renderRows(currentRows);
       showMessage('已刷新任务列表', 'success');
@@ -1287,11 +1309,19 @@
 
     setupExpandableColumns();
     loadMaterialPriceTasks();
+    loadCategoryDiscountTasks();
+    loadMappingExportTasks();
     currentRows = [...taskMock];
     renderRows(currentRows);
     updatePagination(false);
+    processCategoryDiscountTasks();
+    processMappingExportTasks();
     const materialPriceTaskCode=new URLSearchParams(location.search).get('materialPriceTask');
     if(materialPriceTaskCode){document.getElementById('filterType').value='导入批改外链价';currentRows=taskMock.filter(task=>task.code===materialPriceTaskCode);renderRows(currentRows);updatePagination(true);openMaterialPriceTask(materialPriceTaskCode);}
+    const categoryDiscountTaskCode=new URLSearchParams(location.search).get('categoryDiscountTask');
+    if(categoryDiscountTaskCode){document.getElementById('filterType').value='导入 - 外链折扣率';currentRows=taskMock.filter(task=>task.code===categoryDiscountTaskCode);renderRows(currentRows);updatePagination(true);openCategoryDiscountTask(categoryDiscountTaskCode);}
+    const mappingExportTaskCode=new URLSearchParams(location.search).get('mappingExportTask');
+    if(mappingExportTaskCode){currentRows=taskMock.filter(task=>task.code===mappingExportTaskCode);renderRows(currentRows);updatePagination(true);openMappingExportTask(mappingExportTaskCode);}
   </script>
 <script src="mpm-topnav-links.js"></script>
 <script src="assets/js/prototype-common.js" defer></script></body>
