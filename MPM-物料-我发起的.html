@@ -178,8 +178,8 @@
     .msg-item{background:var(--bg-container);border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,0.12),0 3px 6px rgba(0,0,0,0.08);padding:9px 12px;font-size:14px;color:var(--text-body);display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(-8px);transition:.25s;white-space:nowrap;}
     .msg-item.show{opacity:1;transform:translateY(0);}
   </style>
-<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
-<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"><link rel="stylesheet" href="assets/css/mpm-product-series.css"></head>
+<body data-series-upgrade><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
 
 <!-- 顶部导航 -->
 <header class="topbar">
@@ -474,7 +474,7 @@ function renderTable(){
     <tr>
       <td><input type="checkbox" data-idx="${i}" data-status="${r.status}" /></td>
       <td><span class="cell-ellipsis" title="${r.owner}">${r.owner}</span></td>
-      <td><span class="cell-ellipsis td-link" title="${r.code}">${r.code||'-'}</span></td>
+      <td><a class="cell-ellipsis td-link" href="MPM-物料-我发起的详情.html?record=mine-${encodeURIComponent(currentTab)}-${i}" onclick="SeriesDemo.remember('mine-${currentTab}-${i}',${i},'mine')">${r.code||'未赋码'}</a></td>
       <td><span class="cell-ellipsis" title="${r.name}">${r.name}</span></td>
       <td><span class="cell-ellipsis-sm" title="${r.cat}">${r.cat}</span></td>
       <td>${r.model}</td>
@@ -631,6 +631,6 @@ function showMsg(text, type='info'){
 renderTable();
 </script>
 <script src="mpm-topnav-links.js"></script>
-<script src="assets/js/prototype-common.js" defer></script></body>
+<script src="assets/js/prototype-common.js" defer></script><script src="assets/js/mpm-product-series.js"></script></body>
 </html>
 

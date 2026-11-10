@@ -332,3 +332,12 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* MPM 新增物料版本选择：每次打开入口重新选择，不持久化偏好。 */
+.material-version-dialog{box-sizing:border-box;width:min(520px,calc(100vw - 32px));border:0;padding:24px;margin:auto;font:14px/1.6 -apple-system,"PingFang SC",sans-serif}
+.material-version-dialog::backdrop{background:rgba(0,21,41,.42)}
+.material-version-dialog h2{font-size:18px;margin:0 0 8px}.material-version-dialog p{color:#595959;margin:0 0 20px}
+.material-version-options{display:grid;gap:12px}.material-version-option{display:block;text-decoration:none;padding:18px;border:1px solid var(--proto-color-border,#d9d9d9);border-radius:6px;color:#262626;background:#fff}
+.material-version-option strong{display:block;color:#1677ff;font-size:16px;margin-bottom:4px}.material-version-option span{color:#595959}.material-version-option:hover{border-color:#1677ff;background:#f0f7ff}.material-version-option:focus-visible{outline:3px solid #1677ff;outline-offset:2px}
+.material-version-footer{display:flex;justify-content:flex-end;margin-top:20px}.material-version-footer button{min-height:36px;padding:6px 18px}
+@media(max-width:600px){.material-version-dialog{padding:20px}.material-version-option{min-height:88px}.material-version-footer button{min-height:44px}}

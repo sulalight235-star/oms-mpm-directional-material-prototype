@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>物料-物料列表-新增物料 - MPM物料主数据系统</title>
+<title>新版-新增物料 - MPM物料主数据系统</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -1712,8 +1712,8 @@
     .floating-dots{right:12px;bottom:18px;}
   }
 </style>
-<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
-<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div><main id="main-content" tabindex="-1">
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"><link rel="stylesheet" href="assets/css/mpm-product-series.css"></head>
+<body data-series-upgrade><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div><main id="main-content" tabindex="-1">
 
 <header class="topbar">
   <div class="brand">
@@ -1738,7 +1738,7 @@
   <div class="tabs-list">
     <div class="tab" onclick="location.href='MPM-工作台-首页.html'">工作台 <span class="cls" onclick="event.stopPropagation()">×</span></div>
     <div class="tab" onclick="location.href='MPM-物料-物料列表.html'">物料列表 <span class="cls" onclick="event.stopPropagation()">×</span></div>
-    <div class="tab active" onclick="location.href='MPM-物料-物料列表-新增物料.html'">新增物料 <span class="cls" onclick="event.stopPropagation()">×</span></div>
+    <div class="tab active" onclick="location.href='MPM-物料-物料列表-新增物料.html'">新版-新增物料 <span class="cls" onclick="event.stopPropagation()">×</span></div>
   </div>
   <div class="tabs-clear">清除</div>
 </div>
@@ -1751,6 +1751,7 @@
       <div id="currentModeDesc" class="mode-switch-tip">通过文本描述触发智能解析，推荐咸亨标准物料编码后再补充供应信息。</div>
     </div>
   </div>
+  <button type="button" class="btn btn-default" onclick="PrototypeUI.chooseMaterialCreateVersion(this)">切换新增版本</button>
   <button type="button" id="modeToggleBtn" class="btn btn-default mode-toggle-btn" onclick="toggleCreateMode()">切换为【传统新增物料】</button>
 </div>
 
@@ -2221,7 +2222,7 @@
 
       <div id="section-secondary-info" class="card audit-section">
         <div class="card-header">二、次要信息</div>
-        <div class="card-body">
+        <div class="card-body"><div class="row"><div class="field" style="flex:0 1 50%"><span class="label">产品系列</span><div class="control" data-series-mount="new"></div></div></div>
           <div class="row">
             <div class="field"><span class="label">条形码</span><div class="control"><input class="input" placeholder="请输入" aria-label="条形码"></div></div>
             <div class="field"><span class="label">助记码</span><div class="control"><input class="input" value="20260427电建-四川钢炬" aria-label="助记码"></div></div>
@@ -3659,6 +3660,6 @@
 </script>
 
 <script src="mpm-topnav-links.js"></script>
-</main><script src="assets/js/prototype-common.js" defer></script></body>
+</main><script src="assets/js/prototype-common.js" defer></script><script src="assets/js/mpm-product-series.js"></script></body>
 </html>
 

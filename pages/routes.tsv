@@ -55,3 +55,13 @@ scp/project-submissions/mine	原型-SCP新增物料/SCP-项目物料提报管理
 scp/project-submissions	原型-SCP新增物料/SCP-项目物料提报管理-项目物料列表.html
 mall/products/reward-display	MALL-商品详情-奖励展示.html
 mpm/integration/external-link-sync-logs	MPM-物料对接-外链同步日志.html
+mpm/materials/create/legacy	MPM-物料-物料列表-旧版新增物料.html
+mpm/admin/product-series	MPM-系统管理-产品系列.html
+mpm/materials/series/formal	MPM-物料-物料列表-物料详情.html
+mpm/materials/series/draft	MPM-物料-暂存物料详情.html
+mpm/materials/series/review	MPM-物料-物料审核详情.html
+mpm/materials/series/result	MPM-物料-审核结果详情.html
+mpm/materials/series/batch	MPM-物料-批量新增详情.html
+mpm/materials/series/mine	MPM-物料-我发起的详情.html
+mpm/materials/image-package	MPM-物料-商图打包.html
+mpm/materials/audit-log	MPM-物料-审核日志.html

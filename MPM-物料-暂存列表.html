@@ -228,8 +228,8 @@
       .filter-grid { grid-template-columns: repeat(2, minmax(240px, 1fr)) auto; }
     }
   </style>
-<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"></head>
-<body><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"><link rel="stylesheet" href="assets/css/mpm-product-series.css"></head>
+<body data-series-upgrade><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
   <header class="topbar">
     <div class="brand">
       <div class="brand-logo">咸</div>
@@ -373,7 +373,7 @@
     function go(path) { window.location.href = path; }
     function comingSoon(name) { showMessage(`「${name}」原型暂未提供`); }
 
-    const detailUrl = 'MPM-物料-新增物料-入口跳转.html';
+    const detailUrl = 'MPM-物料-暂存物料详情.html';
 
     // 暂存列表示例数据(还原参考图)
     const rows = [
@@ -407,7 +407,7 @@
       body.innerHTML = rows.map((r, i) => `
         <tr>
           <td class="col-check"><input type="checkbox" class="row-check" data-index="${i}" /></td>
-          <td><a class="td-link" href="${detailUrl}">${r.name}</a></td>
+          <td><a class="td-link" href="${detailUrl}?record=draft-${i}" onclick="SeriesDemo.remember('draft-${i}', ${i}, 'draft')">${r.name}</a></td>
           <td>${r.cat}</td>
           <td>${r.owner}</td>
           <td>${r.model}</td>
@@ -502,6 +502,6 @@
     renderTable();
   </script>
 <script src="mpm-topnav-links.js"></script>
-<script src="assets/js/prototype-common.js" defer></script></body>
+<script src="assets/js/prototype-common.js" defer></script><script src="assets/js/mpm-product-series.js"></script></body>
 </html>
 

@@ -35,12 +35,13 @@
     { "file": "MPM-物料-待我审核.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "待我审核", "stableRoute": "mpm/materials/review", "demoGuideRequired": false },
     { "file": "MPM-物料-我发起的.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "我发起的", "stableRoute": "mpm/materials/initiated", "demoGuideRequired": false },
     { "file": "MPM-物料-批量新增.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "批量新增", "stableRoute": "mpm/materials/batch-create", "demoGuideRequired": false },
-    { "file": "MPM-物料-新增物料-入口跳转.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "新增物料-入口跳转", "stableRoute": "mpm/materials/create-entry", "demoGuideRequired": false },
+    { "file": "MPM-物料-新增物料-入口跳转.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "新增物料-版本选择", "stableRoute": "mpm/materials/create-entry", "demoGuideRequired": false },
     { "file": "MPM-物料-暂存列表.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "暂存列表", "stableRoute": "mpm/materials/drafts", "demoGuideRequired": false },
     { "file": "MPM-物料-物料列表-导出-H0审批流程图.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "物料列表-导出-H0审批流程图", "stableRoute": "mpm/materials/export/approval-flow", "demoGuideRequired": false },
     { "file": "MPM-物料-物料列表-我的导出任务-资质资料导出.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "物料列表-我的导出任务-资质资料导出", "stableRoute": "mpm/materials/export/qualification-files", "demoGuideRequired": false },
     { "file": "MPM-物料-物料列表-批增批改资质文件.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "物料列表-批增批改资质文件", "stableRoute": "mpm/materials/qualification-files/batch-update", "demoGuideRequired": false },
-    { "file": "MPM-物料-物料列表-新增物料.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "物料列表-新增物料", "stableRoute": "mpm/materials/create", "demoGuideRequired": false },
+    { "file": "MPM-物料-物料列表-新增物料.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "新版-新增物料", "stableRoute": "mpm/materials/create", "demoGuideRequired": false },
+    { "file": "MPM-物料-物料列表-旧版新增物料.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "旧版-新增物料", "stableRoute": "mpm/materials/create/legacy", "demoGuideRequired": false },
     { "file": "MPM-物料-物料列表-筛选样式讨论.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "物料列表-筛选样式讨论", "stableRoute": "mpm/materials/filter-style", "demoGuideRequired": false },
     { "file": "MPM-物料-物料列表.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "物料列表", "stableRoute": "mpm/materials", "demoGuideRequired": false },
     { "file": "MPM-物料对接-客户商品清单.html", "kind": "formal", "system": "MPM", "module": "物料对接", "page": "客户商品清单", "stableRoute": "mpm/integration/customer-products", "demoGuideRequired": false },
@@ -72,6 +73,15 @@
     { "file": "原型-SCP新增物料/SCP-项目物料提报管理-提报记录-详情.html", "kind": "formal", "system": "SCP", "module": "项目物料提报管理", "page": "提报记录-详情", "stableRoute": "scp/project-submissions/records/detail", "demoGuideRequired": false },
     { "file": "原型-SCP新增物料/SCP-项目物料提报管理-项目物料-我提报的.html", "kind": "formal", "system": "SCP", "module": "项目物料提报管理", "page": "项目物料-我提报的", "stableRoute": "scp/project-submissions/mine", "demoGuideRequired": false },
     { "file": "原型-SCP新增物料/SCP-项目物料提报管理-项目物料列表.html", "kind": "formal", "system": "SCP", "module": "项目物料提报管理", "page": "项目物料列表", "stableRoute": "scp/project-submissions", "demoGuideRequired": false },
-    { "file": "MALL-商品详情-奖励展示.html", "kind": "formal", "system": "MALL", "module": "商品详情", "page": "奖励展示", "stableRoute": "mall/products/reward-display", "demoGuideRequired": false }
+    { "file": "MALL-商品详情-奖励展示.html", "kind": "formal", "system": "MALL", "module": "商品详情", "page": "奖励展示", "stableRoute": "mall/products/reward-display", "demoGuideRequired": false },
+    {"file": "MPM-系统管理-产品系列.html", "kind": "formal", "system": "MPM", "module": "系统管理", "page": "产品系列", "stableRoute": "mpm/admin/product-series", "demoGuideRequired": false},
+    {"file": "MPM-物料-物料列表-物料详情.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "正式物料详情", "stableRoute": "mpm/materials/series/formal", "demoGuideRequired": false},
+    {"file": "MPM-物料-暂存物料详情.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "暂存物料详情", "stableRoute": "mpm/materials/series/draft", "demoGuideRequired": false},
+    {"file": "MPM-物料-物料审核详情.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "物料审核详情", "stableRoute": "mpm/materials/series/review", "demoGuideRequired": false},
+    {"file": "MPM-物料-审核结果详情.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "审核结果详情", "stableRoute": "mpm/materials/series/result", "demoGuideRequired": false},
+    {"file": "MPM-物料-批量新增详情.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "批量新增详情", "stableRoute": "mpm/materials/series/batch", "demoGuideRequired": false},
+    {"file": "MPM-物料-我发起的详情.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "我发起的详情", "stableRoute": "mpm/materials/series/mine", "demoGuideRequired": false},
+    {"file": "MPM-物料-商图打包.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "商图打包", "stableRoute": "mpm/materials/image-package", "demoGuideRequired": false},
+    {"file": "MPM-物料-审核日志.html", "kind": "formal", "system": "MPM", "module": "物料", "page": "审核日志", "stableRoute": "mpm/materials/audit-log", "demoGuideRequired": false}
   ]
 }

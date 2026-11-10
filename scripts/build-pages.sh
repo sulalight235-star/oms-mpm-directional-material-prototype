@@ -26,7 +26,7 @@ export output_abs
 find . -type f \
   \( -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.md' -o -name '*.json' \
      -o -name '*.svg' -o -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \
-     -o -name '*.webp' -o -name '*.gif' -o -name '*.ico' -o -name '*.LICENSE' \) \
+     -o -name '*.xlsx' -o -name '*.xls' -o -name '*.webp' -o -name '*.gif' -o -name '*.ico' -o -name '*.LICENSE' \) \
   -not -path './.git/*' \
   -not -path './public/*' \
   -not -path './_edge_cdp_profile/*' \
@@ -106,12 +106,12 @@ while IFS="$tab" read -r route source_file extra; do
   awk -v base="$source_base" '
     BEGIN { inserted = 0 }
     {
-      print
       lowered = tolower($0)
-      if (!inserted && lowered ~ /<head[^>]*>/) {
-        print "  <base href=\"" base "\">"
+      if (!inserted && match(lowered, /<head[^>]*>/)) {
+        $0 = substr($0, 1, RSTART + RLENGTH - 1) "<base href=\"" base "\">" substr($0, RSTART + RLENGTH)
         inserted = 1
       }
+      print
     }
     END { if (!inserted) exit 2 }
   ' "$source_file" > "$alias_dir/index.html"
