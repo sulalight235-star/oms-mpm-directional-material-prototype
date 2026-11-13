@@ -1712,7 +1712,7 @@
     .floating-dots{right:12px;bottom:18px;}
   }
 </style>
-<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"><link rel="stylesheet" href="assets/css/mpm-product-series.css"></head>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"><link rel="stylesheet" href="assets/css/mpm-product-series.css"><link rel="stylesheet" href="assets/css/mpm-legacy-images.css?v=20261113-more-actions"></head>
 <body data-series-upgrade><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div><main id="main-content" tabindex="-1">
 
 <header class="topbar">
@@ -1835,13 +1835,11 @@
                       <th>规格</th>
                       <th>市场价</th>
                       <th>描述</th>
-                      <th>推荐咸亨编码</th>
-                      <th>推荐度</th>
                       <th>供应商</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr data-parse-row="1">
+                    <tr data-parse-row="1" data-material-code="B0401025928">
                       <td><input class="parse-edit-input" value="防尘口罩" aria-label="名称（第1行）"></td>
                       <td><input class="parse-edit-input" list="brandLibraryOptions" value="3M" placeholder="输入关键词搜索品牌库" aria-label="推荐品牌（第1行）"></td>
                       <td><input class="parse-edit-input" list="categoryLibraryOptions" value="呼吸防护用品" placeholder="输入关键词搜索类目库" aria-label="推荐类目（第1行）"></td>
@@ -1850,20 +1848,13 @@
                       <td><input class="parse-edit-input" value="12.80" aria-label="市场价（第1行）"></td>
                       <td><textarea class="parse-edit-area" aria-label="描述（第1行）">3M 防尘口罩 KN95 / 白色 / 头戴式 / 无呼吸阀 9501+</textarea></td>
                       <td>
-                        <span class="recommend-code-cell">
-                          <span class="recommend-code">B0401025928</span>
-                          <span class="more-link" onclick="openRecommendDrawer(1)">【更多】</span>
-                        </span>
-                      </td>
-                      <td><span class="recommend-score">92%</span></td>
-                      <td>
                         <span class="supplier-action-cell">
                           <span class="supplier-status" data-supplier-status="1">未维护</span>
                           <span class="more-link" onclick="openSupplierDrawer(1)">新增</span>
                         </span>
                       </td>
                     </tr>
-                    <tr data-parse-row="2">
+                    <tr data-parse-row="2" data-material-code="B0803012048">
                       <td><input class="parse-edit-input" value="插座" aria-label="名称（第2行）"></td>
                       <td><input class="parse-edit-input" list="brandLibraryOptions" value="公牛" placeholder="输入关键词搜索品牌库" aria-label="推荐品牌（第2行）"></td>
                       <td><input class="parse-edit-input" list="categoryLibraryOptions" value="插座/排插" placeholder="输入关键词搜索类目库" aria-label="推荐类目（第2行）"></td>
@@ -1871,13 +1862,6 @@
                       <td><input class="parse-edit-input" value="8位 / 3米 / 白色 / 总控开关" aria-label="规格（第2行）"></td>
                       <td><input class="parse-edit-input" value="68.00" aria-label="市场价（第2行）"></td>
                       <td><textarea class="parse-edit-area" aria-label="描述（第2行）">公牛 插座 8位 / 3米 / 白色 / 总控开关 GN-B3440</textarea></td>
-                      <td>
-                        <span class="recommend-code-cell">
-                          <span class="recommend-code">B0803012048</span>
-                          <span class="more-link" onclick="openRecommendDrawer(2)">【更多】</span>
-                        </span>
-                      </td>
-                      <td><span class="recommend-score">89%</span></td>
                       <td>
                         <span class="supplier-action-cell">
                           <span class="supplier-status" data-supplier-status="2">未维护</span>
@@ -1902,7 +1886,7 @@
                   <option value="劳保防护用品">
                 </datalist>
               </div>
-              <div id="parseResultNote" class="smart-note">结构化字段支持直接编辑；推荐品牌、推荐类目输入时支持关键词搜索品牌库和类目库；推荐咸亨编码旁点击【更多】可在右侧抽屉查看 3-5 个推荐编码；供应商点击【新增】可维护供应渠道信息。</div>
+              <div id="parseResultNote" class="smart-note">结构化字段支持直接编辑；推荐品牌、推荐类目输入时支持关键词搜索品牌库和类目库；供应商点击【新增】可维护供应渠道信息。</div>
             </div>
           </div>
         </section>
@@ -3340,7 +3324,7 @@
       spec: values[4] || '',
       marketPrice: values[5] || '',
       desc: values[6] || '',
-      code: (row.querySelector('.recommend-code')?.textContent || '').trim()
+      code: (row.querySelector('.recommend-code')?.textContent || row.dataset.materialCode || '').trim()
     };
   }
 
@@ -3508,7 +3492,7 @@
       });
       const codeValue = document.getElementById('editMaterialCode')?.value.trim();
       const codeEl = row.querySelector('.recommend-code');
-      if (codeEl && codeValue) codeEl.textContent = codeValue;
+      if (codeValue) { row.dataset.materialCode = codeValue; if (codeEl) codeEl.textContent = codeValue; }
     }
     const supplierValue = document.getElementById('editMaterialSupplier')?.value.trim();
     if (supplierValue) setSupplyField(index, 'supplier', supplierValue);
@@ -3660,6 +3644,6 @@
 </script>
 
 <script src="mpm-topnav-links.js"></script>
-</main><script src="assets/js/prototype-common.js" defer></script><script src="assets/js/mpm-product-series.js"></script></body>
+</main><script src="assets/js/prototype-common.js" defer></script><script src="assets/js/mpm-product-series.js?v=20261112-image-permission"></script><script src="assets/js/mpm-legacy-images.js?v=20261113-more-actions"></script></body>
 </html>
 

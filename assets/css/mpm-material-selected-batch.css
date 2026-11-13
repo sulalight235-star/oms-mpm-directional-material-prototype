@@ -1,0 +1,11 @@
+.material-selected-batch-trigger { display:inline-flex; align-items:center; gap:2px; height:30px; padding:0; border:0; background:transparent; font:13px var(--proto-font-family); color:var(--proto-color-primary); cursor:pointer; }
+.material-selected-batch-trigger .prototype-icon { width:14px; height:14px; }
+.material-selected-batch .dropdown-menu { left:0; right:auto; top:calc(100% + 4px); min-width:110px; padding:4px 0; border-radius:2px; }
+.material-selected-batch .dropdown-item { height:26px; min-height:26px; padding:3px 12px; line-height:20px; font-size:14px; white-space:nowrap; text-align:left; }
+.list-layout .table-panel .material-selection-column { width:38px; min-width:38px; padding:0 10px; text-align:center; }
+.material-selection-column input { accent-color:var(--proto-color-primary); cursor:pointer; width:14px; height:14px; }
+.material-mall-hidden-label { display:block; margin-top:3px; font-size:12px; color:var(--proto-color-text-secondary); }
+.material-batch-confirm { width:480px; }
+@media(max-width:600px) { .material-selected-batch-trigger { min-height:44px; } .material-selected-batch .dropdown-item { min-height:44px; height:44px; } }
+
+.material-discontinued-label { margin-left:6px; vertical-align:middle; white-space:nowrap; }

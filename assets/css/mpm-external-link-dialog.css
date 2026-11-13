@@ -1,0 +1,31 @@
+.external-link-dialog { width:1040px; border-radius:2px; max-width:calc(100vw - 32px); }
+.external-link-dialog .series-dialog-head { min-height:32px; padding:4px 8px 4px 24px; }
+.external-link-dialog .series-dialog-head h2 { font-size:14px; font-weight:400; }
+.external-link-dialog .series-dialog-head .proto-btn { border:0; padding:0; width:24px; min-height:24px; height:24px; color:var(--proto-color-text-secondary); }
+.external-link-dialog .series-dialog-body { padding:8px 16px 20px; max-height:calc(100dvh - 140px); }
+.external-link-tip { margin:4px 0 12px; color:#999; font-size:12px; line-height:20px; }
+.external-required { color:var(--proto-color-danger); margin-right:4px; }
+.external-link-top-row { display:grid; grid-template-columns:180px 180px 180px minmax(0,1fr); gap:16px; margin-bottom:20px; }
+.external-field { display:flex; align-items:center; gap:0; min-width:0; font-size:14px; }
+.external-field > label { margin:0; flex-shrink:0; white-space:nowrap; }
+.external-link-dialog .proto-select,.external-link-dialog .proto-input { min-width:0; width:100%; height:24px; min-height:24px; padding:0 8px; font-size:14px; border-radius:1px; }
+.external-field .proto-select,.external-field .proto-input { flex:1; }
+.external-link-dialog .proto-input::placeholder { color:#bfbfbf; }
+.external-quantity-inputs { display:flex; align-items:center; gap:8px; min-width:0; flex:1; }
+.external-quantity-inputs svg { flex-shrink:0; }
+.external-link-price-row { display:flex; align-items:center; gap:24px; flex-wrap:wrap; margin-bottom:20px; }
+.external-price { width:304px; }
+.external-price [data-get-price] { height:24px; min-height:24px; border-radius:1px; padding:0 8px; margin-left:10px; font-size:14px; flex-shrink:0; }
+.external-converted { width:264px; }
+.external-converted .proto-input { background:#f5f5f5; }
+.external-lowest { width:156px; }
+.external-sales { width:228px; margin-bottom:20px; }
+.external-url { align-items:flex-start; }
+.external-url > label { line-height:24px; }
+.external-url .proto-textarea { flex:1; min-width:0; min-height:46px; height:46px; padding:4px 8px; border-radius:1px; resize:vertical; }
+.external-link-dialog [data-error]:empty { display:none; }
+.external-link-dialog [data-error]:not(:empty) { margin-top:8px; }
+.external-link-dialog .series-dialog-footer { justify-content:center; gap:8px; padding:10px 16px; }
+.external-link-dialog .series-dialog-footer .proto-btn { min-width:64px; height:32px; min-height:32px; padding:0 14px; border-radius:3px; font-size:14px; letter-spacing:3px; }
+@media(max-width:1100px) { .external-link-top-row { grid-template-columns:repeat(2,minmax(0,1fr)); } .external-field > label { min-width:114px; } .external-price,.external-converted,.external-lowest { width:calc(50% - 12px); } .external-price { width:100%; } .external-sales { width:calc(50% - 12px); } }
+@media(max-width:600px) { .external-link-top-row { grid-template-columns:minmax(0,1fr); gap:12px; margin-bottom:12px; } .external-link-price-row { gap:12px; margin-bottom:12px; } .external-price,.external-converted,.external-lowest,.external-sales { width:100%; } .external-link-dialog .proto-input,.external-link-dialog .proto-select { min-height:44px; height:44px; font-size:16px; } .external-price [data-get-price],.external-link-dialog .series-dialog-footer .proto-btn,.external-link-dialog .series-dialog-head .proto-btn { min-height:44px; height:44px; } .external-link-dialog .series-dialog-head .proto-btn { width:44px; } .external-sales { margin-bottom:12px; } .external-quantity-inputs { gap:4px; } .external-url > label { min-width:56px; } .external-url .proto-textarea { height:70px; } }

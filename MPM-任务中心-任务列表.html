@@ -530,8 +530,18 @@
     .queue-task-title { color: var(--text-title); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .queue-task-code { margin-top: 4px; color: var(--text-sub); font-size: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
     .queue-task-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border-light); font-size: 12px; }
+    .queue-task-meta--running { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 0; }
+    .queue-task-meta--running > div { min-width: 0; }
+    .queue-task-meta--running dd { overflow-wrap: anywhere; }
+    .queue-task-meta-scroll { overflow-x: auto; }
+    @media (max-width: 600px) {
+      .queue-task-meta--running { min-width: 460px; padding-bottom: 6px; }
+    }
     .queue-task-meta dt { color: var(--text-sub); }
     .queue-task-meta dd { margin-top: 2px; color: var(--text-title); font-variant-numeric: tabular-nums; }
+    .queue-row-select { display:flex; align-items:center; gap:8px; }
+    .queue-row-select input,#selectAllQueueTasks { accent-color:var(--primary); cursor:pointer; flex-shrink:0; }
+    .queue-row-select input:disabled { cursor:not-allowed; }
     .queue-position { color: #d46b08 !important; font-weight: 600; }
     .queue-empty { display: grid; place-items: center; min-height: 260px; color: var(--text-sub); text-align: center; }
     .queue-empty strong { display: block; color: var(--text-title); margin-bottom: 6px; font-weight: 600; }
@@ -679,7 +689,7 @@
   </div>
 
   <!-- 主体 -->
-  <main id="main-content" class="page" tabindex="-1">
+  <main id="main-content" class="page" tabindex="-1"><h1 class="prototype-sr-only">任务中心</h1>
     <!-- 筛选区 -->
     <section class="filter-card">
       <form class="filter-row" onsubmit="event.preventDefault();">
@@ -760,6 +770,7 @@
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h10M4 12h16M4 17h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="7" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
             队列状态
           </button>
+          <button class="btn-link toolbar-btn" type="button" id="pinQueueBtn">置顶操作</button>
           <button class="btn-link toolbar-btn" type="button" id="refreshBtn">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6v5h-5M4 18v-5h5M6.1 8.5A7 7 0 0 1 18.4 7M17.9 15.5A7 7 0 0 1 5.6 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             刷新
@@ -770,7 +781,7 @@
       <div class="table-wrap">
         <table id="taskTable">
           <colgroup>
-            <col data-col="status" style="width:90px" />
+            <col data-col="status" style="width:120px" />
             <col data-col="type" style="width:220px" />
             <col data-col="code" style="width:190px" />
             <col data-col="start" style="width:170px" />
@@ -779,13 +790,14 @@
             <col data-col="progress" style="width:105px" />
             <col data-col="done" style="width:170px" />
             <col data-col="executeMode" style="width:150px" />
+            <col data-col="queueOrder" style="width:100px" />
             <col data-col="creator" style="width:100px" />
             <col data-col="importFile" style="width:230px" />
             <col data-col="exportFile" style="width:230px" />
           </colgroup>
           <thead>
             <tr>
-              <th data-key="status" title="双击展开当前列">状态</th>
+              <th data-key="status" title="双击展开当前列"><input type="checkbox" id="selectAllQueueTasks" aria-label="全选当前列表可置顶任务" /> 状态</th>
               <th data-key="type" title="双击展开当前列">类型</th>
               <th data-key="code" title="双击展开当前列">任务编码</th>
               <th data-key="start" title="双击展开当前列">开始时间</th>
@@ -794,6 +806,7 @@
               <th data-key="progress" title="双击展开当前列">任务进度</th>
               <th data-key="done" title="双击展开当前列">完成时间</th>
               <th data-key="executeMode" title="双击展开当前列">执行方式</th>
+              <th data-key="queueOrder" title="双击展开当前列">队列排序</th>
               <th data-key="creator" title="双击展开当前列">创建人</th>
               <th data-key="importFile" title="双击展开当前列">导入文件</th>
               <th data-key="exportFile" title="双击展开当前列">导出文件</th>
@@ -849,8 +862,8 @@
       <div id="queueOverview" class="queue-overview"></div>
       <div class="queue-note">预计时间根据当前队列、有效并发数和历史任务耗时估算，实际时间可能变化。</div>
       <div class="queue-tabs" role="tablist" aria-label="队列任务视图">
-        <button class="queue-tab" type="button" role="tab" aria-selected="false" data-queue-tab="running">全部执行中 <span id="runningCount">4</span></button>
-        <button class="queue-tab active" type="button" role="tab" aria-selected="true" data-queue-tab="mine">我的任务 <span id="myCount">3</span></button>
+        <button class="queue-tab" type="button" role="tab" aria-selected="false" data-queue-tab="running">全部执行中 <span id="runningCount">0</span></button>
+        <button class="queue-tab active" type="button" role="tab" aria-selected="true" data-queue-tab="mine">我的任务 <span id="myCount">0</span></button>
       </div>
       <div class="queue-list" id="queueList" role="tabpanel"></div>
     </div>
@@ -925,6 +938,8 @@
     const taskMock = [
       { status:'待开始', type:'导入批改 - 修改商城价', code:'xhgj0037220260917143001', start:'2026-09-17 14:30:01', used:'0.0 秒', remain:'暂无法估算', progress:'0/186', done:'', executeMode:'FC', creator:'王云龙', importFile:'物料商城价批改模板_华东区域_20260917.xlsx', exportFile:'' },
       { status:'待开始', type:'导入 - 修改采购员', code:'xhgj0037220260917142908', start:'2026-09-17 14:29:08', used:'0.0 秒', remain:'约 8～15 分钟', progress:'0/82', done:'', executeMode:'MQ', creator:'王云龙', importFile:'采购员批量调整_20260917.xlsx', exportFile:'' },
+      { status:'待开始', type:'批量上传资质图片', code:'xhgj00249620260917142700', start:'2026-09-17 14:27:00', used:'0.0 秒', remain:'暂无法估算', progress:'0/36', done:'', executeMode:'MQ', creator:'马红梅', importFile:'资质图片批量上传_20260917.xlsx', exportFile:'' },
+      { status:'待开始', type:'物料导出 - 当前查询', code:'xhgj00128420260917142800', start:'2026-09-17 14:28:00', used:'0.0 秒', remain:'暂无法估算', progress:'0/120', done:'', executeMode:'MQ', creator:'陈方琳', importFile:'', exportFile:'' },
       { status:'处理中', type:'咸亨奖励 - 导出全部', code:'xhgj0037220260917142502', start:'2026-09-17 14:25:02', used:'4分18秒', remain:'约 3～5 分钟', progress:'60/100', done:'', executeMode:'MQ', creator:'王云龙', importFile:'', exportFile:'咸亨奖励-导出全部_2026-09-17.xlsx' },
       { status:'处理中', type:'导入批改 - 商城隐藏', code:'xhgj0037220260917142017', start:'2026-09-17 14:20:17', used:'9分03秒', remain:'约 2 分钟', progress:'620/800', done:'', executeMode:'FC', creator:'凌慧', importFile:'绿色动力批改商城隐藏模板_全量.xlsx', exportFile:'' },
       { status:'待审核', type:'物料导出 - 当前查询', code:'xhgj00128420260917141803', start:'2026-09-17 14:18:03', used:'0.0 秒', remain:'-', progress:'0/0', done:'', executeMode:'', creator:'陈方琳', importFile:'', exportFile:'' },
@@ -939,7 +954,7 @@
     ];
 
     const queueData = {
-      overview: { fc: { running: 3, waiting: 12 }, mq: { running: 1, waiting: 8 } },
+      overview: { fc: { waiting: 12 }, mq: { waiting: 8 } },
       running: [
         { type:'导入批改 - 商城隐藏', code:'xhgj0037220260917142017', creator:'凌慧', mode:'FC', status:'处理中', used:'9分03秒', remain:'约2分钟', progress:'620/800' },
         { type:'平台物料 - 批量推送', code:'xhgj00249620260917142108', creator:'马红梅', mode:'FC', status:'处理中', used:'7分12秒', remain:'约4～6分钟', progress:'310/920' },
@@ -963,6 +978,38 @@
     let pageSize = 25;
     let isFiltered = false;
     const expandedColumns = new Set();
+    const selectedQueueTasks = new Set();
+    let mqQueueOrder = [];
+    const canPinTask = task => task.executeMode === 'MQ' && task.status === '待开始';
+    function syncMqQueue() {
+      const eligible = taskMock.filter(canPinTask).sort((a,b) => a.start.localeCompare(b.start) || a.code.localeCompare(b.code));
+      const eligibleCodes = new Set(eligible.map(task => task.code));
+      mqQueueOrder = mqQueueOrder.filter(code => eligibleCodes.has(code));
+      eligible.forEach(task => { if (!mqQueueOrder.includes(task.code)) mqQueueOrder.push(task.code); });
+    }
+    function updateQueueSelection() {
+      const eligible = currentRows.filter(canPinTask);
+      const selected = eligible.filter(task => selectedQueueTasks.has(task.code)).length;
+      const all = document.getElementById('selectAllQueueTasks');
+      all.disabled = !eligible.length;
+      all.checked = eligible.length > 0 && selected === eligible.length;
+      all.indeterminate = selected > 0 && selected < eligible.length;
+    }
+    document.getElementById('selectAllQueueTasks').addEventListener('change', event => {
+      currentRows.filter(canPinTask).forEach(task => event.target.checked ? selectedQueueTasks.add(task.code) : selectedQueueTasks.delete(task.code));
+      renderRows(currentRows);
+    });
+    document.getElementById('pinQueueBtn').addEventListener('click', () => {
+      syncMqQueue();
+      const visibleEligible = new Set(currentRows.filter(canPinTask).map(task => task.code));
+      const chosen = mqQueueOrder.filter(code => visibleEligible.has(code) && selectedQueueTasks.has(code));
+      if (!chosen.length) return showMessage('请选择本地MQ队列执行且待开始的任务', 'info');
+      const chosenSet = new Set(chosen);
+      mqQueueOrder = [...chosen, ...mqQueueOrder.filter(code => !chosenSet.has(code))];
+      selectedQueueTasks.clear();
+      renderRows(currentRows);
+      showMessage('操作成功', 'success');
+    });
     const tbody = document.getElementById('taskTableBody');
 
     function statusTagHtml(status) {
@@ -1003,13 +1050,20 @@
     function processCategoryDiscountTasks(){const tasks=JSON.parse(localStorage.getItem(categoryDiscountTaskKey)||'[]');tasks.filter(task=>task.status==='待开始'||task.status==='处理中').forEach(task=>{task.status='处理中';localStorage.setItem(categoryDiscountTaskKey,JSON.stringify(tasks));loadCategoryDiscountTasks();setTimeout(()=>{try{const data=JSON.parse(localStorage.getItem(categoryDataKey)||'{}'),projectCode=task.projectCode||task.clientCode,categories=data[projectCode]||[],seen=new Set();task.results=task.rows.map(row=>{const code=String(row.code||'').trim(),discount=String(row.discount||'').trim();let result='';if(!code)result='失败：分类编码不能为空';else if(seen.has(code))result='失败：文件中分类编码重复';else if(!/^(?:0(?:\.\d{1,2})?|1(?:\.0{1,2})?)$/.test(discount))result='失败：外链折扣率须为 0～1，最多两位小数';else{const category=categories.find(item=>item.code===code);result=category?(category.linkDiscount=Number(discount).toFixed(2),'成功'):'失败：分类编码不存在'}if(code)seen.add(code);return{...row,success:result==='成功',result}});data[projectCode]=categories;localStorage.setItem(categoryDataKey,JSON.stringify(data));task.status=task.results.every(row=>row.success)?'成功':'失败';task.done=new Date().toLocaleString('sv-SE').replace('T',' ');task.used='1.2 秒';localStorage.setItem(categoryDiscountTaskKey,JSON.stringify(tasks));loadCategoryDiscountTasks();refreshCategoryDiscountRows();if(document.getElementById('categoryDiscountTaskDetail').open)openCategoryDiscountTask(task.code)}catch(error){task.status='失败';task.results=task.rows.map(row=>({...row,success:false,result:`失败：${error.message}`}));localStorage.setItem(categoryDiscountTaskKey,JSON.stringify(tasks));loadCategoryDiscountTasks();refreshCategoryDiscountRows();if(document.getElementById('categoryDiscountTaskDetail').open)openCategoryDiscountTask(task.code)}},1200)})}
     function openMaterialPriceTask(code){const task=taskMock.find(task=>task.code===code);if(!task||!task.materialPriceRows)return;const dialog=document.getElementById('materialPriceTaskDetail');document.getElementById('materialPriceTaskCode').textContent=task.code;document.getElementById('materialPriceTaskRows').innerHTML=task.materialPriceRows.map(row=>`<tr><td>${escapeHtml(row.code)}</td><td>${escapeHtml(row.name)}</td><td style="overflow-wrap:anywhere;white-space:normal">${escapeHtml(row.link)}</td><td>${Number(row.price).toFixed(2)}</td><td>${escapeHtml(row.result||'待处理')}</td></tr>`).join('');dialog.showModal();}
     function renderRows(rows) {
+      syncMqQueue();
+      const visibleEligible = new Set(rows.filter(canPinTask).map(task => task.code));
+      [...selectedQueueTasks].forEach(code => { if (!visibleEligible.has(code)) selectedQueueTasks.delete(code); });
+      const ordered = rows.filter(canPinTask).sort((a,b) => mqQueueOrder.indexOf(a.code) - mqQueueOrder.indexOf(b.code));
+      let waitingIndex = 0;
+      rows = rows.map(task => canPinTask(task) ? ordered[waitingIndex++] : task);
+      updateQueueSelection();
       if (!rows.length) {
-        tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:48px 0;color:var(--text-sub);">没有符合条件的任务</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;padding:48px 0;color:var(--text-sub);">没有符合条件的任务</td></tr>';
         return;
       }
       tbody.innerHTML = rows.map(t => `
         <tr>
-          ${cell(statusTagHtml(t.status), t.status)}
+          ${cell(`<label class="queue-row-select"><input type="checkbox" data-pin-task="${escapeHtml(t.code)}" aria-label="选择任务 ${escapeHtml(t.code)}" ${canPinTask(t) ? '' : 'disabled'} ${selectedQueueTasks.has(t.code) ? 'checked' : ''} />${statusTagHtml(t.status)}</label>`, canPinTask(t) ? t.status : '仅本地MQ队列执行且待开始的任务可置顶')}
           ${cell(t.materialPriceRows?`<button class="btn-link" type="button" data-material-price-task="${escapeHtml(t.code)}">${escapeHtml(t.type)}</button>`:t.categoryDiscountRows?`<button class="btn-link" type="button" data-category-discount-task="${escapeHtml(t.code)}">${escapeHtml(t.type)}</button>`:t.mappingExport?`<button class="btn-link" type="button" data-mapping-export-task="${escapeHtml(t.code)}">${escapeHtml(t.type)}</button>`:`<a class="td-link" href="javascript:void(0)">${escapeHtml(t.type)}</a>`, t.type)}
           ${cell(`<span class="muted">${escapeHtml(t.code)}</span>`, t.code)}
           ${cell(escapeHtml(t.start), t.start)}
@@ -1018,11 +1072,18 @@
           ${cell(escapeHtml(t.progress), t.progress)}
           ${cell(t.done ? escapeHtml(t.done) : '<span class="muted-light">-</span>', t.done || '-')}
           ${cell(modeTagHtml(t.executeMode), t.executeMode === 'FC' ? '云上FC执行' : t.executeMode === 'MQ' ? '本地MQ队列执行' : '历史任务执行方式未知')}
+          ${cell(canPinTask(t) ? String(mqQueueOrder.indexOf(t.code) + 1) : '<span class="muted-light">—</span>')}
           ${cell(escapeHtml(t.creator), t.creator)}
           ${cell(linkOrDash(t.importFile, t.code, 'import'), t.importFile || '无')}
           ${cell(linkOrDash(t.exportFile, t.code, 'export'), t.exportFile || '无')}
         </tr>
       `).join('');
+      tbody.querySelectorAll('[data-pin-task]').forEach(input => input.addEventListener('change', () => {
+        const task = currentRows.find(item => item.code === input.dataset.pinTask);
+        if (!task || !canPinTask(task)) return;
+        input.checked ? selectedQueueTasks.add(task.code) : selectedQueueTasks.delete(task.code);
+        updateQueueSelection();
+      }));
       bindFileLinks();
       document.querySelectorAll('[data-material-price-task]').forEach(button=>button.addEventListener('click',()=>openMaterialPriceTask(button.dataset.materialPriceTask)));
       document.querySelectorAll('[data-category-discount-task]').forEach(button=>button.addEventListener('click',()=>openCategoryDiscountTask(button.dataset.categoryDiscountTask)));
@@ -1178,7 +1239,13 @@
     }
 
     function renderQueueOverview() {
-      const o = queueData.overview;
+      const running = queueData.running.filter(task => task.status === '处理中');
+      const o = {
+        fc: { ...queueData.overview.fc, running: running.filter(task => task.mode === 'FC').length },
+        mq: { ...queueData.overview.mq, running: running.filter(task => task.mode === 'MQ').length }
+      };
+      document.getElementById('runningCount').textContent = running.length;
+      document.getElementById('myCount').textContent = queueData.mine.length;
       document.getElementById('queueOverview').innerHTML = `
         <section class="queue-card" aria-label="云上FC执行队列">
           <div class="queue-card-title"><span class="queue-card-dot"></span>云上FC执行</div>
@@ -1206,7 +1273,7 @@
         <div><dt>已运行</dt><dd>${escapeHtml(task.used)}</dd></div>
         <div><dt>预计剩余</dt><dd>${escapeHtml(task.remain)}</dd></div>
         <div><dt>任务进度</dt><dd>${escapeHtml(task.progress)}</dd></div>
-        ${scope === 'running' ? `<div><dt>创建人</dt><dd>${escapeHtml(task.creator)}</dd></div>` : ''}` : '';
+        <div><dt>创建人</dt><dd>${escapeHtml(task.creator || queueData.running.find(item => item.code === task.code)?.creator || '—')}</dd></div>` : '';
       const reviewMeta = task.status === '待审核' ? `<div style="grid-column:1/-1"><dt>状态说明</dt><dd>${escapeHtml(task.note)}</dd></div>` : '';
       return `<article class="queue-task">
         <div class="queue-task-head">
@@ -1214,12 +1281,12 @@
           ${statusTagHtml(task.status)}
         </div>
         <div style="margin-top:10px">${modeTagHtml(task.mode)}</div>
-        <dl class="queue-task-meta">${waitingMeta}${runningMeta}${reviewMeta}</dl>
+        <div class="queue-task-meta-scroll"><dl class="queue-task-meta${['处理中', '待开始'].includes(task.status) ? ' queue-task-meta--running' : ''}">${waitingMeta}${runningMeta}${reviewMeta}</dl></div>
       </article>`;
     }
 
     function renderQueueList() {
-      const data = queueData[activeQueueTab];
+      const data = activeQueueTab === 'running' ? queueData.running.filter(task => task.status === '处理中') : queueData.mine;
       queueList.innerHTML = data.length ? data.map(item => renderQueueTask(item, activeQueueTab)).join('') : '<div class="queue-empty"><div><strong>当前暂无任务</strong>队列空闲，无需等待</div></div>';
     }
 
@@ -1324,6 +1391,6 @@
     if(mappingExportTaskCode){currentRows=taskMock.filter(task=>task.code===mappingExportTaskCode);renderRows(currentRows);updatePagination(true);openMappingExportTask(mappingExportTaskCode);}
   </script>
 <script src="mpm-topnav-links.js"></script>
-<script src="assets/js/prototype-common.js" defer></script><script src="assets/vendor/xlsx.full.min.js"></script><script src="assets/js/mpm-product-series.js"></script></body>
+<script src="assets/js/prototype-common.js" defer></script><script src="assets/vendor/xlsx.full.min.js"></script><script src="assets/js/mpm-product-series.js?v=20261111-task-panel-removed"></script></body>
 </html>
 

@@ -56,7 +56,7 @@
         if (shell) shell.classList.toggle(control.type === 'radio' ? 'xh-radio-checked' : 'xh-checkbox-checked', control.checked);
       });
     }
-    if (input.type === 'file' && input.files.length) {
+    if (input.type === 'file' && input.files.length && !input.closest('#pic_upload')) {
       const box = input.closest('.box-iRk2dh');
       [...input.files].forEach(file => { const img = document.createElement('img'); img.className = 'legacy-file-preview'; img.alt = file.name; img.src = URL.createObjectURL(file); img.onload = () => URL.revokeObjectURL(img.src); box.appendChild(img); });
       toast('已添加本地图片，仅用于原型预览');
@@ -98,6 +98,7 @@
   main.addEventListener('click', event => {
     if (event.target.closest('[data-series-mount],[data-extra]')) return;
     const button = event.target.closest('button'); if (!button || button.disabled || button.closest('#legacyStepPanel')) return;
+    if (button.closest('.legacy-image-layout')) return;
     const text = button.textContent.trim().replace(/\s+/g, '');
     if (text === '恢复暂存') return;
     if (text === '下一步') return nextStep();
@@ -109,7 +110,7 @@
       row.innerHTML = '<label>链接地址<input type="url" placeholder="https://" aria-label="链接地址"></label><label>价格<input type="number" min="0" aria-label="链接价格"></label><button class="proto-btn" type="button">删除</button>';
       row.querySelector('button').onclick = () => row.remove(); button.closest('.box-iRk2dh').appendChild(row); return;
     }
-    if (text === '清空图片') { button.closest('.box-iRk2dh').querySelectorAll('.legacy-file-preview').forEach(e => e.remove()); toast('图片已清空'); return; }
+    if (text === '清空图片' && !button.closest('#pic_upload')) { button.closest('.box-iRk2dh').querySelectorAll('.legacy-file-preview').forEach(e => e.remove()); toast('图片已清空'); return; }
     if (text === '上传资质图片') return choose('本地资质附件名称', ['产品合格证.pdf', '检测报告.pdf'], value => { const box = button.closest('.box-iRk2dh'); let list = box.querySelector('[data-local-attachment-list]'); if (!list) { list = document.createElement('ul'); list.dataset.localAttachmentList = ''; box.appendChild(list); } const li = document.createElement('li'); li.textContent = value + '（原型演示，未上传）'; list.appendChild(li); }, button);
     if (['主推', '常规', '零星'].includes(text)) { button.parentElement.querySelectorAll('button').forEach(e => e.style.fontWeight = '400'); button.style.fontWeight = '700'; toast('已选择' + text); return; }
     if (text === '删除') return;

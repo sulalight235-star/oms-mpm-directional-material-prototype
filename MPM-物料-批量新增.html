@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>物料-批量新增 - MPM物料主数据系统</title>
   <script src="assets/vendor/xlsx.full.min.js"></script>
+  <script src="assets/vendor/exceljs.min.js" defer></script>
+  <link rel="stylesheet" href="assets/css/mpm-preimport-validation.css?v=20261113-preimport8">
   <style>
     :root {
       --primary: #1677ff;
@@ -81,6 +83,8 @@
     .list-header-left .op-text:hover { color: var(--primary-hover); text-decoration: underline; }
     .list-header-right { display: flex; align-items: center; gap: 14px; font-size: 13px; }
     .list-op { color: var(--primary); cursor: pointer; }
+    .smart-batch-add { display:inline-flex; align-items:center; gap:4px; white-space:nowrap; text-decoration:none; font:inherit; }
+    .smart-batch-new { color:var(--error); font-size:12px; }
     .list-op:hover { color: var(--primary-hover); text-decoration: underline; }
     .list-op.danger { color: var(--error); }
     .list-op.danger:hover { color: #ff7875; }
@@ -433,6 +437,7 @@
         操作：<span class="op-text" onclick="showMsg('已刷新列表', 'success')">刷新</span>
       </div>
       <div class="list-header-right">
+        <a class="list-op smart-batch-add" data-material-version-direct href="MPM-物料-物料列表-新增物料.html" target="_blank" rel="noopener">智能批量新增<span class="smart-batch-new">新</span></a>
         <span class="list-op-wrap">
           <span class="list-op dropdown" onclick="toggleExternalCorrectionMenu(event)">外链批改</span>
           <div class="dropdown-menu" id="externalCorrectionMenu">
@@ -443,8 +448,8 @@
         <span class="list-op dropdown" onclick="showMsg('错误批改菜单', 'info')">错误批改</span>
         <span class="list-op" onclick="showMsg('手动覆盖', 'info')">手动覆盖</span>
         <span class="list-op danger" onclick="onDelete()">删除</span>
-        <span class="list-op" onclick="showMsg('已下载: 批量新增物料模板.xlsx', 'success')">下载模板</span>
-        <span class="list-op highlight" onclick="showMsg('预导入', 'info')">预导入</span>
+        <button type="button" class="preimport-link" id="batchTemplateBtn">下载模板</button>
+        <button type="button" class="preimport-link" id="preImportBtn" aria-haspopup="dialog">预导入</button>
         <span class="list-op" onclick="showMsg('预导出 4 条数据', 'info')">预导出</span>
         <span class="list-op" onclick="showMsg('导入拓展属性', 'info')">导入拓展属性</span>
         <span class="list-op-wrap">
@@ -476,6 +481,7 @@
             <th>描述</th>
             <th>物料品牌</th>
             <th>助记码</th>
+            <th>旧物料码</th>
             <th>物料等级</th>
             <th>导入批号</th>
             <th>主图</th>
@@ -498,6 +504,7 @@
             <td><span class="text-truncate muted" title="—">—</span></td>
             <td><span class="text-truncate" title="国产/MADE IN CHINA">国产/MADEIN...</span></td>
             <td class="muted">—</td>
+            <td class="muted">—</td>
             <td>零星</td>
             <td><span class="code-cell">20260106191...</span></td>
             <td><span class="badge-not-cover">未覆盖</span></td>
@@ -517,6 +524,7 @@
             <td class="price muted">—</td>
             <td><span class="text-truncate muted" title="—">—</span></td>
             <td><span class="text-truncate" title="国产/MADE IN CHINA">国产/MADEIN...</span></td>
+            <td class="muted">—</td>
             <td class="muted">—</td>
             <td>零星</td>
             <td><span class="code-cell">20260106191...</span></td>
@@ -538,6 +546,7 @@
             <td><span class="text-truncate muted" title="—">—</span></td>
             <td><span class="text-truncate" title="国产/MADE IN CHINA">国产/MADEIN...</span></td>
             <td class="muted">—</td>
+            <td class="muted">—</td>
             <td>零星</td>
             <td><span class="code-cell">20260106191...</span></td>
             <td><span class="badge-not-cover">未覆盖</span></td>
@@ -558,6 +567,7 @@
             <td><span class="text-truncate muted" title="—">—</span></td>
             <td><span class="text-truncate" title="国产/MADE IN CHINA">国产/MADEIN...</span></td>
             <td class="muted">—</td>
+            <td class="muted">—</td>
             <td>零星</td>
             <td><span class="code-cell">20260106191...</span></td>
             <td><span class="badge-not-cover">未覆盖</span></td>
@@ -570,7 +580,7 @@
     <div class="list-footer">
       <div class="list-footer-left">已选：<b id="selCount">0</b> 条数据</div>
       <div class="list-footer-right">
-        <span>共 4 条</span>
+        <span id="batchImportTotal">共 4 条</span>
         <div class="pager">
           <button class="pager-btn" disabled>‹</button>
           <button class="pager-btn active">1</button>
@@ -894,6 +904,6 @@
 })();
 </script>
 <script src="mpm-topnav-links.js"></script>
-</main><script src="assets/js/prototype-common.js" defer></script><script src="assets/js/mpm-product-series.js"></script></body>
+</main><script src="assets/js/prototype-common.js" defer></script><script src="assets/js/mpm-product-series.js"></script><script src="assets/js/mpm-preimport-rules.js?v=20261113-preimport8" defer></script><script src="assets/js/mpm-preimport-validation.js?v=20261113-preimport8" defer></script></body>
 </html>
 

@@ -7,6 +7,15 @@
   <style>html,body{width:100%;height:100%;margin:0;background:#f4f6fa}</style>
   <link rel="stylesheet" href="assets/css/prototype-tokens.css">
   <link rel="stylesheet" href="assets/css/prototype-components.css">
+  <style>
+    body[data-art-package-standalone] .proto-page-nav h1 {
+      display:flex; align-items:center; flex:0 0 auto; margin:0;
+      padding:0 14px; border-top:2px solid var(--proto-color-primary);
+      border-right:1px solid var(--proto-color-border-light);
+      background:var(--proto-color-primary-bg); color:var(--proto-color-primary);
+      font:400 var(--proto-font-size-sm)/1.5 var(--proto-font-family);
+    }
+  </style>
   <style>body{display:flex;flex-direction:column;height:100dvh;overflow:hidden}.proto-topbar,.proto-page-nav{flex-shrink:0}#main-content{position:relative;flex:1;min-height:0;overflow:auto}#auditLogPage{flex:1;min-height:0;height:auto}body[data-art-package-standalone] .art-package-page{position:absolute;inset:0;z-index:1}</style>
 </head>
 <body data-art-package-standalone><a class="prototype-skip-link" href="#main-content">跳到主内容</a>
@@ -14,6 +23,6 @@
 <nav class="proto-page-nav" aria-label="页面导航"><a class="proto-workbench-link" data-workbench-link href="MPM-工作台-首页.html"><svg class="prototype-icon" aria-hidden="true"><use href="assets/icons/prototype-icons.svg#icon-home"></use></svg><span>工作台</span></a><h1>商图打包</h1></nav>
 
   <main id="main-content" aria-label="商图打包"></main><noscript>请启用 JavaScript 查看商图打包原型。</noscript>
-  <script src="assets/js/mpm-commercial-image-package.js?v=20261109"></script>
+  <script src="assets/js/mpm-commercial-image-package.js?v=20261113-project"></script>
 <div aria-live="polite" class="proto-toast-region" data-proto-toast-region></div><script src="assets/js/prototype-common.js"></script></body>
 </html>

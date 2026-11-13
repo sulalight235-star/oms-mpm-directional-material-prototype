@@ -303,6 +303,7 @@
       border-bottom: 1px solid var(--border-light);
     }
     .toolbar-left, .toolbar-right { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .toolbar .btn-link { font-size:13px; white-space:nowrap; min-height:30px; }
     .toolbar-label { font-size: 12px; color: var(--text-sub); }
     .tool-link {
       color: var(--primary);
@@ -961,7 +962,23 @@
     }
     .price-history-table tbody tr:last-child td { border-bottom: 0; }
   </style>
-<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"><link rel="stylesheet" href="assets/css/mpm-product-series.css?v=20261109-exportstyle"></head>
+<link rel="stylesheet" href="assets/css/prototype-tokens.css"><link rel="stylesheet" href="assets/css/prototype-components.css"><link rel="stylesheet" href="assets/css/mpm-product-series.css?v=20261109-exportstyle">
+<style>
+/* 物料列表筛选：截图顺序，四列紧凑布局。 */
+#filterForm.material-filter-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px 24px; }
+#filterForm[hidden] { display:none; }
+#filterForm .filter-item { gap:8px; }
+#filterForm .filter-item label { width:98px; text-align:right; font-size:13px; line-height:20px; }
+#filterForm .f-input,#filterForm .f-select { min-width:0; height:28px; min-height:28px; border-radius:2px; padding:0 8px; font-size:13px; }
+#filterForm .f-input::placeholder { color:#bfbfbf; }
+#filterForm .material-filter-multi { padding-top:4px; line-height:18px; resize:none; white-space:pre; }
+#filterForm .material-filter-date { display:flex; align-items:center; flex:1; min-width:0; height:28px; border:1px solid var(--border); border-radius:2px; }
+#filterForm .material-filter-date input { min-width:0; width:calc(50% - 8px); height:26px; padding:0 4px; border:0; background:transparent; font:inherit; font-size:12px; color:var(--text-body); }
+#filterForm .material-filter-date span { font-size:12px; color:var(--text-sub); }
+@media(max-width:1100px) { #filterForm.material-filter-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 16px; } }
+@media(max-width:600px) { #filterForm.material-filter-grid { grid-template-columns:minmax(0,1fr); } #filterForm .f-input,#filterForm .f-select { height:44px; font-size:16px; } #filterForm .material-filter-date { height:44px; } #filterForm .material-filter-date input { height:42px; } .filter-head .btn { min-height:44px; padding:0 10px; } }
+</style>
+<link rel="stylesheet" href="assets/css/mpm-custom-export-filters.css?v=20261112-file-filters"><link rel="stylesheet" href="assets/css/mpm-material-image-preview.css?v=20261111-lightbox"><link rel="icon" href="data:,"><link rel="stylesheet" href="assets/css/mpm-material-selected-batch.css?v=20261113-discontinued"></head>
 <body data-series-upgrade><a class="prototype-skip-link" href="#main-content">跳转到主内容</a><div id="prototype-announcer" class="prototype-sr-only" aria-live="polite" aria-atomic="true"></div>
   <header class="topbar">
     <div class="brand">
@@ -996,66 +1013,60 @@
     <section class="filter-card">
       <div class="filter-head">
         <div class="filter-title">筛选条件</div>
-      </div>
-      <form id="filterForm" class="filter-grid">
-        <div class="filter-item">
-          <label for="materialCode">物料编码</label>
-          <input id="materialCode" class="f-input" placeholder="请输入物料编码" />
-        </div>
-        <div class="filter-item">
-          <label for="materialName">物料名称</label>
-          <input id="materialName" class="f-input" placeholder="多个物料名称英文逗号间隔" />
-        </div>
-        <div class="filter-item">
-          <label for="modelInput">型号</label>
-          <input id="modelInput" class="f-input" placeholder="请输入型号" />
-        </div>
-        <div class="filter-item">
-          <label for="brandSelect">品牌</label>
-          <select id="brandSelect" class="f-select">
-            <option value="">请选择</option>
-            <option>牧田/MAKITA</option>
-            <option>牛享/NIUXIAN</option>
-            <option>拓力士/TOLE</option>
-          </select>
-        </div>
-
-        <div class="filter-item">
-          <label for="descInput">描述</label>
-          <input id="descInput" class="f-input" placeholder="请输入描述" />
-        </div>
-        <div class="filter-item">
-          <label for="unitSelect">基本单位</label>
-          <select id="unitSelect" class="f-select">
-            <option value="">请选择</option>
-            <option>个</option>
-            <option>台</option>
-            <option>盒</option>
-          </select>
-        </div>
-        <div class="filter-item">
-          <label for="ownerSelect">货主</label>
-          <select id="ownerSelect" class="f-select">
-            <option value="">请选择</option>
-            <option>威亨国际科技</option>
-            <option>威亨国际科控</option>
-            <option>万聚国际（杭州）</option>
-          </select>
-        </div>
-        <div class="filter-item">
-          <label for="deptSelect">部门</label>
-          <select id="deptSelect" class="f-select">
-            <option value="">请选择</option>
-            <option>商场事业部</option>
-            <option>采购部</option>
-            <option>工具品类组</option>
-          </select>
-        </div>
-
         <div class="filter-actions">
           <button id="searchBtn" class="btn btn-primary" type="button">查询</button>
           <button id="resetBtn" class="btn btn-default" type="button">重置</button>
+          <button id="toggleMaterialFilters" class="btn btn-default" type="button" aria-expanded="true" aria-controls="filterForm">收起</button>
         </div>
+      </div>
+      <form id="filterForm" class="filter-grid material-filter-grid">
+<div class="filter-item"><label for="materialCode">物料编码</label><textarea id="materialCode" class="f-input material-filter-multi" rows="1" placeholder="多个物料编码英文逗号间隔;或在表格中复制一列数据"></textarea></div>
+<div class="filter-item"><label for="brandSelect">品牌</label><select id="brandSelect" class="f-select"><option value="">请选择</option><option>牧田/MAKITA</option><option>牛享/NIUXIAN</option><option>拓力士/TOLE</option></select></div>
+<div class="filter-item"><label for="materialName">物料名称</label><textarea id="materialName" class="f-input material-filter-multi" rows="1" placeholder="多个物料名称英文逗号间隔;或在表格中复制一列数据"></textarea></div>
+<div class="filter-item"><label for="modelInput">型号</label><textarea id="modelInput" class="f-input material-filter-multi" rows="1" placeholder="多个型号英文逗号间隔;或在表格中复制一列数据"></textarea></div>
+<div class="filter-item"><label for="descInput">描述</label><input id="descInput" class="f-input" placeholder="请输入" /></div>
+<div class="filter-item"><label for="unitSelect">基本单位</label><select id="unitSelect" class="f-select"><option value="">请选择</option><option>个</option><option>台</option><option>盒</option></select></div>
+<div class="filter-item"><label for="pushStatus">推送状态</label><select id="pushStatus" class="f-select"><option value="">请选择</option><option>未推送</option><option>已推送</option><option>推送失败</option></select></div>
+<div class="filter-item"><label for="shelfStatus">上下架</label><select id="shelfStatus" class="f-select"><option value="">请选择</option><option>上架</option><option>下架</option></select></div>
+<div class="filter-item"><label for="saleStatus">是否可售</label><select id="saleStatus" class="f-select"><option value="">请选择</option><option>是</option><option>否</option></select></div>
+<div class="filter-item"><label for="discontinued">是否停产</label><select id="discontinued" class="f-select"><option value="">请选择</option><option>是</option><option>否</option></select></div>
+<div class="filter-item"><label for="shelfReason">下架原因</label><select id="shelfReason" class="f-select"><option value="">请选择</option><option>停产</option><option>信息不完整</option><option>其他</option></select></div>
+<div class="filter-item"><label for="materialTag">物料标签</label><select id="materialTag" class="f-select"><option value="">请选择</option><option>推荐</option><option>新品</option><option>常用</option></select></div>
+<div class="filter-item"><label for="deptSelect">部门</label><select id="deptSelect" class="f-select"><option value="">请选择</option><option>商场事业部</option><option>采购部</option><option>工具品类组</option></select></div>
+<div class="filter-item"><label for="specInput">规格</label><input id="specInput" class="f-input" placeholder="请输入" /></div>
+<div class="filter-item"><label for="materialLevel">物料等级</label><select id="materialLevel" class="f-select"><option value="">请选择</option><option>A</option><option>B</option><option>C</option></select></div>
+<div class="filter-item"><label for="aliasInput">别名</label><input id="aliasInput" class="f-input" placeholder="请输入" /></div>
+<div class="filter-item"><label for="productManager">产品经理</label><select id="productManager" class="f-select"><option value="">请选择</option><option>王云龙</option><option>凌慧</option><option>薛明玉</option></select></div>
+<div class="filter-item"><label for="sourceChannel">物料来源渠道</label><select id="sourceChannel" class="f-select"><option value="">请选择</option><option>管理端新增</option><option>批量导入</option><option>PLM接口</option></select></div>
+<div class="filter-item"><label for="imageRelation">图片关系</label><select id="imageRelation" class="f-select"><option value="">请选择</option><option>有图片</option><option>无图片</option></select></div>
+<div class="filter-item"><label for="executor">执行人</label><select id="executor" class="f-select"><option value="">请选择</option><option>王云龙</option><option>凌慧</option><option>薛明玉</option></select></div>
+<div class="filter-item"><label for="orderExecutor">订单执行员</label><select id="orderExecutor" class="f-select"><option value="">请选择</option><option>王云龙</option><option>凌慧</option><option>薛明玉</option></select></div>
+<div class="filter-item"><label for="createdRange">创建时间</label><div class="material-filter-date"><input id="createdRange" type="date" aria-label="创建时间开始"><span>至</span><input id="createdRangeEnd" type="date" aria-label="创建时间结束"></div></div>
+<div class="filter-item"><label for="reviewedRange">审核时间</label><div class="material-filter-date"><input id="reviewedRange" type="date" aria-label="审核时间开始"><span>至</span><input id="reviewedRangeEnd" type="date" aria-label="审核时间结束"></div></div>
+<div class="filter-item"><label for="modifiedRange">修改时间</label><div class="material-filter-date"><input id="modifiedRange" type="date" aria-label="修改时间开始"><span>至</span><input id="modifiedRangeEnd" type="date" aria-label="修改时间结束"></div></div>
+<div class="filter-item"><label for="materialType">物料类型</label><select id="materialType" class="f-select"><option value="">请选择</option><option>标准物料</option><option>非标物料</option></select></div>
+<div class="filter-item"><label for="hiddenFromMall">对商城隐藏</label><select id="hiddenFromMall" class="f-select"><option value="">请选择</option><option>是</option><option>否</option></select></div>
+<div class="filter-item"><label for="internalRemark">内部备注</label><input id="internalRemark" class="f-input" placeholder="请输入" /></div>
+<div class="filter-item"><label for="barcodeInput">条形码</label><input id="barcodeInput" class="f-input" placeholder="请输入" /></div>
+<div class="filter-item"><label for="supplierFilter">供应商</label><select id="supplierFilter" class="f-select"><option value="">请选择</option><option>咸亨国际科技股份有限公司</option><option>牧田（中国）有限公司</option></select></div>
+<div class="filter-item"><label for="projectFilter">项目</label><select id="projectFilter" class="f-select"><option value="">请选择</option><option>华东区域项目</option><option>设备采购项目</option></select></div>
+<div class="filter-item"><label for="hasTaxCode">存在税编信息</label><select id="hasTaxCode" class="f-select"><option value="">请选择</option><option>是</option><option>否</option></select></div>
+<div class="filter-item"><label for="imageType">物料图片类型</label><select id="imageType" class="f-select"><option value="">请选择</option><option>主图</option><option>商图</option><option>资质图片</option></select></div>
+<div class="filter-item"><label for="creatorFilter">创建人</label><select id="creatorFilter" class="f-select"><option value="">请选择</option><option>王云龙</option><option>凌慧</option><option>薛明玉</option></select></div>
+<div class="filter-item"><label for="autoPurchase">自动赋值采购</label><select id="autoPurchase" class="f-select"><option value="">请选择</option><option>是</option><option>否</option></select></div>
+<div class="filter-item"><label for="manufacturerOrderNo">厂家订货号</label><input id="manufacturerOrderNo" class="f-input" placeholder="请输入" /></div>
+<div class="filter-item"><label for="projectQuoter">项目报价员</label><select id="projectQuoter" class="f-select"><option value="">请选择</option><option>王云龙</option><option>凌慧</option><option>薛明玉</option></select></div>
+<div class="filter-item"><label for="recommendTag">推荐标签</label><select id="recommendTag" class="f-select"><option value="">请选择</option><option>推荐</option><option>不推荐</option></select></div>
+<div class="filter-item"><label for="salesTag">动销标签</label><select id="salesTag" class="f-select"><option value="">请选择</option><option>动销</option><option>未动销</option></select></div>
+<div class="filter-item"><label for="industryTag">行业标签</label><select id="industryTag" class="f-select"><option value="">请选择</option><option>电力</option><option>轨道交通</option><option>工业制造</option></select></div>
+<div class="filter-item"><label for="productLineFilter">产品线</label><select id="productLineFilter" class="f-select"><option value="">请选择</option><option>工器具</option><option>安全防护</option><option>仪器仪表</option></select></div>
+<div class="filter-item"><label for="mnemonicCode">助记码</label><textarea id="mnemonicCode" class="f-input material-filter-multi" rows="1" placeholder="多个助记码英文逗号间隔;或在表格中复制一列数据"></textarea></div>
+<div class="filter-item"><label for="multipleOrder">是否倍数下单</label><select id="multipleOrder" class="f-select"><option value="">请选择</option><option>是</option><option>否</option></select></div>
+<div class="filter-item"><label for="materialCleaning">物料清洗</label><select id="materialCleaning" class="f-select"><option value="">请选择</option><option>未清洗</option><option>清洗中</option><option>已清洗</option></select></div>
+<div class="filter-item"><label for="dataType">数据类型</label><select id="dataType" class="f-select"><option value="">请选择</option><option>物料</option><option>商品</option></select></div>
+<div class="filter-item"><label for="standardCode">标品编码</label><textarea id="standardCode" class="f-input material-filter-multi" rows="1" placeholder="多个标品编码英文逗号间隔;或在表格中复制一列数据"></textarea></div>
+<div class="filter-item"><label for="expiryManaged">是否有效期管理</label><select id="expiryManaged" class="f-select"><option value="">请选择</option><option>是</option><option>否</option></select></div>
+<div class="filter-item"><label for="ownerSelect">货主</label><select id="ownerSelect" class="f-select"><option value="">请选择</option><option>威亨国际科技</option><option>威亨国际科控</option><option>万聚国际（杭州）</option></select></div>
       </form>
     </section>
 
@@ -1131,11 +1142,11 @@
             <button class="btn-link" type="button" data-action-text="刷新">刷新</button>
           </div>
           <div class="toolbar-right">
-            <button class="tool-btn" id="batchModifyBtn" type="button">导入批改</button>
-            <button class="tool-btn" type="button" data-action-text="推送">推送</button>
-            <button class="tool-btn" type="button" data-action-text="禁用">禁用</button>
+            <button class="btn-link" id="batchModifyBtn" type="button">导入批改</button>
+            <button class="btn-link" type="button" data-action-text="推送">推送</button>
+            <button class="btn-link" type="button" data-action-text="禁用">禁用</button>
             <div class="dropdown" id="exportDropdown">
-              <button class="tool-btn" id="exportBtn" type="button">物料导出 ▾</button>
+              <button class="btn-link" id="exportBtn" type="button">物料导出 ▾</button>
               <div class="dropdown-menu">
                 <button class="dropdown-item" type="button" data-export="全部导出">全部导出</button>
                 <button class="dropdown-item" type="button" data-export="自定义导出">自定义导出</button>
@@ -1144,8 +1155,8 @@
                 <button class="dropdown-item" type="button" data-export="资质附件导出">资质附件导出</button>
               </div>
             </div>
-            <button class="tool-btn" type="button" data-action-text="基础数据下载">基础数据下载</button>
-            <button class="tool-btn" type="button" data-action-text="推送失败导出">推送失败导出</button>
+            <button class="btn-link" type="button" data-action-text="基础数据下载">基础数据下载</button>
+            <button class="btn-link" type="button" data-action-text="推送失败导出">推送失败导出</button>
           </div>
         </div>
 
@@ -1272,7 +1283,7 @@
                     <button class="supplier-detail-link" type="button" data-supplier-detail data-code="B0401025925" data-name="橡胶磨球磨头" data-supplier="贵州贝兴商贸">查看详情</button>
                   </div>
                 </td>
-                <td><span class="tag tag-orange">待询价</span></td>
+                <td>12×4mm</td>
                 <td>郭佳菲-18767</td>
                 <td>郭佳菲</td>
                 <td>郭佳菲</td>
@@ -1347,7 +1358,7 @@
                     <button class="supplier-detail-link" type="button" data-supplier-detail data-code="B0401025922" data-name="电动压线钳" data-supplier="株洲智仪机电">查看详情</button>
                   </div>
                 </td>
-                <td><span class="tag tag-blue">基础数据</span></td>
+                <td>6–50mm²</td>
                 <td>郭佳菲-18767</td>
                 <td>郭佳菲</td>
                 <td>郭佳菲</td>
@@ -1372,7 +1383,7 @@
                     <button class="supplier-detail-link" type="button" data-supplier-detail data-code="B0401025920" data-name="火焰式切割机" data-supplier="山东翰鑫智联">查看详情</button>
                   </div>
                 </td>
-                <td><span class="tag tag-green">标准物料</span></td>
+                <td>标准型</td>
                 <td>郭佳菲-18767</td>
                 <td>郭佳菲</td>
                 <td>郭佳菲</td>
@@ -1764,12 +1775,27 @@
     });
 
     document.getElementById('searchBtn').addEventListener('click', () => {
-      state.keyword = document.getElementById('materialName').value.trim() || document.getElementById('materialCode').value.trim();
+      const form = document.getElementById('filterForm');
+      const conditions = [...form.querySelectorAll('.filter-item')].flatMap(item => {
+        const values = [...item.querySelectorAll('input,select,textarea')].map(control => control.value.trim()).filter(Boolean);
+        return values.length ? [`${item.querySelector('label').textContent}：${values.join(' 至 ')}`] : [];
+      });
+      state.keyword = conditions.join('；');
       state.currentPage = 1;
       renderSummary();
       showMessage(`已按“${state.keyword || '全部条件'}”执行查询`, 'success');
     });
 
+    document.getElementById('toggleMaterialFilters').addEventListener('click', event => {
+      const form = document.getElementById('filterForm');
+      form.hidden = !form.hidden;
+      event.currentTarget.setAttribute('aria-expanded', String(!form.hidden));
+      event.currentTarget.textContent = form.hidden ? '展开' : '收起';
+    });
+    document.getElementById('filterForm').addEventListener('submit', event => {
+      event.preventDefault();
+      document.getElementById('searchBtn').click();
+    });
     document.getElementById('resetBtn').addEventListener('click', () => {
       document.getElementById('filterForm').reset();
       state.keyword = '';
@@ -2410,6 +2436,6 @@
 })();
 </script>
 <script src="mpm-topnav-links.js"></script>
-<script src="assets/js/prototype-common.js" defer></script><script src="assets/js/mpm-product-series.js?v=20261109-exportstyle"></script></body>
+<script src="assets/js/prototype-common.js" defer></script><script src="assets/js/mpm-product-series.js?v=20261112-file-filters"></script><script src="assets/js/mpm-custom-export-filters.js?v=20261112-file-filters"></script><script src="assets/js/mpm-export-filter-schema.js?v=20261112"></script><script src="assets/js/mpm-export-filter-upload.js?v=20261112-query-priority"></script><script src="assets/js/mpm-material-image-preview.js?v=20261112-default-thumbnails"></script><script src="assets/js/mpm-material-selected-batch.js?v=20261113-discontinued"></script></body>
 </html>
 
